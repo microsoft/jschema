@@ -3,17 +3,19 @@
 
 namespace MountBaker.JSchema
 {
-    public class ClassGeneratorSettings
+    public class DataModelGeneratorSettings
     {
         public const string DefaultOutputDirectory = "Generated";
 
-        public static ClassGeneratorSettings Default = new ClassGeneratorSettings();
+        public static DataModelGeneratorSettings Default = new DataModelGeneratorSettings();
 
-        public ClassGeneratorSettings()
+        public DataModelGeneratorSettings()
         {
             OutputDirectory = DefaultOutputDirectory;
         }
 
         public string OutputDirectory { get; set; }
+
+        public bool ForceOverwrite { get; set; }
     }
 }

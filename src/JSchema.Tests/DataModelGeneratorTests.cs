@@ -8,14 +8,14 @@ using Xunit;
 
 namespace MountBaker.JSchema.Tests
 {
-    public class ClassGeneratorTests
+    public class DataModelGeneratorTests
     {
         [Fact]
         public void ThrowsIfOutputDirectoryExists()
         {
             IFileSystem fileSystem = MakeFileSystem();
 
-            Action action = () => ClassGenerator.Generate(new JsonSchema(), new ClassGeneratorSettings(), fileSystem);
+            Action action = () => DataModelGenerator.Generate(new JsonSchema(), new DataModelGeneratorSettings(), fileSystem);
             action.ShouldThrow<JSchemaException>();
         }
 
@@ -24,12 +24,26 @@ namespace MountBaker.JSchema.Tests
         {
             IFileSystem fileSystem = MakeFileSystem();
 
-            var settings = new ClassGeneratorSettings
+            var settings = new DataModelGeneratorSettings
             {
-                OutputDirectory = ClassGeneratorSettings.DefaultOutputDirectory + "x"
+                OutputDirectory = DataModelGeneratorSettings.DefaultOutputDirectory + "x"
             };
 
-            Action action = () => ClassGenerator.Generate(new JsonSchema(), settings, fileSystem);
+            Action action = () => DataModelGenerator.Generate(new JsonSchema(), settings, fileSystem);
+            action.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void DoesNotThowIfForceOverwriteSettingIsSet()
+        {
+            IFileSystem fileSystem = MakeFileSystem();
+
+            var settings = new DataModelGeneratorSettings
+            {
+                ForceOverwrite = true
+            };
+
+            Action action = () => DataModelGenerator.Generate(new JsonSchema(), settings, fileSystem);
             action.ShouldNotThrow();
         }
 
@@ -39,7 +53,7 @@ namespace MountBaker.JSchema.Tests
 
             mockFileSystem
                 .Setup(fs => fs.DirectoryExists(It.IsAny<string>()))
-                .Returns((string s) => s.Equals(ClassGeneratorSettings.DefaultOutputDirectory));
+                .Returns((string s) => s.Equals(DataModelGeneratorSettings.DefaultOutputDirectory));
 
             return mockFileSystem.Object;
         }
