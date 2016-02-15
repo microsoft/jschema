@@ -30,6 +30,26 @@ namespace MountBaker.JSchema.ObjectModel.Tests
                     Description = "The description",
                     Type = JsonType.Object
                 }
+            },
+
+            new object[]
+            {
+                "Properties",
+                new JsonSchema
+                {
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["prop1"] = new JsonSchema
+                        {
+                            Type = JsonType.String
+                        },
+
+                        ["prop2"] = new JsonSchema
+                        {
+                            Type = JsonType.Number
+                        }
+                    }
+                }
             }
         };
 

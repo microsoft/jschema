@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace MountBaker.JSchema.ObjectModel
@@ -21,6 +22,8 @@ namespace MountBaker.JSchema.ObjectModel
 
         public JsonType Type { get; set; }
 
+        public Dictionary<string, JsonSchema> Properties { get; set; }
+
         #region Object overrides
 
         public override bool Equals(object obj)
@@ -30,7 +33,7 @@ namespace MountBaker.JSchema.ObjectModel
 
         public override int GetHashCode()
         {
-            return Hash.Combine(Id, SchemaVersion, Title, Description, Type);
+            return Hash.Combine(Id, SchemaVersion, Title, Description, Type, Properties);
         }
 
         #endregion Object overrides
@@ -48,7 +51,8 @@ namespace MountBaker.JSchema.ObjectModel
                 && SchemaVersion == other.SchemaVersion
                 && string.Equals(Title, other.Title, StringComparison.Ordinal)
                 && string.Equals(Description, other.Description, StringComparison.Ordinal)
-                && Type == other.Type;
+                && Type == other.Type
+                && Properties.HasSameElementsAs(other.Properties);
         }
 
         #endregion
