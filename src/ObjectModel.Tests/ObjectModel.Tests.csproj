@@ -59,7 +59,7 @@
     <None Include="TestData\Empty.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\V4.schema.json">
+    <None Include="TestData\BasicProperties.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
