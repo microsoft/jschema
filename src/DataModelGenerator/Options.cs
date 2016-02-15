@@ -18,7 +18,7 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
         [Option(
             'o',
             "output-directory",
-            HelpText = "Path to output directory.",
+            HelpText = "Path to directory in which the classes will be generated.",
             Default = DataModelGeneratorSettings.DefaultOutputDirectory)]
         public string OutputDirectory { get; set; }
 
@@ -28,5 +28,19 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
             HelpText = "Overwrite files in the output directory",
             Default = false)]
         public bool ForceOverwrite { get; set; }
+
+        [Option(
+            'n',
+            "namespace-name",
+            HelpText = "Namespace in which the classes will be generated",
+            Required = true)]
+        public string NamespaceName { get; set; }
+
+        [Option(
+            'r',
+            "root-class-name",
+            HelpText = "Name of the class at the root of the generated object model",
+            Required = true)]
+        public string RootClassName { get; set; }
     }
 }

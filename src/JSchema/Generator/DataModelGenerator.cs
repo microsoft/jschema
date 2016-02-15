@@ -26,6 +26,12 @@ namespace MountBaker.JSchema.Generator
             }
 
             fileSystem.CreateDirectory(settings.OutputDirectory);
+
+            CreateFile(settings.NamespaceName, settings.RootClassName);
+        }
+
+        private static void CreateFile(string namspaceName, string rootClassName)
+        {
         }
     }
 }
