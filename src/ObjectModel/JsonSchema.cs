@@ -13,6 +13,10 @@ namespace MountBaker.JSchema.ObjectModel
         [JsonProperty("$schema")]
         public Uri SchemaVersion { get; set; }
 
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
         #region Object overrides
 
         public override bool Equals(object obj)
@@ -22,7 +26,7 @@ namespace MountBaker.JSchema.ObjectModel
 
         public override int GetHashCode()
         {
-            return SchemaVersion.GetHashCode();
+            return Hash.Combine(SchemaVersion, Title, Description);
         }
 
         #endregion Object overrides
@@ -36,7 +40,9 @@ namespace MountBaker.JSchema.ObjectModel
                 return false;
             }
 
-            return SchemaVersion == other.SchemaVersion;
+            return SchemaVersion == other.SchemaVersion
+                && string.Equals(Title, other.Title, StringComparison.Ordinal)
+                && string.Equals(Description, other.Description, StringComparison.Ordinal);
         }
 
         #endregion

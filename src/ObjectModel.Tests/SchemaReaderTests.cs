@@ -23,7 +23,9 @@ namespace MountBaker.JSchema.ObjectModel.Tests
                 "BasicProperties",
                 new JsonSchema
                 {
-                    SchemaVersion = JsonSchema.V4Draft
+                    SchemaVersion = JsonSchema.V4Draft,
+                    Title = "The title",
+                    Description = "The description"
                 }
             }
         };
