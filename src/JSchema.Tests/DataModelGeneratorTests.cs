@@ -6,7 +6,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace MountBaker.JSchema.Tests
+namespace MountBaker.JSchema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {

@@ -3,6 +3,7 @@
 
 using System.IO;
 using CommandLine;
+using MountBaker.JSchema.Generator;
 
 namespace MountBaker.JSchema.DataModelGeneratorTool
 {
