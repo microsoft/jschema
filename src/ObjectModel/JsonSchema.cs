@@ -46,5 +46,15 @@ namespace MountBaker.JSchema.ObjectModel
         }
 
         #endregion
+
+        public static bool operator ==(JsonSchema left, JsonSchema right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(JsonSchema left, JsonSchema right)
+        {
+            return !(left == right);
+        }
     }
 }
