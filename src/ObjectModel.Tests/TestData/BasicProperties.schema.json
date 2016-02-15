@@ -1,4 +1,5 @@
 ﻿{
+    "id": "http://www.example.com/schemas/basic#",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "The title",
     "description": "The description"

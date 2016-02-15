@@ -10,6 +10,8 @@ namespace MountBaker.JSchema.ObjectModel
     {
         public static readonly Uri V4Draft = new Uri("http://json-schema.org/draft-04/schema#");
 
+        public Uri Id { get; set; }
+
         [JsonProperty("$schema")]
         public Uri SchemaVersion { get; set; }
 
@@ -26,7 +28,7 @@ namespace MountBaker.JSchema.ObjectModel
 
         public override int GetHashCode()
         {
-            return Hash.Combine(SchemaVersion, Title, Description);
+            return Hash.Combine(Id, SchemaVersion, Title, Description);
         }
 
         #endregion Object overrides
@@ -40,7 +42,8 @@ namespace MountBaker.JSchema.ObjectModel
                 return false;
             }
 
-            return SchemaVersion == other.SchemaVersion
+            return Id == other.Id
+                && SchemaVersion == other.SchemaVersion
                 && string.Equals(Title, other.Title, StringComparison.Ordinal)
                 && string.Equals(Description, other.Description, StringComparison.Ordinal);
         }
