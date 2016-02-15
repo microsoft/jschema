@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Hash.cs" />
+    <Compile Include="JsonType.cs" />
     <Compile Include="JsonSchema.cs" />
     <Compile Include="JsonSchemaContractResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

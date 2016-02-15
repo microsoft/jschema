@@ -19,6 +19,8 @@ namespace MountBaker.JSchema.ObjectModel
 
         public string Description { get; set; }
 
+        public JsonType Type { get; set; }
+
         #region Object overrides
 
         public override bool Equals(object obj)
@@ -28,7 +30,7 @@ namespace MountBaker.JSchema.ObjectModel
 
         public override int GetHashCode()
         {
-            return Hash.Combine(Id, SchemaVersion, Title, Description);
+            return Hash.Combine(Id, SchemaVersion, Title, Description, Type);
         }
 
         #endregion Object overrides
@@ -45,7 +47,8 @@ namespace MountBaker.JSchema.ObjectModel
             return Id == other.Id
                 && SchemaVersion == other.SchemaVersion
                 && string.Equals(Title, other.Title, StringComparison.Ordinal)
-                && string.Equals(Description, other.Description, StringComparison.Ordinal);
+                && string.Equals(Description, other.Description, StringComparison.Ordinal)
+                && Type == other.Type;
         }
 
         #endregion

@@ -27,7 +27,8 @@ namespace MountBaker.JSchema.ObjectModel.Tests
                     Id = new Uri("http://www.example.com/schemas/basic#"),
                     SchemaVersion = JsonSchema.V4Draft,
                     Title = "The title",
-                    Description = "The description"
+                    Description = "The description",
+                    Type = JsonType.Object
                 }
             }
         };
