@@ -15,11 +15,11 @@ namespace MountBaker.JSchema.ObjectModel
                 ContractResolver = new JsonSchemaContractResolver()
             };
 
-            using (var sr = new StringReader(jsonText))
+            using (var stringReader = new StringReader(jsonText))
             {
-                using (var reader = new JsonTextReader(sr))
+                using (var jsonReader = new JsonTextReader(stringReader))
                 {
-                    return serializer.Deserialize<JsonSchema>(reader);
+                    return serializer.Deserialize<JsonSchema>(jsonReader);
                 }
             }
         }

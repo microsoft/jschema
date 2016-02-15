@@ -25,6 +25,7 @@
     <Compile Include="JsonSchemaContractResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchemaReader.cs" />
+    <Compile Include="SchemaWriter.cs" />
     <Compile Include="UriConverter.cs" />
   </ItemGroup>
   <ItemGroup>
