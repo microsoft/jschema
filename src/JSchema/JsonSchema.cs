@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace MountBaker.JSchema.ObjectModel
+namespace MountBaker.JSchema
 {
     public class JsonSchema : IEquatable<JsonSchema>
     {

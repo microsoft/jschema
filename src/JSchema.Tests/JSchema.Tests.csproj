@@ -4,8 +4,8 @@
   <PropertyGroup>
     <ProjectGuid>{55223B39-FA1A-4838-AB9B-A7B60A7C1BCE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MountBaker.JSchema.ObjectModel.Tests</RootNamespace>
-    <AssemblyName>MountBaker.JSchema.ObjectModel.Tests</AssemblyName>
+    <RootNamespace>MountBaker.JSchema.Tests</RootNamespace>
+    <AssemblyName>MountBaker.JSchema.Tests</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -55,9 +55,9 @@
     <Compile Include="SchemaWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ObjectModel\ObjectModel.csproj">
+    <ProjectReference Include="..\JSchema\JSchema.csproj">
       <Project>{4da17661-563a-45ee-9731-eea9360f6c5d}</Project>
-      <Name>ObjectModel</Name>
+      <Name>JSchema</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

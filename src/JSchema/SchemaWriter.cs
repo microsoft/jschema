@@ -5,7 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace MountBaker.JSchema.ObjectModel
+namespace MountBaker.JSchema
 {
     public static class SchemaWriter
     {

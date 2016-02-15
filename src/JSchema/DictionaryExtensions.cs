@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MountBaker.JSchema.ObjectModel
+namespace MountBaker.JSchema
 {
     internal static class DictionaryExtensions
     {

@@ -3,5 +3,5 @@
 
 using System.Reflection;
 
-[assembly: AssemblyTitle("JSchema ObjectModel Tests")]
-[assembly: AssemblyDescription("Unit tests of the object model for JSON schema")]
+[assembly: AssemblyTitle("JSON Schema Library")]
+[assembly: AssemblyDescription("")]

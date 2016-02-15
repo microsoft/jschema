@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectModel", "ObjectModel\ObjectModel.csproj", "{4DA17661-563A-45EE-9731-EEA9360F6C5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSchema", "JSchema\JSchema.csproj", "{4DA17661-563A-45EE-9731-EEA9360F6C5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectModel.Tests", "ObjectModel.Tests\ObjectModel.Tests.csproj", "{55223B39-FA1A-4838-AB9B-A7B60A7C1BCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSchema.Tests", "JSchema.Tests\JSchema.Tests.csproj", "{55223B39-FA1A-4838-AB9B-A7B60A7C1BCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C72F6F90-B31B-4847-8DE6-8869DB1A7E5D}"
 	ProjectSection(SolutionItems) = preProject

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MountBaker.JSchema.ObjectModel.Tests
+namespace MountBaker.JSchema.Tests
 {
     internal static class ReaderWriter
     {

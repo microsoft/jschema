@@ -4,7 +4,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace MountBaker.JSchema.ObjectModel
+namespace MountBaker.JSchema
 {
     internal class UriConverter : JsonConverter
     {

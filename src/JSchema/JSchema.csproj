@@ -3,8 +3,8 @@
   <PropertyGroup>
     <ProjectGuid>{4DA17661-563A-45EE-9731-EEA9360F6C5D}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MountBaker.JSchema.ObjectModel</RootNamespace>
-    <AssemblyName>MountBaker.JSchema.ObjectModel</AssemblyName>
+    <RootNamespace>MountBaker.JSchema</RootNamespace>
+    <AssemblyName>MountBaker.JSchema</AssemblyName>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
   <ItemGroup>

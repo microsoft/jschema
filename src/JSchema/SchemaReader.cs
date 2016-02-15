@@ -4,7 +4,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace MountBaker.JSchema.ObjectModel
+namespace MountBaker.JSchema
 {
     public static class SchemaReader
     {

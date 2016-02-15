@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
 
-namespace MountBaker.JSchema.ObjectModel.Tests
+namespace MountBaker.JSchema.Tests
 {
     public class SchemaReaderTests
     {

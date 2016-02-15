@@ -4,7 +4,7 @@
 using System;
 using Newtonsoft.Json.Serialization;
 
-namespace MountBaker.JSchema.ObjectModel
+namespace MountBaker.JSchema
 {
     public class JsonSchemaContractResolver : CamelCasePropertyNamesContractResolver
     {

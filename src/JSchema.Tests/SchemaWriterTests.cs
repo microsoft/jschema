@@ -7,7 +7,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace MountBaker.JSchema.ObjectModel.Tests
+namespace MountBaker.JSchema.Tests
 {
     public class SchemaWriterTests
     {
