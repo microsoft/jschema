@@ -111,6 +111,30 @@ namespace MountBaker.JSchema.Generator.Tests
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(expected);
         }
 
+        [Fact(Skip = "https://github.com/lgolding/jschema/issues/9")]
+        public void GeneratesXmlCommentToHoldPropertyDescription()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            string jsonText = TestUtil.ReadTestDataFile("PropertyDescription");
+            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+
+            string expected =
+@"namespace N
+{
+    public partial class C
+    {
+        /// <summary>
+        /// An example property.
+        /// </summary>
+        public string ExampleProp { get; set; }
+    }
+}";
+
+            string actual = generator.CreateFileText(_settings.RootClassName, schema);
+            actual.Should().Be(expected);
+        }
+
         private const string OutputDirectory = "Generated";
 
         private IFileSystem MakeFileSystem()

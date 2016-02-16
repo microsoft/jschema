@@ -1,6 +1,5 @@
 ﻿{
   "type": "object",
-
   "properties": {
     "stringProp": {
       "type": "string"

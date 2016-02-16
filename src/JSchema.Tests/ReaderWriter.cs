@@ -34,6 +34,8 @@ namespace MountBaker.JSchema.Tests
                 "Properties",
                 new JsonSchema
                 {
+                    Type = JsonType.Object,
+
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["stringProp"] = new JsonSchema

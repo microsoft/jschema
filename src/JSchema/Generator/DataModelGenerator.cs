@@ -59,7 +59,7 @@ namespace MountBaker.JSchema.Generator
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
         }
 
-        private string CreateFileText(string className, JsonSchema schema)
+        internal string CreateFileText(string className, JsonSchema schema)
         {
             // Hat tip: Mike Bennett, "Generating Code with Roslyn",
             // https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
