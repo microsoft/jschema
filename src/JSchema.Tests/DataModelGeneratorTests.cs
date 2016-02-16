@@ -16,7 +16,10 @@ namespace MountBaker.JSchema.Generator.Tests
             IFileSystem fileSystem = MakeFileSystem();
             DataModelGeneratorSettings settings = MakeSettings();
 
-            Action action = () => DataModelGenerator.Generate(new JsonSchema(), new DataModelGeneratorSettings(), fileSystem);
+            var generator = new DataModelGenerator(settings, fileSystem);
+
+            Action action = () => generator.Generate(new JsonSchema());
+
             action.ShouldThrow<JSchemaException>();
         }
 
@@ -30,7 +33,10 @@ namespace MountBaker.JSchema.Generator.Tests
             // that only the default directory exists.
             settings.OutputDirectory = settings.OutputDirectory + "x";
 
-            Action action = () => DataModelGenerator.Generate(new JsonSchema(), settings, fileSystem);
+            var generator = new DataModelGenerator(settings, fileSystem);
+
+            Action action = () => generator.Generate(new JsonSchema());
+
             action.ShouldNotThrow();
         }
 
@@ -42,18 +48,23 @@ namespace MountBaker.JSchema.Generator.Tests
 
             settings.ForceOverwrite = true;
 
-            Action action = () => DataModelGenerator.Generate(new JsonSchema(), settings, fileSystem);
+            var generator = new DataModelGenerator(settings, fileSystem);
+
+            Action action = () => generator.Generate(new JsonSchema());
+
             action.ShouldNotThrow();
         }
+
+        private const string OutputDirectory = "D";
 
         private static IFileSystem MakeFileSystem()
         {
             Mock<IFileSystem> mockFileSystem = new Mock<IFileSystem>();
 
-            // The file system asserts that the default output directory exists.
+            // The file system asserts that the output directory exists.
             mockFileSystem
                 .Setup(fs => fs.DirectoryExists(It.IsAny<string>()))
-                .Returns((string s) => s.Equals(DataModelGeneratorSettings.DefaultOutputDirectory));
+                .Returns((string s) => s.Equals(OutputDirectory));
 
             return mockFileSystem.Object;
         }
@@ -63,7 +74,8 @@ namespace MountBaker.JSchema.Generator.Tests
             return new DataModelGeneratorSettings
             {
                 NamespaceName = "N",
-                RootClassName = "C"
+                RootClassName = "C",
+                OutputDirectory = OutputDirectory
             };
         }
     }

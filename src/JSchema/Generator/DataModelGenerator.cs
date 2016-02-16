@@ -13,33 +13,38 @@ namespace MountBaker.JSchema.Generator
     /// <summary>
     /// Generates a set of .NET classes from a JSON schema.
     /// </summary>
-    public static class DataModelGenerator
+    public class DataModelGenerator
     {
-        public static void Generate(JsonSchema schema, DataModelGeneratorSettings settings = null)
+        private readonly DataModelGeneratorSettings _settings;
+        private readonly IFileSystem _fileSystem;
+
+        public DataModelGenerator(DataModelGeneratorSettings settings)
+            : this(settings, new FileSystem())
         {
-            if (settings == null)
-            {
-                settings = DataModelGeneratorSettings.Default;
-            }
-
-            settings.Validate();
-
-            Generate(schema, settings, new FileSystem());
         }
 
-        internal static void Generate(JsonSchema schema, DataModelGeneratorSettings settings, IFileSystem fileSystem)
+        // This ctor allows unit tests to mock the file system.
+        internal DataModelGenerator(DataModelGeneratorSettings settings, IFileSystem fileSystem)
         {
-            if (fileSystem.DirectoryExists(settings.OutputDirectory) && !settings.ForceOverwrite)
-            {
-                throw JSchemaException.Create(Resources.ErrorOutputDirectoryExists, settings.OutputDirectory);
-            }
+            _settings = settings;
+            _settings.Validate();
 
-            fileSystem.CreateDirectory(settings.OutputDirectory);
-
-            CreateFile(settings.NamespaceName, settings.RootClassName, settings.OutputDirectory, fileSystem);
+            _fileSystem = fileSystem;
         }
 
-        private static void CreateFile(string namespaceName, string className, string outputDirectory, IFileSystem fileSystem)
+        public void Generate(JsonSchema schema)
+        {
+            if (_fileSystem.DirectoryExists(_settings.OutputDirectory) && !_settings.ForceOverwrite)
+            {
+                throw JSchemaException.Create(Resources.ErrorOutputDirectoryExists, _settings.OutputDirectory);
+            }
+
+            _fileSystem.CreateDirectory(_settings.OutputDirectory);
+
+            CreateFile(_settings.RootClassName);
+        }
+
+        private void CreateFile(string className)
         {
             var workspace = new AdhocWorkspace();
 
@@ -48,7 +53,7 @@ namespace MountBaker.JSchema.Generator
             CompilationUnitSyntax cu = SyntaxFactory.CompilationUnit();
 
             NamespaceDeclarationSyntax ns =
-                SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(namespaceName));
+                SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_settings.NamespaceName));
 
             ClassDeclarationSyntax cls = SyntaxFactory.ClassDeclaration(className)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.PartialKeyword));
@@ -63,7 +68,7 @@ namespace MountBaker.JSchema.Generator
                 formattedNode.WriteTo(writer);
             }
 
-            fileSystem.WriteAllText(Path.Combine(outputDirectory, className + ".cs"), sb.ToString());
+            _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), sb.ToString());
         }
     }
 }

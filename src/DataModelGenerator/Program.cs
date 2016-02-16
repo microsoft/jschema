@@ -30,7 +30,8 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
                 RootClassName = options.RootClassName
             };
 
-            DataModelGenerator.Generate(schema, settings);
+            new DataModelGenerator(settings).Generate(schema);
+
             return 0;
         }
     }

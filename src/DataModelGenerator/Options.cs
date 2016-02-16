@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using CommandLine;
-using MountBaker.JSchema.Generator;
 
 namespace MountBaker.JSchema.DataModelGeneratorTool
 {
@@ -19,7 +18,7 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
             'o',
             "output-directory",
             HelpText = "Path to directory in which the classes will be generated.",
-            Default = DataModelGeneratorSettings.DefaultOutputDirectory)]
+            Required = true)]
         public string OutputDirectory { get; set; }
 
         [Option(
