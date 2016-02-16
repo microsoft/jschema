@@ -19,7 +19,7 @@ namespace MountBaker.JSchema.Generator
     {
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
-        private AdhocWorkspace _workspace;
+        private readonly AdhocWorkspace _workspace;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
             : this(settings, new FileSystem())
@@ -33,6 +33,7 @@ namespace MountBaker.JSchema.Generator
             _settings.Validate();
 
             _fileSystem = fileSystem;
+            _workspace = new AdhocWorkspace();
         }
 
         public void Generate(JsonSchema schema)
@@ -44,12 +45,21 @@ namespace MountBaker.JSchema.Generator
 
             _fileSystem.CreateDirectory(_settings.OutputDirectory);
 
-            _workspace = new AdhocWorkspace();
+            if (schema.Type != JsonType.Object)
+            {
+                throw JSchemaException.Create(Resources.ErrorNotAnObject, schema.Type);
+            }
 
             CreateFile(_settings.RootClassName, schema);
         }
 
-        private void CreateFile(string className, JsonSchema schema)
+        internal void CreateFile(string className, JsonSchema schema)
+        {
+            string text = CreateFileText(className, schema);
+            _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
+        }
+
+        private string CreateFileText(string className, JsonSchema schema)
         {
             // Hat tip: Mike Bennett, "Generating Code with Roslyn",
             // https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
@@ -110,7 +120,7 @@ namespace MountBaker.JSchema.Generator
                 formattedNode.WriteTo(writer);
             }
 
-            _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), sb.ToString());
+            return sb.ToString();
         }
 
         private static string Capitalize(string propertyName)

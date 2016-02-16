@@ -32,7 +32,8 @@ namespace MountBaker.JSchema.Generator.Tests
 
             Action action = () => generator.Generate(new JsonSchema());
 
-            action.ShouldThrow<JSchemaException>();
+            // ... and the message should mention the output directory.
+            action.ShouldThrow<JSchemaException>().WithMessage($"*{OutputDirectory}*");
         }
 
         [Fact]
@@ -42,9 +43,12 @@ namespace MountBaker.JSchema.Generator.Tests
             // that only the default directory exists.
             _settings.OutputDirectory = _settings.OutputDirectory + "x";
 
+            string jsonText = TestUtil.ReadTestDataFile("Basic");
+            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
-            Action action = () => generator.Generate(new JsonSchema());
+            Action action = () => generator.Generate(schema);
 
             action.ShouldNotThrow();
         }
@@ -55,11 +59,28 @@ namespace MountBaker.JSchema.Generator.Tests
             // This is the default from MakeSettings; restated here for explicitness.
             _settings.ForceOverwrite = true;
 
+            string jsonText = TestUtil.ReadTestDataFile("Basic");
+            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
-            Action action = () => generator.Generate(new JsonSchema());
+            Action action = () => generator.Generate(schema);
 
             action.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void ThrowsIfRootSchemaIsNotOfTypeObject()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            string jsonText = TestUtil.ReadTestDataFile("NotAnObject");
+            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+
+            Action action = () => generator.Generate(schema);
+
+            // ... and the message should mention what the root type actually was.
+            action.ShouldThrow<JSchemaException>().WithMessage("*number*");
         }
 
         [Fact]
@@ -70,7 +91,7 @@ namespace MountBaker.JSchema.Generator.Tests
             string jsonText = TestUtil.ReadTestDataFile("Properties");
             JsonSchema schema = SchemaReader.ReadSchema(jsonText);
 
-            generator.Generate(schema);
+            generator.CreateFile(_settings.RootClassName, schema);
 
             string expected =
 @"namespace N
@@ -83,11 +104,14 @@ namespace MountBaker.JSchema.Generator.Tests
         public int IntegerProp { get; set; }
     }
 }";
-
-            _fileContentsDictionary[@"D\C.cs"].Should().Be(expected);
+            // This particular test shows not only that the correct text was produced,
+            // but that it was written to the expected path. Subsequent tests will
+            // just verify the text.
+            _fileContentsDictionary.Keys.Should().OnlyContain(key => key.Equals(@"Generated\C.cs"));
+            _fileContentsDictionary[@"Generated\C.cs"].Should().Be(expected);
         }
 
-        private const string OutputDirectory = "D";
+        private const string OutputDirectory = "Generated";
 
         private IFileSystem MakeFileSystem()
         {

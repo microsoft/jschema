@@ -18,7 +18,7 @@ namespace MountBaker.JSchema.Tests
 
             new object[]
             {
-                "BasicProperties",
+                "Basic",
                 new JsonSchema
                 {
                     Id = new Uri("http://www.example.com/schemas/basic#"),

@@ -61,6 +61,15 @@ namespace MountBaker.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified schema has type=&quot;{0}&quot;. Data model generation requires a schema whose top-level type is &quot;object&quot;..
+        /// </summary>
+        internal static string ErrorNotAnObject {
+            get {
+                return ResourceManager.GetString("ErrorNotAnObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The output directory {0} already exists..
         /// </summary>
         internal static string ErrorOutputDirectoryExists {
