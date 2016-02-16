@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		build.props = build.props
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		CopyRoslynImplementationAssemblies.targets = CopyRoslynImplementationAssemblies.targets
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModelGenerator", "DataModelGenerator\DataModelGenerator.csproj", "{BC2D0831-21D6-4586-B045-CADF22430850}"

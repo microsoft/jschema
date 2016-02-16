@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="CopyRoslynImplementationAssemblies" AfterTargets="Build">
+    <!-- This works around a problem described in this forum post:
+         https://social.msdn.microsoft.com/Forums/vstudio/en-US/c03febde-cf6d-478e-ac01-99102eb07f1b/the-language-c-is-not-supported-bug-on-newcompilationunitformat?forum=roslyn
+      -->
+    <PropertyGroup>
+      <JSchemaOutDir>$(OutputPath)..\..\JSchema\$(OutputSubDir)\</JSchemaOutDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <RoslynImplementationAssembly Include="$(JSchemaOutDir)Microsoft.CodeAnalysis.CSharp.dll" />
+      <RoslynImplementationAssembly Include="$(JSchemaOutDir)Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
+      <RoslynImplementationAssembly Include="$(JSchemaOutDir)Microsoft.CodeAnalysis.VisualBasic.dll" />
+      <RoslynImplementationAssembly Include="$(JSchemaOutDir)Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
+    </ItemGroup>
+    <Message Importance="high"
+             Text="Copying Roslyn implementation assemblies to output directory..." />
+    <Copy SourceFiles="@(RoslynImplementationAssembly)"
+          DestinationFolder="$(OutputPath)" />
+  </Target>
+</Project>

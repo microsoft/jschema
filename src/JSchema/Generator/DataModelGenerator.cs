@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Text;
+
 namespace MountBaker.JSchema.Generator
 {
     /// <summary>
@@ -27,11 +31,22 @@ namespace MountBaker.JSchema.Generator
 
             fileSystem.CreateDirectory(settings.OutputDirectory);
 
-            CreateFile(settings.NamespaceName, settings.RootClassName);
+            CreateFile(settings.NamespaceName, settings.RootClassName, settings.OutputDirectory);
         }
 
-        private static void CreateFile(string namspaceName, string rootClassName)
+        private static void CreateFile(string namespaceName, string rootClassName, string outputDirectory)
         {
+            //var workspace = new AdhocWorkspace();
+            //Project project = workspace.AddProject("GeneratedProject", LanguageNames.CSharp);
+            //Document document = project.AddDocument(rootClassName, string.Empty);
+            //SyntaxNode root = document.GetSyntaxRootAsync().Result;
+            //var editor = DocumentEditor.CreateAsync(document).Result;
+            //var generator = SyntaxGenerator.GetGenerator(document);
+            //SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(namespaceName);
+            //editor.InsertAfter(root, namespaceDeclaration);
+            //document = editor.GetChangedDocument();
+            //SourceText sourceText = document.GetTextAsync().Result;
+            //System.IO.File.WriteAllText(System.IO.Path.Combine(outputDirectory, rootClassName + ".cs"), sourceText.ToString());
         }
     }
 }
