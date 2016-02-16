@@ -1,9 +1,12 @@
 ﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.IO;
+using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace MountBaker.JSchema.Generator
 {
@@ -36,19 +39,31 @@ namespace MountBaker.JSchema.Generator
             CreateFile(settings.NamespaceName, settings.RootClassName, settings.OutputDirectory);
         }
 
-        private static void CreateFile(string namespaceName, string rootClassName, string outputDirectory)
+        private static void CreateFile(string namespaceName, string className, string outputDirectory)
         {
             var workspace = new AdhocWorkspace();
-            Project project = workspace.AddProject("GeneratedProject", LanguageNames.CSharp);
-            Document document = project.AddDocument(rootClassName, string.Empty);
-            SyntaxNode root = document.GetSyntaxRootAsync().Result;
-            var editor = DocumentEditor.CreateAsync(document).Result;
-            var generator = SyntaxGenerator.GetGenerator(document);
-            SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(namespaceName);
-            editor.InsertAfter(root, namespaceDeclaration);
-            document = editor.GetChangedDocument();
-            SourceText sourceText = document.GetTextAsync().Result;
-            System.IO.File.WriteAllText(System.IO.Path.Combine(outputDirectory, rootClassName + ".cs"), sourceText.ToString());
+
+            // Hat tip: Mike Bennett, "Generating Code with Roslyn",
+            // https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
+            CompilationUnitSyntax cu = SyntaxFactory.CompilationUnit();
+
+            NamespaceDeclarationSyntax ns =
+                SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(namespaceName));
+
+            ClassDeclarationSyntax cls = SyntaxFactory.ClassDeclaration(className)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+
+            ns = ns.AddMembers(cls);
+            cu = cu.AddMembers(ns);
+
+            SyntaxNode formattedNode = Formatter.Format(cu, workspace);
+            var sb = new StringBuilder();
+            using (var writer = new StringWriter(sb))
+            {
+                formattedNode.WriteTo(writer);
+            }
+
+            File.WriteAllText(Path.Combine(outputDirectory, className + ".cs"), sb.ToString());
         }
     }
 }
