@@ -77,8 +77,10 @@ namespace MountBaker.JSchema.Generator.Tests
 {
     public partial class C
     {
-        public string prop1 { get; set; }
-        public double prop2 { get; set; }
+        public string StringProp { get; set; }
+        public double NumberProp { get; set; }
+        public bool BooleanProp { get; set; }
+        public int IntegerProp { get; set; }
     }
 }";
 

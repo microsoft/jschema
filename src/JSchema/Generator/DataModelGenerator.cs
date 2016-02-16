@@ -91,7 +91,7 @@ namespace MountBaker.JSchema.Generator
                         modifiers,
                         SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword)),
                         default(ExplicitInterfaceSpecifierSyntax),
-                        SyntaxFactory.Identifier(propertyName),
+                        SyntaxFactory.Identifier(Capitalize(propertyName)),
                         SyntaxFactory.AccessorList(accessorDeclarations));
 
                     props.Add(prop);
@@ -111,6 +111,11 @@ namespace MountBaker.JSchema.Generator
             }
 
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), sb.ToString());
+        }
+
+        private static string Capitalize(string propertyName)
+        {
+            return propertyName[0].ToString().ToUpperInvariant() + propertyName.Substring(1);
         }
 
         private static readonly Dictionary<JsonType, SyntaxKind> s_jsonTypeToSyntaxKindDictionary = new Dictionary<JsonType, SyntaxKind>
