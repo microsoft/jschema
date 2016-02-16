@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -17,6 +18,7 @@ namespace MountBaker.JSchema.Generator
     {
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
+        private AdhocWorkspace _workspace;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
             : this(settings, new FileSystem())
@@ -41,13 +43,13 @@ namespace MountBaker.JSchema.Generator
 
             _fileSystem.CreateDirectory(_settings.OutputDirectory);
 
-            CreateFile(_settings.RootClassName);
+            _workspace = new AdhocWorkspace();
+
+            CreateFile(_settings.RootClassName, schema);
         }
 
-        private void CreateFile(string className)
+        private void CreateFile(string className, JsonSchema schema)
         {
-            var workspace = new AdhocWorkspace();
-
             // Hat tip: Mike Bennett, "Generating Code with Roslyn",
             // https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
             CompilationUnitSyntax cu = SyntaxFactory.CompilationUnit();
@@ -58,10 +60,30 @@ namespace MountBaker.JSchema.Generator
             ClassDeclarationSyntax cls = SyntaxFactory.ClassDeclaration(className)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.PartialKeyword));
 
+            if (schema.Properties != null)
+            {
+                var props = new List<PropertyDeclarationSyntax>();
+                foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
+                {
+                    string propertyName = schemaProperty.Key;
+                    JsonSchema subSchema = schemaProperty.Value;
+
+                    CreateFile(propertyName, subSchema);
+
+                    PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
+                        SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
+                        propertyName);
+
+                    props.Add(prop);
+                }
+
+                cls = cls.AddMembers(props.ToArray());
+            }
+
             ns = ns.AddMembers(cls);
             cu = cu.AddMembers(ns);
 
-            SyntaxNode formattedNode = Formatter.Format(cu, workspace);
+            SyntaxNode formattedNode = Formatter.Format(cu, _workspace);
             var sb = new StringBuilder();
             using (var writer = new StringWriter(sb))
             {
