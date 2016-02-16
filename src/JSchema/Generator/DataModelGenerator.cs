@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -68,11 +69,27 @@ namespace MountBaker.JSchema.Generator
                     string propertyName = schemaProperty.Key;
                     JsonSchema subSchema = schemaProperty.Value;
 
-                    CreateFile(propertyName, subSchema);
+                    if (subSchema.Type == JsonType.Object)
+                    {
+                        CreateFile(propertyName, subSchema);
+                    }
+
+                    SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(subSchema.Type);
 
                     PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
-                        SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
+                        SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword)),
                         propertyName);
+
+                    var accessorSyntaxList = new SyntaxList<AccessorDeclarationSyntax>();
+                    accessorSyntaxList = accessorSyntaxList.AddRange(new AccessorDeclarationSyntax[]
+                    {
+                        SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.GetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                        SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                    });
+
+                    AccessorListSyntax accessorList = SyntaxFactory.AccessorList(accessorSyntaxList);
+
+                    prop = prop.WithAccessorList(accessorList);
 
                     props.Add(prop);
                 }
@@ -91,6 +108,25 @@ namespace MountBaker.JSchema.Generator
             }
 
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), sb.ToString());
+        }
+
+        private static readonly Dictionary<JsonType, SyntaxKind> s_jsonTypeToSyntaxKindDictionary = new Dictionary<JsonType, SyntaxKind>
+        {
+            [JsonType.Boolean] = SyntaxKind.BoolKeyword,
+            [JsonType.Integer] = SyntaxKind.IntKeyword,
+            [JsonType.Number] = SyntaxKind.DoubleKeyword,
+            [JsonType.String] = SyntaxKind.StringKeyword
+        };
+
+        private static SyntaxKind GetTypeKeywordFromJsonType(JsonType type)
+        {
+            SyntaxKind typeKeyword;
+            if (!s_jsonTypeToSyntaxKindDictionary.TryGetValue(type, out typeKeyword))
+            {
+                typeKeyword = SyntaxKind.ObjectKeyword;
+            }
+
+            return typeKeyword;
         }
     }
 }
