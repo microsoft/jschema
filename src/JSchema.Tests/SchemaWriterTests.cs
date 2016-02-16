@@ -17,7 +17,7 @@ namespace MountBaker.JSchema.Tests
         [MemberData(nameof(TestCases))]
         public void CanWriteSchema(string fileNameStem, JsonSchema schema)
         {
-            string expected = ReaderWriter.ReadTestDataFile(fileNameStem);
+            string expected = TestUtil.ReadTestDataFile(fileNameStem);
 
             string actual = null;
             using (var writer = new StringWriter())

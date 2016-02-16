@@ -74,22 +74,25 @@ namespace MountBaker.JSchema.Generator
                         CreateFile(propertyName, subSchema);
                     }
 
+                    var modifiers = new SyntaxTokenList()
+                        .Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
                     SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(subSchema.Type);
 
+                    var accessorDeclarations = new SyntaxList<AccessorDeclarationSyntax>()
+                        .AddRange(new AccessorDeclarationSyntax[]
+                        {
+                            SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.GetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                            SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                        });
+
                     PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
+                        default(SyntaxList<AttributeListSyntax>),
+                        modifiers,
                         SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword)),
-                        propertyName);
-
-                    var accessorSyntaxList = new SyntaxList<AccessorDeclarationSyntax>();
-                    accessorSyntaxList = accessorSyntaxList.AddRange(new AccessorDeclarationSyntax[]
-                    {
-                        SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.GetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                        SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
-                    });
-
-                    AccessorListSyntax accessorList = SyntaxFactory.AccessorList(accessorSyntaxList);
-
-                    prop = prop.WithAccessorList(accessorList);
+                        default(ExplicitInterfaceSpecifierSyntax),
+                        SyntaxFactory.Identifier(propertyName),
+                        SyntaxFactory.AccessorList(accessorDeclarations));
 
                     props.Add(prop);
                 }

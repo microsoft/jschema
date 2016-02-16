@@ -58,6 +58,7 @@
     <Compile Include="SchemaReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchemaWriterTests.cs" />
+    <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JSchema\JSchema.csproj">

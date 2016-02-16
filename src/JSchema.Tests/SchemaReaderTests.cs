@@ -15,7 +15,7 @@ namespace MountBaker.JSchema.Tests
         [MemberData(nameof(TestCases))]
         public void CanReadSchema(string fileNameStem, JsonSchema expected)
         {
-            string jsonText = ReaderWriter.ReadTestDataFile(fileNameStem);
+            string jsonText = TestUtil.ReadTestDataFile(fileNameStem);
             JsonSchema actual = SchemaReader.ReadSchema(jsonText);
 
             actual.Should().Be(expected);
