@@ -68,7 +68,7 @@ namespace MountBaker.JSchema.Generator
                         CreateFile(propertyName, subSchema);
                     }
 
-                    classGenerator.AddProperty(propertyName, subSchema.Type);
+                    classGenerator.AddProperty(propertyName, subSchema.Description, subSchema.Type);
                 }
             }
 

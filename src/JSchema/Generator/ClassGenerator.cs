@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -68,22 +69,30 @@ namespace MountBaker.JSchema.Generator
         /// <param name="propertyName">
         /// The name of the property.
         /// </param>
+        /// <param name="description">
+        /// A description of the property, or <code>null</code> if there is no description.
+        /// </param>
         /// <param name="schemaType">
         /// The JSON schema data type of the property to be added.
         /// </param>
-        public void AddProperty(string propertyName, JsonType schemaType)
+        public void AddProperty(string propertyName, string description, JsonType schemaType)
         {
-            var modifiers = new SyntaxTokenList()
-                .Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
             SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(schemaType);
 
-            var accessorDeclarations = new SyntaxList<AccessorDeclarationSyntax>()
-                .AddRange(new AccessorDeclarationSyntax[]
+            var accessorDeclarations = SyntaxFactory.List(
+                new AccessorDeclarationSyntax[]
                 {
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.GetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 });
+
+            var leadingTriviaList = new SyntaxTriviaList();
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                // TODO: Add the comment.
+            }
 
             PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
@@ -91,7 +100,7 @@ namespace MountBaker.JSchema.Generator
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword)),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(Capitalize(propertyName)),
-                SyntaxFactory.AccessorList(accessorDeclarations));
+                SyntaxFactory.AccessorList(accessorDeclarations)).WithLeadingTrivia(leadingTriviaList);
 
             _propDecls.Add(prop);
         }
@@ -101,26 +110,25 @@ namespace MountBaker.JSchema.Generator
         /// </summary>
         public void FinishClass()
         {
-            var classMembers = new SyntaxList<MemberDeclarationSyntax>().AddRange(_propDecls);
+            var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
 
-            var classModifiers = new SyntaxTokenList().AddRange(new[]
-            {
+            var classModifiers = SyntaxFactory.TokenList(
                 SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.PartialKeyword)
-            });
+                SyntaxFactory.Token(SyntaxKind.PartialKeyword));
 
             ClassDeclarationSyntax classDecl = SyntaxFactory.ClassDeclaration(_className)
                 .WithMembers(classMembers)
                 .WithModifiers(classModifiers);
 
-            var namespaceMembers = new SyntaxList<MemberDeclarationSyntax>().Add(classDecl);
+            var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(classDecl);
 
             NamespaceDeclarationSyntax namespaceDecl = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_namespaceName))
                 .WithMembers(namespaceMembers);
 
-            var compilationUnitMembers = new SyntaxList<MemberDeclarationSyntax>().Add(namespaceDecl);
+            var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
 
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit().WithMembers(compilationUnitMembers);
+            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
+                .WithMembers(compilationUnitMembers);
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
