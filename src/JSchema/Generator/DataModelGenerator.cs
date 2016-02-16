@@ -19,6 +19,8 @@ namespace MountBaker.JSchema.Generator
                 settings = DataModelGeneratorSettings.Default;
             }
 
+            settings.Validate();
+
             Generate(schema, settings, new FileSystem());
         }
 
@@ -36,17 +38,17 @@ namespace MountBaker.JSchema.Generator
 
         private static void CreateFile(string namespaceName, string rootClassName, string outputDirectory)
         {
-            //var workspace = new AdhocWorkspace();
-            //Project project = workspace.AddProject("GeneratedProject", LanguageNames.CSharp);
-            //Document document = project.AddDocument(rootClassName, string.Empty);
-            //SyntaxNode root = document.GetSyntaxRootAsync().Result;
-            //var editor = DocumentEditor.CreateAsync(document).Result;
-            //var generator = SyntaxGenerator.GetGenerator(document);
-            //SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(namespaceName);
-            //editor.InsertAfter(root, namespaceDeclaration);
-            //document = editor.GetChangedDocument();
-            //SourceText sourceText = document.GetTextAsync().Result;
-            //System.IO.File.WriteAllText(System.IO.Path.Combine(outputDirectory, rootClassName + ".cs"), sourceText.ToString());
+            var workspace = new AdhocWorkspace();
+            Project project = workspace.AddProject("GeneratedProject", LanguageNames.CSharp);
+            Document document = project.AddDocument(rootClassName, string.Empty);
+            SyntaxNode root = document.GetSyntaxRootAsync().Result;
+            var editor = DocumentEditor.CreateAsync(document).Result;
+            var generator = SyntaxGenerator.GetGenerator(document);
+            SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(namespaceName);
+            editor.InsertAfter(root, namespaceDeclaration);
+            document = editor.GetChangedDocument();
+            SourceText sourceText = document.GetTextAsync().Result;
+            System.IO.File.WriteAllText(System.IO.Path.Combine(outputDirectory, rootClassName + ".cs"), sourceText.ToString());
         }
     }
 }

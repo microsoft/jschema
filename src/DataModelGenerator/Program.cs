@@ -25,7 +25,9 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
             DataModelGeneratorSettings settings = new DataModelGeneratorSettings
             {
                 OutputDirectory = options.OutputDirectory,
-                ForceOverwrite = options.ForceOverwrite
+                ForceOverwrite = options.ForceOverwrite,
+                NamespaceName = options.NamespaceName,
+                RootClassName = options.RootClassName
             };
 
             DataModelGenerator.Generate(schema, settings);

@@ -68,5 +68,14 @@ namespace MountBaker.JSchema {
                 return ResourceManager.GetString("ErrorOutputDirectoryExists", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must specify a non-null, non-blank value for the {0} property of the {1} object..
+        /// </summary>
+        internal static string ErrorSettingsPropertyMissing {
+            get {
+                return ResourceManager.GetString("ErrorSettingsPropertyMissing", resourceCulture);
+            }
+        }
     }
 }

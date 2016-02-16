@@ -120,4 +120,7 @@
   <data name="ErrorOutputDirectoryExists" xml:space="preserve">
     <value>The output directory {0} already exists.</value>
   </data>
+  <data name="ErrorSettingsPropertyMissing" xml:space="preserve">
+    <value>You must specify a non-null, non-blank value for the {0} property of the {1} object.</value>
+  </data>
 </root>
