@@ -117,10 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorOutputDirectoryExists" xml:space="preserve">
-    <value>The output directory {0} already exists.</value>
-  </data>
-  <data name="ErrorSettingsPropertyMissing" xml:space="preserve">
-    <value>You must specify a non-null, non-blank value for the {0} property of the {1} object.</value>
+  <data name="Banner" xml:space="preserve">
+    <value>{0} version {1}</value>
   </data>
 </root>

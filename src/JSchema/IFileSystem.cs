@@ -7,5 +7,6 @@ namespace MountBaker.JSchema
     {
         void CreateDirectory(string path);
         bool DirectoryExists(string path);
+        void WriteAllText(string path, string contents);
     }
 }

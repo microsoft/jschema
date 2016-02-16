@@ -3,17 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace MountBaker.JSchema.Tests
 {
     internal static class ReaderWriter
     {
-        internal static string ReadTestDataFile(string fileNameStem)
-        {
-            return File.ReadAllText($"TestData\\{fileNameStem}.schema.json");
-        }
-
         public static IEnumerable<object[]> TestCases = new[]
         {
             new object[]
@@ -42,15 +36,25 @@ namespace MountBaker.JSchema.Tests
                 {
                     Properties = new Dictionary<string, JsonSchema>
                     {
-                        ["prop1"] = new JsonSchema
+                        ["stringProp"] = new JsonSchema
                         {
                             Type = JsonType.String
                         },
 
-                        ["prop2"] = new JsonSchema
+                        ["numberProp"] = new JsonSchema
                         {
                             Type = JsonType.Number
-                        }
+                        },
+
+                        ["booleanProp"] = new JsonSchema
+                        {
+                            Type = JsonType.Boolean
+                        },
+
+                        ["integerProp"] = new JsonSchema
+                        {
+                            Type = JsonType.Integer
+                        },
                     }
                 }
             }

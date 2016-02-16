@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MountBaker.JSchema {
+namespace MountBaker.JSchema.DataModelGeneratorTool {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace MountBaker.JSchema {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MountBaker.JSchema.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MountBaker.JSchema.DataModelGeneratorTool.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,11 @@ namespace MountBaker.JSchema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The output directory {0} already exists..
+        ///   Looks up a localized string similar to {0} version {1}.
         /// </summary>
-        internal static string ErrorOutputDirectoryExists {
+        internal static string Banner {
             get {
-                return ResourceManager.GetString("ErrorOutputDirectoryExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must specify a non-null, non-blank value for the {0} property of the {1} object..
-        /// </summary>
-        internal static string ErrorSettingsPropertyMissing {
-            get {
-                return ResourceManager.GetString("ErrorSettingsPropertyMissing", resourceCulture);
+                return ResourceManager.GetString("Banner", resourceCulture);
             }
         }
     }

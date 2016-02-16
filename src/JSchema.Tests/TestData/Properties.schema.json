@@ -1,10 +1,16 @@
 ﻿{
   "properties": {
-    "prop1": {
+    "stringProp": {
       "type": "string"
     },
-    "prop2": {
+    "numberProp": {
       "type": "number"
+    },
+    "booleanProp": {
+      "type": "boolean"
+    },
+    "integerProp": {
+      "type": "integer"
     }
   }
 }

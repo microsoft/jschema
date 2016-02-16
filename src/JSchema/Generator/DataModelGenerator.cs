@@ -1,52 +1,140 @@
 ﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace MountBaker.JSchema.Generator
 {
     /// <summary>
     /// Generates a set of .NET classes from a JSON schema.
     /// </summary>
-    public static class DataModelGenerator
+    public class DataModelGenerator
     {
-        public static void Generate(JsonSchema schema, DataModelGeneratorSettings settings = null)
-        {
-            if (settings == null)
-            {
-                settings = DataModelGeneratorSettings.Default;
-            }
+        private readonly DataModelGeneratorSettings _settings;
+        private readonly IFileSystem _fileSystem;
+        private AdhocWorkspace _workspace;
 
-            Generate(schema, settings, new FileSystem());
+        public DataModelGenerator(DataModelGeneratorSettings settings)
+            : this(settings, new FileSystem())
+        {
         }
 
-        internal static void Generate(JsonSchema schema, DataModelGeneratorSettings settings, IFileSystem fileSystem)
+        // This ctor allows unit tests to mock the file system.
+        internal DataModelGenerator(DataModelGeneratorSettings settings, IFileSystem fileSystem)
         {
-            if (fileSystem.DirectoryExists(settings.OutputDirectory) && !settings.ForceOverwrite)
-            {
-                throw JSchemaException.Create(Resources.ErrorOutputDirectoryExists, settings.OutputDirectory);
-            }
+            _settings = settings;
+            _settings.Validate();
 
-            fileSystem.CreateDirectory(settings.OutputDirectory);
-
-            CreateFile(settings.NamespaceName, settings.RootClassName, settings.OutputDirectory);
+            _fileSystem = fileSystem;
         }
 
-        private static void CreateFile(string namespaceName, string rootClassName, string outputDirectory)
+        public void Generate(JsonSchema schema)
         {
-            //var workspace = new AdhocWorkspace();
-            //Project project = workspace.AddProject("GeneratedProject", LanguageNames.CSharp);
-            //Document document = project.AddDocument(rootClassName, string.Empty);
-            //SyntaxNode root = document.GetSyntaxRootAsync().Result;
-            //var editor = DocumentEditor.CreateAsync(document).Result;
-            //var generator = SyntaxGenerator.GetGenerator(document);
-            //SyntaxNode namespaceDeclaration = generator.NamespaceDeclaration(namespaceName);
-            //editor.InsertAfter(root, namespaceDeclaration);
-            //document = editor.GetChangedDocument();
-            //SourceText sourceText = document.GetTextAsync().Result;
-            //System.IO.File.WriteAllText(System.IO.Path.Combine(outputDirectory, rootClassName + ".cs"), sourceText.ToString());
+            if (_fileSystem.DirectoryExists(_settings.OutputDirectory) && !_settings.ForceOverwrite)
+            {
+                throw JSchemaException.Create(Resources.ErrorOutputDirectoryExists, _settings.OutputDirectory);
+            }
+
+            _fileSystem.CreateDirectory(_settings.OutputDirectory);
+
+            _workspace = new AdhocWorkspace();
+
+            CreateFile(_settings.RootClassName, schema);
+        }
+
+        private void CreateFile(string className, JsonSchema schema)
+        {
+            // Hat tip: Mike Bennett, "Generating Code with Roslyn",
+            // https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
+            CompilationUnitSyntax cu = SyntaxFactory.CompilationUnit();
+
+            NamespaceDeclarationSyntax ns =
+                SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_settings.NamespaceName));
+
+            ClassDeclarationSyntax cls = SyntaxFactory.ClassDeclaration(className)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+
+            if (schema.Properties != null)
+            {
+                var props = new List<PropertyDeclarationSyntax>();
+                foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
+                {
+                    string propertyName = schemaProperty.Key;
+                    JsonSchema subSchema = schemaProperty.Value;
+
+                    if (subSchema.Type == JsonType.Object)
+                    {
+                        CreateFile(propertyName, subSchema);
+                    }
+
+                    var modifiers = new SyntaxTokenList()
+                        .Add(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+                    SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(subSchema.Type);
+
+                    var accessorDeclarations = new SyntaxList<AccessorDeclarationSyntax>()
+                        .AddRange(new AccessorDeclarationSyntax[]
+                        {
+                            SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.GetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                            SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                        });
+
+                    PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
+                        default(SyntaxList<AttributeListSyntax>),
+                        modifiers,
+                        SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword)),
+                        default(ExplicitInterfaceSpecifierSyntax),
+                        SyntaxFactory.Identifier(Capitalize(propertyName)),
+                        SyntaxFactory.AccessorList(accessorDeclarations));
+
+                    props.Add(prop);
+                }
+
+                cls = cls.AddMembers(props.ToArray());
+            }
+
+            ns = ns.AddMembers(cls);
+            cu = cu.AddMembers(ns);
+
+            SyntaxNode formattedNode = Formatter.Format(cu, _workspace);
+            var sb = new StringBuilder();
+            using (var writer = new StringWriter(sb))
+            {
+                formattedNode.WriteTo(writer);
+            }
+
+            _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), sb.ToString());
+        }
+
+        private static string Capitalize(string propertyName)
+        {
+            return propertyName[0].ToString().ToUpperInvariant() + propertyName.Substring(1);
+        }
+
+        private static readonly Dictionary<JsonType, SyntaxKind> s_jsonTypeToSyntaxKindDictionary = new Dictionary<JsonType, SyntaxKind>
+        {
+            [JsonType.Boolean] = SyntaxKind.BoolKeyword,
+            [JsonType.Integer] = SyntaxKind.IntKeyword,
+            [JsonType.Number] = SyntaxKind.DoubleKeyword,
+            [JsonType.String] = SyntaxKind.StringKeyword
+        };
+
+        private static SyntaxKind GetTypeKeywordFromJsonType(JsonType type)
+        {
+            SyntaxKind typeKeyword;
+            if (!s_jsonTypeToSyntaxKindDictionary.TryGetValue(type, out typeKeyword))
+            {
+                typeKeyword = SyntaxKind.ObjectKeyword;
+            }
+
+            return typeKeyword;
         }
     }
 }
