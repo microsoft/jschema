@@ -36,10 +36,10 @@ namespace MountBaker.JSchema.Generator
 
             fileSystem.CreateDirectory(settings.OutputDirectory);
 
-            CreateFile(settings.NamespaceName, settings.RootClassName, settings.OutputDirectory);
+            CreateFile(settings.NamespaceName, settings.RootClassName, settings.OutputDirectory, fileSystem);
         }
 
-        private static void CreateFile(string namespaceName, string className, string outputDirectory)
+        private static void CreateFile(string namespaceName, string className, string outputDirectory, IFileSystem fileSystem)
         {
             var workspace = new AdhocWorkspace();
 
@@ -63,7 +63,7 @@ namespace MountBaker.JSchema.Generator
                 formattedNode.WriteTo(writer);
             }
 
-            File.WriteAllText(Path.Combine(outputDirectory, className + ".cs"), sb.ToString());
+            fileSystem.WriteAllText(Path.Combine(outputDirectory, className + ".cs"), sb.ToString());
         }
     }
 }

@@ -14,6 +14,7 @@ namespace MountBaker.JSchema.Generator.Tests
         public void ThrowsIfOutputDirectoryExists()
         {
             IFileSystem fileSystem = MakeFileSystem();
+            DataModelGeneratorSettings settings = MakeSettings();
 
             Action action = () => DataModelGenerator.Generate(new JsonSchema(), new DataModelGeneratorSettings(), fileSystem);
             action.ShouldThrow<JSchemaException>();
@@ -23,11 +24,11 @@ namespace MountBaker.JSchema.Generator.Tests
         public void DoesNotThrowIfOutputDirectoryDoesNotExist()
         {
             IFileSystem fileSystem = MakeFileSystem();
+            DataModelGeneratorSettings settings = MakeSettings();
 
-            var settings = new DataModelGeneratorSettings
-            {
-                OutputDirectory = DataModelGeneratorSettings.DefaultOutputDirectory + "x"
-            };
+            // Use a directory name other than the default. The mock file system believes
+            // that only the default directory exists.
+            settings.OutputDirectory = settings.OutputDirectory + "x";
 
             Action action = () => DataModelGenerator.Generate(new JsonSchema(), settings, fileSystem);
             action.ShouldNotThrow();
@@ -37,25 +38,33 @@ namespace MountBaker.JSchema.Generator.Tests
         public void DoesNotThowIfForceOverwriteSettingIsSet()
         {
             IFileSystem fileSystem = MakeFileSystem();
+            DataModelGeneratorSettings settings = MakeSettings();
 
-            var settings = new DataModelGeneratorSettings
-            {
-                ForceOverwrite = true
-            };
+            settings.ForceOverwrite = true;
 
             Action action = () => DataModelGenerator.Generate(new JsonSchema(), settings, fileSystem);
             action.ShouldNotThrow();
         }
 
-        private IFileSystem MakeFileSystem()
+        private static IFileSystem MakeFileSystem()
         {
             Mock<IFileSystem> mockFileSystem = new Mock<IFileSystem>();
 
+            // The file system asserts that the default output directory exists.
             mockFileSystem
                 .Setup(fs => fs.DirectoryExists(It.IsAny<string>()))
                 .Returns((string s) => s.Equals(DataModelGeneratorSettings.DefaultOutputDirectory));
 
             return mockFileSystem.Object;
+        }
+
+        private static DataModelGeneratorSettings MakeSettings()
+        {
+            return new DataModelGeneratorSettings
+            {
+                NamespaceName = "N",
+                RootClassName = "C"
+            };
         }
     }
 }
