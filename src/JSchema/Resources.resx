@@ -126,4 +126,7 @@
   <data name="ErrorSettingsPropertyMissing" xml:space="preserve">
     <value>You must specify a non-null, non-blank value for the {0} property of the {1} object.</value>
   </data>
+  <data name="ErrorTextNotYetGenerated" xml:space="preserve">
+    <value>You cannot call GetText until after you have called FinishClass.</value>
+  </data>
 </root>

@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="FileSystem.cs" />
+    <Compile Include="Generator\ClassGenerator.cs" />
     <Compile Include="Generator\DataModelGenerator.cs" />
     <Compile Include="Generator\DataModelGeneratorSettings.cs" />
     <Compile Include="Hash.cs" />

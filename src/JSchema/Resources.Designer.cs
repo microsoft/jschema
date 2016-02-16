@@ -86,5 +86,14 @@ namespace MountBaker.JSchema {
                 return ResourceManager.GetString("ErrorSettingsPropertyMissing", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot call GetText until after you have called FinishClass..
+        /// </summary>
+        internal static string ErrorTextNotYetGenerated {
+            get {
+                return ResourceManager.GetString("ErrorTextNotYetGenerated", resourceCulture);
+            }
+        }
     }
 }
