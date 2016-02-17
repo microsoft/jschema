@@ -43,8 +43,7 @@ namespace MountBaker.JSchema.Generator.Tests
             // that only the default directory exists.
             _settings.OutputDirectory = _settings.OutputDirectory + "x";
 
-            string jsonText = TestUtil.ReadTestDataFile("Basic");
-            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
@@ -59,8 +58,7 @@ namespace MountBaker.JSchema.Generator.Tests
             // This is the default from MakeSettings; restated here for explicitness.
             _settings.ForceOverwrite = true;
 
-            string jsonText = TestUtil.ReadTestDataFile("Basic");
-            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
@@ -74,8 +72,7 @@ namespace MountBaker.JSchema.Generator.Tests
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
-            string jsonText = TestUtil.ReadTestDataFile("NotAnObject");
-            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("NotAnObject");
 
             Action action = () => generator.Generate(schema);
 
@@ -86,14 +83,7 @@ namespace MountBaker.JSchema.Generator.Tests
         [Fact]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
-
-            string jsonText = TestUtil.ReadTestDataFile("Properties");
-            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
-
-            generator.CreateFile(_settings.RootClassName, schema);
-
-            string expected =
+            const string Expected =
 @"namespace N
 {
     public partial class C
@@ -104,22 +94,23 @@ namespace MountBaker.JSchema.Generator.Tests
         public int IntegerProp { get; set; }
     }
 }";
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
+
+            generator.CreateFile(_settings.RootClassName, schema);
+
             // This particular test shows not only that the correct text was produced,
             // but that it was written to the expected path. Subsequent tests will
             // just verify the text.
             _fileContentsDictionary.Keys.Should().OnlyContain(key => key.Equals(@"Generated\C.cs"));
-            _fileContentsDictionary[@"Generated\C.cs"].Should().Be(expected);
+            _fileContentsDictionary[@"Generated\C.cs"].Should().Be(Expected);
         }
 
         [Fact]
         public void GeneratesXmlCommentToHoldPropertyDescription()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
-
-            string jsonText = TestUtil.ReadTestDataFile("PropertyDescription");
-            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
-
-            string expected =
+            const string Expected =
 @"namespace N
 {
     public partial class C
@@ -129,8 +120,12 @@ namespace MountBaker.JSchema.Generator.Tests
     }
 }";
 
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
+
             string actual = generator.CreateFileText(_settings.RootClassName, schema);
-            actual.Should().Be(expected);
+            actual.Should().Be(Expected);
         }
 
         private const string OutputDirectory = "Generated";

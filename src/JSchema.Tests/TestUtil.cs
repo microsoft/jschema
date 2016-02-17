@@ -12,5 +12,10 @@ namespace MountBaker.JSchema.Tests
             return File.ReadAllText($"TestData\\{fileNameStem}.schema.json");
         }
 
+        internal static JsonSchema CreateSchemaFromTestDataFile(string fileNameStem)
+        {
+            string jsonText = ReadTestDataFile(fileNameStem);
+            return SchemaReader.ReadSchema(jsonText);
+        }
     }
 }
