@@ -21,7 +21,17 @@ namespace Microsoft.JSchema
 
         public JsonType Type { get; set; }
 
+        /// <summary>
+        /// Gets or sets an array containing the values that are valid for an object
+        /// that conforms to the current schema.
+        /// </summary>
         public object[] Enum { get; set; }
+
+        /// <summary>
+        /// Gets or sets the JSON schema that applies to the array items, if the current
+        /// schema is of array type.
+        /// </summary>
+        public JsonSchema Items { get; set; }
 
         public Dictionary<string, JsonSchema> Properties { get; set; }
 

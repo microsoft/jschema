@@ -90,6 +90,26 @@ namespace Microsoft.JSchema.Tests
                         }
                     }
                 }
+            },
+
+            new object[]
+            {
+                "IntegerArray",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["integerArrayProp"] = new JsonSchema
+                        {
+                            Type = JsonType.Array,
+                            Items = new JsonSchema
+                            {
+                                Type = JsonType.Integer
+                            }
+                        }
+                    }
+                }
             }
         };
     }

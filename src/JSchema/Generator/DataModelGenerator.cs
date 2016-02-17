@@ -75,14 +75,27 @@ namespace Microsoft.JSchema.Generator
                         CreateFile(propertyName, subSchema, copyrightNotice);
                     }
 
-                    JsonType effectiveType = GetEffectiveType(subSchema);
+                    JsonType propertyType = GetEffectiveType(subSchema);
 
-                    classGenerator.AddProperty(propertyName, subSchema.Description, effectiveType);
+                    JsonType elementType = subSchema.Type == JsonType.Array
+                        ? GetElementType(subSchema)
+                        : JsonType.None;
+
+                    classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
                 }
             }
 
             classGenerator.FinishClass();
             return classGenerator.GetText();
+        }
+
+        // If the current schema is of array type, get the type of
+        // its elements.
+        private JsonType GetElementType(JsonSchema subSchema)
+        {
+            return subSchema.Items != null
+                ? GetEffectiveType(subSchema.Items)
+                : JsonType.Object;
         }
 
         // Not every subschema specifies a type, but in some cases, it can be inferred.
@@ -111,7 +124,6 @@ namespace Microsoft.JSchema.Generator
             return effectiveType;
         }
 
-        // Get the 
         private JsonType GetJsonTypeFromObject(object obj)
         {
             if (obj is string)

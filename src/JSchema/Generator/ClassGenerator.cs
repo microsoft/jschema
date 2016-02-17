@@ -80,7 +80,11 @@ namespace Microsoft.JSchema.Generator
         /// <param name="schemaType">
         /// The JSON schema data type of the property to be added.
         /// </param>
-        public void AddProperty(string propertyName, string description, JsonType schemaType)
+        /// <param name="elementType">
+        /// The JSON schema data type of the array elements of the property to be added,
+        /// if the property is an array; if not, this parameter is ignored.
+        /// </param>
+        public void AddProperty(string propertyName, string description, JsonType schemaType, JsonType elementType)
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
@@ -96,7 +100,7 @@ namespace Microsoft.JSchema.Generator
             PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
-                MakePropertyType(schemaType),
+                MakePropertyType(schemaType, elementType),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(Capitalize(propertyName)),
                 SyntaxFactory.AccessorList(accessorDeclarations))
@@ -148,17 +152,18 @@ namespace Microsoft.JSchema.Generator
             return propertyName[0].ToString().ToUpperInvariant() + propertyName.Substring(1);
         }
 
-        private TypeSyntax MakePropertyType(JsonType schemaType)
+        private TypeSyntax MakePropertyType(JsonType propertyType, JsonType elementType)
         {
-            if (schemaType == JsonType.Array)
+            if (propertyType == JsonType.Array)
             {
+                SyntaxKind elementTypeKeyword = GetTypeKeywordFromJsonType(elementType);
                 return SyntaxFactory.ArrayType(
-                    SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
+                    SyntaxFactory.PredefinedType(SyntaxFactory.Token(elementTypeKeyword)),
                     SyntaxFactory.List(new [] { SyntaxFactory.ArrayRankSpecifier() }));
             }
             else
             {
-                SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(schemaType);
+                SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(propertyType);
                 return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
             }
         }
