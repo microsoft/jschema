@@ -131,7 +131,8 @@ namespace MountBaker.JSchema.Generator
             var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .WithMembers(compilationUnitMembers);
+                .WithMembers(compilationUnitMembers)
+                .WithLeadingTrivia(MakeCopyrightComment(_copyrightNotice));
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
@@ -171,7 +172,7 @@ namespace MountBaker.JSchema.Generator
 
         private SyntaxTriviaList MakeDocCommentFromDescription(string description)
         {
-            SyntaxTriviaList leadingTrivia = new SyntaxTriviaList();
+            var docCommentTrivia = new SyntaxTriviaList();
             if (!string.IsNullOrWhiteSpace(description))
             {
                 var startTag = SyntaxFactory.XmlElementStartTag(SyntaxFactory.XmlName("summary"));
@@ -193,10 +194,25 @@ namespace MountBaker.JSchema.Generator
                     .WithLeadingTrivia(SyntaxFactory.DocumentationCommentExterior("/// "))
                     .WithTrailingTrivia(SyntaxFactory.EndOfLine(Environment.NewLine));
 
-                leadingTrivia = leadingTrivia.Add(SyntaxFactory.Trivia(docComment));
+                docCommentTrivia = docCommentTrivia.Add(SyntaxFactory.Trivia(docComment));
             }
 
-            return leadingTrivia;
+            return docCommentTrivia;
+        }
+
+        private SyntaxTriviaList MakeCopyrightComment(string copyrightNotice)
+        {
+            var trivia = new SyntaxTriviaList();
+            if (!string.IsNullOrWhiteSpace(copyrightNotice))
+            {
+                trivia = trivia.AddRange(new SyntaxTrivia[]
+                {
+                    SyntaxFactory.Comment(copyrightNotice),
+                    SyntaxFactory.Whitespace(Environment.NewLine)
+                });
+            }
+
+            return trivia;
         }
     }
 }

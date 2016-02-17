@@ -149,23 +149,20 @@ namespace MountBaker.JSchema.Generator.Tests
             actual.Should().Be(Expected);
         }
 
-        [Fact(Skip = "https://github.com/lgolding/jschema/issues/11")]
+        [Fact]
         public void GeneratesCopyrightAtTopOfFile()
         {
-            _settings.CopyrightFilePath = CopyrightFilePath;
-
-            _mockFileSystem.Setup(fs => fs.FileExists(CopyrightFilePath))
-                .Returns(true);
-
-            _mockFileSystem.Setup(fs => fs.ReadAllText(CopyrightFilePath))
-                .Returns("Copyright (c) 2016. All rights reserved.\nLicensed under Apache 2.0 license.");
+            const string CopyrightNotice =
+@"// Copyright (c) 2016. All rights reserved.
+// Licensed under Apache 2.0 license.
+";
 
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
             const string Expected =
-@"// Copyright (c) Contoso Inc. 2016. All rights reserved.
+@"// Copyright (c) 2016. All rights reserved.
 // Licensed under Apache 2.0 license.
 
 namespace N
@@ -176,7 +173,7 @@ namespace N
         public string ExampleProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(_settings.RootClassName, schema, null);
+            string actual = generator.CreateFileText(_settings.RootClassName, schema, CopyrightNotice);
             actual.Should().Be(Expected);
         }
 
