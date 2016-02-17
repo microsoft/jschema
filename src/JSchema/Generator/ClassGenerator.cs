@@ -84,8 +84,6 @@ namespace Microsoft.JSchema.Generator
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-            SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(schemaType);
-
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
                 {
@@ -98,7 +96,7 @@ namespace Microsoft.JSchema.Generator
             PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
-                MakePropertyType(typeKeyword),
+                MakePropertyType(schemaType),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(Capitalize(propertyName)),
                 SyntaxFactory.AccessorList(accessorDeclarations))
@@ -150,9 +148,17 @@ namespace Microsoft.JSchema.Generator
             return propertyName[0].ToString().ToUpperInvariant() + propertyName.Substring(1);
         }
 
-        private TypeSyntax MakePropertyType(SyntaxKind typeKeyword)
+        private TypeSyntax MakePropertyType(JsonType schemaType)
         {
-            return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
+            if (schemaType == JsonType.Array)
+            {
+                return SyntaxFactory.ArrayType(SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword)));
+            }
+            else
+            {
+                SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(schemaType);
+                return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
+            }
         }
 
         private static readonly Dictionary<JsonType, SyntaxKind> s_jsonTypeToSyntaxKindDictionary = new Dictionary<JsonType, SyntaxKind>
