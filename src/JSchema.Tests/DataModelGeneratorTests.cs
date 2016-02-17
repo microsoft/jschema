@@ -1,5 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,7 @@ namespace Microsoft.JSchema.Generator.Tests
             _fileContentsDictionary = new Dictionary<string, string>();
         }
 
-        [Fact]
+        [Fact(DisplayName = "DataModelGenerator throws if output directory exists")]
         public void ThrowsIfOutputDirectoryExists()
         {
             _settings.ForceOverwrite = false;
@@ -39,7 +38,7 @@ namespace Microsoft.JSchema.Generator.Tests
             action.ShouldThrow<JSchemaException>().WithMessage($"*{OutputDirectory}*");
         }
 
-        [Fact]
+        [Fact(DisplayName = "DataModelGenerator does not throw if output directory does not exist")]
         public void DoesNotThrowIfOutputDirectoryDoesNotExist()
         {
             // Use a directory name other than the default. The mock file system believes
@@ -55,7 +54,7 @@ namespace Microsoft.JSchema.Generator.Tests
             action.ShouldNotThrow();
         }
 
-        [Fact]
+        [Fact(DisplayName = "DataModelGenerator does not throw if ForceOverwrite setting is set")]
         public void DoesNotThowIfForceOverwriteSettingIsSet()
         {
             // This is the default from MakeSettings; restated here for explicitness.
@@ -70,7 +69,7 @@ namespace Microsoft.JSchema.Generator.Tests
             action.ShouldNotThrow();
         }
 
-        [Fact]
+        [Fact(DisplayName = "DataModelGenerator throws if copyright file does not exist")]
         public void ThrowsIfCopyrightFileDoesNotExist()
         {
             _settings.CopyrightFilePath = CopyrightFilePath;
@@ -88,7 +87,7 @@ namespace Microsoft.JSchema.Generator.Tests
             action.ShouldThrow<JSchemaException>().WithMessage($"*{CopyrightFilePath}*");
         }
 
-        [Fact]
+        [Fact(DisplayName = "DataModelGenerator throws if root schema is not of type 'object'")]
         public void ThrowsIfRootSchemaIsNotOfTypeObject()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
@@ -101,7 +100,7 @@ namespace Microsoft.JSchema.Generator.Tests
             action.ShouldThrow<JSchemaException>().WithMessage("*number*");
         }
 
-        [Fact]
+        [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
@@ -128,8 +127,8 @@ namespace Microsoft.JSchema.Generator.Tests
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(Expected);
         }
 
-        [Fact]
-        public void GeneratesXmlCommentToHoldPropertyDescription()
+        [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
+        public void GeneratesXmlCommentsForProperties()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
@@ -149,7 +148,7 @@ namespace Microsoft.JSchema.Generator.Tests
             actual.Should().Be(Expected);
         }
 
-        [Fact]
+        [Fact(DisplayName = "DataModelGenerator generates copyright notice")]
         public void GeneratesCopyrightAtTopOfFile()
         {
             const string CopyrightNotice =
@@ -177,7 +176,83 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(Skip = "https://github.com/lgolding/jschema/issues/5")]
+        [Fact(DisplayName = "DataModelGenerator generates property for enum with Boolean values")]
+        public void GeneratesPropertyForEnumWithBooleanValues()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("BooleanEnum");
+
+            const string Expected =
+@"namespace N
+{
+    public partial class C
+    {
+        public bool BooleanEnumProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText(schema, null);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates property for enum with integer values")]
+        public void GeneratesPropertyForEnumWithIntegerValues()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("IntegerEnum");
+
+            const string Expected =
+@"namespace N
+{
+    public partial class C
+    {
+        public int IntegerEnumProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText(schema, null);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates property for enum with mixed values")]
+        public void GeneratesPropertyForEnumWithMixedValues()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("MixedEnum");
+
+            const string Expected =
+@"namespace N
+{
+    public partial class C
+    {
+        public object MixedEnumProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText(schema, null);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates property for enum with number values")]
+        public void GeneratesPropertyForEnumWithNumberValues()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("NumberEnum");
+
+            const string Expected =
+@"namespace N
+{
+    public partial class C
+    {
+        public double NumberEnumProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText(schema, null);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates property for enum with string values")]
         public void GeneratesPropertyForEnumWithStringValues()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);

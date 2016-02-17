@@ -1,0 +1,11 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "integerEnumProp": {
+      "enum": [
+        42,
+        54
+      ]
+    }
+  }
+}

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -74,12 +75,65 @@ namespace Microsoft.JSchema.Generator
                         CreateFile(propertyName, subSchema, copyrightNotice);
                     }
 
-                    classGenerator.AddProperty(propertyName, subSchema.Description, subSchema.Type);
+                    JsonType effectiveType = GetEffectiveType(subSchema);
+
+                    classGenerator.AddProperty(propertyName, subSchema.Description, effectiveType);
                 }
             }
 
             classGenerator.FinishClass();
             return classGenerator.GetText();
+        }
+
+        // Not every subschema specifies a type, but in some cases, it can be inferred.
+        private JsonType GetEffectiveType(JsonSchema subSchema)
+        {
+            JsonType effectiveType = subSchema.Type;
+
+            if (subSchema.Type == JsonType.None)
+            {
+                // If there is an enum and every value has the same type, use that.
+                object[] enumVals = subSchema.Enum;
+                if (enumVals != null && enumVals.Length > 0)
+                {
+                    effectiveType = GetJsonTypeFromObject(enumVals[0]);
+                    for (int i = 1; i < enumVals.Length; ++i)
+                    {
+                        if (GetJsonTypeFromObject(enumVals[i]) != effectiveType)
+                        {
+                            effectiveType = JsonType.None;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return effectiveType;
+        }
+
+        // Get the 
+        private JsonType GetJsonTypeFromObject(object obj)
+        {
+            if (obj is string)
+            {
+                return JsonType.String;
+            }
+            else if (obj.IsIntegralType())
+            {
+                return JsonType.Integer;
+            }
+            else if (obj.IsFloatingType())
+            {
+                return JsonType.Number;
+            }
+            else if (obj is bool)
+            {
+                return JsonType.Boolean;
+            }
+            else
+            {
+                return JsonType.None;
+            }
         }
     }
 }

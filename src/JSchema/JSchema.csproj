@@ -78,7 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="Generator\ClassGenerator.cs" />
     <Compile Include="Generator\DataModelGenerator.cs" />

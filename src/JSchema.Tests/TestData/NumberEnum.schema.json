@@ -1,0 +1,11 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "numberEnumProp": {
+      "enum": [
+        -1.2,
+        3.5
+      ]
+    }
+  }
+}
