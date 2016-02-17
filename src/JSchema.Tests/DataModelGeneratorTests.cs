@@ -111,7 +111,7 @@ namespace MountBaker.JSchema.Generator.Tests
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(expected);
         }
 
-        [Fact(Skip = "https://github.com/lgolding/jschema/issues/9")]
+        [Fact]
         public void GeneratesXmlCommentToHoldPropertyDescription()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
@@ -124,9 +124,7 @@ namespace MountBaker.JSchema.Generator.Tests
 {
     public partial class C
     {
-        /// <summary>
-        /// An example property.
-        /// </summary>
+        /// <summary>An example property.</summary>
         public string ExampleProp { get; set; }
     }
 }";

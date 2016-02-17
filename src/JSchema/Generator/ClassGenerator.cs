@@ -88,11 +88,7 @@ namespace MountBaker.JSchema.Generator
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 });
 
-            var leadingTriviaList = new SyntaxTriviaList();
-            if (!string.IsNullOrWhiteSpace(description))
-            {
-                // TODO: Add the comment.
-            }
+            SyntaxTriviaList leadingTrivia = MakeDocCommentFromDescription(description);
 
             PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
@@ -100,7 +96,8 @@ namespace MountBaker.JSchema.Generator
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword)),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(Capitalize(propertyName)),
-                SyntaxFactory.AccessorList(accessorDeclarations)).WithLeadingTrivia(leadingTriviaList);
+                SyntaxFactory.AccessorList(accessorDeclarations))
+                .WithLeadingTrivia(leadingTrivia);
 
             _propDecls.Add(prop);
         }
@@ -164,6 +161,36 @@ namespace MountBaker.JSchema.Generator
             }
 
             return typeKeyword;
+        }
+
+        private SyntaxTriviaList MakeDocCommentFromDescription(string description)
+        {
+            SyntaxTriviaList leadingTrivia = new SyntaxTriviaList();
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                var startTag = SyntaxFactory.XmlElementStartTag(SyntaxFactory.XmlName("summary"));
+
+                var content = SyntaxFactory.XmlText(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.XmlTextLiteral(default(SyntaxTriviaList), description, description, default(SyntaxTriviaList))));
+
+                var endTag = SyntaxFactory.XmlElementEndTag(SyntaxFactory.XmlName("summary"));
+
+                var summaryElement = SyntaxFactory.XmlElement(
+                    startTag,
+                    SyntaxFactory.SingletonList<XmlNodeSyntax>(content),
+                    endTag);
+
+                var docComment = SyntaxFactory.DocumentationCommentTrivia(
+                    SyntaxKind.MultiLineDocumentationCommentTrivia,
+                    SyntaxFactory.SingletonList<XmlNodeSyntax>(summaryElement))
+                    .WithLeadingTrivia(SyntaxFactory.DocumentationCommentExterior("/// "))
+                    .WithTrailingTrivia(SyntaxFactory.EndOfLine(Environment.NewLine));
+
+                leadingTrivia = leadingTrivia.Add(SyntaxFactory.Trivia(docComment));
+            }
+
+            return leadingTrivia;
         }
     }
 }
