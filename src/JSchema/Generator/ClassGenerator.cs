@@ -152,7 +152,9 @@ namespace Microsoft.JSchema.Generator
         {
             if (schemaType == JsonType.Array)
             {
-                return SyntaxFactory.ArrayType(SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword)));
+                return SyntaxFactory.ArrayType(
+                    SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
+                    SyntaxFactory.List(new [] { SyntaxFactory.ArrayRankSpecifier() }));
             }
             else
             {

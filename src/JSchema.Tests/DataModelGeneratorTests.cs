@@ -127,7 +127,7 @@ namespace Microsoft.JSchema.Generator.Tests
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array-valued property", Skip = "https://github.com/lgolding/issues/4")]
+        [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
