@@ -139,7 +139,7 @@ namespace Microsoft.JSchema.Generator.Tests
 {
     public partial class C
     {
-        public object ExampleProp { get; set; }
+        public object ArrayProp { get; set; }
     }
 }";
             string actual = generator.CreateFileText(schema);
