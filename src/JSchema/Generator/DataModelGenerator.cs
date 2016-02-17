@@ -53,11 +53,11 @@ namespace MountBaker.JSchema.Generator
 
         internal void CreateFile(string className, JsonSchema schema, string copyrightNotice)
         {
-            string text = CreateFileText(className, schema, copyrightNotice);
+            string text = CreateFileText(schema, copyrightNotice);
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
         }
 
-        internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice)
+        internal string CreateFileText(JsonSchema schema, string copyrightNotice)
         {
             var classGenerator = new ClassGenerator();
             classGenerator.StartClass(_settings.NamespaceName, _settings.RootClassName, copyrightNotice);

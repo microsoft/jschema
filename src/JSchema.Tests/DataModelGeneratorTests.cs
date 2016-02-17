@@ -145,7 +145,7 @@ namespace MountBaker.JSchema.Generator.Tests
     }
 }";
 
-            string actual = generator.CreateFileText(_settings.RootClassName, schema, null);
+            string actual = generator.CreateFileText(schema, null);
             actual.Should().Be(Expected);
         }
 
@@ -173,7 +173,7 @@ namespace N
         public string ExampleProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(_settings.RootClassName, schema, CopyrightNotice);
+            string actual = generator.CreateFileText(schema, CopyrightNotice);
             actual.Should().Be(Expected);
         }
 
