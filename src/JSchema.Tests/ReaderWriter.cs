@@ -59,6 +59,22 @@ namespace Microsoft.JSchema.Tests
                         },
                     }
                 }
+            },
+
+            new object[]
+            {
+                "StringEnum",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["stringEnumProp"] = new JsonSchema
+                        {
+                            Enum = new object[] { "a", "1" }
+                        }
+                    }
+                }
             }
         };
     }

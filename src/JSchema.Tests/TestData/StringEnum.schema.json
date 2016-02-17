@@ -1,0 +1,11 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "stringEnumProp": {
+      "enum": [
+        "a",
+        "1"
+      ]
+    }
+  }
+}

@@ -22,6 +22,8 @@ namespace Microsoft.JSchema
 
         public JsonType Type { get; set; }
 
+        public object[] Enum { get; set; }
+
         public Dictionary<string, JsonSchema> Properties { get; set; }
 
         #region Object overrides

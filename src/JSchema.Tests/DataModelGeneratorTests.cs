@@ -177,6 +177,25 @@ namespace N
             actual.Should().Be(Expected);
         }
 
+        [Fact(Skip = "https://github.com/lgolding/jschema/issues/5")]
+        public void GeneratesPropertyForEnumWithStringValues()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("StringEnum");
+
+            const string Expected =
+@"namespace N
+{
+    public partial class C
+    {
+        public string StringEnumProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText(schema, null);
+            actual.Should().Be(Expected);
+        }
+
         private const string OutputDirectory = "Generated";
 
         private IFileSystem MakeFileSystem()
