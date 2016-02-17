@@ -12,7 +12,10 @@ namespace MountBaker.JSchema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {
-        private readonly IFileSystem _fileSystem;
+        private const string CopyrightFilePath = @"C:\copyright.txt";
+
+        private Mock<IFileSystem> _mockFileSystem;
+        private IFileSystem _fileSystem;
         private readonly DataModelGeneratorSettings _settings;
         private readonly Dictionary<string, string> _fileContentsDictionary;
 
@@ -68,6 +71,24 @@ namespace MountBaker.JSchema.Generator.Tests
         }
 
         [Fact]
+        public void ThrowsIfCopyrightFileDoesNotExist()
+        {
+            _settings.CopyrightFilePath = CopyrightFilePath;
+
+            _mockFileSystem.Setup(fs => fs.FileExists(CopyrightFilePath))
+                .Returns(false);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
+
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            Action action = () => generator.Generate(schema);
+
+            // ... and the exception message should mention the file path.
+            action.ShouldThrow<JSchemaException>().WithMessage($"*{CopyrightFilePath}*");
+        }
+
+        [Fact]
         public void ThrowsIfRootSchemaIsNotOfTypeObject()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
@@ -83,6 +104,12 @@ namespace MountBaker.JSchema.Generator.Tests
         [Fact]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
+
+            generator.CreateFile(_settings.RootClassName, schema, null);
+
             const string Expected =
 @"namespace N
 {
@@ -94,12 +121,6 @@ namespace MountBaker.JSchema.Generator.Tests
         public int IntegerProp { get; set; }
     }
 }";
-            var generator = new DataModelGenerator(_settings, _fileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
-
-            generator.CreateFile(_settings.RootClassName, schema);
-
             // This particular test shows not only that the correct text was produced,
             // but that it was written to the expected path. Subsequent tests will
             // just verify the text.
@@ -110,6 +131,10 @@ namespace MountBaker.JSchema.Generator.Tests
         [Fact]
         public void GeneratesXmlCommentToHoldPropertyDescription()
         {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
+
             const string Expected =
 @"namespace N
 {
@@ -120,11 +145,38 @@ namespace MountBaker.JSchema.Generator.Tests
     }
 }";
 
+            string actual = generator.CreateFileText(_settings.RootClassName, schema, null);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(Skip = "https://github.com/lgolding/jschema/issues/11")]
+        public void GeneratesCopyrightAtTopOfFile()
+        {
+            _settings.CopyrightFilePath = CopyrightFilePath;
+
+            _mockFileSystem.Setup(fs => fs.FileExists(CopyrightFilePath))
+                .Returns(true);
+
+            _mockFileSystem.Setup(fs => fs.ReadAllText(CopyrightFilePath))
+                .Returns("Copyright (c) 2016. All rights reserved.\nLicensed under Apache 2.0 license.");
+
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
-            string actual = generator.CreateFileText(_settings.RootClassName, schema);
+            const string Expected =
+@"// Copyright (c) Contoso Inc. 2016. All rights reserved.
+// Licensed under Apache 2.0 license.
+
+namespace N
+{
+    public partial class C
+    {
+        /// <summary>An example property.</summary>
+        public string ExampleProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText(_settings.RootClassName, schema, null);
             actual.Should().Be(Expected);
         }
 
@@ -132,21 +184,21 @@ namespace MountBaker.JSchema.Generator.Tests
 
         private IFileSystem MakeFileSystem()
         {
-            Mock<IFileSystem> mockFileSystem = new Mock<IFileSystem>();
+            _mockFileSystem = new Mock<IFileSystem>();
 
             // The file system asserts that the output directory exists.
-            mockFileSystem
+            _mockFileSystem
                 .Setup(fs => fs.DirectoryExists(It.IsAny<string>()))
                 .Returns((string s) => s.Equals(OutputDirectory));
 
-            mockFileSystem
+            _mockFileSystem
                 .Setup(fs => fs.WriteAllText(It.IsAny<string>(), It.IsAny<string>()))
                 .Callback((string path, string contents) =>
                 {
                     _fileContentsDictionary.Add(path, contents);
                 });
 
-            return mockFileSystem.Object;
+            return _mockFileSystem.Object;
         }
 
         private static DataModelGeneratorSettings MakeSettings()

@@ -42,19 +42,26 @@ namespace MountBaker.JSchema.Generator
                 throw JSchemaException.Create(Resources.ErrorNotAnObject, schema.Type);
             }
 
-            CreateFile(_settings.RootClassName, schema);
+            if (_settings.CopyrightFilePath != null && !File.Exists(_settings.CopyrightFilePath))
+            {
+                throw JSchemaException.Create(Resources.ErrorCopyrightFileNotFound, _settings.CopyrightFilePath);
+            }
+
+            string copyrightNotice = _fileSystem.ReadAllText(_settings.CopyrightFilePath);
+
+            CreateFile(_settings.RootClassName, schema, copyrightNotice);
         }
 
-        internal void CreateFile(string className, JsonSchema schema)
+        internal void CreateFile(string className, JsonSchema schema, string copyrightNotice)
         {
-            string text = CreateFileText(className, schema);
+            string text = CreateFileText(className, schema, copyrightNotice);
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
         }
 
-        internal string CreateFileText(string className, JsonSchema schema)
+        internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice)
         {
             var classGenerator = new ClassGenerator();
-            classGenerator.StartClass(_settings.NamespaceName, _settings.RootClassName);
+            classGenerator.StartClass(_settings.NamespaceName, _settings.RootClassName, copyrightNotice);
 
             if (schema.Properties != null)
             {
@@ -65,7 +72,7 @@ namespace MountBaker.JSchema.Generator
 
                     if (subSchema.Type == JsonType.Object)
                     {
-                        CreateFile(propertyName, subSchema);
+                        CreateFile(propertyName, subSchema, copyrightNotice);
                     }
 
                     classGenerator.AddProperty(propertyName, subSchema.Description, subSchema.Type);

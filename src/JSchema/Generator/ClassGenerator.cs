@@ -24,6 +24,7 @@ namespace MountBaker.JSchema.Generator
     {
         private string _namespaceName;
         private string _className;
+        private string _copyrightNotice;
         private List<PropertyDeclarationSyntax> _propDecls;
         private string _text;
 
@@ -55,10 +56,15 @@ namespace MountBaker.JSchema.Generator
         /// <param name="className">
         /// The name of the class to generate.
         /// </param>
-        public void StartClass(string namespaceName, string className)
+        /// <param name="copyrightNotice">
+        /// The text of the copyright notice to include at the top of each file,
+        /// without any comment delimiter characters.
+        /// </param>
+        public void StartClass(string namespaceName, string className, string copyrightNotice)
         {
             _namespaceName = namespaceName;
             _className = className;
+            _copyrightNotice = copyrightNotice;
 
             _propDecls = new List<PropertyDeclarationSyntax>();
         }

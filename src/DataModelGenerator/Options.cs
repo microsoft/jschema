@@ -41,5 +41,13 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
             HelpText = "Name of the class at the root of the generated object model",
             Required = true)]
         public string RootClassName { get; set; }
+
+        [Option(
+            'c',
+            "copyright-file-path",
+            HelpText = "Path to the file containing the copyright notice to place at the top of each file. "
+                + "Can span multiple lines. "
+                + "Should not include comment delimiters. ")]
+        public string CopyrightFilePath { get; set; }
     }
 }

@@ -34,7 +34,8 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
                 OutputDirectory = options.OutputDirectory,
                 ForceOverwrite = options.ForceOverwrite,
                 NamespaceName = options.NamespaceName,
-                RootClassName = options.RootClassName
+                RootClassName = options.RootClassName,
+                CopyrightFilePath = options.CopyrightFilePath
             };
 
             new DataModelGenerator(settings).Generate(schema);

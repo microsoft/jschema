@@ -32,6 +32,12 @@ namespace MountBaker.JSchema.Generator
         /// </summary>
         public string RootClassName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the path of the file containing the copyright notice to place
+        /// at the top of each file.
+        /// </summary>
+        public string CopyrightFilePath { get; set; }
+
         internal void Validate()
         {
             var sb = new StringBuilder();

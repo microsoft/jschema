@@ -61,6 +61,15 @@ namespace MountBaker.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The copyright file &quot;{0}&quot; could not be found..
+        /// </summary>
+        internal static string ErrorCopyrightFileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorCopyrightFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified schema has type=&quot;{0}&quot;. Data model generation requires a schema whose top-level type is &quot;object&quot;..
         /// </summary>
         internal static string ErrorNotAnObject {
