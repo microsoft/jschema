@@ -74,6 +74,22 @@ namespace Microsoft.JSchema.Tests
                         }
                     }
                 }
+            },
+
+            new object[]
+            {
+                "Array",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["arrayProp"] = new JsonSchema
+                        {
+                            Type = JsonType.Array
+                        }
+                    }
+                }
             }
         };
     }

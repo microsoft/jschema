@@ -52,13 +52,13 @@ namespace Microsoft.JSchema.Generator
             CreateFile(_settings.RootClassName, schema, copyrightNotice);
         }
 
-        internal void CreateFile(string className, JsonSchema schema, string copyrightNotice)
+        internal void CreateFile(string className, JsonSchema schema, string copyrightNotice = null)
         {
             string text = CreateFileText(schema, copyrightNotice);
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
         }
 
-        internal string CreateFileText(JsonSchema schema, string copyrightNotice)
+        internal string CreateFileText(JsonSchema schema, string copyrightNotice = null)
         {
             var classGenerator = new ClassGenerator();
             classGenerator.StartClass(_settings.NamespaceName, _settings.RootClassName, copyrightNotice);

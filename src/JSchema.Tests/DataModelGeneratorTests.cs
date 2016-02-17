@@ -107,7 +107,7 @@ namespace Microsoft.JSchema.Generator.Tests
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
 
-            generator.CreateFile(_settings.RootClassName, schema, null);
+            generator.CreateFile(_settings.RootClassName, schema);
 
             const string Expected =
 @"namespace N
@@ -127,6 +127,25 @@ namespace Microsoft.JSchema.Generator.Tests
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates array-valued property", Skip = "https://github.com/lgolding/jschema/issues/4")]
+        public void GeneratesArrayValuedProperty()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
+
+            const string Expected =
+@"namespace N
+{
+    public partial class C
+    {
+        public string ExampleProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText(schema);
+            actual.Should().Be(Expected);
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
         public void GeneratesXmlCommentsForProperties()
         {
@@ -144,7 +163,7 @@ namespace Microsoft.JSchema.Generator.Tests
     }
 }";
 
-            string actual = generator.CreateFileText(schema, null);
+            string actual = generator.CreateFileText(schema);
             actual.Should().Be(Expected);
         }
 

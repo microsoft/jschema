@@ -1,0 +1,8 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "arrayProp": {
+      "type": "array"
+    }
+  }
+}
