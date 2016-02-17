@@ -26,21 +26,32 @@ namespace MountBaker.JSchema.DataModelGeneratorTool
 
         private static int Run(Options options)
         {
-            string jsonText = File.ReadAllText(options.SchemaFilePath);
-            JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+            int exitCode = 1;
 
-            DataModelGeneratorSettings settings = new DataModelGeneratorSettings
+            try
             {
-                OutputDirectory = options.OutputDirectory,
-                ForceOverwrite = options.ForceOverwrite,
-                NamespaceName = options.NamespaceName,
-                RootClassName = options.RootClassName,
-                CopyrightFilePath = options.CopyrightFilePath
-            };
+                string jsonText = File.ReadAllText(options.SchemaFilePath);
+                JsonSchema schema = SchemaReader.ReadSchema(jsonText);
 
-            new DataModelGenerator(settings).Generate(schema);
+                DataModelGeneratorSettings settings = new DataModelGeneratorSettings
+                {
+                    OutputDirectory = options.OutputDirectory,
+                    ForceOverwrite = options.ForceOverwrite,
+                    NamespaceName = options.NamespaceName,
+                    RootClassName = options.RootClassName,
+                    CopyrightFilePath = options.CopyrightFilePath
+                };
 
-            return 0;
+                new DataModelGenerator(settings).Generate(schema);
+
+                exitCode = 0;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(string.Format(CultureInfo.CurrentCulture, Resources.Error, ex.Message));
+            }
+
+            return exitCode;
         }
 
         private static void Banner()

@@ -68,5 +68,14 @@ namespace MountBaker.JSchema.DataModelGeneratorTool {
                 return ResourceManager.GetString("Banner", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR: {0}.
+        /// </summary>
+        internal static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
     }
 }

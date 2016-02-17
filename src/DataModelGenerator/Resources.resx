@@ -120,4 +120,7 @@
   <data name="Banner" xml:space="preserve">
     <value>{0} version {1}</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>ERROR: {0}</value>
+  </data>
 </root>
