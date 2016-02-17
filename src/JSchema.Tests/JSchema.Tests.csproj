@@ -4,8 +4,8 @@
   <PropertyGroup>
     <ProjectGuid>{55223B39-FA1A-4838-AB9B-A7B60A7C1BCE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MountBaker.JSchema.Tests</RootNamespace>
-    <AssemblyName>MountBaker.JSchema.Tests</AssemblyName>
+    <RootNamespace>Microsoft.JSchema.Tests</RootNamespace>
+    <AssemblyName>Microsoft.JSchema.Tests</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace MountBaker.JSchema.Tests
+namespace Microsoft.JSchema.Tests
 {
     public class SchemaWriterTests
     {

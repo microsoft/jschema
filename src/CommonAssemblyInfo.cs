@@ -1,5 +1,4 @@
-﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -8,9 +7,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Mount Baker Software")]
+[assembly: AssemblyCompany("Microsoft Corporation")]
 [assembly: AssemblyProduct("JSchema")]
-[assembly: AssemblyCopyright("Copyright © Mount Baker Software. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright (c) Microsoft. All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

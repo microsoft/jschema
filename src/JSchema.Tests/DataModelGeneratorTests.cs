@@ -1,14 +1,14 @@
-﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
-using MountBaker.JSchema.Tests;
+using Microsoft.JSchema.Tests;
 using Xunit;
 
-namespace MountBaker.JSchema.Generator.Tests
+namespace Microsoft.JSchema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {

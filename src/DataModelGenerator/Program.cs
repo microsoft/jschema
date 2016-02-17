@@ -1,4 +1,4 @@
-﻿// Copyright (c) Mount Baker Software.  All Rights Reserved.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
-using MountBaker.JSchema.Generator;
+using Microsoft.JSchema.Generator;
 
-namespace MountBaker.JSchema.DataModelGeneratorTool
+namespace Microsoft.JSchema.DataModelGeneratorTool
 {
     internal class Program
     {
