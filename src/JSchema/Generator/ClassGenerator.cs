@@ -98,7 +98,7 @@ namespace Microsoft.JSchema.Generator
             PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
-                SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword)),
+                MakePropertyType(typeKeyword),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(Capitalize(propertyName)),
                 SyntaxFactory.AccessorList(accessorDeclarations))
@@ -148,6 +148,11 @@ namespace Microsoft.JSchema.Generator
         private static string Capitalize(string propertyName)
         {
             return propertyName[0].ToString().ToUpperInvariant() + propertyName.Substring(1);
+        }
+
+        private TypeSyntax MakePropertyType(SyntaxKind typeKeyword)
+        {
+            return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
         }
 
         private static readonly Dictionary<JsonType, SyntaxKind> s_jsonTypeToSyntaxKindDictionary = new Dictionary<JsonType, SyntaxKind>
