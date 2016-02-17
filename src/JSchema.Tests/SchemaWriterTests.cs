@@ -1,5 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +12,7 @@ namespace Microsoft.JSchema.Tests
     {
         public static IEnumerable<object[]> TestCases => ReaderWriter.TestCases;
 
-        [Theory]
+        [Theory(DisplayName = "SchemaWriter can write schemas")]
         [MemberData(nameof(TestCases))]
         public void CanWriteSchema(string fileNameStem, JsonSchema schema)
         {
