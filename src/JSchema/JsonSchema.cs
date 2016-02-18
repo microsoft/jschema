@@ -33,7 +33,17 @@ namespace Microsoft.JSchema
         /// </summary>
         public JsonSchema Items { get; set; }
 
+        /// <summary>
+        /// Dictionary mapping valid property names to the sub-schemas to which they must
+        /// conform.
+        /// </summary>
         public Dictionary<string, JsonSchema> Properties { get; set; }
+
+        /// <summary>
+        /// Gets or sets a dictionary mapping schema names to sub-schemas which can be
+        /// referenced by properties defined elsewhere in the current schema.
+        /// </summary>
+        public Dictionary<string, JsonSchema> Definitions { get; set; }
 
         #region Object overrides
 

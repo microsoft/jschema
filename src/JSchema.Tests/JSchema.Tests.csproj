@@ -74,6 +74,9 @@
     <None Include="TestData\BooleanEnum.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TestData\Dictionary.schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\Empty.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -118,7 +121,7 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\CopyRoslynImplementationAssemblies.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties TestData_4IntegerArray_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" TestData_4Array_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
+      <UserProperties TestData_4Dictionary_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" TestData_4IntegerArray_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" TestData_4Array_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

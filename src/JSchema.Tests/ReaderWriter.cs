@@ -110,6 +110,28 @@ namespace Microsoft.JSchema.Tests
                         }
                     }
                 }
+            },
+
+            new object[]
+            {
+                "Dictionary",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+                    Definitions = new Dictionary<string, JsonSchema>
+                    {
+                        ["def1"] = new JsonSchema
+                        {
+                            Properties = new Dictionary<string, JsonSchema>
+                            {
+                                ["prop1"] = new JsonSchema
+                                {
+                                    Type = JsonType.String
+                                }
+                            }
+                        }
+                    }
+                }
             }
         };
     }
