@@ -45,6 +45,13 @@ namespace Microsoft.JSchema
         /// </summary>
         public Dictionary<string, JsonSchema> Definitions { get; set; }
 
+        /// <summary>
+        /// Gets or sets the URI of a schema that is incorporated by reference into
+        /// the current schema.
+        /// </summary>
+        [JsonProperty("$ref")]
+        public Uri Reference { get; set; }
+
         #region Object overrides
 
         public override bool Equals(object obj)

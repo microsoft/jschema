@@ -2,11 +2,12 @@
   "type": "object",
   "properties": {
     "rootProp": {
-      "type": "boolean"
+      "$ref": "#/definitions/def1"
     }
   },
   "definitions": {
     "def1": {
+      "id": "def1",
       "properties": {
         "prop1": {
           "type": "string"
