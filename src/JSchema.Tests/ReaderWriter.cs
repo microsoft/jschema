@@ -118,6 +118,15 @@ namespace Microsoft.JSchema.Tests
                 new JsonSchema
                 {
                     Type = JsonType.Object,
+
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["rootProp"] = new JsonSchema
+                        {
+                            Type = JsonType.Boolean
+                        }
+                    },
+
                     Definitions = new Dictionary<string, JsonSchema>
                     {
                         ["def1"] = new JsonSchema

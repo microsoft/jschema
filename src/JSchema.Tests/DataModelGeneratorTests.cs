@@ -290,6 +290,46 @@ namespace N
             actual.Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions dictionary",
+              Skip = "https://github.com/lgolding/jschema/issues/16")]
+        public void GeneratesClassesForSchemasInDefinitionsDictionary()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Dictionary");
+
+            generator.CreateFile(_settings.RootClassName, schema);
+
+            const string ExpectedRootClass =
+@"namespace N
+{
+    public partial class C
+    {
+        public bool RootProp { get; set; }
+    }
+}";
+
+            const string ExpectedDefinedClass =
+@"namespace N
+{
+    public partial class Def1
+    {
+        public string Prop1 { get; set; }
+    }
+}";
+            var expectedOutputFiles = new List<string>
+            {
+                @"Generated\C.cs",
+                @"Generated\Def1.cs"
+            };
+
+            _fileContentsDictionary.Count.Should().Be(expectedOutputFiles.Count);
+            _fileContentsDictionary.Keys.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
+
+            _fileContentsDictionary[@"Generated\C.cs"].Should().Be(ExpectedRootClass);
+            _fileContentsDictionary[@"Generated\Def1.cs"].Should().Be(ExpectedDefinedClass);
+        }
+
         private const string OutputDirectory = "Generated";
 
         private IFileSystem MakeFileSystem()

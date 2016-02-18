@@ -1,5 +1,10 @@
 ﻿{
   "type": "object",
+  "properties": {
+    "rootProp": {
+      "type": "boolean"
+    }
+  },
   "definitions": {
     "def1": {
       "properties": {
