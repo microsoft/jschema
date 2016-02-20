@@ -10,6 +10,14 @@ namespace Microsoft.JSchema
     {
         public static readonly Uri V4Draft = new Uri("http://json-schema.org/draft-04/schema#");
 
+        /// <summary>
+        /// Gets or sets a URI that alters the resolution scope for the current schema and
+        /// all of its descendants (until another Id is encountered).
+        /// </summary>
+        /// <remarks>
+        /// See http://json-schema.org/latest/json-schema-core.html#anchor25 ("URI resolution
+        /// scopes and dereferencing").
+        /// </remarks>
         public Uri Id { get; set; }
 
         [JsonProperty("$schema")]
@@ -49,7 +57,10 @@ namespace Microsoft.JSchema
         /// Gets or sets the URI of a schema that is incorporated by reference into
         /// the current schema.
         /// </summary>
-        [JsonProperty("$ref")]
+        // BUG: https://github.com/lgolding/jschema/issues/20
+        // This should be "$ref", but Json.NET treates $ref specially, so we'll need
+        // a workaround. 
+        [JsonProperty("ref")]
         public Uri Reference { get; set; }
 
         #region Object overrides

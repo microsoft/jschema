@@ -141,6 +141,40 @@ namespace Microsoft.JSchema.Tests
                         }
                     }
                 }
+            },
+
+            new object[]
+            {
+                "Reference",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["rootProp"] = new JsonSchema
+                        {
+                            // BUG https://github.com/lgolding/jschema/issues/19
+                            // System.Uri doesn't support a bare fragment, so we'll need a workaround.
+                            Reference = new Uri("Issue-19#/definitions/def1", UriKind.Relative)
+                        }
+                    },
+
+                    Definitions = new Dictionary<string, JsonSchema>
+                    {
+                        ["def1"] = new JsonSchema
+                        {
+                            Id = new Uri("def1", UriKind.Relative),
+                            Properties = new Dictionary<string, JsonSchema>
+                            {
+                                ["prop1"] = new JsonSchema
+                                {
+                                    Type = JsonType.String
+                                }
+                            }
+                        }
+                    }
+                }
             }
         };
     }

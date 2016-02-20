@@ -23,7 +23,7 @@ namespace Microsoft.JSchema
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteRawValue('"' + ((Uri)value).AbsoluteUri + '"');
+            writer.WriteRawValue('"' + ((Uri)value).OriginalString + '"');
         }
     }
 }
