@@ -28,7 +28,12 @@ namespace Microsoft.JSchema
                     CamelCaseText = true
                 });
 
-            serializer.Serialize(writer, schema);
+            var stringWriter = new StringWriter();
+            serializer.Serialize(stringWriter, schema);
+
+            // Change "$$ref" to "$ref" before we ask write it to the output.
+            string output = RefProperty.ConvertToOutput(stringWriter.ToString());
+            writer.Write(output);
         }
     }
 }

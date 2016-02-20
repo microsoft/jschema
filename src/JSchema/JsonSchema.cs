@@ -57,10 +57,9 @@ namespace Microsoft.JSchema
         /// Gets or sets the URI of a schema that is incorporated by reference into
         /// the current schema.
         /// </summary>
-        // BUG: https://github.com/lgolding/jschema/issues/20
-        // This should be "$ref", but Json.NET treates $ref specially, so we'll need
-        // a workaround. 
-        [JsonProperty("ref")]
+        // See the RefProperty class for an explanation of our special treatment of
+        // this property.
+        [JsonProperty("$$ref")]
         public Uri Reference { get; set; }
 
         #region Object overrides

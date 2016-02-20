@@ -123,9 +123,5 @@
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\CopyRoslynImplementationAssemblies.targets" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties TestData_4Reference_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" TestData_4Dictionary_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" TestData_4IntegerArray_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" TestData_4Array_1schema_1json__JSONSchema="http://json-schema.org/draft-04/schema" />
-    </VisualStudio>
-  </ProjectExtensions>
+  <ProjectExtensions />
 </Project>

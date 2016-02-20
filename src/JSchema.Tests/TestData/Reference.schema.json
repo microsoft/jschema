@@ -2,7 +2,7 @@
   "type": "object",
   "properties": {
     "rootProp": {
-      "ref": "Issue-19#/definitions/def1"
+      "$ref": "Issue-19#/definitions/def1"
     }
   },
   "definitions": {

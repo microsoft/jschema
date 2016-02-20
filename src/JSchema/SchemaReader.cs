@@ -9,6 +9,10 @@ namespace Microsoft.JSchema
     {
         public static JsonSchema ReadSchema(string jsonText)
         {
+            // Change "$ref" to "$$ref" before we ask Json.NET to deserialize it,
+            // because Json.NET treats "$ref" specially.
+            jsonText = RefProperty.ConvertFromInput(jsonText);
+
             var serializer = new JsonSerializer
             {
                 ContractResolver = new JsonSchemaContractResolver()

@@ -94,6 +94,7 @@
     <Compile Include="JsonSchema.cs" />
     <Compile Include="JsonSchemaContractResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RefProperty.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
