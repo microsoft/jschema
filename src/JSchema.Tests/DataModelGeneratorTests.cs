@@ -297,7 +297,7 @@ namespace N
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
 
-            generator.CreateFile(_settings.RootClassName, schema);
+            generator.Generate(schema);
 
             const string ExpectedRootClass =
 @"namespace N
