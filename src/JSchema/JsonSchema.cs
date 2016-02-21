@@ -90,7 +90,7 @@ namespace Microsoft.JSchema
 
         public bool Equals(JsonSchema other)
         {
-            if (other == null)
+            if ((object)other == null)
             {
                 return false;
             }
@@ -123,7 +123,17 @@ namespace Microsoft.JSchema
 
         public static bool operator ==(JsonSchema left, JsonSchema right)
         {
-            return Equals(left, right);
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if ((object)left == null)
+            {
+                return false;
+            }
+
+            return left.Equals(right);
         }
 
         public static bool operator !=(JsonSchema left, JsonSchema right)

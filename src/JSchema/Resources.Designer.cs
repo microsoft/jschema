@@ -70,6 +70,24 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} property of this {1} instance is {2}, so it has no class name..
+        /// </summary>
+        internal static string ErrorNoClassNameForInferredTypeKindPrimitive {
+            get {
+                return ResourceManager.GetString("ErrorNoClassNameForInferredTypeKindPrimitive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} property of this {1} instance is {2}, so it has no primitive type..
+        /// </summary>
+        internal static string ErrorNoPrimitiveTypeForInferredTypeKindClassName {
+            get {
+                return ResourceManager.GetString("ErrorNoPrimitiveTypeForInferredTypeKindClassName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified schema has type=&quot;{0}&quot;. Data model generation requires a schema whose top-level type is &quot;object&quot;..
         /// </summary>
         internal static string ErrorNotAnObject {

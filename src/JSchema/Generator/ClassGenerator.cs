@@ -77,14 +77,14 @@ namespace Microsoft.JSchema.Generator
         /// <param name="description">
         /// A description of the property, or <code>null</code> if there is no description.
         /// </param>
-        /// <param name="schemaType">
-        /// The JSON schema data type of the property to be added.
+        /// <param name="inferredPropertyType">
+        /// The inferred type of the property to be added.
         /// </param>
-        /// <param name="elementType">
-        /// The JSON schema data type of the array elements of the property to be added,
+        /// <param name="inferredElementType">
+        /// The inferred type of the array elements of the property to be added,
         /// if the property is an array; if not, this parameter is ignored.
         /// </param>
-        public void AddProperty(string propertyName, string description, JsonType schemaType, JsonType elementType)
+        public void AddProperty(string propertyName, string description, InferredType inferredPropertyType, InferredType inferredElementType)
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
@@ -100,7 +100,7 @@ namespace Microsoft.JSchema.Generator
             PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
-                MakePropertyType(schemaType, elementType),
+                MakePropertyType(inferredPropertyType, inferredElementType),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
@@ -147,19 +147,30 @@ namespace Microsoft.JSchema.Generator
             _text = sb.ToString();
         }
 
-        private TypeSyntax MakePropertyType(JsonType propertyType, JsonType elementType)
+        private TypeSyntax MakePropertyType(InferredType propertyType, InferredType elementType)
         {
-            if (propertyType == JsonType.Array)
+            switch (propertyType.Kind)
             {
-                SyntaxKind elementTypeKeyword = GetTypeKeywordFromJsonType(elementType);
-                return SyntaxFactory.ArrayType(
-                    SyntaxFactory.PredefinedType(SyntaxFactory.Token(elementTypeKeyword)),
-                    SyntaxFactory.List(new [] { SyntaxFactory.ArrayRankSpecifier() }));
-            }
-            else
-            {
-                SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(propertyType);
-                return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
+                case InferredTypeKind.JsonType:
+                    JsonType jsonType = propertyType.GetJsonType();
+                    if (jsonType == JsonType.Array)
+                    {
+                        return SyntaxFactory.ArrayType(
+                            MakePropertyType(elementType, null),
+                            SyntaxFactory.List(new[] { SyntaxFactory.ArrayRankSpecifier() }));
+                    }
+
+                    SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(propertyType.GetJsonType());
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
+
+                case InferredTypeKind.ClassName:
+                    return SyntaxFactory.ParseTypeName(propertyType.GetClassName());
+
+                case InferredTypeKind.None:
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(propertyType));
             }
         }
 

@@ -127,6 +127,25 @@ namespace Microsoft.JSchema.Generator.Tests
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
+        public void GeneratesObjectValuedPropertyWithCorrectType()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
+
+            const string Expected =
+@"namespace N
+{
+    public partial class C
+    {
+        public D ObjectProp { get; set; }
+    }
+}";
+            string actual = generator.CreateFileText("C", schema);
+            actual.Should().Be(Expected);
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {

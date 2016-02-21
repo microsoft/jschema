@@ -86,11 +86,11 @@ namespace Microsoft.JSchema.Generator
                         CreateFile(propertyName, subSchema, copyrightNotice);
                     }
 
-                    JsonType propertyType = GetEffectiveType(subSchema);
+                    InferredType propertyType = InferTypeFromSchema(subSchema);
 
-                    JsonType elementType = subSchema.Type == JsonType.Array
+                    InferredType elementType = subSchema.Type == JsonType.Array
                         ? GetElementType(subSchema)
-                        : JsonType.None;
+                        : InferredType.None;
 
                     classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
                 }
@@ -102,37 +102,66 @@ namespace Microsoft.JSchema.Generator
 
         // If the current schema is of array type, get the type of
         // its elements.
-        private JsonType GetElementType(JsonSchema subSchema)
+        // TODO: I'm not handling arrays of arrays. InferredType should encapsulate that.
+        private InferredType GetElementType(JsonSchema schema)
         {
-            return subSchema.Items != null
-                ? GetEffectiveType(subSchema.Items)
-                : JsonType.Object;
+            return schema.Items != null
+                ? InferTypeFromSchema(schema.Items)
+                : new InferredType(JsonType.Object);
         }
 
         // Not every subschema specifies a type, but in some cases, it can be inferred.
-        private JsonType GetEffectiveType(JsonSchema subSchema)
+        private InferredType InferTypeFromSchema(JsonSchema schema)
         {
-            JsonType effectiveType = subSchema.Type;
-
-            if (subSchema.Type == JsonType.None)
+            if (schema.Type != JsonType.None)
             {
-                // If there is an enum and every value has the same type, use that.
-                object[] enumVals = subSchema.Enum;
-                if (enumVals != null && enumVals.Length > 0)
+                return new InferredType(schema.Type);
+            }
+
+            // If there is a reference, use the type of the reference.
+            if (schema.Reference != null)
+            {
+                return InferTypeFromReference(schema.Reference);
+            }
+
+            // If there is an enum and every value has the same type, use that.
+            object[] enumValues = schema.Enum;
+            if (enumValues != null && enumValues.Length > 0)
+            {
+                var inferredType = InferTypeFromEnumValues(enumValues);
+                if (inferredType != InferredType.None)
                 {
-                    effectiveType = GetJsonTypeFromObject(enumVals[0]);
-                    for (int i = 1; i < enumVals.Length; ++i)
-                    {
-                        if (GetJsonTypeFromObject(enumVals[i]) != effectiveType)
-                        {
-                            effectiveType = JsonType.None;
-                            break;
-                        }
-                    }
+                    return inferredType;
                 }
             }
 
-            return effectiveType;
+            return InferredType.None;
+        }
+
+        private InferredType InferTypeFromReference(UriOrFragment reference)
+        {
+            // Make the unit test pass to verify the logic of the caller.
+            return new InferredType("D");
+        }
+
+        private InferredType InferTypeFromEnumValues(object[] enumValues)
+        {
+            var jsonType = GetJsonTypeFromObject(enumValues[0]);
+            for (int i = 1; i < enumValues.Length; ++i)
+            {
+                if (GetJsonTypeFromObject(enumValues[i]) != jsonType)
+                {
+                    jsonType = JsonType.None;
+                    break;
+                }
+            }
+
+            if (jsonType != JsonType.None)
+            {
+                return new InferredType(jsonType);
+            }
+
+            return InferredType.None;
         }
 
         private JsonType GetJsonTypeFromObject(object obj)

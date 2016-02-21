@@ -113,14 +113,14 @@ namespace Microsoft.JSchema
 
         #region IComparable<T>
 
-        public bool Equals(UriOrFragment comparand)
+        public bool Equals(UriOrFragment other)
         {
-            if (comparand == null)
+            if ((object)other == null)
             {
                 return false;
             }
 
-            if (IsFragment != comparand.IsFragment || IsUri != comparand.IsUri)
+            if (IsFragment != other.IsFragment || IsUri != other.IsUri)
             {
                 return false;
             }
@@ -128,15 +128,25 @@ namespace Microsoft.JSchema
             // Uri.Equals does not compare fragments on absolute URIs (although it does
             // compare them on relative URIs). We always want to compare the fragments.
             return IsFragment
-                ? Fragment.Equals(comparand.Fragment)
-                : Uri.EqualsWithFragments(comparand.Uri);
+                ? Fragment.Equals(other.Fragment)
+                : Uri.EqualsWithFragments(other.Uri);
         }
 
         #endregion IComparable<T>
 
         public static bool operator ==(UriOrFragment left, UriOrFragment right)
         {
-            return Equals(left, right);
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if ((object)left == null)
+            {
+                return false;
+            }
+
+            return left.Equals(right);
         }
 
         public static bool operator !=(UriOrFragment left, UriOrFragment right)

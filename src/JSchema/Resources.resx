@@ -120,6 +120,12 @@
   <data name="ErrorCopyrightFileNotFound" xml:space="preserve">
     <value>The copyright file "{0}" could not be found.</value>
   </data>
+  <data name="ErrorNoClassNameForInferredTypeKindPrimitive" xml:space="preserve">
+    <value>The {0} property of this {1} instance is {2}, so it has no class name.</value>
+  </data>
+  <data name="ErrorNoPrimitiveTypeForInferredTypeKindClassName" xml:space="preserve">
+    <value>The {0} property of this {1} instance is {2}, so it has no primitive type.</value>
+  </data>
   <data name="ErrorNotAnObject" xml:space="preserve">
     <value>The specified schema has type="{0}". Data model generation requires a schema whose top-level type is "object".</value>
   </data>
