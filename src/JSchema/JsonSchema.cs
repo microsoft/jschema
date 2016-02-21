@@ -71,7 +71,17 @@ namespace Microsoft.JSchema
 
         public override int GetHashCode()
         {
-            return Hash.Combine(Id, SchemaVersion, Title, Description, Type, Properties);
+            return Hash.Combine(
+                Id,
+                SchemaVersion,
+                Title,
+                Description,
+                Type,
+                Enum,
+                Items,
+                Properties,
+                Definitions,
+                Reference);
         }
 
         #endregion Object overrides
@@ -92,8 +102,12 @@ namespace Microsoft.JSchema
                 && string.Equals(Title, other.Title, StringComparison.Ordinal)
                 && string.Equals(Description, other.Description, StringComparison.Ordinal)
                 && Type == other.Type
-                // && Enum.Con
-                // Items
+                && (Enum == null
+                        ? other.Enum == null
+                        : Enum.HasSameElementsAs(other.Enum))
+                && (Items == null
+                        ? other.Items == null
+                        : Items.Equals(other.Items))
                 && (Properties == null
                         ? other.Properties == null
                         : Properties.HasSameElementsAs(other.Properties))

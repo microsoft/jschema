@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModelGeneratorTests.cs" />
+    <Compile Include="JsonSchemaTests.cs" />
     <Compile Include="ReaderWriter.cs" />
     <Compile Include="SchemaReaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,20 +8,20 @@ namespace Microsoft.JSchema
 {
     internal static class DictionaryExtensions
     {
-        internal static bool HasSameElementsAs<K, V>(this Dictionary<K, V> dict, Dictionary<K, V> other)
+        internal static bool HasSameElementsAs<K, V>(this Dictionary<K, V> left, Dictionary<K, V> right)
         {
-            if (dict == null && other == null)
+            if (left == null && right == null)
             {
                 return true;
             }
 
-            if (dict == null || other == null)
+            if (left == null || right == null)
             {
                 return false;
             }
 
             // http://stackoverflow.com/questions/3804367/testing-for-equality-between-dictionaries-in-c-sharp
-            return dict.Count == other.Count && !dict.Except(other).Any();
+            return left.Count == right.Count && !left.Except(right).Any();
         }
 
         internal static bool IsIntegralType(this object obj)
@@ -62,6 +62,24 @@ namespace Microsoft.JSchema
                 default:
                     return false;
             }
+        }
+    }
+
+    internal static class IEnumerableExtensions
+    {
+        internal static bool HasSameElementsAs<T>(this IEnumerable<T> left, IEnumerable<T> right)
+        {
+            if (left == null && right == null)
+            {
+                return true;
+            }
+
+            if (left == null || right == null)
+            {
+                return false;
+            }
+
+            return left.Count() == right.Count() && !left.Except(right).Any();
         }
     }
 
