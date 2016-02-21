@@ -114,7 +114,7 @@ namespace Microsoft.JSchema.Tests
 
             new object[]
             {
-                "Dictionary",
+                "Definitions",
                 new JsonSchema
                 {
                     Type = JsonType.Object,
@@ -131,11 +131,25 @@ namespace Microsoft.JSchema.Tests
                     {
                         ["def1"] = new JsonSchema
                         {
+                            Type = JsonType.Object,
+
                             Properties = new Dictionary<string, JsonSchema>
                             {
                                 ["prop1"] = new JsonSchema
                                 {
                                     Type = JsonType.String
+                                }
+                            }
+                        },
+                        ["def2"] = new JsonSchema
+                        {
+                            Type = JsonType.Object,
+
+                            Properties = new Dictionary<string, JsonSchema>
+                            {
+                                ["prop2"] = new JsonSchema
+                                {
+                                    Type = JsonType.Integer
                                 }
                             }
                         }

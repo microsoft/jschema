@@ -83,6 +83,24 @@ namespace Microsoft.JSchema
         }
     }
 
+    internal static class StringExtensions
+    {
+        /// <summary>
+        /// Capitalize the first letter of a string to change it from camelCase to
+        /// PascalCase.
+        /// </summary>
+        /// <param name="s">
+        /// The string whose first letter is to be capitalized.
+        /// </param>
+        /// <returns>
+        /// A copy of <paramref name="s"/> in which the first letter has been capitalized.
+        /// </returns>
+        internal static string ToPascalCase(this string s)
+        {
+            return s[0].ToString().ToUpperInvariant() + s.Substring(1);
+        }
+    }
+
     internal static class UriExtensions
     {
         /// <summary>

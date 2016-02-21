@@ -102,7 +102,7 @@ namespace Microsoft.JSchema.Generator
                 modifiers,
                 MakePropertyType(schemaType, elementType),
                 default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier(Capitalize(propertyName)),
+                SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
                 .WithLeadingTrivia(leadingTrivia);
 
@@ -145,11 +145,6 @@ namespace Microsoft.JSchema.Generator
             }
 
             _text = sb.ToString();
-        }
-
-        private static string Capitalize(string propertyName)
-        {
-            return propertyName[0].ToString().ToUpperInvariant() + propertyName.Substring(1);
         }
 
         private TypeSyntax MakePropertyType(JsonType propertyType, JsonType elementType)

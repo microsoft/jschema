@@ -7,9 +7,18 @@
   },
   "definitions": {
     "def1": {
+      "type": "object",
       "properties": {
         "prop1": {
           "type": "string"
+        }
+      }
+    },
+    "def2": {
+      "type": "object",
+      "properties": {
+        "prop2": {
+          "type": "integer"
         }
       }
     }

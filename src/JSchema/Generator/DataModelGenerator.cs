@@ -54,14 +54,19 @@ namespace Microsoft.JSchema.Generator
 
         internal void CreateFile(string className, JsonSchema schema, string copyrightNotice = null)
         {
-            string text = CreateFileText(schema, copyrightNotice);
+            className = className.ToPascalCase();
+
+            string text = CreateFileText(className, schema, copyrightNotice);
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
         }
 
-        internal string CreateFileText(JsonSchema schema, string copyrightNotice = null)
+        // TODO: We refactored CreateFileText from CreateFile to separate out the file system handling.
+        // But CreateFileText turns right around an calls CreateFile, so we didn't help at all.
+        // Refactor/untangle this.
+        internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice = null)
         {
             var classGenerator = new ClassGenerator();
-            classGenerator.StartClass(_settings.NamespaceName, _settings.RootClassName, copyrightNotice);
+            classGenerator.StartClass(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice);
 
             if (schema.Properties != null)
             {
@@ -72,6 +77,7 @@ namespace Microsoft.JSchema.Generator
 
                     if (subSchema.Type == JsonType.Object)
                     {
+                        // TODO: We haven't unit tested this path.
                         CreateFile(propertyName, subSchema, copyrightNotice);
                     }
 
@@ -82,6 +88,17 @@ namespace Microsoft.JSchema.Generator
                         : JsonType.None;
 
                     classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
+                }
+            }
+
+            if (schema.Definitions != null)
+            {
+                foreach (KeyValuePair<string, JsonSchema> definition in schema.Definitions)
+                {
+                    if (definition.Value.Type == JsonType.Object)
+                    {
+                        CreateFile(definition.Key, definition.Value, copyrightNotice);
+                    }
                 }
             }
 

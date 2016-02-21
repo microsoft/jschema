@@ -142,7 +142,7 @@ namespace Microsoft.JSchema.Generator.Tests
         public object[] ArrayProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(schema);
+            string actual = generator.CreateFileText("C", schema);
             actual.Should().Be(Expected);
         }
 
@@ -163,7 +163,7 @@ namespace Microsoft.JSchema.Generator.Tests
     }
 }";
 
-            string actual = generator.CreateFileText(schema);
+            string actual = generator.CreateFileText("C", schema);
             actual.Should().Be(Expected);
         }
 
@@ -191,7 +191,7 @@ namespace N
         public string ExampleProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(schema, CopyrightNotice);
+            string actual = generator.CreateFileText("C", schema, CopyrightNotice);
             actual.Should().Be(Expected);
         }
 
@@ -210,7 +210,7 @@ namespace N
         public bool BooleanEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(schema, null);
+            string actual = generator.CreateFileText("C", schema, null);
             actual.Should().Be(Expected);
         }
 
@@ -229,7 +229,7 @@ namespace N
         public int IntegerEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(schema, null);
+            string actual = generator.CreateFileText("C", schema, null);
             actual.Should().Be(Expected);
         }
 
@@ -248,7 +248,7 @@ namespace N
         public object MixedEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(schema, null);
+            string actual = generator.CreateFileText("C", schema, null);
             actual.Should().Be(Expected);
         }
 
@@ -267,7 +267,7 @@ namespace N
         public double NumberEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(schema, null);
+            string actual = generator.CreateFileText("C", schema, null);
             actual.Should().Be(Expected);
         }
 
@@ -286,17 +286,16 @@ namespace N
         public string StringEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText(schema, null);
+            string actual = generator.CreateFileText("C", schema, null);
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions dictionary",
-              Skip = "https://github.com/lgolding/jschema/issues/16")]
-        public void GeneratesClassesForSchemasInDefinitionsDictionary()
+        [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
+        public void GeneratesClassesForSchemasInDefinitions()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Dictionary");
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
 
             generator.CreateFile(_settings.RootClassName, schema);
 
@@ -309,7 +308,7 @@ namespace N
     }
 }";
 
-            const string ExpectedDefinedClass =
+            const string ExpectedDefinedClass1 =
 @"namespace N
 {
     public partial class Def1
@@ -317,17 +316,28 @@ namespace N
         public string Prop1 { get; set; }
     }
 }";
+
+            const string ExpectedDefinedClass2 =
+@"namespace N
+{
+    public partial class Def2
+    {
+        public int Prop2 { get; set; }
+    }
+}";
             var expectedOutputFiles = new List<string>
             {
                 @"Generated\C.cs",
-                @"Generated\Def1.cs"
+                @"Generated\Def1.cs",
+                @"Generated\Def2.cs"
             };
 
             _fileContentsDictionary.Count.Should().Be(expectedOutputFiles.Count);
             _fileContentsDictionary.Keys.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(ExpectedRootClass);
-            _fileContentsDictionary[@"Generated\Def1.cs"].Should().Be(ExpectedDefinedClass);
+            _fileContentsDictionary[@"Generated\Def1.cs"].Should().Be(ExpectedDefinedClass1);
+            _fileContentsDictionary[@"Generated\Def2.cs"].Should().Be(ExpectedDefinedClass2);
         }
 
         private const string OutputDirectory = "Generated";
@@ -346,6 +356,7 @@ namespace N
                 .Callback((string path, string contents) =>
                 {
                     _fileContentsDictionary.Add(path, contents);
+                    _mockFileSystem.Setup(fs => fs.FileExists(path)).Returns(true);
                 });
 
             return _mockFileSystem.Object;

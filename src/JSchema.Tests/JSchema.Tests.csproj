@@ -77,7 +77,7 @@
     <None Include="TestData\BooleanEnum.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\Dictionary.schema.json">
+    <None Include="TestData\Definitions.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestData\Empty.schema.json">
