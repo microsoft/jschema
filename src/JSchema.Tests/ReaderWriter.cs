@@ -20,7 +20,7 @@ namespace Microsoft.JSchema.Tests
                 "Basic",
                 new JsonSchema
                 {
-                    Id = new Uri("http://www.example.com/schemas/basic#"),
+                    Id = new UriOrFragment("http://www.example.com/schemas/basic#"),
                     SchemaVersion = JsonSchema.V4Draft,
                     Title = "The title",
                     Description = "The description",
@@ -154,9 +154,7 @@ namespace Microsoft.JSchema.Tests
                     {
                         ["rootProp"] = new JsonSchema
                         {
-                            // BUG https://github.com/lgolding/jschema/issues/19
-                            // System.Uri doesn't support a bare fragment, so we'll need a workaround.
-                            Reference = new Uri("Issue-19#/definitions/def1", UriKind.Relative)
+                            Reference = new UriOrFragment("#/definitions/def1")
                         }
                     },
 
@@ -164,7 +162,7 @@ namespace Microsoft.JSchema.Tests
                     {
                         ["def1"] = new JsonSchema
                         {
-                            Id = new Uri("def1", UriKind.Relative),
+                            Id = new UriOrFragment("def1"),
                             Properties = new Dictionary<string, JsonSchema>
                             {
                                 ["prop1"] = new JsonSchema

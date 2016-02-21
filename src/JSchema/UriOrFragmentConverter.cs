@@ -5,25 +5,25 @@ using Newtonsoft.Json;
 
 namespace Microsoft.JSchema
 {
-    internal class UriConverter : JsonConverter
+    internal class UriOrFragmentConverter : JsonConverter
     {
-        public static readonly UriConverter Instance = new UriConverter();
+        public static readonly UriOrFragmentConverter Instance = new UriOrFragmentConverter();
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(Uri);
+            return objectType == typeof(UriOrFragment);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             string uriString = (string)reader.Value;
 
-            return new Uri(uriString, UriKind.RelativeOrAbsolute);
+            return new UriOrFragment(uriString);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteRawValue('"' + ((Uri)value).OriginalString + '"');
+            writer.WriteRawValue('"' + ((UriOrFragment)value).ToString() + '"');
         }
     }
 }

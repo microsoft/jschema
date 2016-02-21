@@ -11,9 +11,9 @@ namespace Microsoft.JSchema
         {
             var contract = base.CreateContract(objectType);
 
-            if (objectType == typeof(Uri))
+            if (objectType == typeof(UriOrFragment))
             {
-                contract.Converter = UriConverter.Instance;
+                contract.Converter = UriOrFragmentConverter.Instance;
             }
 
             return contract;

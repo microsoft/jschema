@@ -18,7 +18,7 @@ namespace Microsoft.JSchema
         /// See http://json-schema.org/latest/json-schema-core.html#anchor25 ("URI resolution
         /// scopes and dereferencing").
         /// </remarks>
-        public Uri Id { get; set; }
+        public UriOrFragment Id { get; set; }
 
         [JsonProperty("$schema")]
         public Uri SchemaVersion { get; set; }
@@ -60,7 +60,7 @@ namespace Microsoft.JSchema
         // See the RefProperty class for an explanation of our special treatment of
         // this property.
         [JsonProperty("$$ref")]
-        public Uri Reference { get; set; }
+        public UriOrFragment Reference { get; set; }
 
         #region Object overrides
 
@@ -86,11 +86,23 @@ namespace Microsoft.JSchema
             }
 
             return Id == other.Id
-                && SchemaVersion == other.SchemaVersion
+                && (SchemaVersion == null
+                        ? other.SchemaVersion == null
+                        : SchemaVersion.EqualsWithFragments(other.SchemaVersion))
                 && string.Equals(Title, other.Title, StringComparison.Ordinal)
                 && string.Equals(Description, other.Description, StringComparison.Ordinal)
                 && Type == other.Type
-                && Properties.HasSameElementsAs(other.Properties);
+                // && Enum.Con
+                // Items
+                && (Properties == null
+                        ? other.Properties == null
+                        : Properties.HasSameElementsAs(other.Properties))
+                && (Definitions == null
+                        ? other.Definitions == null
+                        : Definitions.HasSameElementsAs(other.Definitions))
+                && (Reference == null
+                        ? other.Reference == null
+                        : Reference.Equals(other.Reference));
         }
 
         #endregion

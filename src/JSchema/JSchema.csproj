@@ -102,7 +102,8 @@
     </Compile>
     <Compile Include="SchemaReader.cs" />
     <Compile Include="SchemaWriter.cs" />
-    <Compile Include="UriConverter.cs" />
+    <Compile Include="UriOrFragmentConverter.cs" />
+    <Compile Include="UriOrFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -64,4 +64,40 @@ namespace Microsoft.JSchema
             }
         }
     }
+
+    internal static class UriExtensions
+    {
+        /// <summary>
+        /// Compares two URIs, taking account of their fragments, if any.
+        /// </summary>
+        /// <param name="right">
+        /// The first URI to compare.
+        /// </param>
+        /// <param name="left">
+        /// The second URI to compare.
+        /// </param>
+        /// <returns>
+        /// True if the URIs are equal, including their fragments, if any;
+        /// otherwise false.
+        /// </returns>
+        internal static bool EqualsWithFragments(this Uri right, Uri left)
+        {
+            if (!right.Equals(left))
+            {
+                return false;
+            }
+
+            // If the URIs were equal, they were both either absolute or both
+            // relative. If they were relative, the comparison took account of their
+            // fragments.
+            if (!right.IsAbsoluteUri)
+            {
+                return true;
+            }
+
+            // If they were absolute, the comparison did not take account of their
+            // fragments, so we'll compare the fragments ourselves.
+            return right.Fragment.Equals(left.Fragment, StringComparison.Ordinal);
+        }
+    }
 }
