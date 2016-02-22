@@ -107,7 +107,7 @@ namespace Microsoft.JSchema.Generator.Tests
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
 
-            generator.CreateFile(_settings.RootClassName, schema);
+            generator.CreateFile(_settings.RootClassName, schema, schema);
 
             const string Expected =
 @"namespace N
@@ -142,7 +142,7 @@ namespace Microsoft.JSchema.Generator.Tests
         public D ObjectProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema);
+            string actual = generator.CreateFileText("C", schema, schema);
             actual.Should().Be(Expected);
         }
 
@@ -161,7 +161,7 @@ namespace Microsoft.JSchema.Generator.Tests
         public object[] ArrayProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema);
+            string actual = generator.CreateFileText("C", schema, schema);
             actual.Should().Be(Expected);
         }
 
@@ -182,7 +182,7 @@ namespace Microsoft.JSchema.Generator.Tests
     }
 }";
 
-            string actual = generator.CreateFileText("C", schema);
+            string actual = generator.CreateFileText("C", schema, schema);
             actual.Should().Be(Expected);
         }
 
@@ -210,7 +210,7 @@ namespace N
         public string ExampleProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, CopyrightNotice);
+            string actual = generator.CreateFileText("C", schema, schema, CopyrightNotice);
             actual.Should().Be(Expected);
         }
 

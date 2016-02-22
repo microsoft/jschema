@@ -30,7 +30,7 @@ namespace Microsoft.JSchema.Generator
             _fileSystem = fileSystem;
         }
 
-        public void Generate(JsonSchema schema)
+        public void Generate(JsonSchema rootSchema)
         {
             if (_fileSystem.DirectoryExists(_settings.OutputDirectory) && !_settings.ForceOverwrite)
             {
@@ -39,9 +39,9 @@ namespace Microsoft.JSchema.Generator
 
             _fileSystem.CreateDirectory(_settings.OutputDirectory);
 
-            if (schema.Type != JsonType.Object)
+            if (rootSchema.Type != JsonType.Object)
             {
-                throw JSchemaException.Create(Resources.ErrorNotAnObject, schema.Type);
+                throw JSchemaException.Create(Resources.ErrorNotAnObject, rootSchema.Type);
             }
 
             if (_settings.CopyrightFilePath != null && !File.Exists(_settings.CopyrightFilePath))
@@ -51,26 +51,26 @@ namespace Microsoft.JSchema.Generator
 
             string copyrightNotice = _fileSystem.ReadAllText(_settings.CopyrightFilePath);
 
-            CreateFile(_settings.RootClassName, schema, copyrightNotice);
+            CreateFile(_settings.RootClassName, rootSchema, rootSchema, copyrightNotice);
 
-            if (schema.Definitions != null)
+            if (rootSchema.Definitions != null)
             {
-                foreach (KeyValuePair<string, JsonSchema> definition in schema.Definitions)
+                foreach (KeyValuePair<string, JsonSchema> definition in rootSchema.Definitions)
                 {
-                    CreateFile(definition.Key, definition.Value, copyrightNotice);
+                    CreateFile(definition.Key, definition.Value, rootSchema, copyrightNotice);
                 }
             }
         }
 
-        internal void CreateFile(string className, JsonSchema schema, string copyrightNotice = null)
+        internal void CreateFile(string className, JsonSchema schema, JsonSchema rootSchema, string copyrightNotice = null)
         {
             className = className.ToPascalCase();
 
-            string text = CreateFileText(className, schema, copyrightNotice);
+            string text = CreateFileText(className, schema, rootSchema, copyrightNotice);
             _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
         }
 
-        internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice = null)
+        internal string CreateFileText(string className, JsonSchema schema, JsonSchema rootSchema, string copyrightNotice = null)
         {
             var classGenerator = new ClassGenerator();
             classGenerator.StartClass(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice);
@@ -85,13 +85,13 @@ namespace Microsoft.JSchema.Generator
                     if (subSchema.Type == JsonType.Object)
                     {
                         // TODO: We haven't unit tested this path.
-                        CreateFile(propertyName, subSchema, copyrightNotice);
+                        CreateFile(propertyName, subSchema, rootSchema, copyrightNotice);
                     }
 
-                    InferredType propertyType = InferTypeFromSchema(schema, subSchema);
+                    InferredType propertyType = InferTypeFromSchema(rootSchema, subSchema);
 
                     InferredType elementType = subSchema.Type == JsonType.Array
-                        ? GetElementType(schema, subSchema)
+                        ? GetElementType(rootSchema, subSchema)
                         : InferredType.None;
 
                     classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
@@ -105,15 +105,15 @@ namespace Microsoft.JSchema.Generator
         // If the current schema is of array type, get the type of
         // its elements.
         // TODO: I'm not handling arrays of arrays. InferredType should encapsulate that.
-        private InferredType GetElementType(JsonSchema schema, JsonSchema subSchema)
+        private InferredType GetElementType(JsonSchema rootSchema, JsonSchema subSchema)
         {
             return subSchema.Items != null
-                ? InferTypeFromSchema(schema, subSchema.Items)
+                ? InferTypeFromSchema(rootSchema, subSchema.Items)
                 : new InferredType(JsonType.Object);
         }
 
         // Not every subschema specifies a type, but in some cases, it can be inferred.
-        private InferredType InferTypeFromSchema(JsonSchema schema, JsonSchema subSchema)
+        private InferredType InferTypeFromSchema(JsonSchema rootSchema, JsonSchema subSchema)
         {
             if (subSchema.Type != JsonType.None)
             {
@@ -123,7 +123,7 @@ namespace Microsoft.JSchema.Generator
             // If there is a reference, use the type of the reference.
             if (subSchema.Reference != null)
             {
-                return InferTypeFromReference(schema, subSchema);
+                return InferTypeFromReference(rootSchema, subSchema);
             }
 
             // If there is an enum and every value has the same type, use that.
@@ -140,7 +140,7 @@ namespace Microsoft.JSchema.Generator
             return InferredType.None;
         }
 
-        private InferredType InferTypeFromReference(JsonSchema schema, JsonSchema subSchema)
+        private InferredType InferTypeFromReference(JsonSchema rootSchema, JsonSchema subSchema)
         {
             if (!subSchema.Reference.IsFragment)
             {
@@ -151,7 +151,7 @@ namespace Microsoft.JSchema.Generator
             string definitionName = GetDefinitionNameFromFragment(subSchema.Reference.Fragment);
 
             JsonSchema definitionSchema;
-            if (!schema.Definitions.TryGetValue(definitionName, out definitionSchema))
+            if (!rootSchema.Definitions.TryGetValue(definitionName, out definitionSchema))
             {
                 throw new JSchemaException(
                     string.Format(CultureInfo.InvariantCulture, Resources.ErrorDefinitionDoesNotExist, definitionName));
