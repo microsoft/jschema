@@ -112,11 +112,29 @@ namespace Microsoft.JSchema.Generator.Tests
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string StringProp { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public double NumberProp { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool BooleanProp { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public int IntegerProp { get; set; }
     }
 }";
@@ -138,8 +156,14 @@ namespace Microsoft.JSchema.Generator.Tests
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public D ObjectProp { get; set; }
     }
 }";
@@ -228,8 +252,14 @@ namespace Microsoft.JSchema.Generator.Tests
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public object[] ArrayProp { get; set; }
     }
 }";
@@ -247,9 +277,14 @@ namespace Microsoft.JSchema.Generator.Tests
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
-        /// <summary>An example property.</summary>
+        /// <summary>
+        /// An example property.
+        /// </summary>
         public string ExampleProp { get; set; }
     }
 }";
@@ -283,9 +318,14 @@ namespace Microsoft.JSchema.Generator.Tests
 
 namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
-        /// <summary>An example property.</summary>
+        /// <summary>
+        /// An example property.
+        /// </summary>
         public string ExampleProp { get; set; }
     }
 }";
@@ -303,8 +343,14 @@ namespace N
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public bool BooleanEnumProp { get; set; }
     }
 }";
@@ -322,8 +368,14 @@ namespace N
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public int IntegerEnumProp { get; set; }
     }
 }";
@@ -341,8 +393,14 @@ namespace N
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public object MixedEnumProp { get; set; }
     }
 }";
@@ -360,8 +418,14 @@ namespace N
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public double NumberEnumProp { get; set; }
     }
 }";
@@ -379,8 +443,14 @@ namespace N
             const string Expected =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string StringEnumProp { get; set; }
     }
 }";
@@ -400,8 +470,14 @@ namespace N
             const string ExpectedRootClass =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class C
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public bool RootProp { get; set; }
     }
 }";
@@ -409,8 +485,14 @@ namespace N
             const string ExpectedDefinedClass1 =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class Def1
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string Prop1 { get; set; }
     }
 }";
@@ -418,8 +500,14 @@ namespace N
             const string ExpectedDefinedClass2 =
 @"namespace N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class Def2
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public int Prop2 { get; set; }
     }
 }";

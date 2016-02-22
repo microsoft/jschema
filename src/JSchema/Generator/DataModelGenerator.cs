@@ -107,7 +107,7 @@ namespace Microsoft.JSchema.Generator
                 }
             }
 
-            classGenerator.FinishClass();
+            classGenerator.FinishClass(schema.Description);
             return classGenerator.GetText();
         }
 

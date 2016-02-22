@@ -95,8 +95,6 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 });
 
-            SyntaxTriviaList leadingTrivia = MakeDocCommentFromDescription(description);
-
             PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
@@ -104,7 +102,7 @@ namespace Microsoft.JSchema.Generator
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
-                .WithLeadingTrivia(leadingTrivia);
+                .WithLeadingTrivia(MakeDocCommentFromDescription(description));
 
             _propDecls.Add(prop);
         }
@@ -112,7 +110,7 @@ namespace Microsoft.JSchema.Generator
         /// <summary>
         /// Perform any actions necessary to complete the class and generate its text.
         /// </summary>
-        public void FinishClass()
+        public void FinishClass(string description)
         {
             var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
 
@@ -122,7 +120,8 @@ namespace Microsoft.JSchema.Generator
 
             ClassDeclarationSyntax classDecl = SyntaxFactory.ClassDeclaration(_className)
                 .WithMembers(classMembers)
-                .WithModifiers(classModifiers);
+                .WithModifiers(classModifiers)
+                .WithLeadingTrivia(MakeDocCommentFromDescription(description));
 
             var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(classDecl);
 
@@ -195,32 +194,11 @@ namespace Microsoft.JSchema.Generator
 
         private SyntaxTriviaList MakeDocCommentFromDescription(string description)
         {
-            var docCommentTrivia = new SyntaxTriviaList();
-            if (!string.IsNullOrWhiteSpace(description))
-            {
-                var startTag = SyntaxFactory.XmlElementStartTag(SyntaxFactory.XmlName("summary"));
-
-                var content = SyntaxFactory.XmlText(
-                    SyntaxFactory.TokenList(
-                        SyntaxFactory.XmlTextLiteral(default(SyntaxTriviaList), description, description, default(SyntaxTriviaList))));
-
-                var endTag = SyntaxFactory.XmlElementEndTag(SyntaxFactory.XmlName("summary"));
-
-                var summaryElement = SyntaxFactory.XmlElement(
-                    startTag,
-                    SyntaxFactory.SingletonList<XmlNodeSyntax>(content),
-                    endTag);
-
-                var docComment = SyntaxFactory.DocumentationCommentTrivia(
-                    SyntaxKind.MultiLineDocumentationCommentTrivia,
-                    SyntaxFactory.SingletonList<XmlNodeSyntax>(summaryElement))
-                    .WithLeadingTrivia(SyntaxFactory.DocumentationCommentExterior("/// "))
-                    .WithTrailingTrivia(SyntaxFactory.EndOfLine(Environment.NewLine));
-
-                docCommentTrivia = docCommentTrivia.Add(SyntaxFactory.Trivia(docComment));
-            }
-
-            return docCommentTrivia;
+            return SyntaxFactory.ParseLeadingTrivia(
+@"/// <summary>
+/// " + description + @"
+/// </summary>
+");
         }
 
         private SyntaxTriviaList MakeCopyrightComment(string copyrightNotice)
