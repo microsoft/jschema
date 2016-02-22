@@ -147,6 +147,77 @@ namespace Microsoft.JSchema.Generator.Tests
             actual.Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
+        public void ThrowsIfReferenceIsNotAFragment()
+        {
+            const string SchemaText = @"
+{
+  ""type"": ""object"",
+  ""properties"": {
+    ""p"": {
+      ""$ref"": ""https://example.com/pschema.schema.json/#""
+    }
+  },
+}";
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            Action action = () => generator.Generate(schema);
+
+            action.ShouldThrow<JSchemaException>()
+                .WithMessage("*https://example.com/pschema.schema.json/#*");
+        }
+
+        [Fact(DisplayName = "DataModelGenerator throws if reference does not specify a definition")]
+        public void ThrowsIfReferenceDoesNotSpecifyADefinition()
+        {
+            const string SchemaText = @"
+{
+  ""type"": ""object"",
+  ""properties"": {
+    ""p"": {
+      ""$ref"": ""#/notDefinitions/p""
+    }
+  },
+  ""notDefinitions"": {
+    ""p"": {
+    }
+  }
+}";
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            Action action = () => generator.Generate(schema);
+
+            action.ShouldThrow<JSchemaException>()
+                .WithMessage("*#/notDefinitions/p*");
+        }
+
+        [Fact(DisplayName = "Throws if referenced definition does not exist")]
+        public void ThrowsIfReferencedDefinitionDoesNotExist()
+        {
+            const string SchemaText = @"
+{
+  ""type"": ""object"",
+  ""properties"": {
+    ""p"": {
+      ""$ref"": ""#/definitions/nonExistentDefinition""
+    }
+  },
+  ""definitions"": {
+    ""p"": {
+    }
+  }
+}";
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            Action action = () => generator.Generate(schema);
+
+            action.ShouldThrow<JSchemaException>()
+                .WithMessage("*nonExistentDefinition*");
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {

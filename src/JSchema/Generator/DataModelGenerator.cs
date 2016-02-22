@@ -153,8 +153,8 @@ namespace Microsoft.JSchema.Generator
         {
             if (!subSchema.Reference.IsFragment)
             {
-                throw new ArgumentException(
-                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, subSchema.Reference), nameof(subSchema));
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, subSchema.Reference));
             }
 
             string definitionName = GetDefinitionNameFromFragment(subSchema.Reference.Fragment);
