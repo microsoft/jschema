@@ -7,6 +7,11 @@ namespace Microsoft.JSchema
 {
     public static class SchemaReader
     {
+        public static JsonSchema ReadSchema(TextReader reader)
+        {
+            return ReadSchema(reader.ReadToEnd());
+        }
+
         public static JsonSchema ReadSchema(string jsonText)
         {
             // Change "$ref" to "$$ref" before we ask Json.NET to deserialize it,

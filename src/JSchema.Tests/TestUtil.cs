@@ -8,7 +8,15 @@ namespace Microsoft.JSchema.Tests
     {
         internal static string ReadTestDataFile(string fileNameStem)
         {
-            return File.ReadAllText($"TestData\\{fileNameStem}.schema.json");
+            using (var reader = new StreamReader(GetTestDataStream(fileNameStem)))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        internal static Stream GetTestDataStream(string fileNameStem)
+        {
+            return new FileStream($"TestData\\{fileNameStem}.schema.json", FileMode.Open, FileAccess.Read);
         }
 
         internal static JsonSchema CreateSchemaFromTestDataFile(string fileNameStem)
