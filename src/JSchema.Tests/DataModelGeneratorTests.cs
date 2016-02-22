@@ -107,7 +107,7 @@ namespace Microsoft.JSchema.Generator.Tests
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
 
-            generator.CreateFile(_settings.RootClassName, schema, schema);
+            string actual = generator.Generate(schema);
 
             const string Expected =
 @"namespace N
@@ -120,11 +120,12 @@ namespace Microsoft.JSchema.Generator.Tests
         public int IntegerProp { get; set; }
     }
 }";
+            actual.Should().Be(Expected);
+
             // This particular test shows not only that the correct text was produced,
             // but that it was written to the expected path. Subsequent tests will
             // just verify the text.
             _fileContentsDictionary.Keys.Should().OnlyContain(key => key.Equals(@"Generated\C.cs"));
-            _fileContentsDictionary[@"Generated\C.cs"].Should().Be(Expected);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
@@ -142,7 +143,7 @@ namespace Microsoft.JSchema.Generator.Tests
         public D ObjectProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, schema);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -161,7 +162,7 @@ namespace Microsoft.JSchema.Generator.Tests
         public object[] ArrayProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, schema);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -182,7 +183,7 @@ namespace Microsoft.JSchema.Generator.Tests
     }
 }";
 
-            string actual = generator.CreateFileText("C", schema, schema);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -193,6 +194,13 @@ namespace Microsoft.JSchema.Generator.Tests
 @"// Copyright (c) 2016. All rights reserved.
 // Licensed under Apache 2.0 license.
 ";
+            _settings.CopyrightFilePath = CopyrightFilePath;
+
+            _mockFileSystem.Setup(fs => fs.FileExists(CopyrightFilePath))
+                .Returns(true);
+            _mockFileSystem.Setup(fs => fs.ReadAllText(CopyrightFilePath))
+                .Returns(CopyrightNotice);
+            _fileSystem = _mockFileSystem.Object;
 
             var generator = new DataModelGenerator(_settings, _fileSystem);
 
@@ -210,7 +218,7 @@ namespace N
         public string ExampleProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, schema, CopyrightNotice);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -229,7 +237,7 @@ namespace N
         public bool BooleanEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, null);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
