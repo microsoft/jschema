@@ -70,6 +70,15 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This schema does not contain the sub-schema definition referred to by the $ref value &quot;{0}&quot;..
+        /// </summary>
+        internal static string ErrorDefinitionDoesNotExist {
+            get {
+                return ResourceManager.GetString("ErrorDefinitionDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The {0} property of this {1} instance is {2}, so it has no class name..
         /// </summary>
         internal static string ErrorNoClassNameForInferredTypeKindPrimitive {
@@ -93,6 +102,15 @@ namespace Microsoft.JSchema {
         internal static string ErrorNotAnObject {
             get {
                 return ResourceManager.GetString("ErrorNotAnObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the &quot;definitions&quot; property, for example &quot;#/definitions/def1&quot;. The URI reference &quot;{0}&quot; is not supported..
+        /// </summary>
+        internal static string ErrorOnlyDefinitionFragmentsSupported {
+            get {
+                return ResourceManager.GetString("ErrorOnlyDefinitionFragmentsSupported", resourceCulture);
             }
         }
         

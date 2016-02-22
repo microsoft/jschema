@@ -1,0 +1,13 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "objectProp": {
+      "$ref": "#/definitions/d"
+    }
+  },
+  "definitions": {
+    "d": {
+      "type": "object"
+    }
+  }
+}

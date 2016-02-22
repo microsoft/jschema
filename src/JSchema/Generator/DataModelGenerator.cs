@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.JSchema.Generator
 {
@@ -86,10 +88,10 @@ namespace Microsoft.JSchema.Generator
                         CreateFile(propertyName, subSchema, copyrightNotice);
                     }
 
-                    InferredType propertyType = InferTypeFromSchema(subSchema);
+                    InferredType propertyType = InferTypeFromSchema(schema, subSchema);
 
                     InferredType elementType = subSchema.Type == JsonType.Array
-                        ? GetElementType(subSchema)
+                        ? GetElementType(schema, subSchema)
                         : InferredType.None;
 
                     classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
@@ -103,29 +105,29 @@ namespace Microsoft.JSchema.Generator
         // If the current schema is of array type, get the type of
         // its elements.
         // TODO: I'm not handling arrays of arrays. InferredType should encapsulate that.
-        private InferredType GetElementType(JsonSchema schema)
+        private InferredType GetElementType(JsonSchema schema, JsonSchema subSchema)
         {
-            return schema.Items != null
-                ? InferTypeFromSchema(schema.Items)
+            return subSchema.Items != null
+                ? InferTypeFromSchema(schema, subSchema.Items)
                 : new InferredType(JsonType.Object);
         }
 
         // Not every subschema specifies a type, but in some cases, it can be inferred.
-        private InferredType InferTypeFromSchema(JsonSchema schema)
+        private InferredType InferTypeFromSchema(JsonSchema schema, JsonSchema subSchema)
         {
-            if (schema.Type != JsonType.None)
+            if (subSchema.Type != JsonType.None)
             {
-                return new InferredType(schema.Type);
+                return new InferredType(subSchema.Type);
             }
 
             // If there is a reference, use the type of the reference.
-            if (schema.Reference != null)
+            if (subSchema.Reference != null)
             {
-                return InferTypeFromReference(schema.Reference);
+                return InferTypeFromReference(schema, subSchema);
             }
 
             // If there is an enum and every value has the same type, use that.
-            object[] enumValues = schema.Enum;
+            object[] enumValues = subSchema.Enum;
             if (enumValues != null && enumValues.Length > 0)
             {
                 var inferredType = InferTypeFromEnumValues(enumValues);
@@ -138,10 +140,38 @@ namespace Microsoft.JSchema.Generator
             return InferredType.None;
         }
 
-        private InferredType InferTypeFromReference(UriOrFragment reference)
+        private InferredType InferTypeFromReference(JsonSchema schema, JsonSchema subSchema)
         {
-            // Make the unit test pass to verify the logic of the caller.
-            return new InferredType("D");
+            if (!subSchema.Reference.IsFragment)
+            {
+                throw new ArgumentException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, subSchema.Reference), nameof(subSchema));
+            }
+
+            string definitionName = GetDefinitionNameFromFragment(subSchema.Reference.Fragment);
+
+            JsonSchema definitionSchema;
+            if (!schema.Definitions.TryGetValue(definitionName, out definitionSchema))
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorDefinitionDoesNotExist, definitionName));
+            }
+
+            return new InferredType(definitionName.ToPascalCase());
+        }
+
+        private static readonly Regex s_definitionRegex = new Regex(@"^#/definitions/(?<definitionName>[^/]+)$");
+
+        private string GetDefinitionNameFromFragment(string fragment)
+        {
+            Match match = s_definitionRegex.Match(fragment);
+            if (!match.Success)
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, fragment));
+            }
+
+            return match.Groups["definitionName"].Captures[0].Value;
         }
 
         private InferredType InferTypeFromEnumValues(object[] enumValues)

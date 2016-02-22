@@ -120,6 +120,9 @@
   <data name="ErrorCopyrightFileNotFound" xml:space="preserve">
     <value>The copyright file "{0}" could not be found.</value>
   </data>
+  <data name="ErrorDefinitionDoesNotExist" xml:space="preserve">
+    <value>This schema does not contain the sub-schema definition referred to by the $ref value "{0}".</value>
+  </data>
   <data name="ErrorNoClassNameForInferredTypeKindPrimitive" xml:space="preserve">
     <value>The {0} property of this {1} instance is {2}, so it has no class name.</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="ErrorNotAnObject" xml:space="preserve">
     <value>The specified schema has type="{0}". Data model generation requires a schema whose top-level type is "object".</value>
+  </data>
+  <data name="ErrorOnlyDefinitionFragmentsSupported" xml:space="preserve">
+    <value>This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the "definitions" property, for example "#/definitions/def1". The URI reference "{0}" is not supported.</value>
   </data>
   <data name="ErrorOutputDirectoryExists" xml:space="preserve">
     <value>The output directory {0} already exists.</value>
