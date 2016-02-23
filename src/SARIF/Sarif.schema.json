@@ -79,9 +79,19 @@
       "type": "object",
       "description": "Describes the invocation of the static analysis tool that was run.",
       "properties": {
+        "runStartTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time at which the run started."
+        },
+        "runEndTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time at which the run ended."
+        },
         "invocationInfo": {
           "type": "string",
-          "description":  "Contains the runtime parameters with which the tool was invoked."
+          "description": "Contains the runtime parameters with which the tool was invoked."
         }
       }
     },
