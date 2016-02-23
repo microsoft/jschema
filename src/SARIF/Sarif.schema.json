@@ -1,0 +1,69 @@
+{
+  "id": "http://json.schemastore.org/sarif/#",
+  "$schema": "http://json-schema.org/draft-04/schema/#",
+  "title": "Static Analysis Results Interchange Format (SARIF)",
+  "description": "A standard format for the output of static analysis tools",
+  "type": "object",
+
+  "properties": {
+    "version": {
+      "description": "Specifies the version of the SARIF format.",
+      "enum": [ "0.4.0" ]
+    },
+
+    "runLogs": {
+      "description": "An array of <see cref=\"RunLog\"/> objects, each describing a single run of a static analysis tool.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/runLog"
+      }
+    }
+  },
+
+  "definitions": {
+    "runLog": {
+      "description": "Describes a single run of a static analysis tool, and enumerates the results produced by that run.",
+      "type": "object",
+
+      "properties": {
+        "toolInfo": {
+          "$ref": "#/definitions/toolInfo"
+        },
+
+        "runInfo": {
+          "$ref": "#/definitions/runInfo"
+        }
+      }
+    },
+
+    "toolInfo": {
+      "description": "Contains information about the static analysis tool that was run.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the tool that produced the run log."
+        },
+
+        "fullName": {
+          "type": "string",
+          "description": "The name of the tool that produced the run log along with its version and any other useful identifying information, such as its locale."
+        },
+
+        "version": {
+          "type": "string",
+          "description": "The tool version."
+        },
+
+        "fileVersion": {
+          "type": "string",
+          "description": "The file version of the tool's primary executable file, if the operating system provides that information."
+        }
+      }
+    },
+
+    "runInfo": {
+      "type": "object"
+    }
+  }
+}
