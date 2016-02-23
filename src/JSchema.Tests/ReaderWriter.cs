@@ -222,7 +222,7 @@ namespace Microsoft.JSchema.Tests
 
             new object[]
             {
-                "Format",
+                "DateTime",
                 new JsonSchema
                 {
                     Type = JsonType.Object,

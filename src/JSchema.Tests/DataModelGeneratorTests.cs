@@ -379,7 +379,7 @@ namespace N
         public int IntegerEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, null);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -404,7 +404,7 @@ namespace N
         public object MixedEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, null);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -429,7 +429,7 @@ namespace N
         public double NumberEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, null);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -454,7 +454,7 @@ namespace N
         public string StringEnumProp { get; set; }
     }
 }";
-            string actual = generator.CreateFileText("C", schema, null);
+            string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
 
@@ -524,6 +524,34 @@ namespace N
             _fileContentsDictionary[@"Generated\C.cs"].Should().Be(ExpectedRootClass);
             _fileContentsDictionary[@"Generated\Def1.cs"].Should().Be(ExpectedDefinedClass1);
             _fileContentsDictionary[@"Generated\Def2.cs"].Should().Be(ExpectedDefinedClass2);
+        }
+
+        [Fact(DisplayName = "DataModelGenerate generates date-time-valued properties", Skip = "https://github.com/lgolding/jschema")]
+        public void GeneratesDateTimeValuedProperties()
+        {
+            var generator = new DataModelGenerator(_settings, _fileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("DateTime");
+
+            const string Expected =
+@"
+using System;
+
+namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime StartTime { get; set; }
+    }
+}";
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
         }
 
         private const string OutputDirectory = "Generated";
