@@ -124,6 +124,11 @@ namespace Microsoft.JSchema.Generator
         // Not every subschema specifies a type, but in some cases, it can be inferred.
         private InferredType InferTypeFromSchema(JsonSchema subSchema)
         {
+            if (subSchema.Type == JsonType.String && subSchema.Format == FormatAttributes.DateTime)
+            {
+                return new InferredType("System.DateTime");
+            }
+
             if (subSchema.Type != JsonType.None)
             {
                 return new InferredType(subSchema.Type);

@@ -526,7 +526,7 @@ namespace N
             _fileContentsDictionary[@"Generated\Def2.cs"].Should().Be(ExpectedDefinedClass2);
         }
 
-        [Fact(DisplayName = "DataModelGenerate generates date-time-valued properties", Skip = "https://github.com/lgolding/jschema")]
+        [Fact(DisplayName = "DataModelGenerate generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
             var generator = new DataModelGenerator(_settings, _fileSystem);
@@ -534,10 +534,7 @@ namespace N
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("DateTime");
 
             const string Expected =
-@"
-using System;
-
-namespace N
+@"namespace N
 {
     /// <summary>
     /// 
@@ -547,7 +544,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public System.DateTime StartTime { get; set; }
     }
 }";
             string actual = generator.Generate(schema);
