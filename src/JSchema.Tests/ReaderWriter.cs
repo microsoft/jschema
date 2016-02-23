@@ -117,7 +117,9 @@ namespace Microsoft.JSchema.Tests
                         {
                             Type = JsonType.Array
                         }
-                    }
+                    },
+                    MinItems = 1,
+                    MaxItems = null
                 }
             },
 

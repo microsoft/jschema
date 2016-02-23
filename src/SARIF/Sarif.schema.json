@@ -16,11 +16,12 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/runLog"
-      }
+      },
+      "minItems":  1
     }
   },
 
-  "required": [ "version" ],
+  "required": [ "version", "runLogs" ],
 
   "definitions": {
     "runLog": {

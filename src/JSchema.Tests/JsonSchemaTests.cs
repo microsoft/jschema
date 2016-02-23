@@ -43,7 +43,9 @@ namespace Microsoft.JSchema.Tests
                         ["c"] = new JsonSchema { Type = JsonType.Integer },
                         ["d"] = new JsonSchema { Type = JsonType.Boolean }
                     },
-                    Reference = new UriOrFragment("http://www.example.com/schema/#")
+                    Reference = new UriOrFragment("http://www.example.com/schema/#"),
+                    MinItems = 1,
+                    MaxItems = 3
                 },
                 new JsonSchema
                 {
@@ -66,7 +68,9 @@ namespace Microsoft.JSchema.Tests
                         ["c"] = new JsonSchema { Type = JsonType.Integer },
                         ["d"] = new JsonSchema { Type = JsonType.Boolean }
                     },
-                    Reference = new UriOrFragment("http://www.example.com/schema/#")
+                    Reference = new UriOrFragment("http://www.example.com/schema/#"),
+                    MinItems = 1,
+                    MaxItems = 3
                 },
                 true
             },
@@ -357,6 +361,68 @@ namespace Microsoft.JSchema.Tests
                 new JsonSchema
                 {
                     Reference = new UriOrFragment("schema/#x")
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Different minimum array lengths",
+                new JsonSchema
+                {
+                    MinItems = 1
+                },
+                new JsonSchema
+                {
+                    MinItems = 2
+                },
+                false
+            },
+
+            // These two schemas would validate the same set of instances, but
+            // we consider them unequal because they serialize to different
+            // JSON schema strings (the first one does not specify a MaxItems
+            // property; the second one does).
+            new object[]
+            {
+                "Missing and zero minimum array lengths",
+                new JsonSchema
+                {
+                },
+                new JsonSchema
+                {
+                    MinItems = 0
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Different maximum array lengths",
+                new JsonSchema
+                {
+                    MaxItems = 1
+                },
+                new JsonSchema
+                {
+                    MaxItems = 2
+                },
+                false
+            },
+
+            // These two schemas would validate the same set of instances, but
+            // we consider them unequal because they serialize to different
+            // JSON schema strings (the first one does not specify a MaxItems
+            // property; the second one does).
+            new object[]
+            {
+                "Missing and zero maximum array lengths",
+                new JsonSchema
+                {
+                },
+                new JsonSchema
+                {
+                    MaxItems = 0
                 },
                 false
             }

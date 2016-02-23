@@ -4,5 +4,6 @@
     "arrayProp": {
       "type": "array"
     }
-  }
+  },
+  "minItems": 1
 }

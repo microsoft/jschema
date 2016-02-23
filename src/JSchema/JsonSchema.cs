@@ -69,6 +69,30 @@ namespace Microsoft.JSchema
         public Dictionary<string, JsonSchema> Definitions { get; set; }
 
         /// <summary>
+        /// Gets or sets the minimum valid number of elements in an array.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Array"/>.
+        /// If this property is not specified, it is considered present with a value of 0.
+        /// The type of this property is <code>int?</code>, rather than <code>int</code>
+        /// with a default value of 0, is so that a schema that does not specify this
+        /// property can be successfully round-tripped to and from the object model.
+        /// </remarks>
+        public int? MinItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum valid number of elements in an array.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Array"/>.
+        /// If this property is not specified, any number of items is valid.
+        /// The type of this property is <code>int?</code>, rather than <code>int</code>
+        /// with a default value of <code>Int32.MaxValue</code>, is so that a schema that
+        /// does not specify this property can be successfully round-tripped to and from
+        /// the object model.
+        public int? MaxItems { get; set; }
+
+        /// <summary>
         /// Gets or sets the URI of a schema that is incorporated by reference into
         /// the current schema.
         /// </summary>
@@ -97,7 +121,10 @@ namespace Microsoft.JSchema
                 Properties,
                 Required,
                 Definitions,
-                Reference);
+                Reference,
+                MinItems,
+                MaxItems
+                );
         }
 
         #endregion Object overrides
@@ -135,7 +162,13 @@ namespace Microsoft.JSchema
                         : Definitions.HasSameElementsAs(other.Definitions))
                 && (Reference == null
                         ? other.Reference == null
-                        : Reference.Equals(other.Reference));
+                        : Reference.Equals(other.Reference))
+                && (MinItems == null
+                        ? other.MinItems == null
+                        : MinItems.Equals(other.MinItems))
+                && (MaxItems == null
+                        ? other.MaxItems == null
+                        : MaxItems.Equals(other.MaxItems));
         }
 
         #endregion
