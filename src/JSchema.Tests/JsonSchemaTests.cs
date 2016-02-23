@@ -45,7 +45,8 @@ namespace Microsoft.JSchema.Tests
                     },
                     Reference = new UriOrFragment("http://www.example.com/schema/#"),
                     MinItems = 1,
-                    MaxItems = 3
+                    MaxItems = 3,
+                    Format = "date-time"
                 },
                 new JsonSchema
                 {
@@ -70,7 +71,8 @@ namespace Microsoft.JSchema.Tests
                     },
                     Reference = new UriOrFragment("http://www.example.com/schema/#"),
                     MinItems = 1,
-                    MaxItems = 3
+                    MaxItems = 3,
+                    Format = "date-time"
                 },
                 true
             },
@@ -423,6 +425,33 @@ namespace Microsoft.JSchema.Tests
                 new JsonSchema
                 {
                     MaxItems = 0
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Different formats",
+                new JsonSchema
+                {
+                    Format = "date-time"
+                },
+                new JsonSchema
+                {
+                    Format = "email"
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Null and non-null formats",
+                new JsonSchema
+                {
+                },
+                new JsonSchema
+                {
+                    Format = "date-time"
                 },
                 false
             }

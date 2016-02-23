@@ -101,6 +101,14 @@ namespace Microsoft.JSchema
         [JsonProperty("$$ref")]
         public UriOrFragment Reference { get; set; }
 
+        /// <summary>
+        /// Gets or sets a string specifying the required format of a string-valued property.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.String"/>.
+        /// </remarks>
+        public string Format { get; set; }
+
         #region Object overrides
 
         public override bool Equals(object obj)
@@ -123,7 +131,8 @@ namespace Microsoft.JSchema
                 Definitions,
                 Reference,
                 MinItems,
-                MaxItems
+                MaxItems,
+                Format
                 );
         }
 
@@ -168,7 +177,10 @@ namespace Microsoft.JSchema
                         : MinItems.Equals(other.MinItems))
                 && (MaxItems == null
                         ? other.MaxItems == null
-                        : MaxItems.Equals(other.MaxItems));
+                        : MaxItems.Equals(other.MaxItems))
+                && (Format == null
+                        ? other.Format == null
+                        : Format.Equals(other.Format));
         }
 
         #endregion
