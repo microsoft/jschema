@@ -1,0 +1,9 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "startTime": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

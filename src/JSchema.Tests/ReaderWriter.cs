@@ -218,6 +218,24 @@ namespace Microsoft.JSchema.Tests
                         }
                     }
                 }
+            },
+
+            new object[]
+            {
+                "Format",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                         ["startTime"] = new JsonSchema
+                         {
+                             Type = JsonType.String,
+                             Format = FormatAttributes.DateTime
+                         }
+                    }
+                }
             }
         };
     }
