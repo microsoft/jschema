@@ -20,6 +20,8 @@
     }
   },
 
+  "required": [ "version" ],
+
   "definitions": {
     "runLog": {
       "description": "Describes a single run of a static analysis tool, and enumerates the results produced by that run.",

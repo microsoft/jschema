@@ -39,13 +39,28 @@ namespace Microsoft.JSchema
         /// Gets or sets the JSON schema that applies to the array items, if the current
         /// schema is of array type.
         /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Array"/>.
+        /// </remarks>
         public JsonSchema Items { get; set; }
 
         /// <summary>
         /// Dictionary mapping valid property names to the sub-schemas to which they must
         /// conform.
         /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Object"/>.
+        /// </remarks>
         public Dictionary<string, JsonSchema> Properties { get; set; }
+
+        /// <summary>
+        /// Gets or sets an array containing the names of the property names that are
+        /// required to be present.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Object"/>.
+        /// </remarks>
+        public string[] Required { get; set; }
 
         /// <summary>
         /// Gets or sets a dictionary mapping schema names to sub-schemas which can be
@@ -80,6 +95,7 @@ namespace Microsoft.JSchema
                 Enum,
                 Items,
                 Properties,
+                Required,
                 Definitions,
                 Reference);
         }
@@ -111,6 +127,9 @@ namespace Microsoft.JSchema
                 && (Properties == null
                         ? other.Properties == null
                         : Properties.HasSameElementsAs(other.Properties))
+                && (Required == null
+                        ? other.Required == null
+                        : Required.HasSameElementsAs(other.Required))
                 && (Definitions == null
                         ? other.Definitions == null
                         : Definitions.HasSameElementsAs(other.Definitions))

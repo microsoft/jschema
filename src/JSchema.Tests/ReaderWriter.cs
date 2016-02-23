@@ -62,6 +62,35 @@ namespace Microsoft.JSchema.Tests
 
             new object[]
             {
+                "RequiredProperties",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["prop1"] = new JsonSchema
+                        {
+                            Type = JsonType.String
+                        },
+
+                        ["prop2"] = new JsonSchema
+                        {
+                            Type = JsonType.Integer
+                        },
+
+                        ["prop3"] = new JsonSchema
+                        {
+                            Type = JsonType.Boolean
+                        }
+                    },
+
+                    Required = new[] { "prop1", "prop3" }
+                }
+            },
+
+            new object[]
+            {
                 "StringEnum",
                 new JsonSchema
                 {

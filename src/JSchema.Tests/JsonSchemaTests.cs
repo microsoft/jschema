@@ -34,6 +34,10 @@ namespace Microsoft.JSchema.Tests
                         ["a"] = new JsonSchema { Type = JsonType.Object },
                         ["b"] = new JsonSchema { Type = JsonType.String }
                     },
+                    Required = new string[]
+                    {
+                        "a"
+                    },
                     Definitions = new Dictionary<string, JsonSchema>
                     {
                         ["c"] = new JsonSchema { Type = JsonType.Integer },
@@ -52,6 +56,10 @@ namespace Microsoft.JSchema.Tests
                     {
                         ["a"] = new JsonSchema { Type = JsonType.Object },
                         ["b"] = new JsonSchema { Type = JsonType.String }
+                    },
+                    Required = new string[]
+                    {
+                        "a"
                     },
                     Definitions = new Dictionary<string, JsonSchema>
                     {
@@ -253,6 +261,34 @@ namespace Microsoft.JSchema.Tests
                         ["a"] = new JsonSchema { Type = JsonType.Object },
                         ["b"] = new JsonSchema { Type = JsonType.Number }
                     }
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Different required properties",
+                new JsonSchema
+                {
+                    Required = new string[] { "a", "b" }
+                },
+                new JsonSchema
+                {
+                    Required = new string[] { "a" }
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Null and non-null required properties",
+                new JsonSchema
+                {
+                    Required = null
+                },
+                new JsonSchema
+                {
+                    Required = new string[] { "a" }
                 },
                 false
             },
