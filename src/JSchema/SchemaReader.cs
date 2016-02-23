@@ -23,12 +23,9 @@ namespace Microsoft.JSchema
                 ContractResolver = new JsonSchemaContractResolver()
             };
 
-            using (var stringReader = new StringReader(jsonText))
+            using (var jsonReader = new JsonTextReader(new StringReader(jsonText)))
             {
-                using (var jsonReader = new JsonTextReader(stringReader))
-                {
-                    return serializer.Deserialize<JsonSchema>(jsonReader);
-                }
+                return serializer.Deserialize<JsonSchema>(jsonReader);
             }
         }
     }

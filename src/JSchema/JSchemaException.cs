@@ -5,6 +5,7 @@ using System.Globalization;
 
 namespace Microsoft.JSchema
 {
+    [Serializable]
     public class JSchemaException : Exception
     {
         public static JSchemaException Create(string messageFormat, params object[] messageArgs)
