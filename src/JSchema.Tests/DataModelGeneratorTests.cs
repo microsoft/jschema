@@ -534,7 +534,9 @@ namespace N
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("DateTime");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -544,7 +546,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public System.DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }";
             string actual = generator.Generate(schema);

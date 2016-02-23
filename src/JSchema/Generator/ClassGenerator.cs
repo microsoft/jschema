@@ -25,6 +25,7 @@ namespace Microsoft.JSchema.Generator
         private string _className;
         private string _copyrightNotice;
         private List<PropertyDeclarationSyntax> _propDecls;
+        private HashSet<string> _usings;
         private string _text;
 
         /// <summary>
@@ -66,6 +67,7 @@ namespace Microsoft.JSchema.Generator
             _copyrightNotice = copyrightNotice;
 
             _propDecls = new List<PropertyDeclarationSyntax>();
+            _usings = new HashSet<string>();
         }
 
         /// <summary>
@@ -130,7 +132,11 @@ namespace Microsoft.JSchema.Generator
 
             var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
 
+            IEnumerable<UsingDirectiveSyntax> usingDirectives =
+                _usings.Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
+
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
+                .WithUsings(SyntaxFactory.List(usingDirectives))
                 .WithMembers(compilationUnitMembers)
                 .WithLeadingTrivia(MakeCopyrightComment(_copyrightNotice));
 
@@ -144,6 +150,18 @@ namespace Microsoft.JSchema.Generator
             }
 
             _text = sb.ToString();
+        }
+
+        private NameSyntax MakeQualifiedName(string dottedName)
+        {
+            string[] components = dottedName.Split(new[] { '.' });
+            NameSyntax qualifiedName = SyntaxFactory.ParseName(components[0]);
+            for (int i = 1; i < components.Length; ++i)
+            {
+                qualifiedName = SyntaxFactory.QualifiedName(qualifiedName, SyntaxFactory.IdentifierName(components[i]));
+            }
+
+            return qualifiedName;
         }
 
         private TypeSyntax MakePropertyType(InferredType propertyType, InferredType elementType)
@@ -163,13 +181,32 @@ namespace Microsoft.JSchema.Generator
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
 
                 case InferredTypeKind.ClassName:
-                    return SyntaxFactory.ParseTypeName(propertyType.GetClassName());
+                    string className = propertyType.GetClassName();
+                    string unqualifiedClassName;
+                    AddUsingDirectiveForClassName(className, out unqualifiedClassName);
+                    return SyntaxFactory.ParseTypeName(unqualifiedClassName);
 
                 case InferredTypeKind.None:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(propertyType));
+            }
+        }
+
+        private void AddUsingDirectiveForClassName(string className, out string unqualifiedClassName)
+        {
+
+            int index = className.LastIndexOf('.');
+            if (index != -1)
+            {
+                unqualifiedClassName = className.Substring(index + 1);
+                string namespaceName = className.Substring(0, index);
+                _usings.Add(namespaceName);
+            }
+            else
+            {
+                unqualifiedClassName = className;
             }
         }
 
