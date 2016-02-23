@@ -35,8 +35,18 @@
 
         "runInfo": {
           "$ref": "#/definitions/runInfo"
+        },
+
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/result"
+          },
+          "minItems":  0
         }
-      }
+      },
+
+      "required":  ["toolInfo", "results"]
     },
 
     "toolInfo": {
@@ -66,6 +76,17 @@
     },
 
     "runInfo": {
+      "type": "object",
+      "description": "Describes the invocation of the static analysis tool that was run.",
+      "properties": {
+        "invocationInfo": {
+          "type": "string",
+          "description":  "Contains the runtime parameters with which the tool was invoked."
+        }
+      }
+    },
+
+    "result": {
       "type": "object"
     }
   }
