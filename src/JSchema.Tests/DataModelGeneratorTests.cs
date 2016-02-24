@@ -143,7 +143,7 @@ namespace Microsoft.JSchema.Generator.Tests
             // This particular test shows not only that the correct text was produced,
             // but that it was written to the expected path. Subsequent tests will
             // just verify the text.
-            _fileContentsDictionary.Keys.Should().OnlyContain(key => key.Equals(@"Generated\C.cs"));
+            _fileContentsDictionary.Keys.Should().OnlyContain(key => key.Equals(PrimaryOutputFilePath));
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
@@ -511,19 +511,22 @@ namespace N
         public int Prop2 { get; set; }
     }
 }";
+            string def1Path = MakeOutputFilePath("Def1");
+            string def2Path = MakeOutputFilePath("Def2");
+
             var expectedOutputFiles = new List<string>
             {
-                @"Generated\C.cs",
-                @"Generated\Def1.cs",
-                @"Generated\Def2.cs"
+                PrimaryOutputFilePath,
+                def1Path,
+                def2Path
             };
 
             _fileContentsDictionary.Count.Should().Be(expectedOutputFiles.Count);
             _fileContentsDictionary.Keys.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
-            _fileContentsDictionary[@"Generated\C.cs"].Should().Be(ExpectedRootClass);
-            _fileContentsDictionary[@"Generated\Def1.cs"].Should().Be(ExpectedDefinedClass1);
-            _fileContentsDictionary[@"Generated\Def2.cs"].Should().Be(ExpectedDefinedClass2);
+            _fileContentsDictionary[PrimaryOutputFilePath].Should().Be(ExpectedRootClass);
+            _fileContentsDictionary[def1Path].Should().Be(ExpectedDefinedClass1);
+            _fileContentsDictionary[def2Path].Should().Be(ExpectedDefinedClass2);
         }
 
         [Fact(DisplayName = "DataModelGenerate generates date-time-valued properties")]
@@ -554,6 +557,8 @@ namespace N
         }
 
         private const string OutputDirectory = "Generated";
+        private const string RootClassName = "C";
+        private const string PrimaryOutputFilePath = OutputDirectory + "\\" + RootClassName + ".cs";
 
         private IFileSystem MakeFileSystem()
         {
@@ -580,10 +585,15 @@ namespace N
             return new DataModelGeneratorSettings
             {
                 NamespaceName = "N",
-                RootClassName = "C",
+                RootClassName = RootClassName,
                 OutputDirectory = OutputDirectory,
                 ForceOverwrite = true
             };
+        }
+
+        private static string MakeOutputFilePath(string fileNameStem)
+        {
+            return $"{OutputDirectory}\\{fileNameStem}.cs";
         }
     }
 }
