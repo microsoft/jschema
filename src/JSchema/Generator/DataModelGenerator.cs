@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -16,6 +16,7 @@ namespace Microsoft.JSchema.Generator
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
+        private Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> _hintDictionary;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
             : this(settings, new FileSystem())
@@ -31,9 +32,10 @@ namespace Microsoft.JSchema.Generator
             _fileSystem = fileSystem;
         }
 
-        public string Generate(JsonSchema rootSchema)
+        public string Generate(JsonSchema rootSchema, Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> hintDictionary = null)
         {
             _rootSchema = rootSchema;
+            _hintDictionary = hintDictionary;
 
             if (_fileSystem.DirectoryExists(_settings.OutputDirectory) && !_settings.ForceOverwrite)
             {
@@ -82,7 +84,7 @@ namespace Microsoft.JSchema.Generator
         internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice = null)
         {
             var classGenerator = new ClassGenerator();
-            classGenerator.StartClass(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice);
+            classGenerator.StartClass(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice, _hintDictionary);
 
             if (schema.Properties != null)
             {

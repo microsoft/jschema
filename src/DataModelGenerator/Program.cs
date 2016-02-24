@@ -2,12 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
 using Microsoft.JSchema.Generator;
+using Newtonsoft.Json;
 
 namespace Microsoft.JSchema.DataModelGeneratorTool
 {
@@ -32,13 +34,22 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                 string jsonText = File.ReadAllText(options.SchemaFilePath);
                 JsonSchema schema = SchemaReader.ReadSchema(jsonText);
 
+                Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> hintDictionary = null;
+                if (options.CodeGenHintsPath != null)
+                {
+                    string hintDictionaryText = File.ReadAllText(options.CodeGenHintsPath);
+                    hintDictionary =
+                      JsonConvert.DeserializeObject<Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>>>(hintDictionaryText);
+                }
+
                 DataModelGeneratorSettings settings = new DataModelGeneratorSettings
                 {
                     OutputDirectory = options.OutputDirectory,
                     ForceOverwrite = options.ForceOverwrite,
                     NamespaceName = options.NamespaceName,
                     RootClassName = options.RootClassName,
-                    CopyrightFilePath = options.CopyrightFilePath
+                    CopyrightFilePath = options.CopyrightFilePath,
+                    HintDictionary = hintDictionary
                 };
 
                 new DataModelGenerator(settings).Generate(schema);

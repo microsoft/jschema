@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FormatAttributes.cs" />
+    <Compile Include="Generator\CodeGenHint.cs" />
     <Compile Include="InferredType.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileSystem.cs" />

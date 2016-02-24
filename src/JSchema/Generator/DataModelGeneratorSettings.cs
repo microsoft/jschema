@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
 
@@ -36,6 +38,12 @@ namespace Microsoft.JSchema.Generator
         /// at the top of each file.
         /// </summary>
         public string CopyrightFilePath { get; set; }
+
+        /// <summary>
+        /// Gets or sets a dictionary that maps from the URI of a schema to a set of
+        /// hints that control code generation for the type generated from that schema.
+        /// </summary>
+        public Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> HintDictionary { get; set; }
 
         internal void Validate()
         {

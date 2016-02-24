@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,7 @@ namespace Microsoft.JSchema.Generator
         private string _namespaceName;
         private string _className;
         private string _copyrightNotice;
+        private Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> _hintDictionary;
         private List<PropertyDeclarationSyntax> _propDecls;
         private HashSet<string> _usings;
         private string _text;
@@ -60,11 +62,16 @@ namespace Microsoft.JSchema.Generator
         /// The text of the copyright notice to include at the top of each file,
         /// without any comment delimiter characters.
         /// </param>
-        public void StartClass(string namespaceName, string className, string copyrightNotice)
+        public void StartClass(
+            string namespaceName,
+            string className,
+            string copyrightNotice,
+            Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> hintDictionary)
         {
             _namespaceName = namespaceName;
             _className = className;
             _copyrightNotice = copyrightNotice;
+            _hintDictionary = hintDictionary;
 
             _propDecls = new List<PropertyDeclarationSyntax>();
             _usings = new HashSet<string>();

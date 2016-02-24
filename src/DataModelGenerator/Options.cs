@@ -48,5 +48,12 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                 + "Can span multiple lines. "
                 + "Should not include comment delimiters. ")]
         public string CopyrightFilePath { get; set; }
+
+        [Option(
+            'g',
+            "code-gen-hints-file-path",
+            HelpText = "Path to a file containing hints that control code generation",
+            Required = false)]
+        public string CodeGenHintsPath { get; set; }
     }
 }
