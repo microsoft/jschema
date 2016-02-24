@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using FluentAssertions;
 using Microsoft.JSchema.Generator;
 using Xunit;
@@ -90,7 +89,7 @@ namespace Microsoft.JSchema.Tests
             string enumText)
         {
             JsonSchema schema = SchemaReader.ReadSchema(schemaText);
-            Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> hintDictionary = HintReader.ReadHints(hintsText);
+            Dictionary<UriOrFragment, CodeGenHint[]> hintDictionary = HintReader.ReadHints(hintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             generator.Generate(schema, hintDictionary);

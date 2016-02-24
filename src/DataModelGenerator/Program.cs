@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -34,12 +33,12 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                 string jsonText = File.ReadAllText(options.SchemaFilePath);
                 JsonSchema schema = SchemaReader.ReadSchema(jsonText);
 
-                Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> hintDictionary = null;
+                Dictionary<UriOrFragment, CodeGenHint[]> hintDictionary = null;
                 if (options.CodeGenHintsPath != null)
                 {
                     string hintDictionaryText = File.ReadAllText(options.CodeGenHintsPath);
                     hintDictionary =
-                      JsonConvert.DeserializeObject<Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>>>(hintDictionaryText);
+                      JsonConvert.DeserializeObject<Dictionary<UriOrFragment, CodeGenHint[]>>(hintDictionaryText);
                 }
 
                 DataModelGeneratorSettings settings = new DataModelGeneratorSettings

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.JSchema.Generator
@@ -18,7 +17,7 @@ namespace Microsoft.JSchema.Generator
         /// A dictionary that maps the URI of the schema to which the hints apply
         /// to an array of hints that apply to that schema.
         /// </returns>
-        public static Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> ReadHints(string path)
+        public static Dictionary<UriOrFragment, CodeGenHint[]> ReadHints(string path)
         {
             return null;
         }

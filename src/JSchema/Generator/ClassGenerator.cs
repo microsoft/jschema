@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,7 +24,7 @@ namespace Microsoft.JSchema.Generator
         private string _namespaceName;
         private string _className;
         private string _copyrightNotice;
-        private Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> _hintDictionary;
+        private Dictionary<UriOrFragment, CodeGenHint[]> _hintDictionary;
         private List<PropertyDeclarationSyntax> _propDecls;
         private HashSet<string> _usings;
         private string _text;
@@ -66,7 +65,7 @@ namespace Microsoft.JSchema.Generator
             string namespaceName,
             string className,
             string copyrightNotice,
-            Dictionary<UriOrFragment, ImmutableArray<CodeGenHint>> hintDictionary)
+            Dictionary<UriOrFragment, CodeGenHint[]> hintDictionary)
         {
             _namespaceName = namespaceName;
             _className = className;
