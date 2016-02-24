@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Moq;
 using Microsoft.JSchema.Tests;
 using Xunit;
 
@@ -13,16 +12,13 @@ namespace Microsoft.JSchema.Generator.Tests
     {
         private const string CopyrightFilePath = @"C:\copyright.txt";
 
-        private Mock<IFileSystem> _mockFileSystem;
-        private IFileSystem _fileSystem;
+        private TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
-        private readonly Dictionary<string, string> _fileContentsDictionary;
 
         public DataModelGeneratorTests()
         {
-            _fileSystem = MakeFileSystem();
+            _testFileSystem = new TestFileSystem();
             _settings = MakeSettings();
-            _fileContentsDictionary = new Dictionary<string, string>();
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if output directory exists")]
@@ -30,12 +26,12 @@ namespace Microsoft.JSchema.Generator.Tests
         {
             _settings.ForceOverwrite = false;
 
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(new JsonSchema());
 
             // ... and the message should mention the output directory.
-            action.ShouldThrow<JSchemaException>().WithMessage($"*{OutputDirectory}*");
+            action.ShouldThrow<JSchemaException>().WithMessage($"*{TestFileSystem.OutputDirectory}*");
         }
 
         [Fact(DisplayName = "DataModelGenerator does not throw if output directory does not exist")]
@@ -47,7 +43,7 @@ namespace Microsoft.JSchema.Generator.Tests
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
 
@@ -62,7 +58,7 @@ namespace Microsoft.JSchema.Generator.Tests
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
 
@@ -74,12 +70,12 @@ namespace Microsoft.JSchema.Generator.Tests
         {
             _settings.CopyrightFilePath = CopyrightFilePath;
 
-            _mockFileSystem.Setup(fs => fs.FileExists(CopyrightFilePath))
+            _testFileSystem.Mock.Setup(fs => fs.FileExists(CopyrightFilePath))
                 .Returns(false);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
 
@@ -90,7 +86,7 @@ namespace Microsoft.JSchema.Generator.Tests
         [Fact(DisplayName = "DataModelGenerator throws if root schema is not of type 'object'")]
         public void ThrowsIfRootSchemaIsNotOfTypeObject()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("NotAnObject");
 
@@ -103,7 +99,7 @@ namespace Microsoft.JSchema.Generator.Tests
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
 
@@ -143,13 +139,13 @@ namespace Microsoft.JSchema.Generator.Tests
             // This particular test shows not only that the correct text was produced,
             // but that it was written to the expected path. Subsequent tests will
             // just verify the text.
-            _fileContentsDictionary.Keys.Should().OnlyContain(key => key.Equals(PrimaryOutputFilePath));
+            _testFileSystem.Files.Should().OnlyContain(key => key.Equals(PrimaryOutputFilePath));
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
 
@@ -184,7 +180,7 @@ namespace Microsoft.JSchema.Generator.Tests
   },
 }";
             JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
 
@@ -209,7 +205,7 @@ namespace Microsoft.JSchema.Generator.Tests
   }
 }";
             JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
 
@@ -234,7 +230,7 @@ namespace Microsoft.JSchema.Generator.Tests
   }
 }";
             JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
 
@@ -245,7 +241,7 @@ namespace Microsoft.JSchema.Generator.Tests
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
 
@@ -270,7 +266,7 @@ namespace Microsoft.JSchema.Generator.Tests
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
         public void GeneratesXmlCommentsForProperties()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
@@ -302,13 +298,12 @@ namespace Microsoft.JSchema.Generator.Tests
 ";
             _settings.CopyrightFilePath = CopyrightFilePath;
 
-            _mockFileSystem.Setup(fs => fs.FileExists(CopyrightFilePath))
+            _testFileSystem.Mock.Setup(fs => fs.FileExists(CopyrightFilePath))
                 .Returns(true);
-            _mockFileSystem.Setup(fs => fs.ReadAllText(CopyrightFilePath))
+            _testFileSystem.Mock.Setup(fs => fs.ReadAllText(CopyrightFilePath))
                 .Returns(CopyrightNotice);
-            _fileSystem = _mockFileSystem.Object;
 
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
@@ -336,7 +331,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates property for enum with Boolean values")]
         public void GeneratesPropertyForEnumWithBooleanValues()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("BooleanEnum");
 
@@ -361,7 +356,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates property for enum with integer values")]
         public void GeneratesPropertyForEnumWithIntegerValues()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("IntegerEnum");
 
@@ -386,7 +381,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates property for enum with mixed values")]
         public void GeneratesPropertyForEnumWithMixedValues()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("MixedEnum");
 
@@ -411,7 +406,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates property for enum with number values")]
         public void GeneratesPropertyForEnumWithNumberValues()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("NumberEnum");
 
@@ -436,7 +431,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates property for enum with string values")]
         public void GeneratesPropertyForEnumWithStringValues()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("StringEnum");
 
@@ -461,7 +456,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
         public void GeneratesClassesForSchemasInDefinitions()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
 
@@ -521,18 +516,18 @@ namespace N
                 def2Path
             };
 
-            _fileContentsDictionary.Count.Should().Be(expectedOutputFiles.Count);
-            _fileContentsDictionary.Keys.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
+            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
-            _fileContentsDictionary[PrimaryOutputFilePath].Should().Be(ExpectedRootClass);
-            _fileContentsDictionary[def1Path].Should().Be(ExpectedDefinedClass1);
-            _fileContentsDictionary[def2Path].Should().Be(ExpectedDefinedClass2);
+            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedRootClass);
+            _testFileSystem[def1Path].Should().Be(ExpectedDefinedClass1);
+            _testFileSystem[def2Path].Should().Be(ExpectedDefinedClass2);
         }
 
         [Fact(DisplayName = "DataModelGenerate generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
-            var generator = new DataModelGenerator(_settings, _fileSystem);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("DateTime");
 
@@ -556,29 +551,8 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        private const string OutputDirectory = "Generated";
         private const string RootClassName = "C";
-        private const string PrimaryOutputFilePath = OutputDirectory + "\\" + RootClassName + ".cs";
-
-        private IFileSystem MakeFileSystem()
-        {
-            _mockFileSystem = new Mock<IFileSystem>();
-
-            // The file system asserts that the output directory exists.
-            _mockFileSystem
-                .Setup(fs => fs.DirectoryExists(It.IsAny<string>()))
-                .Returns((string s) => s.Equals(OutputDirectory));
-
-            _mockFileSystem
-                .Setup(fs => fs.WriteAllText(It.IsAny<string>(), It.IsAny<string>()))
-                .Callback((string path, string contents) =>
-                {
-                    _fileContentsDictionary.Add(path, contents);
-                    _mockFileSystem.Setup(fs => fs.FileExists(path)).Returns(true);
-                });
-
-            return _mockFileSystem.Object;
-        }
+        private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + RootClassName + ".cs";
 
         private static DataModelGeneratorSettings MakeSettings()
         {
@@ -586,14 +560,14 @@ namespace N
             {
                 NamespaceName = "N",
                 RootClassName = RootClassName,
-                OutputDirectory = OutputDirectory,
+                OutputDirectory = TestFileSystem.OutputDirectory,
                 ForceOverwrite = true
             };
         }
 
         private static string MakeOutputFilePath(string fileNameStem)
         {
-            return $"{OutputDirectory}\\{fileNameStem}.cs";
+            return $"{TestFileSystem.OutputDirectory}\\{fileNameStem}.cs";
         }
     }
 }
