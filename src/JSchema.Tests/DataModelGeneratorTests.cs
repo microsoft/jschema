@@ -10,6 +10,7 @@ namespace Microsoft.JSchema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {
+        private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
         private const string CopyrightFilePath = @"C:\copyright.txt";
 
         private TestFileSystem _testFileSystem;
@@ -18,7 +19,7 @@ namespace Microsoft.JSchema.Generator.Tests
         public DataModelGeneratorTests()
         {
             _testFileSystem = new TestFileSystem();
-            _settings = MakeSettings();
+            _settings = TestSettings.MakeSettings();
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if output directory exists")]
@@ -506,8 +507,8 @@ namespace N
         public int Prop2 { get; set; }
     }
 }";
-            string def1Path = MakeOutputFilePath("Def1");
-            string def2Path = MakeOutputFilePath("Def2");
+            string def1Path = TestFileSystem.MakeOutputFilePath("Def1");
+            string def2Path = TestFileSystem.MakeOutputFilePath("Def2");
 
             var expectedOutputFiles = new List<string>
             {
@@ -549,25 +550,6 @@ namespace N
 }";
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
-        }
-
-        private const string RootClassName = "C";
-        private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + RootClassName + ".cs";
-
-        private static DataModelGeneratorSettings MakeSettings()
-        {
-            return new DataModelGeneratorSettings
-            {
-                NamespaceName = "N",
-                RootClassName = RootClassName,
-                OutputDirectory = TestFileSystem.OutputDirectory,
-                ForceOverwrite = true
-            };
-        }
-
-        private static string MakeOutputFilePath(string fileNameStem)
-        {
-            return $"{TestFileSystem.OutputDirectory}\\{fileNameStem}.cs";
         }
     }
 }

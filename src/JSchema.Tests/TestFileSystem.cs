@@ -51,5 +51,10 @@ namespace Microsoft.JSchema.Tests
                 return _fileContentsDictionary[path];
             }
         }
+
+        internal static string MakeOutputFilePath(string fileNameStem)
+        {
+            return $"{OutputDirectory}\\{fileNameStem}.cs";
+        }
     }
 }
