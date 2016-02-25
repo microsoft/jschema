@@ -15,7 +15,7 @@ namespace Microsoft.JSchema.Generator
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
-        private Dictionary<UriOrFragment, CodeGenHint[]> _hintDictionary;
+        private HintDictionary _hintDictionary;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
             : this(settings, new FileSystem())
@@ -31,7 +31,7 @@ namespace Microsoft.JSchema.Generator
             _fileSystem = fileSystem;
         }
 
-        public string Generate(JsonSchema rootSchema, Dictionary<UriOrFragment, CodeGenHint[]> hintDictionary = null)
+        public string Generate(JsonSchema rootSchema, HintDictionary hintDictionary = null)
         {
             _rootSchema = rootSchema;
             _hintDictionary = hintDictionary;

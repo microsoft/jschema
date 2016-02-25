@@ -7,5 +7,6 @@ namespace Microsoft.JSchema.Generator
     /// </summary>
     public class CodeGenHint
     {
+        public string Name { get; set; }
     }
 }

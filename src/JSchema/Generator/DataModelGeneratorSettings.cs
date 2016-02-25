@@ -42,7 +42,7 @@ namespace Microsoft.JSchema.Generator
         /// Gets or sets a dictionary that maps from the URI of a schema to a set of
         /// hints that control code generation for the type generated from that schema.
         /// </summary>
-        public Dictionary<UriOrFragment, CodeGenHint[]> HintDictionary { get; set; }
+        public HintDictionary HintDictionary { get; set; }
 
         internal void Validate()
         {

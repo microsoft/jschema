@@ -80,7 +80,7 @@
   <ItemGroup>
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="Generator\CodeGenHint.cs" />
-    <Compile Include="Generator\HintReader.cs" />
+    <Compile Include="Generator\HintDictionary.cs" />
     <Compile Include="InferredType.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileSystem.cs" />
@@ -103,8 +103,9 @@
     </Compile>
     <Compile Include="SchemaReader.cs" />
     <Compile Include="SchemaWriter.cs" />
-    <Compile Include="UriOrFragmentConverter.cs" />
+    <Compile Include="UriOrFragmentJsonConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
+    <Compile Include="UriOrFragmentTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -89,7 +89,7 @@ namespace Microsoft.JSchema.Tests
             string enumText)
         {
             JsonSchema schema = SchemaReader.ReadSchema(schemaText);
-            Dictionary<UriOrFragment, CodeGenHint[]> hintDictionary = HintReader.ReadHints(hintsText);
+            HintDictionary hintDictionary = HintDictionary.Deserialize(hintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             generator.Generate(schema, hintDictionary);

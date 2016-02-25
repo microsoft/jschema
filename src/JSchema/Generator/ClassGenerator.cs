@@ -24,7 +24,7 @@ namespace Microsoft.JSchema.Generator
         private string _namespaceName;
         private string _className;
         private string _copyrightNotice;
-        private Dictionary<UriOrFragment, CodeGenHint[]> _hintDictionary;
+        private HintDictionary _hintDictionary;
         private List<PropertyDeclarationSyntax> _propDecls;
         private HashSet<string> _usings;
         private string _text;
@@ -65,7 +65,7 @@ namespace Microsoft.JSchema.Generator
             string namespaceName,
             string className,
             string copyrightNotice,
-            Dictionary<UriOrFragment, CodeGenHint[]> hintDictionary)
+            HintDictionary hintDictionary)
         {
             _namespaceName = namespaceName;
             _className = className;
