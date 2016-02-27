@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.JSchema.Generator
@@ -85,26 +86,46 @@ namespace Microsoft.JSchema.Generator
             var classGenerator = new ClassGenerator();
             classGenerator.StartClass(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice, _hintDictionary);
 
-            if (schema.Properties != null)
+            CodeGenHint[] hints = null;
+            EnumHint enumHint = null;
+            if (_hintDictionary != null && _hintDictionary.TryGetValue(className.ToCamelCase(), out hints))
             {
-                foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
+                enumHint = hints.First(h => h is EnumHint) as EnumHint;
+            }
+
+            if (enumHint != null)
+            {
+                if (schema.Enum != null)
                 {
-                    string propertyName = schemaProperty.Key;
-                    JsonSchema subSchema = schemaProperty.Value;
-
-                    if (subSchema.Type == JsonType.Object)
+                    foreach (string enumName in schema.Enum)
                     {
-                        // TODO: We haven't unit tested this path.
-                        CreateFile(propertyName, subSchema, copyrightNotice);
+                        classGenerator.AddEnumName(enumName);
                     }
+                }
+            }
+            else
+            {
+                if (schema.Properties != null)
+                {
+                    foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
+                    {
+                        string propertyName = schemaProperty.Key;
+                        JsonSchema subSchema = schemaProperty.Value;
 
-                    InferredType propertyType = InferTypeFromSchema(subSchema);
+                        if (subSchema.Type == JsonType.Object)
+                        {
+                            // TODO: We haven't unit tested this path.
+                            CreateFile(propertyName, subSchema, copyrightNotice);
+                        }
 
-                    InferredType elementType = subSchema.Type == JsonType.Array
-                        ? GetElementType(subSchema)
-                        : InferredType.None;
+                        InferredType propertyType = InferTypeFromSchema(subSchema);
 
-                    classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
+                        InferredType elementType = subSchema.Type == JsonType.Array
+                            ? GetElementType(subSchema)
+                            : InferredType.None;
+
+                        classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
+                    }
                 }
             }
 

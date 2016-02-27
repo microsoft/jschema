@@ -104,9 +104,8 @@
     </Compile>
     <Compile Include="SchemaReader.cs" />
     <Compile Include="SchemaWriter.cs" />
-    <Compile Include="UriOrFragmentJsonConverter.cs" />
+    <Compile Include="UriOrFragmentConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
-    <Compile Include="UriOrFragmentTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

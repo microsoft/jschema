@@ -9,7 +9,7 @@ namespace Microsoft.JSchema.Generator
     /// Represents a dictionary that maps from the URI of a schema to an array of hints
     /// that apply to that schema.
     /// </summary>
-    public class HintDictionary: Dictionary<UriOrFragment, CodeGenHint[]>
+    public class HintDictionary: Dictionary<string, CodeGenHint[]>
     {
         /// <summary>
         /// Deserialize a <see cref="HintDictionary"/> from a string.

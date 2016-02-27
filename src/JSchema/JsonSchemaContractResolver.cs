@@ -13,7 +13,7 @@ namespace Microsoft.JSchema
 
             if (objectType == typeof(UriOrFragment))
             {
-                contract.Converter = UriOrFragmentJsonConverter.Instance;
+                contract.Converter = UriOrFragmentConverter.Instance;
             }
 
             return contract;

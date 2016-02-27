@@ -12,6 +12,11 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace Microsoft.JSchema.Generator
 {
+    public enum Foo
+    {
+        None,
+        Bax
+    }
     /// <summary>
     /// Generate the text of a class.
     /// </summary>
@@ -113,6 +118,11 @@ namespace Microsoft.JSchema.Generator
                 .WithLeadingTrivia(MakeDocCommentFromDescription(description));
 
             _propDecls.Add(prop);
+        }
+
+        internal void AddEnumName(string enumName)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
