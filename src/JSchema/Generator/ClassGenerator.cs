@@ -2,13 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Formatting;
 
 namespace Microsoft.JSchema.Generator
 {
@@ -21,38 +18,7 @@ namespace Microsoft.JSchema.Generator
     /// </remarks>
     public class ClassGenerator: TypeGenerator
     {
-        private string _namespaceName;
-        private string _className;
-        private string _copyrightNotice;
-        private HintDictionary _hintDictionary;
         private List<PropertyDeclarationSyntax> _propDecls;
-
-        /// <summary>
-        /// Perform any actions necessary to begin generating the class.
-        /// </summary>
-        /// <param name="namespaceName">
-        /// The fully qualified namespace in which the class will be placed.
-        /// </param>
-        /// <param name="className">
-        /// The name of the class to generate.
-        /// </param>
-        /// <param name="copyrightNotice">
-        /// The text of the copyright notice to include at the top of each file,
-        /// without any comment delimiter characters.
-        /// </param>
-        public void StartClass(
-            string namespaceName,
-            string className,
-            string copyrightNotice,
-            HintDictionary hintDictionary)
-        {
-            _namespaceName = namespaceName;
-            _className = className;
-            _copyrightNotice = copyrightNotice;
-            _hintDictionary = hintDictionary;
-
-            _propDecls = new List<PropertyDeclarationSyntax>();
-        }
 
         /// <summary>
         /// Add a property to the class.
@@ -90,6 +56,11 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.AccessorList(accessorDeclarations))
                 .WithLeadingTrivia(MakeDocCommentFromDescription(description));
 
+            if (_propDecls == null)
+            {
+                _propDecls = new List<PropertyDeclarationSyntax>();
+            }
+
             _propDecls.Add(prop);
         }
 
@@ -101,62 +72,22 @@ namespace Microsoft.JSchema.Generator
         /// <summary>
         /// Perform any actions necessary to complete the class and generate its text.
         /// </summary>
-        public void Finish(string description)
+        public override void Finish()
         {
-            var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
-
             var classModifiers = SyntaxFactory.TokenList(
                 SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                 SyntaxFactory.Token(SyntaxKind.PartialKeyword));
 
-            ClassDeclarationSyntax classDecl = SyntaxFactory.ClassDeclaration(_className)
-                .WithMembers(classMembers)
-                .WithModifiers(classModifiers)
-                .WithLeadingTrivia(MakeDocCommentFromDescription(description));
+            ClassDeclarationSyntax classDecl =
+                SyntaxFactory.ClassDeclaration(TypeName).WithModifiers(classModifiers);
 
-            var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(classDecl);
-
-            NamespaceDeclarationSyntax namespaceDecl = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_namespaceName))
-                .WithMembers(namespaceMembers);
-
-            var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
-
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit();
-
-            if (Usings != null)
+            if (_propDecls != null)
             {
-                IEnumerable<UsingDirectiveSyntax> usingDirectives =
-                    Usings.Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
-
-                compilationUnit = compilationUnit.WithUsings(SyntaxFactory.List(usingDirectives));
+                var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
+                classDecl = classDecl.WithMembers(classMembers);
             }
 
-            compilationUnit = compilationUnit
-                .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(MakeCopyrightComment(_copyrightNotice));
-
-            var workspace = new AdhocWorkspace();
-            SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
-
-            var sb = new StringBuilder();
-            using (var writer = new StringWriter(sb))
-            {
-                formattedNode.WriteTo(writer);
-            }
-
-            Text = sb.ToString();
-        }
-
-        private NameSyntax MakeQualifiedName(string dottedName)
-        {
-            string[] components = dottedName.Split(new[] { '.' });
-            NameSyntax qualifiedName = SyntaxFactory.ParseName(components[0]);
-            for (int i = 1; i < components.Length; ++i)
-            {
-                qualifiedName = SyntaxFactory.QualifiedName(qualifiedName, SyntaxFactory.IdentifierName(components[i]));
-            }
-
-            return qualifiedName;
+            Finish(classDecl);
         }
 
         private TypeSyntax MakePropertyType(InferredType propertyType, InferredType elementType)
@@ -222,30 +153,6 @@ namespace Microsoft.JSchema.Generator
             }
 
             return typeKeyword;
-        }
-
-        private SyntaxTriviaList MakeDocCommentFromDescription(string description)
-        {
-            return SyntaxFactory.ParseLeadingTrivia(
-@"/// <summary>
-/// " + description + @"
-/// </summary>
-");
-        }
-
-        private SyntaxTriviaList MakeCopyrightComment(string copyrightNotice)
-        {
-            var trivia = new SyntaxTriviaList();
-            if (!string.IsNullOrWhiteSpace(copyrightNotice))
-            {
-                trivia = trivia.AddRange(new SyntaxTrivia[]
-                {
-                    SyntaxFactory.Comment(copyrightNotice),
-                    SyntaxFactory.Whitespace(Environment.NewLine)
-                });
-            }
-
-            return trivia;
         }
     }
 }

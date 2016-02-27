@@ -84,7 +84,7 @@ namespace Microsoft.JSchema.Generator
         internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice = null)
         {
             var classGenerator = new ClassGenerator();
-            classGenerator.StartClass(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice, _hintDictionary);
+            classGenerator.Start(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice, schema.Description, _hintDictionary);
 
             CodeGenHint[] hints = null;
             EnumHint enumHint = null;
@@ -123,7 +123,7 @@ namespace Microsoft.JSchema.Generator
                 }
             }
 
-            classGenerator.Finish(schema.Description);
+            classGenerator.Finish();
             return classGenerator.GetText();
         }
 
