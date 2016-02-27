@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Microsoft.JSchema.Generator
 {
@@ -83,9 +81,6 @@ namespace Microsoft.JSchema.Generator
 
         internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice = null)
         {
-            var classGenerator = new ClassGenerator();
-            classGenerator.Start(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice, schema.Description, _hintDictionary);
-
             CodeGenHint[] hints = null;
             EnumHint enumHint = null;
             if (_hintDictionary != null && _hintDictionary.TryGetValue(className.ToCamelCase(), out hints))
@@ -93,159 +88,21 @@ namespace Microsoft.JSchema.Generator
                 enumHint = hints.First(h => h is EnumHint) as EnumHint;
             }
 
-            if (enumHint != null)
+            TypeGenerator typeGenerator;
+            if (enumHint == null)
             {
-                if (schema.Enum != null)
-                {
-                    foreach (string enumName in schema.Enum)
-                    {
-                        classGenerator.AddEnumName(enumName);
-                    }
-                }
+                typeGenerator = new ClassGenerator(_rootSchema);
             }
             else
             {
-                if (schema.Properties != null)
-                {
-                    foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
-                    {
-                        string propertyName = schemaProperty.Key;
-                        JsonSchema subSchema = schemaProperty.Value;
-
-                        InferredType propertyType = InferTypeFromSchema(subSchema);
-
-                        InferredType elementType = subSchema.Type == JsonType.Array
-                            ? GetElementType(subSchema)
-                            : InferredType.None;
-
-                        classGenerator.AddProperty(propertyName, subSchema.Description, propertyType, elementType);
-                    }
-                }
+                typeGenerator = new EnumGenerator();
             }
 
-            classGenerator.Finish();
-            return classGenerator.GetText();
-        }
+            typeGenerator.Start(_settings.NamespaceName, className.ToPascalCase(), copyrightNotice, schema.Description);
+            typeGenerator.AddMembers(schema);
+            typeGenerator.Finish();
 
-        // If the current schema is of array type, get the type of
-        // its elements.
-        // TODO: I'm not handling arrays of arrays. InferredType should encapsulate that.
-        private InferredType GetElementType(JsonSchema subSchema)
-        {
-            return subSchema.Items != null
-                ? InferTypeFromSchema(subSchema.Items)
-                : new InferredType(JsonType.Object);
-        }
-
-        // Not every subschema specifies a type, but in some cases, it can be inferred.
-        private InferredType InferTypeFromSchema(JsonSchema subSchema)
-        {
-            if (subSchema.Type == JsonType.String && subSchema.Format == FormatAttributes.DateTime)
-            {
-                return new InferredType("System.DateTime");
-            }
-
-            if (subSchema.Type != JsonType.None)
-            {
-                return new InferredType(subSchema.Type);
-            }
-
-            // If there is a reference, use the type of the reference.
-            if (subSchema.Reference != null)
-            {
-                return InferTypeFromReference(subSchema);
-            }
-
-            // If there is an enum and every value has the same type, use that.
-            object[] enumValues = subSchema.Enum;
-            if (enumValues != null && enumValues.Length > 0)
-            {
-                var inferredType = InferTypeFromEnumValues(enumValues);
-                if (inferredType != InferredType.None)
-                {
-                    return inferredType;
-                }
-            }
-
-            return InferredType.None;
-        }
-
-        private InferredType InferTypeFromReference(JsonSchema subSchema)
-        {
-            if (!subSchema.Reference.IsFragment)
-            {
-                throw new JSchemaException(
-                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, subSchema.Reference));
-            }
-
-            string definitionName = GetDefinitionNameFromFragment(subSchema.Reference.Fragment);
-
-            JsonSchema definitionSchema;
-            if (!_rootSchema.Definitions.TryGetValue(definitionName, out definitionSchema))
-            {
-                throw new JSchemaException(
-                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorDefinitionDoesNotExist, definitionName));
-            }
-
-            return new InferredType(definitionName.ToPascalCase());
-        }
-
-        private static readonly Regex s_definitionRegex = new Regex(@"^#/definitions/(?<definitionName>[^/]+)$");
-
-        private string GetDefinitionNameFromFragment(string fragment)
-        {
-            Match match = s_definitionRegex.Match(fragment);
-            if (!match.Success)
-            {
-                throw new JSchemaException(
-                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, fragment));
-            }
-
-            return match.Groups["definitionName"].Captures[0].Value;
-        }
-
-        private InferredType InferTypeFromEnumValues(object[] enumValues)
-        {
-            var jsonType = GetJsonTypeFromObject(enumValues[0]);
-            for (int i = 1; i < enumValues.Length; ++i)
-            {
-                if (GetJsonTypeFromObject(enumValues[i]) != jsonType)
-                {
-                    jsonType = JsonType.None;
-                    break;
-                }
-            }
-
-            if (jsonType != JsonType.None)
-            {
-                return new InferredType(jsonType);
-            }
-
-            return InferredType.None;
-        }
-
-        private JsonType GetJsonTypeFromObject(object obj)
-        {
-            if (obj is string)
-            {
-                return JsonType.String;
-            }
-            else if (obj.IsIntegralType())
-            {
-                return JsonType.Integer;
-            }
-            else if (obj.IsFloatingType())
-            {
-                return JsonType.Number;
-            }
-            else if (obj is bool)
-            {
-                return JsonType.Boolean;
-            }
-            else
-            {
-                return JsonType.None;
-            }
+            return typeGenerator.GetText();
         }
     }
 }

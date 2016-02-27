@@ -17,7 +17,6 @@ namespace Microsoft.JSchema.Generator
         private string _namespaceName;
         private string _copyrightNotice;
         private string _description;
-        private HintDictionary _hintDictionary;
 
         /// <summary>
         /// Gets the unqualified name of the type to generate.
@@ -27,6 +26,14 @@ namespace Microsoft.JSchema.Generator
         protected HashSet<string> Usings { get; private set; }
 
         protected string Text { get; set; }
+
+        /// <summary>
+        /// Adds members to the type as directed by the specified schema.
+        /// </summary>
+        /// <param name="schema">
+        /// The JSON schema that determines which members to add to the type.
+        /// </param>
+        public abstract void AddMembers(JsonSchema schema);
 
         public abstract void Finish();
 
@@ -68,14 +75,12 @@ namespace Microsoft.JSchema.Generator
             string namespaceName,
             string typeName,
             string copyrightNotice,
-            string description,
-            HintDictionary hintDictionary)
+            string description)
         {
             _namespaceName = namespaceName;
             TypeName = typeName;
             _copyrightNotice = copyrightNotice;
             _description = description;
-            _hintDictionary = hintDictionary;
         }
 
         protected void Finish(MemberDeclarationSyntax typeDecl)
