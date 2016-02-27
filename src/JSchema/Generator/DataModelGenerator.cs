@@ -112,12 +112,6 @@ namespace Microsoft.JSchema.Generator
                         string propertyName = schemaProperty.Key;
                         JsonSchema subSchema = schemaProperty.Value;
 
-                        if (subSchema.Type == JsonType.Object)
-                        {
-                            // TODO: We haven't unit tested this path.
-                            CreateFile(propertyName, subSchema, copyrightNotice);
-                        }
-
                         InferredType propertyType = InferTypeFromSchema(subSchema);
 
                         InferredType elementType = subSchema.Type == JsonType.Array
