@@ -19,13 +19,15 @@ namespace Microsoft.JSchema.Generator
         private string _description;
 
         /// <summary>
-        /// Gets the unqualified name of the type to generate.
+        /// Gets or sets the type declaration being generated.
         /// </summary>
-        protected string TypeName { get; private set; }
+        protected BaseTypeDeclarationSyntax TypeDeclaration { get; set; }
 
         protected HashSet<string> Usings { get; private set; }
 
         protected string Text { get; set; }
+
+        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName);
 
         /// <summary>
         /// Adds members to the type as directed by the specified schema.
@@ -34,8 +36,6 @@ namespace Microsoft.JSchema.Generator
         /// The JSON schema that determines which members to add to the type.
         /// </param>
         public abstract void AddMembers(JsonSchema schema);
-
-        public abstract void Finish();
 
         /// <summary>
         /// Gets the text of the generated class.
@@ -78,16 +78,17 @@ namespace Microsoft.JSchema.Generator
             string description)
         {
             _namespaceName = namespaceName;
-            TypeName = typeName;
             _copyrightNotice = copyrightNotice;
             _description = description;
+
+            TypeDeclaration = CreateTypeDeclaration(typeName);
         }
 
-        protected void Finish(MemberDeclarationSyntax typeDecl)
+        public virtual void Finish()
         {
-            typeDecl = typeDecl.WithLeadingTrivia(MakeDocCommentFromDescription(_description));
+            TypeDeclaration = TypeDeclaration.WithLeadingTrivia(MakeDocCommentFromDescription(_description));
 
-            var namespaceMembers = SyntaxFactory.SingletonList(typeDecl);
+            var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(TypeDeclaration);
 
             NamespaceDeclarationSyntax namespaceDecl = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_namespaceName))
                 .WithMembers(namespaceMembers);

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.JSchema.Generator
 {
@@ -20,9 +22,14 @@ namespace Microsoft.JSchema.Generator
             }
         }
 
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
+        {
+            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(typeName));
+        }
+
         public override void Finish()
         {
-            throw new NotImplementedException();
+            base.Finish();
         }
 
         private void AddEnumName(string enumName)

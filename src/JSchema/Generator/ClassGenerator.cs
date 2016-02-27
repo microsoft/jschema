@@ -28,6 +28,16 @@ namespace Microsoft.JSchema.Generator
             _rootSchema = rootSchema;
         }
 
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
+        {
+            var classModifiers = SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+
+            return SyntaxFactory.ClassDeclaration(typeName).WithModifiers(classModifiers);
+
+        }
+
         public override void AddMembers(JsonSchema schema)
         {
             if (schema.Properties != null)
@@ -53,20 +63,13 @@ namespace Microsoft.JSchema.Generator
         /// </summary>
         public override void Finish()
         {
-            var classModifiers = SyntaxFactory.TokenList(
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.PartialKeyword));
-
-            ClassDeclarationSyntax classDecl =
-                SyntaxFactory.ClassDeclaration(TypeName).WithModifiers(classModifiers);
-
             if (_propDecls != null)
             {
                 var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
-                classDecl = classDecl.WithMembers(classMembers);
+                TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(classMembers);
             }
 
-            Finish(classDecl);
+            base.Finish();
         }
 
         /// <summary>
