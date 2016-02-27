@@ -24,7 +24,8 @@ namespace Microsoft.JSchema.Generator
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
         {
-            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(typeName));
+            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(typeName))
+                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
         }
 
         public override void Finish()
@@ -34,7 +35,6 @@ namespace Microsoft.JSchema.Generator
 
         private void AddEnumName(string enumName)
         {
-            throw new NotImplementedException();
         }
     }
 }
