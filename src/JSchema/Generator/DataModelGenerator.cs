@@ -123,7 +123,7 @@ namespace Microsoft.JSchema.Generator
                 }
             }
 
-            classGenerator.FinishClass(schema.Description);
+            classGenerator.Finish(schema.Description);
             return classGenerator.GetText();
         }
 

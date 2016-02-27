@@ -41,7 +41,7 @@ namespace Microsoft.JSchema.Generator
         /// A string containing the text of the generated class.
         /// </returns>
         /// <exception cref="System.InvalidOperationException">
-        /// If <see cref="FinishClass"/> has not yet been called.
+        /// If <see cref="Finish"/> has not yet been called.
         /// </exception>
         public string GetText()
         {
@@ -128,7 +128,7 @@ namespace Microsoft.JSchema.Generator
         /// <summary>
         /// Perform any actions necessary to complete the class and generate its text.
         /// </summary>
-        public void FinishClass(string description)
+        public void Finish(string description)
         {
             var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
 
