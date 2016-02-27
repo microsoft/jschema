@@ -32,26 +32,6 @@ namespace Microsoft.JSchema.Generator
         private HintDictionary _hintDictionary;
         private List<PropertyDeclarationSyntax> _propDecls;
         private HashSet<string> _usings;
-        private string _text;
-
-        /// <summary>
-        /// Gets the text of the generated class.
-        /// </summary>
-        /// <returns>
-        /// A string containing the text of the generated class.
-        /// </returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// If <see cref="Finish"/> has not yet been called.
-        /// </exception>
-        public string GetText()
-        {
-            if (_text == null)
-            {
-                throw new InvalidOperationException(Resources.ErrorTextNotYetGenerated);
-            }
-
-            return _text;
-        }
 
         /// <summary>
         /// Perform any actions necessary to begin generating the class.
