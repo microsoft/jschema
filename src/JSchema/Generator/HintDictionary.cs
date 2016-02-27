@@ -22,7 +22,12 @@ namespace Microsoft.JSchema.Generator
         /// </returns>
         public static HintDictionary Deserialize(string hintsDictionaryText)
         {
-            return JsonConvert.DeserializeObject<HintDictionary>(hintsDictionaryText);
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+
+            return JsonConvert.DeserializeObject<HintDictionary>(hintsDictionaryText, settings);
         }
     }
 }

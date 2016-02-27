@@ -44,7 +44,7 @@ namespace Microsoft.JSchema.Tests
 @"{
   ""#/definitions/color"": [
     {
-      ""enumType""
+      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema""
     }
   ]
 }",

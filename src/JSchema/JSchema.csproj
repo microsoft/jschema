@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="Generator\CodeGenHint.cs" />
+    <Compile Include="Generator\EnumHint.cs" />
     <Compile Include="Generator\HintDictionary.cs" />
     <Compile Include="InferredType.cs" />
     <Compile Include="ExtensionMethods.cs" />

@@ -61,6 +61,15 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate an enumeration.
+        /// </summary>
+        internal static string EnumHintName {
+            get {
+                return ResourceManager.GetString("EnumHintName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The copyright file &quot;{0}&quot; could not be found..
         /// </summary>
         internal static string ErrorCopyrightFileNotFound {
