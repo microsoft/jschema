@@ -145,7 +145,7 @@ namespace Microsoft.JSchema.Generator
                 formattedNode.WriteTo(writer);
             }
 
-            _text = sb.ToString();
+            Text = sb.ToString();
         }
 
         private NameSyntax MakeQualifiedName(string dottedName)

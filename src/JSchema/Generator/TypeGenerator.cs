@@ -6,7 +6,7 @@ namespace Microsoft.JSchema.Generator
 {
     public abstract class TypeGenerator
     {
-        protected string _text;
+        protected string Text { get; set; }
 
         /// <summary>
         /// Gets the text of the generated class.
@@ -19,12 +19,12 @@ namespace Microsoft.JSchema.Generator
         /// </exception>
         public string GetText()
         {
-            if (_text == null)
+            if (Text == null)
             {
                 throw new InvalidOperationException(Resources.ErrorTextNotYetGenerated);
             }
 
-            return _text;
+            return Text;
         }
     }
 }
