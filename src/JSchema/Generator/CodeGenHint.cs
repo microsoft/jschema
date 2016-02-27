@@ -16,7 +16,7 @@ namespace Microsoft.JSchema.Generator
         /// <param name="name">
         /// A friendly name for this type of hint.
         /// </param>
-        protected CodeGenHint(string name, Type type)
+        protected CodeGenHint(string name)
         {
             Name = name;
         }
@@ -25,10 +25,5 @@ namespace Microsoft.JSchema.Generator
         /// Gets the friendly name of the hint.
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        /// Gets the type of the derived class.
-        /// </summary>
-        public Type Type { get; }
     }
 }

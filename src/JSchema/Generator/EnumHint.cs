@@ -13,7 +13,7 @@ namespace Microsoft.JSchema.Generator
         /// Initializes a new instance of <see cref="EnumHint"/> class.
         /// </summary>
         public EnumHint()
-            : base(Resources.EnumHintName, typeof(EnumHint))
+            : base(Resources.EnumHintName)
         {
         }
     }
