@@ -12,11 +12,6 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace Microsoft.JSchema.Generator
 {
-    public enum Foo
-    {
-        None,
-        Bax
-    }
     /// <summary>
     /// Generate the text of a class.
     /// </summary>
@@ -31,7 +26,6 @@ namespace Microsoft.JSchema.Generator
         private string _copyrightNotice;
         private HintDictionary _hintDictionary;
         private List<PropertyDeclarationSyntax> _propDecls;
-        private HashSet<string> _usings;
 
         /// <summary>
         /// Perform any actions necessary to begin generating the class.
@@ -58,7 +52,6 @@ namespace Microsoft.JSchema.Generator
             _hintDictionary = hintDictionary;
 
             _propDecls = new List<PropertyDeclarationSyntax>();
-            _usings = new HashSet<string>();
         }
 
         /// <summary>
@@ -128,11 +121,17 @@ namespace Microsoft.JSchema.Generator
 
             var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
 
-            IEnumerable<UsingDirectiveSyntax> usingDirectives =
-                _usings.Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
+            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit();
 
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .WithUsings(SyntaxFactory.List(usingDirectives))
+            if (Usings != null)
+            {
+                IEnumerable<UsingDirectiveSyntax> usingDirectives =
+                    Usings.Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
+
+                compilationUnit = compilationUnit.WithUsings(SyntaxFactory.List(usingDirectives));
+            }
+
+            compilationUnit = compilationUnit
                 .WithMembers(compilationUnitMembers)
                 .WithLeadingTrivia(MakeCopyrightComment(_copyrightNotice));
 
@@ -198,7 +197,7 @@ namespace Microsoft.JSchema.Generator
             {
                 unqualifiedClassName = className.Substring(index + 1);
                 string namespaceName = className.Substring(0, index);
-                _usings.Add(namespaceName);
+                AddUsing(namespaceName);
             }
             else
             {

@@ -1,12 +1,25 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace Microsoft.JSchema.Generator
 {
     public abstract class TypeGenerator
     {
+        protected HashSet<string> Usings { get; private set; }
+
         protected string Text { get; set; }
+
+        protected void AddUsing(string namespaceName)
+        {
+            if (Usings == null)
+            {
+                Usings = new HashSet<string>();
+            }
+
+            Usings.Add(namespaceName);
+        }
 
         /// <summary>
         /// Gets the text of the generated class.
