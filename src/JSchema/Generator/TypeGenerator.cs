@@ -25,8 +25,6 @@ namespace Microsoft.JSchema.Generator
 
         protected HashSet<string> Usings { get; private set; }
 
-        protected string Text { get; set; }
-
         public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName);
 
         /// <summary>
@@ -38,22 +36,47 @@ namespace Microsoft.JSchema.Generator
         public abstract void AddMembers(JsonSchema schema);
 
         /// <summary>
-        /// Gets the text of the generated class.
+        /// Generate the text for a type from a JSON schema.
         /// </summary>
-        /// <returns>
-        /// A string containing the text of the generated class.
-        /// </returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// If <see cref="Finish"/> has not yet been called.
-        /// </exception>
-        public string GetText()
+        /// <param name="schema">
+        /// The JSON schema that specifies the type members.
+        /// </param>
+        /// <param name="namespaceName">
+        /// The name of the namespace in which to generate the type.
+        /// </param>
+        /// <param name="typeName">
+        /// The unqualified name of the type to generate.
+        /// </param>
+        /// <param name="copyrightNotice">
+        /// The text of the copyright notice to place at the top of the generated file.
+        /// </param>
+        /// <param name="description">
+        /// The text of the summary comment on the type.
+        /// </param>
+        public string Generate(JsonSchema schema, string namespaceName, string typeName, string copyrightNotice, string description)
         {
-            if (Text == null)
+            Start(namespaceName, typeName.ToPascalCase(), copyrightNotice, description);
+            AddMembers(schema);
+            return Finish();
+        }
+
+        protected SyntaxTriviaList MakeDocCommentFromDescription(string description)
+        {
+            return SyntaxFactory.ParseLeadingTrivia(
+@"/// <summary>
+/// " + description + @"
+/// </summary>
+");
+        }
+
+        protected void AddUsing(string namespaceName)
+        {
+            if (Usings == null)
             {
-                throw new InvalidOperationException(Resources.ErrorTextNotYetGenerated);
+                Usings = new HashSet<string>();
             }
 
-            return Text;
+            Usings.Add(namespaceName);
         }
 
         /// <summary>
@@ -71,7 +94,7 @@ namespace Microsoft.JSchema.Generator
         /// <param name="copyrightNotice">
         /// The text of the copyright notice to include at the top of each file.
         /// </param>
-        public void Start(
+        private void Start(
             string namespaceName,
             string typeName,
             string copyrightNotice,
@@ -84,7 +107,11 @@ namespace Microsoft.JSchema.Generator
             TypeDeclaration = CreateTypeDeclaration(typeName);
         }
 
-        public void Finish()
+        /// <summary>
+        /// Performs all actions necessary to finish generating the type.
+        /// </summary>
+        /// <returns></returns>
+        private string Finish()
         {
             TypeDeclaration = TypeDeclaration.WithLeadingTrivia(MakeDocCommentFromDescription(_description));
 
@@ -118,26 +145,7 @@ namespace Microsoft.JSchema.Generator
                 formattedNode.WriteTo(writer);
             }
 
-            Text = sb.ToString();
-        }
-
-        protected SyntaxTriviaList MakeDocCommentFromDescription(string description)
-        {
-            return SyntaxFactory.ParseLeadingTrivia(
-@"/// <summary>
-/// " + description + @"
-/// </summary>
-");
-        }
-
-        protected void AddUsing(string namespaceName)
-        {
-            if (Usings == null)
-            {
-                Usings = new HashSet<string>();
-            }
-
-            Usings.Add(namespaceName);
+            return sb.ToString();
         }
 
         private NameSyntax MakeQualifiedName(string dottedName)
