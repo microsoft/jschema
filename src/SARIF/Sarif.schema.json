@@ -30,7 +30,8 @@
 
       "properties": {
         "toolInfo": {
-          "$ref": "#/definitions/toolInfo"
+          "$ref": "#/definitions/toolInfo",
+          "description":  "Contains information about the static analysis tool that was run."
         },
 
         "runInfo": {

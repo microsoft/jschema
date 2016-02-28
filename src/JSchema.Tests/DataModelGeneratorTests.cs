@@ -312,6 +312,112 @@ namespace Microsoft.JSchema.Generator.Tests
             actual.Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates XML comments for properties whose property type is ref")]
+        public void GeneratesXmlCommentsForPropertiesWhosePropertyTypeIsRef()
+        {
+            _settings.RootClassName = "consoleWindow";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""description"": ""Describes a console window."",
+  ""properties"": {
+    ""foregroundColor"": {
+      ""$ref"": ""#/definitions/color"",
+      ""description"": ""The color of the text on the screen.""
+    },
+    ""backgroundColor"": {
+      ""$ref"": ""#/definitions/color"",
+      ""description"": ""The color of the screen background.""
+    },
+  },
+  ""definitions"": {
+    ""color"": {
+      ""type"": ""object"",
+      ""description"": ""Describes a color with R, G, and B components."",
+      ""properties"": {
+        ""red"": {
+          ""type"": ""integer"",
+          ""description"": ""The value of the R component.""
+        },
+        ""green"": {
+          ""type"": ""integer"",
+          ""description"": ""The value of the G component.""
+        },
+        ""blue"": {
+          ""type"": ""integer"",
+          ""description"": ""The value of the B component.""
+        }
+      }
+    }
+  }
+}");
+
+            const string RootClassText =
+@"namespace N
+{
+    /// <summary>
+    /// Describes a console window.
+    /// </summary>
+    public partial class ConsoleWindow
+    {
+        /// <summary>
+        /// The color of the text on the screen.
+        /// </summary>
+        public Color ForegroundColor { get; set; }
+
+        /// <summary>
+        /// The color of the screen background.
+        /// </summary>
+        public Color BackgroundColor { get; set; }
+    }
+}";
+
+            const string ColorClassText =
+@"namespace N
+{
+    /// <summary>
+    /// Describes a color with R, G, and B components.
+    /// </summary>
+    public partial class Color
+    {
+        /// <summary>
+        /// The value of the R component.
+        /// </summary>
+        public int Red { get; set; }
+
+        /// <summary>
+        /// The value of the G component.
+        /// </summary>
+        public int Green { get; set; }
+
+        /// <summary>
+        /// The value of the B component.
+        /// </summary>
+        public int Blue { get; set; }
+    }
+}";
+
+            generator.Generate(schema);
+
+            string rootFilePath = TestFileSystem.MakeOutputFilePath(_settings.RootClassName.ToPascalCase());
+            string colorFilePath = TestFileSystem.MakeOutputFilePath("Color");
+
+            var expectedOutputFiles = new List<string>
+            {
+                rootFilePath,
+                colorFilePath
+            };
+
+            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
+
+            _testFileSystem[rootFilePath].Should().Be(RootClassText);
+            _testFileSystem[colorFilePath].Should().Be(ColorClassText);
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates copyright notice")]
         public void GeneratesCopyrightAtTopOfFile()
         {
