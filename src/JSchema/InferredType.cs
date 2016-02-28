@@ -3,6 +3,10 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+// TODO: Setting _jsonType or _className should set InferredTypeKind.
 
 namespace Microsoft.JSchema
 {
@@ -22,13 +26,42 @@ namespace Microsoft.JSchema
         /// An instance of the <see cref="InferredType"/> class that does not represent
         /// any inferred type.
         /// </summary>
-        public static readonly InferredType None = new InferredType();
+        public static readonly InferredType None = new InferredType(JsonType.None);
 
-        private readonly JsonType _jsonType;
-        private readonly string _className;
+        private readonly JsonSchema _rootSchema;
+        private JsonType _jsonType;
+        private string _className;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="InferredType"/> class from one of
+        /// Initializes a new instance of the <see cref="InferredType"/> class from a 
+        /// subschema of a JSON schema.
+        /// </summary>
+        /// <param name="rootSchema">
+        /// The root JSON schema which contains, directly or indirectly, the subschema
+        /// from which the type is to be inferred.
+        /// </param>
+        /// <param name="subSchema">
+        /// The JSON schema from which the type is to be inferred.
+        /// </param>
+        public InferredType(JsonSchema rootSchema, JsonSchema subSchema)
+        {
+            _rootSchema = rootSchema;
+            InferTypeFromSchema(subSchema);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InferredType"/> class from a JSON schema.
+        /// </summary>
+        /// <param name="rootSchema">
+        /// The JSON schema from which the type is to be inferred.
+        /// </param>
+        public InferredType(JsonSchema rootSchema)
+            : this(rootSchema, rootSchema)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InferredType"/> class from one of
         /// the primitive types defined by JSON Schema.
         /// </summary>
         /// <param name="jsonType">
@@ -44,7 +77,7 @@ namespace Microsoft.JSchema
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="InferredType"/> class from a class name.
+        /// Initializes a new instance of the <see cref="InferredType"/> class from a class name.
         /// </summary>
         /// <param name="className">
         /// The name of a class.
@@ -76,7 +109,7 @@ namespace Microsoft.JSchema
         /// Gets a value specifying whether the inferred type is a JSON primitive type or
         /// a class name.
         /// </summary>
-        public InferredTypeKind Kind { get; }
+        public InferredTypeKind Kind { get; private set; }
 
         /// <summary>
         /// Returns the inferred JSON primitive type, if <see cref="Kind"/> property of this
@@ -178,5 +211,134 @@ namespace Microsoft.JSchema
         {
             return !(left == right);
         }
+
+        #region Private helpers
+
+        private void InferTypeFromSchema(JsonSchema schema)
+        {
+            if (schema.Type == JsonType.String && schema.Format == FormatAttributes.DateTime)
+            {
+                _className = "System.DateTime";
+                Kind = InferredTypeKind.ClassName;
+            }
+            else if (schema.Type != JsonType.None)
+            {
+                _jsonType = schema.Type;
+                Kind = InferredTypeKind.JsonType;
+            }
+            else if (schema.Reference != null)
+            {
+                InferTypeFromReference(schema.Reference);
+            }
+            else if (InferJsonTypeFromEnumValues(schema.Enum))
+            {
+                if (_jsonType != JsonType.None)
+                {
+                    // We were able to figure it out from the enum values.
+                    return;
+                }
+            }
+            else
+            {
+                Kind = InferredTypeKind.JsonType;
+                _jsonType = JsonType.None;
+            }
+        }
+
+        private void InferTypeFromReference(UriOrFragment reference)
+        {
+            if (!reference.IsFragment)
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, reference));
+            }
+
+            string definitionName = GetDefinitionNameFromFragment(reference.Fragment);
+
+            JsonSchema definitionSchema;
+            if (!_rootSchema.Definitions.TryGetValue(definitionName, out definitionSchema)) // TODO: Check for null Definitions and add unit test
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorDefinitionDoesNotExist, definitionName));
+            }
+
+            if (definitionSchema.Type == JsonType.Boolean ||
+                definitionSchema.Type == JsonType.Integer ||
+                definitionSchema.Type == JsonType.Number ||
+                definitionSchema.Type == JsonType.String)
+            {
+                _jsonType = definitionSchema.Type;
+                Kind = InferredTypeKind.JsonType;
+            }
+            else
+            {
+                _className = definitionName.ToPascalCase();
+                Kind = InferredTypeKind.ClassName;
+            }
+        }
+
+        private bool InferJsonTypeFromEnumValues(object[] enumValues)
+        {
+            if (enumValues != null && enumValues.Any())
+            {
+                var jsonType = GetJsonTypeFromObject(enumValues[0]);
+                for (int i = 1; i < enumValues.Length; ++i)
+                {
+                    if (GetJsonTypeFromObject(enumValues[i]) != jsonType)
+                    {
+                        jsonType = JsonType.None;
+                        break;
+                    }
+                }
+
+                if (jsonType != JsonType.None)
+                {
+                    _jsonType = jsonType;
+                    Kind = InferredTypeKind.JsonType;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static JsonType GetJsonTypeFromObject(object obj)
+        {
+            if (obj is string)
+            {
+                return JsonType.String;
+            }
+            else if (obj.IsIntegralType())
+            {
+                return JsonType.Integer;
+            }
+            else if (obj.IsFloatingType())
+            {
+                return JsonType.Number;
+            }
+            else if (obj is bool)
+            {
+                return JsonType.Boolean;
+            }
+            else
+            {
+                return JsonType.None;
+            }
+        }
+        private static readonly Regex s_definitionRegex = new Regex(@"^#/definitions/(?<definitionName>[^/]+)$");
+
+        private static string GetDefinitionNameFromFragment(string fragment)
+        {
+            Match match = s_definitionRegex.Match(fragment);
+            if (!match.Success)
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, fragment));
+            }
+
+            return match.Groups["definitionName"].Captures[0].Value;
+        }
+
+        #endregion Private helpers
     }
 }

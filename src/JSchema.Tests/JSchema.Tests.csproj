@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="DataModelGeneratorTests.cs" />
     <Compile Include="EnumHintTests.cs" />
+    <Compile Include="InferredTypeTests.cs" />
     <Compile Include="InterfaceHintTests.cs" />
     <Compile Include="JsonSchemaTests.cs" />
     <Compile Include="ReaderWriter.cs" />
