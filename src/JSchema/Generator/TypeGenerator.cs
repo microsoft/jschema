@@ -84,7 +84,7 @@ namespace Microsoft.JSchema.Generator
             TypeDeclaration = CreateTypeDeclaration(typeName);
         }
 
-        public virtual void Finish()
+        public void Finish()
         {
             TypeDeclaration = TypeDeclaration.WithLeadingTrivia(MakeDocCommentFromDescription(_description));
 

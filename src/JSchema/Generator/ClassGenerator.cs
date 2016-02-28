@@ -21,7 +21,6 @@ namespace Microsoft.JSchema.Generator
     public class ClassGenerator: TypeGenerator
     {
         private JsonSchema _rootSchema;
-        private List<PropertyDeclarationSyntax> _propDecls;
 
         public ClassGenerator(JsonSchema rootSchema)
         {
@@ -40,8 +39,10 @@ namespace Microsoft.JSchema.Generator
 
         public override void AddMembers(JsonSchema schema)
         {
-            if (schema.Properties != null)
+            if (schema.Properties != null && schema.Properties.Count > 0)
             {
+                var propDecls = new List<PropertyDeclarationSyntax>();
+
                 foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
                 {
                     string propertyName = schemaProperty.Key;
@@ -53,27 +54,17 @@ namespace Microsoft.JSchema.Generator
                         ? GetElementType(subSchema)
                         : InferredType.None;
 
-                    AddProperty(propertyName, subSchema.Description, propertyType, elementType);
+                    propDecls.Add(
+                        CreatePropertDeclaration(propertyName, subSchema.Description, propertyType, elementType));
                 }
-            }
-        }
 
-        /// <summary>
-        /// Perform any actions necessary to complete the class and generate its text.
-        /// </summary>
-        public override void Finish()
-        {
-            if (_propDecls != null)
-            {
-                var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
+                var classMembers = SyntaxFactory.List(propDecls.Cast<MemberDeclarationSyntax>());
                 TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(classMembers);
             }
-
-            base.Finish();
         }
 
         /// <summary>
-        /// Add a property to the class.
+        /// Create a property declaration.
         /// </summary>
         /// <param name="propertyName">
         /// The name of the property.
@@ -88,7 +79,14 @@ namespace Microsoft.JSchema.Generator
         /// The inferred type of the array elements of the property to be added,
         /// if the property is an array; if not, this parameter is ignored.
         /// </param>
-        private void AddProperty(string propertyName, string description, InferredType inferredPropertyType, InferredType inferredElementType)
+        /// <returns>
+        /// A property declaration built from the specified information.
+        /// </returns>
+        private PropertyDeclarationSyntax CreatePropertDeclaration(
+            string propertyName,
+            string description,
+            InferredType inferredPropertyType,
+            InferredType inferredElementType)
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
@@ -99,7 +97,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 });
 
-            PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
+            return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
                 MakePropertyType(inferredPropertyType, inferredElementType),
@@ -107,13 +105,6 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
                 .WithLeadingTrivia(MakeDocCommentFromDescription(description));
-
-            if (_propDecls == null)
-            {
-                _propDecls = new List<PropertyDeclarationSyntax>();
-            }
-
-            _propDecls.Add(prop);
         }
 
         private TypeSyntax MakePropertyType(InferredType propertyType, InferredType elementType)

@@ -13,6 +13,12 @@ namespace Microsoft.JSchema.Generator
     /// </summary>
     public class EnumGenerator: TypeGenerator
     {
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
+        {
+            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(typeName))
+                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
+        }
+
         public override void AddMembers(JsonSchema schema)
         {
             if (schema.Enum != null)
@@ -31,17 +37,6 @@ namespace Microsoft.JSchema.Generator
                     TypeDeclaration = enumDeclaration.WithMembers(enumMemberList);
                 }
             }
-        }
-
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
-        {
-            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(typeName))
-                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
-        }
-
-        public override void Finish()
-        {
-            base.Finish();
         }
     }
 }
