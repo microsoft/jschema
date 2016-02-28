@@ -18,7 +18,7 @@ namespace Microsoft.JSchema.Generator
     /// Hat tip: Mike Bennett, "Generating Code with Roslyn",
     /// https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
     /// </remarks>
-    public class ClassGenerator : TypeGenerator
+    public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly JsonSchema _rootSchema;
         private readonly string _interfaceName;
