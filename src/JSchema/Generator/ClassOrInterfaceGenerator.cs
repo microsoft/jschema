@@ -142,7 +142,7 @@ namespace Microsoft.JSchema.Generator
                     if (jsonType == JsonType.Array)
                     {
                         return SyntaxFactory.ArrayType(
-                            MakePropertyType(elementType, null),
+                            MakePropertyType(elementType, null), // TODO: This is where we break if the array element is itself of type array.
                             SyntaxFactory.List(new[] { SyntaxFactory.ArrayRankSpecifier() }));
                     }
 
