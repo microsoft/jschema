@@ -2,21 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Globalization;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Formatting;
 
 namespace Microsoft.JSchema.Generator
 {
-    public enum Foo
-    {
-        None,
-        Bax
-    }
     /// <summary>
     /// Generate the text of a class.
     /// </summary>
@@ -24,65 +18,53 @@ namespace Microsoft.JSchema.Generator
     /// Hat tip: Mike Bennett, "Generating Code with Roslyn",
     /// https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
     /// </remarks>
-    public class ClassGenerator
+    public class ClassGenerator: TypeGenerator
     {
-        private string _namespaceName;
-        private string _className;
-        private string _copyrightNotice;
-        private HintDictionary _hintDictionary;
-        private List<PropertyDeclarationSyntax> _propDecls;
-        private HashSet<string> _usings;
-        private string _text;
+        private JsonSchema _rootSchema;
 
-        /// <summary>
-        /// Gets the text of the generated class.
-        /// </summary>
-        /// <returns>
-        /// A string containing the text of the generated class.
-        /// </returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// If <see cref="FinishClass"/> has not yet been called.
-        /// </exception>
-        public string GetText()
+        public ClassGenerator(JsonSchema rootSchema)
         {
-            if (_text == null)
+            _rootSchema = rootSchema;
+        }
+
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
+        {
+            var classModifiers = SyntaxFactory.TokenList(
+                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+
+            return SyntaxFactory.ClassDeclaration(typeName).WithModifiers(classModifiers);
+
+        }
+
+        public override void AddMembers(JsonSchema schema)
+        {
+            if (schema.Properties != null && schema.Properties.Count > 0)
             {
-                throw new InvalidOperationException(Resources.ErrorTextNotYetGenerated);
+                var propDecls = new List<PropertyDeclarationSyntax>();
+
+                foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
+                {
+                    string propertyName = schemaProperty.Key;
+                    JsonSchema subSchema = schemaProperty.Value;
+
+                    InferredType propertyType = InferTypeFromSchema(subSchema);
+
+                    InferredType elementType = subSchema.Type == JsonType.Array
+                        ? GetElementType(subSchema)
+                        : InferredType.None;
+
+                    propDecls.Add(
+                        CreatePropertDeclaration(propertyName, subSchema.Description, propertyType, elementType));
+                }
+
+                var classMembers = SyntaxFactory.List(propDecls.Cast<MemberDeclarationSyntax>());
+                TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(classMembers);
             }
-
-            return _text;
         }
 
         /// <summary>
-        /// Perform any actions necessary to begin generating the class.
-        /// </summary>
-        /// <param name="namespaceName">
-        /// The fully qualified namespace in which the class will be placed.
-        /// </param>
-        /// <param name="className">
-        /// The name of the class to generate.
-        /// </param>
-        /// <param name="copyrightNotice">
-        /// The text of the copyright notice to include at the top of each file,
-        /// without any comment delimiter characters.
-        /// </param>
-        public void StartClass(
-            string namespaceName,
-            string className,
-            string copyrightNotice,
-            HintDictionary hintDictionary)
-        {
-            _namespaceName = namespaceName;
-            _className = className;
-            _copyrightNotice = copyrightNotice;
-            _hintDictionary = hintDictionary;
-
-            _propDecls = new List<PropertyDeclarationSyntax>();
-            _usings = new HashSet<string>();
-        }
-
-        /// <summary>
-        /// Add a property to the class.
+        /// Create a property declaration.
         /// </summary>
         /// <param name="propertyName">
         /// The name of the property.
@@ -97,7 +79,14 @@ namespace Microsoft.JSchema.Generator
         /// The inferred type of the array elements of the property to be added,
         /// if the property is an array; if not, this parameter is ignored.
         /// </param>
-        public void AddProperty(string propertyName, string description, InferredType inferredPropertyType, InferredType inferredElementType)
+        /// <returns>
+        /// A property declaration built from the specified information.
+        /// </returns>
+        private PropertyDeclarationSyntax CreatePropertDeclaration(
+            string propertyName,
+            string description,
+            InferredType inferredPropertyType,
+            InferredType inferredElementType)
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
@@ -108,7 +97,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 });
 
-            PropertyDeclarationSyntax prop = SyntaxFactory.PropertyDeclaration(
+            return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 modifiers,
                 MakePropertyType(inferredPropertyType, inferredElementType),
@@ -116,68 +105,6 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
                 .WithLeadingTrivia(MakeDocCommentFromDescription(description));
-
-            _propDecls.Add(prop);
-        }
-
-        internal void AddEnumName(string enumName)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Perform any actions necessary to complete the class and generate its text.
-        /// </summary>
-        public void FinishClass(string description)
-        {
-            var classMembers = SyntaxFactory.List(_propDecls.Cast<MemberDeclarationSyntax>());
-
-            var classModifiers = SyntaxFactory.TokenList(
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.PartialKeyword));
-
-            ClassDeclarationSyntax classDecl = SyntaxFactory.ClassDeclaration(_className)
-                .WithMembers(classMembers)
-                .WithModifiers(classModifiers)
-                .WithLeadingTrivia(MakeDocCommentFromDescription(description));
-
-            var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(classDecl);
-
-            NamespaceDeclarationSyntax namespaceDecl = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_namespaceName))
-                .WithMembers(namespaceMembers);
-
-            var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
-
-            IEnumerable<UsingDirectiveSyntax> usingDirectives =
-                _usings.Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
-
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .WithUsings(SyntaxFactory.List(usingDirectives))
-                .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(MakeCopyrightComment(_copyrightNotice));
-
-            var workspace = new AdhocWorkspace();
-            SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
-
-            var sb = new StringBuilder();
-            using (var writer = new StringWriter(sb))
-            {
-                formattedNode.WriteTo(writer);
-            }
-
-            _text = sb.ToString();
-        }
-
-        private NameSyntax MakeQualifiedName(string dottedName)
-        {
-            string[] components = dottedName.Split(new[] { '.' });
-            NameSyntax qualifiedName = SyntaxFactory.ParseName(components[0]);
-            for (int i = 1; i < components.Length; ++i)
-            {
-                qualifiedName = SyntaxFactory.QualifiedName(qualifiedName, SyntaxFactory.IdentifierName(components[i]));
-            }
-
-            return qualifiedName;
         }
 
         private TypeSyntax MakePropertyType(InferredType propertyType, InferredType elementType)
@@ -212,17 +139,138 @@ namespace Microsoft.JSchema.Generator
 
         private void AddUsingDirectiveForClassName(string className, out string unqualifiedClassName)
         {
-
             int index = className.LastIndexOf('.');
             if (index != -1)
             {
                 unqualifiedClassName = className.Substring(index + 1);
                 string namespaceName = className.Substring(0, index);
-                _usings.Add(namespaceName);
+                AddUsing(namespaceName);
             }
             else
             {
                 unqualifiedClassName = className;
+            }
+        }
+
+
+        // If the current schema is of array type, get the type of
+        // its elements.
+        // TODO: I'm not handling arrays of arrays. InferredType should encapsulate that.
+        private InferredType GetElementType(JsonSchema subSchema)
+        {
+            return subSchema.Items != null
+                ? InferTypeFromSchema(subSchema.Items)
+                : new InferredType(JsonType.Object);
+        }
+
+        // Not every subschema specifies a type, but in some cases, it can be inferred.
+        private InferredType InferTypeFromSchema(JsonSchema subSchema)
+        {
+            if (subSchema.Type == JsonType.String && subSchema.Format == FormatAttributes.DateTime)
+            {
+                return new InferredType("System.DateTime");
+            }
+
+            if (subSchema.Type != JsonType.None)
+            {
+                return new InferredType(subSchema.Type);
+            }
+
+            // If there is a reference, use the type of the reference.
+            if (subSchema.Reference != null)
+            {
+                return InferTypeFromReference(subSchema);
+            }
+
+            // If there is an enum and every value has the same type, use that.
+            object[] enumValues = subSchema.Enum;
+            if (enumValues != null && enumValues.Length > 0)
+            {
+                var inferredType = InferTypeFromEnumValues(enumValues);
+                if (inferredType != InferredType.None)
+                {
+                    return inferredType;
+                }
+            }
+
+            return InferredType.None;
+        }
+
+        private InferredType InferTypeFromReference(JsonSchema subSchema)
+        {
+            if (!subSchema.Reference.IsFragment)
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, subSchema.Reference));
+            }
+
+            string definitionName = GetDefinitionNameFromFragment(subSchema.Reference.Fragment);
+
+            JsonSchema definitionSchema;
+            if (!_rootSchema.Definitions.TryGetValue(definitionName, out definitionSchema))
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorDefinitionDoesNotExist, definitionName));
+            }
+
+            return new InferredType(definitionName.ToPascalCase());
+        }
+
+        private static readonly Regex s_definitionRegex = new Regex(@"^#/definitions/(?<definitionName>[^/]+)$");
+
+        private static string GetDefinitionNameFromFragment(string fragment)
+        {
+            Match match = s_definitionRegex.Match(fragment);
+            if (!match.Success)
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, fragment));
+            }
+
+            return match.Groups["definitionName"].Captures[0].Value;
+        }
+
+        private static InferredType InferTypeFromEnumValues(object[] enumValues)
+        {
+            var jsonType = GetJsonTypeFromObject(enumValues[0]);
+            for (int i = 1; i < enumValues.Length; ++i)
+            {
+                if (GetJsonTypeFromObject(enumValues[i]) != jsonType)
+                {
+                    jsonType = JsonType.None;
+                    break;
+                }
+            }
+
+            if (jsonType != JsonType.None)
+            {
+                return new InferredType(jsonType);
+            }
+
+            return InferredType.None;
+        }
+
+        private static JsonType GetJsonTypeFromObject(object obj)
+        {
+            if (obj is string)
+            {
+                return JsonType.String;
+            }
+            else if (obj.IsIntegralType())
+            {
+                return JsonType.Integer;
+            }
+            else if (obj.IsFloatingType())
+            {
+                return JsonType.Number;
+            }
+            else if (obj is bool)
+            {
+                return JsonType.Boolean;
+            }
+            else
+            {
+                return JsonType.None;
             }
         }
 
@@ -243,30 +291,6 @@ namespace Microsoft.JSchema.Generator
             }
 
             return typeKeyword;
-        }
-
-        private SyntaxTriviaList MakeDocCommentFromDescription(string description)
-        {
-            return SyntaxFactory.ParseLeadingTrivia(
-@"/// <summary>
-/// " + description + @"
-/// </summary>
-");
-        }
-
-        private SyntaxTriviaList MakeCopyrightComment(string copyrightNotice)
-        {
-            var trivia = new SyntaxTriviaList();
-            if (!string.IsNullOrWhiteSpace(copyrightNotice))
-            {
-                trivia = trivia.AddRange(new SyntaxTrivia[]
-                {
-                    SyntaxFactory.Comment(copyrightNotice),
-                    SyntaxFactory.Whitespace(Environment.NewLine)
-                });
-            }
-
-            return trivia;
         }
     }
 }

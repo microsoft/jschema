@@ -79,7 +79,7 @@ namespace Microsoft.JSchema.Tests
             }
         };
 
-        [Theory(DisplayName = "EnumHint generates enumerations", Skip = "https://github.com/lgolding/jschema/issues/29")]
+        [Theory(DisplayName = "EnumHint generates enumerations")]
         [MemberData(nameof(TestCases))]
         public void GeneratesEnumFromProperty(
             string schemaText,

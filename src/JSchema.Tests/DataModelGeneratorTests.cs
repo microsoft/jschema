@@ -97,6 +97,33 @@ namespace Microsoft.JSchema.Generator.Tests
             action.ShouldThrow<JSchemaException>().WithMessage("*number*");
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates class description")]
+        public void GeneratesClassDescription()
+        {
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
+
+            string actual = generator.Generate(schema);
+
+            const string Expected =
+@"namespace N
+{
+    /// <summary>
+    /// The description
+    /// </summary>
+    public partial class C
+    {
+    }
+}";
+            actual.Should().Be(Expected);
+
+            // This particular test shows not only that the correct text was produced,
+            // but that it was written to the expected path. Subsequent tests will
+            // just verify the text.
+            _testFileSystem.Files.Should().OnlyContain(key => key.Equals(PrimaryOutputFilePath));
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
@@ -136,11 +163,6 @@ namespace Microsoft.JSchema.Generator.Tests
     }
 }";
             actual.Should().Be(Expected);
-
-            // This particular test shows not only that the correct text was produced,
-            // but that it was written to the expected path. Subsequent tests will
-            // just verify the text.
-            _testFileSystem.Files.Should().OnlyContain(key => key.Equals(PrimaryOutputFilePath));
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
