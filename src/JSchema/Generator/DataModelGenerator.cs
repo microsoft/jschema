@@ -14,7 +14,7 @@ namespace Microsoft.JSchema.Generator
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
-        private HintDictionary _hintDictionary;
+        private Dictionary<string, string> _pathToFileContentsDictionary;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
             : this(settings, new FileSystem())
@@ -28,12 +28,12 @@ namespace Microsoft.JSchema.Generator
             _settings.Validate();
 
             _fileSystem = fileSystem;
+            _pathToFileContentsDictionary = new Dictionary<string, string>();
         }
 
-        public string Generate(JsonSchema rootSchema, HintDictionary hintDictionary = null)
+        public string Generate(JsonSchema rootSchema)
         {
             _rootSchema = rootSchema;
-            _hintDictionary = hintDictionary;
 
             if (_fileSystem.DirectoryExists(_settings.OutputDirectory) && !_settings.ForceOverwrite)
             {
@@ -64,6 +64,11 @@ namespace Microsoft.JSchema.Generator
                 }
             }
 
+            foreach (KeyValuePair<string, string> entry in _pathToFileContentsDictionary)
+            {
+                _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, entry.Key + ".cs"), entry.Value);
+            }
+
             // Returning the text of the file generated from the root schema allows this method
             // to be more easily unit tested.
             return rootFileText;
@@ -73,25 +78,25 @@ namespace Microsoft.JSchema.Generator
         {
             className = className.ToPascalCase();
 
-            string text = CreateFileText(className, schema, copyrightNotice);
-            _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, className + ".cs"), text);
-
-            return text;
-        }
-
-        internal string CreateFileText(string className, JsonSchema schema, string copyrightNotice = null)
-        {
             CodeGenHint[] hints = null;
             EnumHint enumHint = null;
-            if (_hintDictionary != null && _hintDictionary.TryGetValue(className.ToCamelCase(), out hints))
+            InterfaceHint interfaceHint = null;
+            if (_settings.HintDictionary != null && _settings.HintDictionary.TryGetValue(className.ToCamelCase(), out hints))
             {
-                enumHint = hints.First(h => h is EnumHint) as EnumHint;
+                enumHint = hints.FirstOrDefault(h => h is EnumHint) as EnumHint;
+                interfaceHint = hints.FirstOrDefault(h => h is InterfaceHint) as InterfaceHint;
+            }
+
+            string interfaceName = null;
+            if (interfaceHint != null)
+            {
+                interfaceName = "I" + className;
             }
 
             TypeGenerator typeGenerator;
             if (enumHint == null)
             {
-                typeGenerator = new ClassGenerator(_rootSchema);
+                typeGenerator = new ClassGenerator(_rootSchema, interfaceName);
             }
             else
             {
@@ -102,7 +107,21 @@ namespace Microsoft.JSchema.Generator
             typeGenerator.AddMembers(schema);
             typeGenerator.Finish();
 
-            return typeGenerator.GetText();
+            _pathToFileContentsDictionary[className] = typeGenerator.GetText();
+
+            if (interfaceHint != null)
+            {
+
+                typeGenerator = new InterfaceGenerator(_rootSchema);
+
+                typeGenerator.Start(_settings.NamespaceName, interfaceName, copyrightNotice, interfaceHint.Description);
+                typeGenerator.AddMembers(schema);
+                typeGenerator.Finish();
+
+                _pathToFileContentsDictionary[interfaceName] = typeGenerator.GetText();
+            }
+
+            return _pathToFileContentsDictionary[className];
         }
     }
 }

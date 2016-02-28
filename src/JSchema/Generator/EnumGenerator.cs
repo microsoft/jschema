@@ -11,7 +11,7 @@ namespace Microsoft.JSchema.Generator
     /// <summary>
     /// Generate the text of an enumerated type.
     /// </summary>
-    public class EnumGenerator: TypeGenerator
+    public class EnumGenerator : TypeGenerator
     {
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
         {

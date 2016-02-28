@@ -12,7 +12,7 @@ namespace Microsoft.JSchema.Generator
     /// that apply to that schema.
     /// </summary>
     [Serializable]
-    public class HintDictionary: Dictionary<string, CodeGenHint[]>
+    public class HintDictionary : Dictionary<string, CodeGenHint[]>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HintDictionary"/> class.

@@ -4,10 +4,13 @@ namespace Microsoft.JSchema.Generator
 {
     /// <summary>
     /// Represents a code generation hint that tells the generator to create
-    /// an enumeration rather than a string-valued .NET property for a JSON property
-    /// whose schema specifies an enum keyword.
+    /// an interface in addition to a class.
     /// </summary>
-    public class EnumHint : CodeGenHint
+    public class InterfaceHint : CodeGenHint
     {
+        /// <summary>
+        /// Summary comment for the interface declaration.
+        /// </summary>
+        public string Description { get; set; }
     }
 }

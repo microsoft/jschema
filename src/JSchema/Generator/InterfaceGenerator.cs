@@ -18,34 +18,20 @@ namespace Microsoft.JSchema.Generator
     /// Hat tip: Mike Bennett, "Generating Code with Roslyn",
     /// https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
     /// </remarks>
-    public class ClassGenerator : TypeGenerator
+    public class InterfaceGenerator : TypeGenerator
     {
-        private readonly JsonSchema _rootSchema;
-        private readonly string _interfaceName;
+        private JsonSchema _rootSchema;
 
-        public ClassGenerator(JsonSchema rootSchema, string interfaceName)
+        public InterfaceGenerator(JsonSchema rootSchema)
         {
             _rootSchema = rootSchema;
-            _interfaceName = interfaceName;
         }
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
         {
-            var modifiers = SyntaxFactory.TokenList(
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-            var classDeclaration = SyntaxFactory.ClassDeclaration(typeName).WithModifiers(modifiers);
-
-            if (_interfaceName != null)
-            {
-                SimpleBaseTypeSyntax baseType = SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(_interfaceName));
-                SeparatedSyntaxList<BaseTypeSyntax> separatedBaseList = SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(baseType);
-                BaseListSyntax baseList = SyntaxFactory.BaseList(separatedBaseList);
-                classDeclaration = classDeclaration.WithBaseList(baseList);
-            }
-
-            return classDeclaration;
+            return SyntaxFactory.InterfaceDeclaration(typeName).WithModifiers(modifiers);
         }
 
         public override void AddMembers(JsonSchema schema)
@@ -70,7 +56,7 @@ namespace Microsoft.JSchema.Generator
                 }
 
                 var members = SyntaxFactory.List(propDecls.Cast<MemberDeclarationSyntax>());
-                TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(members);
+                TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax).WithMembers(members);
             }
         }
 
@@ -99,12 +85,6 @@ namespace Microsoft.JSchema.Generator
             InferredType inferredPropertyType,
             InferredType inferredElementType)
         {
-            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-            if (_interfaceName != null)
-            {
-                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
-            }
-
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
                 {
@@ -114,7 +94,7 @@ namespace Microsoft.JSchema.Generator
 
             return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
-                modifiers,
+                default(SyntaxTokenList),
                 MakePropertyType(inferredPropertyType, inferredElementType),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),

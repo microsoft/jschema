@@ -7,14 +7,14 @@ using Xunit;
 
 namespace Microsoft.JSchema.Tests
 {
-    public class EnumHintTests
+    public class InterfaceHintTests
     {
         private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
 
         private readonly TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
 
-        public EnumHintTests()
+        public InterfaceHintTests()
         {
             _testFileSystem = new TestFileSystem();
             _settings = TestSettings.MakeSettings();
@@ -26,25 +26,20 @@ namespace Microsoft.JSchema.Tests
             {
 @"{
   ""type"": ""object"",
-  ""description"": ""My class with an enum."",
+  ""description"": ""My class with an interface."",
   ""properties"": {
-    ""backgroundColor"": {
-      ""description"": ""The color of the background."",
-      ""$ref"": ""#/definitions/color""
+    ""name"": {
+      ""description"": ""The name of this instance."",
+      ""type"": ""string""
     }
   },
-  ""definitions"": {
-    ""color"": {
-      ""description"": ""Some pretty colors."",
-      ""enum"": [""red"", ""yellow"", ""green""]
-    }
-  }
 }",
 
 @"{
-  ""color"": [
+  ""c"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema""
+      ""$type"": ""Microsoft.JSchema.Generator.InterfaceHint, Microsoft.JSchema"",
+      ""description"": ""My interface.""
     }
   ]
 }",
@@ -52,41 +47,40 @@ namespace Microsoft.JSchema.Tests
 @"namespace N
 {
     /// <summary>
-    /// My class with an enum.
+    /// My class with an interface.
     /// </summary>
-    public partial class C
+    public partial class C : IC
     {
         /// <summary>
-        /// The color of the background.
+        /// The name of this instance.
         /// </summary>
-        public Color BackgroundColor { get; set; }
+        public override string Name { get; set; }
     }
 }",
-                "Color",
 
 @"namespace N
 {
     /// <summary>
-    /// Some pretty colors.
+    /// My interface.
     /// </summary>
-    public enum Color
+    public interface IC
     {
-        Red,
-        Yellow,
-        Green
+        /// <summary>
+        /// The name of this instance.
+        /// </summary>
+        string Name { get; set; }
     }
 }"
             }
         };
 
-        [Theory(DisplayName = "EnumHint generates enumerations")]
+        [Theory(DisplayName = "InterfaceHint generates interfaces in addition to classes")]
         [MemberData(nameof(TestCases))]
-        public void GeneratesEnumFromProperty(
+        public void GeneratesInterfaceFromClass(
             string schemaText,
             string hintsText,
             string classText,
-            string enumFileNameStem,
-            string enumText)
+            string interfaceText)
         {
             JsonSchema schema = SchemaReader.ReadSchema(schemaText);
             _settings.HintDictionary = HintDictionary.Deserialize(hintsText);
@@ -94,19 +88,19 @@ namespace Microsoft.JSchema.Tests
 
             generator.Generate(schema);
 
-            string enumFilePath = TestFileSystem.MakeOutputFilePath(enumFileNameStem);
+            string interfaceFilePath = TestFileSystem.MakeOutputFilePath("I" + _settings.RootClassName);
 
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
-                enumFilePath
+                interfaceFilePath
             };
 
             _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
             _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
             _testFileSystem[PrimaryOutputFilePath].Should().Be(classText);
-            _testFileSystem[enumFilePath].Should().Be(enumText);
+            _testFileSystem[interfaceFilePath].Should().Be(interfaceText);
         }
     }
 }
