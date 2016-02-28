@@ -9,12 +9,5 @@ namespace Microsoft.JSchema.Generator
     /// </summary>
     public class EnumHint: CodeGenHint
     {
-        /// <summary>
-        /// Initializes a new instance of <see cref="EnumHint"/> class.
-        /// </summary>
-        public EnumHint()
-            : base(Resources.EnumHintName)
-        {
-        }
     }
 }
