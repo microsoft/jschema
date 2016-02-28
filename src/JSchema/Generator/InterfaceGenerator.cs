@@ -60,6 +60,11 @@ namespace Microsoft.JSchema.Generator
             }
         }
 
+        protected override SyntaxTokenList CreatePropertyModifiers()
+        {
+            return default(SyntaxTokenList);
+        }
+
         /// <summary>
         /// Create a property declaration.
         /// </summary>
@@ -94,7 +99,7 @@ namespace Microsoft.JSchema.Generator
 
             return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
-                default(SyntaxTokenList),
+                CreatePropertyModifiers(),
                 MakePropertyType(inferredPropertyType, inferredElementType),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),

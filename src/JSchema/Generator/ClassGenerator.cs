@@ -74,6 +74,17 @@ namespace Microsoft.JSchema.Generator
             }
         }
 
+        protected override SyntaxTokenList CreatePropertyModifiers()
+        {
+            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            if (_interfaceName != null)
+            {
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
+            }
+
+            return modifiers;
+        }
+
         /// <summary>
         /// Create a property declaration.
         /// </summary>
@@ -99,12 +110,6 @@ namespace Microsoft.JSchema.Generator
             InferredType inferredPropertyType,
             InferredType inferredElementType)
         {
-            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-            if (_interfaceName != null)
-            {
-                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
-            }
-
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
                 {
@@ -114,7 +119,7 @@ namespace Microsoft.JSchema.Generator
 
             return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
-                modifiers,
+                CreatePropertyModifiers(),
                 MakePropertyType(inferredPropertyType, inferredElementType),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
