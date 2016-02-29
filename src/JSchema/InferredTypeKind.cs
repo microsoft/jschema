@@ -23,11 +23,21 @@ namespace Microsoft.JSchema
         /// <summary>
         /// One of the primitive types defined by the JSON Schema specification was inferred.
         /// </summary>
+        /// <remarks>
+        /// Although the JSON standard also considers "object" and "array" as primitive types, this
+        /// class handles them separately because they require additional information (a class name
+        /// and an item type, respectively) to specify them.
+        /// </remarks>
         JsonType,
 
         /// <summary>
         /// The name of a class was inferred.
         /// </summary>
-        ClassName
+        ClassName,
+
+        /// <summary>
+        /// An array type was inferred.
+        /// </summary>
+        Array
     }
 }

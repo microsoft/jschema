@@ -35,12 +35,8 @@ namespace Microsoft.JSchema.Generator
 
                 InferredType propertyType = new InferredType(schema, subSchema);
 
-                InferredType elementType = subSchema.Type == JsonType.Array
-                    ? GetElementType(schema, subSchema)
-                    : InferredType.None;
-
                 propDecls.Add(
-                    CreatePropertyDeclaration(propertyName, subSchema.Description, propertyType, elementType));
+                    CreatePropertyDeclaration(propertyName, subSchema.Description, propertyType));
             }
 
             return SyntaxFactory.List(propDecls.Cast<MemberDeclarationSyntax>());
@@ -58,18 +54,13 @@ namespace Microsoft.JSchema.Generator
         /// <param name="inferredPropertyType">
         /// The inferred type of the property to be added.
         /// </param>
-        /// <param name="inferredElementType">
-        /// The inferred type of the array elements of the property to be added,
-        /// if the property is an array; if not, this parameter is ignored.
-        /// </param>
         /// <returns>
         /// A property declaration built from the specified information.
         /// </returns>
         private PropertyDeclarationSyntax CreatePropertyDeclaration(
             string propertyName,
             string description,
-            InferredType inferredPropertyType,
-            InferredType inferredElementType)
+            InferredType inferredPropertyType)
         {
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
@@ -81,36 +72,19 @@ namespace Microsoft.JSchema.Generator
             return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 CreatePropertyModifiers(),
-                MakePropertyType(inferredPropertyType, inferredElementType),
+                MakePropertyType(inferredPropertyType),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
                 .WithLeadingTrivia(MakeDocCommentFromDescription(description));
         }
 
-        // If the current schema is of array type, get the type of
-        // its elements.
-        // TODO: I'm not handling arrays of arrays. InferredType should encapsulate that.
-        private InferredType GetElementType(JsonSchema rootSchema, JsonSchema subSchema)
-        {
-            return subSchema.Items != null
-                ? new InferredType(rootSchema, subSchema.Items)
-                : new InferredType(JsonType.Object);
-        }
-
-        private TypeSyntax MakePropertyType(InferredType propertyType, InferredType elementType)
+        private TypeSyntax MakePropertyType(InferredType propertyType)
         {
             switch (propertyType.Kind)
             {
                 case InferredTypeKind.JsonType:
                     JsonType jsonType = propertyType.GetJsonType();
-                    if (jsonType == JsonType.Array)
-                    {
-                        return SyntaxFactory.ArrayType(
-                            MakePropertyType(elementType, null), // TODO: This is where we break if the array element is itself of type array.
-                            SyntaxFactory.List(new[] { SyntaxFactory.ArrayRankSpecifier() }));
-                    }
-
                     SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(propertyType.GetJsonType());
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
 
@@ -120,12 +94,37 @@ namespace Microsoft.JSchema.Generator
                     AddUsingDirectiveForClassName(className, out unqualifiedClassName);
                     return SyntaxFactory.ParseTypeName(unqualifiedClassName);
 
+                case InferredTypeKind.Array:
+                     return MakeArrayPropertyType(propertyType);
+
                 case InferredTypeKind.None:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(propertyType));
             }
+        }
+
+        private TypeSyntax MakeArrayPropertyType(InferredType propertyType)
+        {
+            InferredType itemType = propertyType;
+
+            int rank = 0;
+            while (itemType.Kind == InferredTypeKind.Array)
+            {
+                ++rank;
+                itemType = itemType.GetItemType();
+            }
+
+            TypeSyntax ultimateItemTypeSyntax = MakePropertyType(itemType);
+
+            var rankSpecifiers = new ArrayRankSpecifierSyntax[rank];
+            for (int dimension = 0; dimension < rank; ++dimension)
+            {
+                rankSpecifiers[dimension] = SyntaxFactory.ArrayRankSpecifier();
+            }
+
+            return SyntaxFactory.ArrayType(ultimateItemTypeSyntax, SyntaxFactory.List(rankSpecifiers));
         }
 
         private void AddUsingDirectiveForClassName(string className, out string unqualifiedClassName)

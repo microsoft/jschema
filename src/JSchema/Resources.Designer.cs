@@ -97,6 +97,15 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} property of this {1} instance is not {2}, so it has no item type..
+        /// </summary>
+        internal static string ErrorNoItemTypeForNonArray {
+            get {
+                return ResourceManager.GetString("ErrorNoItemTypeForNonArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The {0} property of this {1} instance is {2}, so it has no primitive type..
         /// </summary>
         internal static string ErrorNoPrimitiveTypeForInferredTypeKindClassName {

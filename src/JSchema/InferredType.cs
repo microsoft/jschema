@@ -6,8 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-// TODO: Setting _jsonType or _className should set InferredTypeKind.
-
 namespace Microsoft.JSchema
 {
     /// <summary>
@@ -31,6 +29,7 @@ namespace Microsoft.JSchema
         private readonly JsonSchema _rootSchema;
         private JsonType _jsonType;
         private string _className;
+        private InferredType _itemType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InferredType"/> class from a 
@@ -118,6 +117,14 @@ namespace Microsoft.JSchema
         /// <exception cref="InvalidOperationException">
         /// If <see cref="Kind"/> property of this instance is not <see cref="InferredTypeKind.JsonType"/>.
         /// </exception>
+        /// <returns>
+        /// The inferred JSON primitive type.
+        /// </returns>
+        /// <remarks>
+        /// Although the JSON standard also considers "object" and "array" as primitive types, this
+        /// class handles them separately because they require additional information (a class name
+        /// and an item type, respectively) to specify them.
+        /// </remarks>
         public JsonType GetJsonType()
         {
             if (Kind != InferredTypeKind.JsonType)
@@ -140,6 +147,9 @@ namespace Microsoft.JSchema
         /// <exception cref="InvalidOperationException">
         /// If <see cref="Kind"/> property of this instance is not <see cref="InferredTypeKind.ClassName"/>.
         /// </exception>
+        /// <returns>
+        /// The inferred class name.
+        /// </returns>
         public string GetClassName()
         {
             if (Kind != InferredTypeKind.ClassName)
@@ -153,6 +163,31 @@ namespace Microsoft.JSchema
             }
 
             return _className;
+        }
+
+        /// <summary>
+        /// Returns the inferred type of the array elements, if the <see cref="Kind"/> property of
+        /// this instance is <see cref="InferredTypeKind.Array"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// If <see cref="Kind"/> property of this instance is not <see cref="InferredTypeKind.Array"/>.
+        /// </exception>
+        /// <returns>
+        /// The inferred type of the array elements.
+        /// </returns>
+        public InferredType GetItemType()
+        {
+            if (Kind != InferredTypeKind.Array)
+            {
+                throw new InvalidOperationException(
+                    string.Format(CultureInfo.InvariantCulture,
+                        Resources.ErrorNoItemTypeForNonArray,
+                        nameof(Kind),
+                        nameof(InferredType),
+                        nameof(InferredTypeKind.Array)));
+            }
+
+            return _itemType;
         }
 
         #region Object
@@ -177,15 +212,41 @@ namespace Microsoft.JSchema
             {
                 return _jsonType == other._jsonType;
             }
-
-            return _className.Equals(_className, StringComparison.Ordinal);
+            else if (Kind == InferredTypeKind.ClassName)
+            {
+                return _className.Equals(_className, StringComparison.Ordinal);
+            }
+            else if (Kind == InferredTypeKind.Array)
+            {
+                return _itemType.Equals(other._itemType);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid InferredType.Kind: " + Kind);
+            }
         }
 
         public override int GetHashCode()
         {
-            int dataHash = Kind == InferredTypeKind.JsonType
-                ? _jsonType.GetHashCode()
-                : _className.GetHashCode();
+            int dataHash = 0;
+
+            if (Kind == InferredTypeKind.JsonType)
+            {
+                dataHash = _jsonType.GetHashCode();
+            }
+            else if (Kind == InferredTypeKind.ClassName)
+            {
+                dataHash = _className.GetHashCode();
+            }
+            else if (Kind == InferredTypeKind.Array)
+            {
+                // TODO: For arrays, we really ought to take account of the rank.
+                dataHash = _itemType.GetHashCode();
+            }
+            else
+            {
+                throw new ArgumentException("Invalid InferredType.Kind: " + Kind);
+            }
 
             return Hash.Combine(Kind.GetHashCode(), dataHash);
         }
@@ -219,6 +280,10 @@ namespace Microsoft.JSchema
             if (schema.Type == JsonType.String && schema.Format == FormatAttributes.DateTime)
             {
                 SetClassName("System.DateTime");
+            }
+            else if (schema.Type == JsonType.Array)
+            {
+                InferItemType(schema.Items);
             }
             else if (schema.Type != JsonType.None)
             {
@@ -296,6 +361,18 @@ namespace Microsoft.JSchema
             return false;
         }
 
+        private void InferItemType(JsonSchema itemsSchema)
+        {
+            if (itemsSchema == null)
+            {
+                SetJsonType(JsonType.Object);
+            }
+            else
+            {
+                SetItemType(new InferredType(_rootSchema, itemsSchema));
+            }
+        }
+
         private void SetJsonType(JsonType jsonType)
         {
             _jsonType = jsonType;
@@ -306,6 +383,12 @@ namespace Microsoft.JSchema
         {
             _className = className;
             Kind = InferredTypeKind.ClassName;
+        }
+
+        private void SetItemType(InferredType itemType)
+        {
+            _itemType = itemType;
+            Kind = InferredTypeKind.Array;
         }
 
         private static JsonType GetJsonTypeFromObject(object obj)

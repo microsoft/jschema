@@ -116,7 +116,11 @@ namespace Microsoft.JSchema.Tests
                     {
                         ["arrayProp"] = new JsonSchema
                         {
-                            Type = JsonType.Array
+                            Type = JsonType.Array,
+                            Items = new JsonSchema
+                            {
+                                Type = JsonType.Object
+                            }
                         }
                     },
                     MinItems = 1,

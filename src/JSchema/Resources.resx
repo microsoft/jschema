@@ -129,6 +129,9 @@
   <data name="ErrorNoClassNameForInferredTypeKindPrimitive" xml:space="preserve">
     <value>The {0} property of this {1} instance is {2}, so it has no class name.</value>
   </data>
+  <data name="ErrorNoItemTypeForNonArray" xml:space="preserve">
+    <value>The {0} property of this {1} instance is not {2}, so it has no item type.</value>
+  </data>
   <data name="ErrorNoPrimitiveTypeForInferredTypeKindClassName" xml:space="preserve">
     <value>The {0} property of this {1} instance is {2}, so it has no primitive type.</value>
   </data>
