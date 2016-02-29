@@ -218,13 +218,11 @@ namespace Microsoft.JSchema
         {
             if (schema.Type == JsonType.String && schema.Format == FormatAttributes.DateTime)
             {
-                _className = "System.DateTime";
-                Kind = InferredTypeKind.ClassName;
+                SetClassName("System.DateTime");
             }
             else if (schema.Type != JsonType.None)
             {
-                _jsonType = schema.Type;
-                Kind = InferredTypeKind.JsonType;
+                SetJsonType(schema.Type);
             }
             else if (schema.Reference != null)
             {
@@ -240,8 +238,7 @@ namespace Microsoft.JSchema
             }
             else
             {
-                Kind = InferredTypeKind.JsonType;
-                _jsonType = JsonType.None;
+                SetJsonType(JsonType.None);
             }
         }
 
@@ -267,13 +264,11 @@ namespace Microsoft.JSchema
                 definitionSchema.Type == JsonType.Number ||
                 definitionSchema.Type == JsonType.String)
             {
-                _jsonType = definitionSchema.Type;
-                Kind = InferredTypeKind.JsonType;
+                SetJsonType(definitionSchema.Type);
             }
             else
             {
-                _className = definitionName.ToPascalCase();
-                Kind = InferredTypeKind.ClassName;
+                SetClassName(definitionName.ToPascalCase());
             }
         }
 
@@ -293,13 +288,24 @@ namespace Microsoft.JSchema
 
                 if (jsonType != JsonType.None)
                 {
-                    _jsonType = jsonType;
-                    Kind = InferredTypeKind.JsonType;
+                    SetJsonType(jsonType);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private void SetJsonType(JsonType jsonType)
+        {
+            _jsonType = jsonType;
+            Kind = InferredTypeKind.JsonType;
+        }
+
+        private void SetClassName(string className)
+        {
+            _className = className;
+            Kind = InferredTypeKind.ClassName;
         }
 
         private static JsonType GetJsonTypeFromObject(object obj)
@@ -325,6 +331,7 @@ namespace Microsoft.JSchema
                 return JsonType.None;
             }
         }
+
         private static readonly Regex s_definitionRegex = new Regex(@"^#/definitions/(?<definitionName>[^/]+)$");
 
         private static string GetDefinitionNameFromFragment(string fragment)
