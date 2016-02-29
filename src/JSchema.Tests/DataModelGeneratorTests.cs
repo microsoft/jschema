@@ -680,5 +680,42 @@ namespace N
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
+
+        [Fact(DisplayName = "DataModelGenerate generates integer property from dictionary reference")]
+        public void GeneratesIntegerPropertyFromDictionaryReference()
+        {
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""intDefProp"": {
+      ""$ref"": ""#/definitions/d""
+    },
+  },
+  ""definitions"": {
+    ""d"": {
+      ""type"": ""integer""
+    }
+  }
+}");
+
+            const string Expected =
+@"namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public int IntDefProp { get; set; }
+    }
+}";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
     }
 }
