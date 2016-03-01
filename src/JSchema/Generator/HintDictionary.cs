@@ -9,8 +9,8 @@ using Newtonsoft.Json;
 namespace Microsoft.JSchema.Generator
 {
     /// <summary>
-    /// Represents a dictionary that maps from the URI of a schema to an array of hints
-    /// that apply to that schema.
+    /// Represents a dictionary that maps from the URI of a schema to an array of code
+    /// generation hints that apply to that schema.
     /// </summary>
     [Serializable]
     public class HintDictionary : Dictionary<string, CodeGenHint[]>

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Newtonsoft.Json;
 
 namespace Microsoft.JSchema
@@ -10,6 +11,82 @@ namespace Microsoft.JSchema
     public class JsonSchema : IEquatable<JsonSchema>
     {
         public static readonly Uri V4Draft = new Uri("http://json-schema.org/draft-04/schema#");
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonSchema"/> class.
+        /// </summary>
+        public JsonSchema()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonSchema"/> class from the
+        /// specified instance.
+        /// </summary>
+        /// <param name="other">
+        /// The instance used to initialize the new instance.
+        /// </param>
+        public JsonSchema(JsonSchema other)
+        {
+            if (other.Id != null)
+            {
+                Id = new UriOrFragment(other.Id);
+            }
+
+            if (other.SchemaVersion != null)
+            {
+                SchemaVersion = new Uri(other.SchemaVersion.OriginalString);
+            }
+
+            Title = other.Title;
+            Description = other.Description;
+            Type = other.Type;
+
+            if (other.Enum != null)
+            {
+                // A shallow copy is fine since Enum will be checked to ensure that it
+                // contain only primitive types.
+                Enum = other.Enum.Clone() as object[];
+            }
+
+            if (other.Items != null)
+            {
+                Items = new JsonSchema(other.Items);
+            }
+
+            if (other.Properties != null)
+            {
+                Properties = new Dictionary<string, JsonSchema>();
+                foreach (string key in other.Properties.Keys)
+                {
+                    Properties.Add(key, new JsonSchema(other.Properties[key]));
+                }
+            }
+
+            if (other.Required != null)
+            {
+                Required = other.Required.Clone() as string[];
+            }
+
+            if (other.Definitions != null)
+            {
+                Definitions = new Dictionary<string, JsonSchema>();
+                foreach (string key in other.Definitions.Keys)
+                {
+                    Definitions.Add(key, new JsonSchema(other.Definitions[key]));
+                }
+            }
+
+            MinItems = other.MinItems;
+            MaxItems = other.MaxItems;
+
+            if (other.Reference != null)
+            {
+                Reference = new UriOrFragment(other.Reference);
+            }
+
+            Format = other.Format;
+        }
 
         /// <summary>
         /// Gets or sets a URI that alters the resolution scope for the current schema and
@@ -109,6 +186,94 @@ namespace Microsoft.JSchema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.String"/>.
         /// </remarks>
         public string Format { get; set; }
+
+        /// <summary>
+        /// Pull properties from any referenced schemas up into this schema.
+        /// </summary>
+        public static JsonSchema Collapse(JsonSchema schema)
+        {
+            return Collapse(schema, schema);
+        }
+
+        private static JsonSchema Collapse(JsonSchema schema, JsonSchema rootSchema)
+        {
+            JsonSchema collapsedSchema = new JsonSchema(schema);
+
+            if (schema.Items != null)
+            {
+                collapsedSchema.Items = Collapse(schema.Items, rootSchema);
+            }
+
+            if (schema.Properties != null)
+            {
+                collapsedSchema.Properties = new Dictionary<string, JsonSchema>();
+                foreach (string key in schema.Properties.Keys)
+                {
+                    collapsedSchema.Properties.Add(
+                        key, Collapse(schema.Properties[key], rootSchema));
+                }
+            }
+
+            if (schema.Definitions != null)
+            {
+                collapsedSchema.Definitions = new Dictionary<string, JsonSchema>();
+                foreach (string key in schema.Definitions.Keys)
+                {
+                    collapsedSchema.Definitions.Add(
+                        key, Collapse(schema.Definitions[key], rootSchema));
+                }
+            }
+
+            if (schema.Reference != null)
+            {
+                if (!schema.Reference.IsFragment)
+                {
+                    throw new JSchemaException(
+                        string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, schema.Reference));
+                }
+
+                string definitionName = schema.Reference.GetDefinitionName();
+
+                JsonSchema referencedSchema;
+                if (rootSchema.Definitions == null || !rootSchema.Definitions.TryGetValue(definitionName, out referencedSchema))
+                {
+                    throw new JSchemaException(
+                        string.Format(CultureInfo.InvariantCulture, Resources.ErrorDefinitionDoesNotExist, definitionName));
+                }
+
+                if (collapsedSchema.Type == JsonType.None)
+                {
+                    collapsedSchema.Type = referencedSchema.Type;
+                }
+
+                if (collapsedSchema.Enum == null && referencedSchema.Enum != null)
+                {
+                    collapsedSchema.Enum = referencedSchema.Enum.Clone() as object[];
+                }
+
+                if (collapsedSchema.Items == null && referencedSchema.Items != null)
+                {
+                    collapsedSchema.Items = Collapse(referencedSchema.Items, rootSchema);
+                }
+
+                if (collapsedSchema.MinItems == null)
+                {
+                    collapsedSchema.MinItems = referencedSchema.MinItems;
+                }
+
+                if (collapsedSchema.MaxItems == null)
+                {
+                    collapsedSchema.MaxItems = referencedSchema.MaxItems;
+                }
+
+                if (collapsedSchema.Format == null)
+                {
+                    collapsedSchema.Format = referencedSchema.Format;
+                }
+            }
+
+            return collapsedSchema;
+        }
 
         #region Object overrides
 

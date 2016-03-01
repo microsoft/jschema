@@ -18,8 +18,8 @@ namespace Microsoft.JSchema.Generator
     {
         private readonly string _interfaceName;
 
-        public ClassGenerator(JsonSchema rootSchema, string interfaceName)
-            : base(rootSchema)
+        public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
+            : base(rootSchema, hintDictionary)
         {
             _interfaceName = interfaceName;
         }

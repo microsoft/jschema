@@ -87,7 +87,6 @@
     <Compile Include="Generator\InterfaceGenerator.cs" />
     <Compile Include="Generator\InterfaceHint.cs" />
     <Compile Include="Generator\TypeGenerator.cs" />
-    <Compile Include="InferredType.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="Generator\ClassGenerator.cs" />
@@ -95,7 +94,6 @@
     <Compile Include="Generator\DataModelGeneratorSettings.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="IFileSystem.cs" />
-    <Compile Include="InferredTypeKind.cs" />
     <Compile Include="JSchemaException.cs" />
     <Compile Include="JsonType.cs" />
     <Compile Include="JsonSchema.cs" />

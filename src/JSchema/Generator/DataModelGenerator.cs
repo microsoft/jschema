@@ -34,7 +34,7 @@ namespace Microsoft.JSchema.Generator
 
         public string Generate(JsonSchema rootSchema)
         {
-            _rootSchema = rootSchema;
+            _rootSchema = JsonSchema.Collapse(rootSchema);
 
             if (_fileSystem.DirectoryExists(_settings.OutputDirectory) && !_settings.ForceOverwrite)
             {
@@ -97,11 +97,11 @@ namespace Microsoft.JSchema.Generator
             TypeGenerator typeGenerator;
             if (enumHint == null)
             {
-                typeGenerator = new ClassGenerator(_rootSchema, interfaceName);
+                typeGenerator = new ClassGenerator(_rootSchema, interfaceName, _settings.HintDictionary);
             }
             else
             {
-                typeGenerator = new EnumGenerator();
+                typeGenerator = new EnumGenerator(_settings.HintDictionary);
             }
         
             _pathToFileContentsDictionary[className] =
@@ -109,7 +109,7 @@ namespace Microsoft.JSchema.Generator
 
             if (interfaceHint != null)
             {
-                typeGenerator = new InterfaceGenerator(_rootSchema);
+                typeGenerator = new InterfaceGenerator(_rootSchema, _settings.HintDictionary);
                 _pathToFileContentsDictionary[interfaceName] =
                     typeGenerator.Generate(schema, _settings.NamespaceName, interfaceName, copyrightNotice, interfaceHint.Description);
             }

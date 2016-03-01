@@ -16,8 +16,8 @@ namespace Microsoft.JSchema.Generator
     /// </remarks>
     public class InterfaceGenerator : ClassOrInterfaceGenerator
     {
-        public InterfaceGenerator(JsonSchema rootSchema)
-            : base(rootSchema)
+        public InterfaceGenerator(JsonSchema rootSchema, HintDictionary hintDictionary)
+            : base(rootSchema, hintDictionary)
         {
         }
 

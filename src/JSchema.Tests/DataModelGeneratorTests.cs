@@ -458,131 +458,6 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates property for enum with Boolean values")]
-        public void GeneratesPropertyForEnumWithBooleanValues()
-        {
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("BooleanEnum");
-
-            const string Expected =
-@"namespace N
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public partial class C
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool BooleanEnumProp { get; set; }
-    }
-}";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
-        }
-
-        [Fact(DisplayName = "DataModelGenerator generates property for enum with integer values")]
-        public void GeneratesPropertyForEnumWithIntegerValues()
-        {
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("IntegerEnum");
-
-            const string Expected =
-@"namespace N
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public partial class C
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public int IntegerEnumProp { get; set; }
-    }
-}";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
-        }
-
-        [Fact(DisplayName = "DataModelGenerator generates property for enum with mixed values")]
-        public void GeneratesPropertyForEnumWithMixedValues()
-        {
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("MixedEnum");
-
-            const string Expected =
-@"namespace N
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public partial class C
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public object MixedEnumProp { get; set; }
-    }
-}";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
-        }
-
-        [Fact(DisplayName = "DataModelGenerator generates property for enum with number values")]
-        public void GeneratesPropertyForEnumWithNumberValues()
-        {
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("NumberEnum");
-
-            const string Expected =
-@"namespace N
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public partial class C
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public double NumberEnumProp { get; set; }
-    }
-}";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
-        }
-
-        [Fact(DisplayName = "DataModelGenerator generates property for enum with string values")]
-        public void GeneratesPropertyForEnumWithStringValues()
-        {
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("StringEnum");
-
-            const string Expected =
-@"namespace N
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public partial class C
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string StringEnumProp { get; set; }
-    }
-}";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
-        }
-
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
         public void GeneratesClassesForSchemasInDefinitions()
         {
@@ -654,7 +529,7 @@ namespace N
             _testFileSystem[def2Path].Should().Be(ExpectedDefinedClass2);
         }
 
-        [Fact(DisplayName = "DataModelGenerate generates date-time-valued properties")]
+        [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -681,7 +556,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerate generates integer property from dictionary reference")]
+        [Fact(DisplayName = "DataModelGenerator generates integer property from dictionary reference")]
         public void GeneratesIntegerPropertyFromDictionaryReference()
         {
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -711,6 +586,139 @@ namespace N
         /// 
         /// </summary>
         public int IntDefProp { get; set; }
+    }
+}";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type")]
+        public void GeneratesArrayOfArraysOfPrimitiveType()
+        {
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""arrayOfArrayOfInt"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""$ref"": ""#/definitions/itemType""
+      }
+    }
+  },
+  ""definitions"": {
+    ""itemType"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""type"": ""integer""
+      }
+    }
+  }
+}");
+
+            const string Expected =
+@"namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public int[][] ArrayOfArrayOfInt { get; set; }
+    }
+}";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
+        public void GeneratesArrayOfArraysOfObjectType()
+        {
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""arrayOfArrayOfObject"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""$ref"": ""#/definitions/itemType""
+      }
+    }
+  },
+  ""definitions"": {
+    ""itemType"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""type"": ""object""
+      }
+    }
+  }
+}");
+
+            const string Expected =
+@"namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public object[][] ArrayOfArrayOfObject { get; set; }
+    }
+}";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
+        public void GeneratesArrayOfArraysOfClassType()
+        {
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""arrayOfArrayOfD"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""$ref"": ""#/definitions/itemType""
+      }
+    }
+  },
+  ""definitions"": {
+    ""itemType"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""$ref"": ""#/definitions/d""
+      }
+    },
+    ""d"": {
+      ""type"": ""object"",
+      }
+    }
+  }
+}");
+
+            const string Expected =
+@"namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public D[][] ArrayOfArrayOfD { get; set; }
     }
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);

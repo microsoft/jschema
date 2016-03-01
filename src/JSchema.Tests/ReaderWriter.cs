@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 
 namespace Microsoft.JSchema.Tests
@@ -87,22 +86,6 @@ namespace Microsoft.JSchema.Tests
                     },
 
                     Required = new[] { "prop1", "prop3" }
-                }
-            },
-
-            new object[]
-            {
-                "StringEnum",
-                new JsonSchema
-                {
-                    Type = JsonType.Object,
-                    Properties = new Dictionary<string, JsonSchema>
-                    {
-                        ["stringEnumProp"] = new JsonSchema
-                        {
-                            Enum = new object[] { "a", "1" }
-                        }
-                    }
                 }
             },
 

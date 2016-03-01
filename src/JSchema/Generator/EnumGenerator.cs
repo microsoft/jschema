@@ -14,6 +14,11 @@ namespace Microsoft.JSchema.Generator
     /// </summary>
     public class EnumGenerator : TypeGenerator
     {
+        public EnumGenerator(HintDictionary hintDictionary)
+            : base(hintDictionary)
+        {
+        }
+
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
         {
             return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(typeName))

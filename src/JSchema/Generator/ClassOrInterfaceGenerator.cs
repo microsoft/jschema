@@ -17,7 +17,8 @@ namespace Microsoft.JSchema.Generator
     {
         private JsonSchema _rootSchema;
 
-        public ClassOrInterfaceGenerator(JsonSchema rootSchema)
+        public ClassOrInterfaceGenerator(JsonSchema rootSchema, HintDictionary hintDictionary)
+            : base(hintDictionary)
         {
             _rootSchema = rootSchema;
         }
@@ -33,10 +34,8 @@ namespace Microsoft.JSchema.Generator
                 string propertyName = schemaProperty.Key;
                 JsonSchema subSchema = schemaProperty.Value;
 
-                InferredType propertyType = new InferredType(schema, subSchema);
-
                 propDecls.Add(
-                    CreatePropertyDeclaration(propertyName, subSchema.Description, propertyType));
+                    CreatePropertyDeclaration(propertyName, subSchema));
             }
 
             return SyntaxFactory.List(propDecls.Cast<MemberDeclarationSyntax>());
@@ -48,19 +47,13 @@ namespace Microsoft.JSchema.Generator
         /// <param name="propertyName">
         /// The name of the property.
         /// </param>
-        /// <param name="description">
-        /// A description of the property, or <code>null</code> if there is no description.
-        /// </param>
-        /// <param name="inferredPropertyType">
-        /// The inferred type of the property to be added.
+        /// <param name="schema">
+        /// The schema that defines the type of the property.
         /// </param>
         /// <returns>
-        /// A property declaration built from the specified information.
+        /// A property declaration built from the specified schema.
         /// </returns>
-        private PropertyDeclarationSyntax CreatePropertyDeclaration(
-            string propertyName,
-            string description,
-            InferredType inferredPropertyType)
+        private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName, JsonSchema schema)
         {
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
@@ -72,62 +65,113 @@ namespace Microsoft.JSchema.Generator
             return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 CreatePropertyModifiers(),
-                MakePropertyType(inferredPropertyType),
+                MakePropertyType(schema),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
-                .WithLeadingTrivia(MakeDocCommentFromDescription(description));
+                .WithLeadingTrivia(MakeDocCommentFromDescription(schema.Description));
         }
 
-        private TypeSyntax MakePropertyType(InferredType propertyType)
+        private TypeSyntax MakePropertyType(JsonSchema schema)
         {
-            switch (propertyType.Kind)
+            if (IsDateTime(schema))
             {
-                case InferredTypeKind.JsonType:
-                    JsonType jsonType = propertyType.GetJsonType();
-                    SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(propertyType.GetJsonType());
-                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
+                return MakeNamedType("System.DateTime");
+            }
 
-                case InferredTypeKind.ClassName:
-                    string className = propertyType.GetClassName();
-                    string unqualifiedClassName;
-                    AddUsingDirectiveForClassName(className, out unqualifiedClassName);
-                    return SyntaxFactory.ParseTypeName(unqualifiedClassName);
+            string referencedEnumTypeName = GetReferencedEnumTypeName(schema);
+            if (referencedEnumTypeName != null)
+            {
+                return MakeNamedType(referencedEnumTypeName);
+            }
 
-                case InferredTypeKind.Array:
-                     return MakeArrayPropertyType(propertyType);
+            switch (schema.Type)
+            {
+                case JsonType.Boolean:
+                case JsonType.Integer:
+                case JsonType.Number:
+                case JsonType.String:
+                    return MakePrimitiveType(schema.Type);
 
-                case InferredTypeKind.None:
+                case JsonType.Object:
+                    return MakeObjectType(schema);
+
+                case JsonType.Array:
+                     return MakeArrayType(schema);
+
+                case JsonType.None:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(propertyType));
+                    throw new ArgumentOutOfRangeException(nameof(schema.Type));
             }
         }
 
-        private TypeSyntax MakeArrayPropertyType(InferredType propertyType)
+        private bool IsDateTime(JsonSchema schema)
         {
-            InferredType itemType = propertyType;
-
-            int rank = 0;
-            while (itemType.Kind == InferredTypeKind.Array)
-            {
-                ++rank;
-                itemType = itemType.GetItemType();
-            }
-
-            TypeSyntax ultimateItemTypeSyntax = MakePropertyType(itemType);
-
-            var rankSpecifiers = new ArrayRankSpecifierSyntax[rank];
-            for (int dimension = 0; dimension < rank; ++dimension)
-            {
-                rankSpecifiers[dimension] = SyntaxFactory.ArrayRankSpecifier();
-            }
-
-            return SyntaxFactory.ArrayType(ultimateItemTypeSyntax, SyntaxFactory.List(rankSpecifiers));
+            return schema.Type == JsonType.String && schema.Format == FormatAttributes.DateTime;
         }
 
-        private void AddUsingDirectiveForClassName(string className, out string unqualifiedClassName)
+        private string GetReferencedEnumTypeName(JsonSchema schema)
+        {
+            string name = null;
+
+            if (schema.Reference != null)
+            {
+                string definitionName = schema.Reference.GetDefinitionName();
+                if (RefersToEnumType(definitionName))
+                {
+                    name = definitionName;
+                }
+            }
+
+            return name;
+        }
+
+        private bool RefersToEnumType(string definitionName)
+        {
+            // Are there any code generation hints for this definition? And if so are
+            // any of them an enum hint, which means that the definition should produce
+            // an enum type?
+            return HintDictionary != null
+                && HintDictionary.Any(
+                    kvp => kvp.Key.Equals(definitionName)
+                    && kvp.Value.Any(hint => hint is EnumHint));
+        }
+
+        private TypeSyntax MakePrimitiveType(JsonType jsonType)
+        {
+            SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(jsonType);
+            return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
+        }
+
+        private TypeSyntax MakeObjectType(JsonSchema schema)
+        {
+            if (schema.Reference != null)
+            {
+                return MakeNamedType(schema.Reference.GetDefinitionName());
+            }
+            else
+            {
+                return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
+            }
+        }
+
+        private TypeSyntax MakeNamedType(string typeName)
+        {
+            typeName = typeName.ToPascalCase();
+
+            string unqualifiedTypeName;
+            AddUsingDirectiveForTypeName(typeName, out unqualifiedTypeName);
+            return SyntaxFactory.ParseTypeName(unqualifiedTypeName);
+        }
+
+        private TypeSyntax MakeArrayType(JsonSchema schema)
+        {
+            return SyntaxFactory.ArrayType(MakePropertyType(schema.Items), SyntaxFactory.SingletonList(SyntaxFactory.ArrayRankSpecifier()));
+        }
+
+        private void AddUsingDirectiveForTypeName(string className, out string unqualifiedClassName)
         {
             int index = className.LastIndexOf('.');
             if (index != -1)

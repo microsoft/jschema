@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.JSchema
 {
@@ -151,5 +153,23 @@ namespace Microsoft.JSchema
             // fragments, so we'll compare the fragments ourselves.
             return right.Fragment.Equals(left.Fragment, StringComparison.Ordinal);
         }
+    }
+
+    internal static class UriOrFragmentExtensions
+    {
+        private static readonly Regex s_definitionRegex = new Regex(@"^#/definitions/(?<definitionName>[^/]+)$");
+
+        internal static string GetDefinitionName(this UriOrFragment reference)
+        {
+            Match match = s_definitionRegex.Match(reference.Fragment);
+            if (!match.Success)
+            {
+                throw new JSchemaException(
+                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, reference.Fragment));
+            }
+
+            return match.Groups["definitionName"].Captures[0].Value;
+        }
+
     }
 }

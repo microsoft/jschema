@@ -49,6 +49,23 @@ namespace Microsoft.JSchema
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="UriOrFragment"/> class
+        /// from the specified instance.
+        /// </summary>
+        /// <param name="other">
+        /// The instance used to initialize the new instance.
+        /// </param>
+        public UriOrFragment(UriOrFragment other)
+        {
+            Fragment = other.Fragment;
+
+            if (other.Uri != null)
+            {
+                Uri = new Uri(other.Uri.OriginalString);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this object represents a URI reference that is
         /// valid according to RFC 2396.
         /// </summary>

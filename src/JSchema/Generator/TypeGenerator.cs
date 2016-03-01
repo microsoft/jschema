@@ -19,6 +19,13 @@ namespace Microsoft.JSchema.Generator
         private string _copyrightNotice;
         private string _description;
 
+        protected TypeGenerator(HintDictionary hintDictionary)
+        {
+            HintDictionary = hintDictionary;
+        }
+
+        protected HintDictionary HintDictionary { get; }
+
         /// <summary>
         /// Gets or sets the type declaration being generated.
         /// </summary>
