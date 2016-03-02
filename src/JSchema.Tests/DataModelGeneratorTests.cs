@@ -593,6 +593,47 @@ namespace N
             actual.Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref")]
+        public void GeneratesArrayOfPrimitiveTypeByReference()
+        {
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""arrayOfIntByRef"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""$ref"": ""#/definitions/d""
+      }
+    }
+  },
+  ""definitions"": {
+    ""d"": {
+      ""type"": ""integer"",
+      }
+    }
+  }
+}");
+
+            const string Expected =
+@"namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public int[] ArrayOfIntByRef { get; set; }
+    }
+}";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type")]
         public void GeneratesArrayOfArraysOfPrimitiveType()
         {
