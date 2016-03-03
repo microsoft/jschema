@@ -24,6 +24,11 @@
       "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
     }
   ],
+  "RuleDescriptor.FormatSpecifiers": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
   "RuleDescriptor.Properties": [
     {
       "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
@@ -32,6 +37,12 @@
   "RunInfo.Properties": [
     {
       "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
+  "ruleDescriptor": [
+    {
+      "$type": "Microsoft.JSchema.Generator.InterfaceHint, Microsoft.JSchema",
+      "description": "Interface exposed by objects that provide information about analysis rules."
     }
   ]
 }
