@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Microsoft.JSchema.Generator
 {
     /// <summary>
-    /// Generate the text of a class.
+    /// Generate the text of an interface.
     /// </summary>
     /// <remarks>
     /// Hat tip: Mike Bennett, "Generating Code with Roslyn",
@@ -40,6 +40,17 @@ namespace Microsoft.JSchema.Generator
         protected override SyntaxTokenList CreatePropertyModifiers()
         {
             return default(SyntaxTokenList);
+        }
+
+        protected override string MakeHintDictionaryKey(string propertyName)
+        {
+            // We want the interface to use the same hints as the class it was made from.
+            // For example, if the class has an object-valued property that should really
+            // be a dictionary, we want the interface to declare the property as a dictionary
+            // as well. The dictionary is keyed by the name of the class+property, for
+            // example, "Foo.Options". The interface name is "IFoo", so we remove the first
+            // letter.
+            return TypeName.Substring(1) + "." + propertyName.ToPascalCase();
         }
     }
 }

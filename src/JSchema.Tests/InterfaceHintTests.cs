@@ -23,16 +23,17 @@ namespace Microsoft.JSchema.Tests
 
         public static readonly object[] TestCases = new object[]
         {
+            // We give the
             new object[]
             {
 @"{
   ""type"": ""object"",
   ""description"": ""My class with an interface."",
   ""properties"": {
-    ""name"": {
-      ""description"": ""The name of this instance."",
-      ""type"": ""string""
-    }
+    ""options"": {
+      ""description"": ""The options."",
+      ""type"": ""object"",
+    },
   },
 }",
 
@@ -42,10 +43,17 @@ namespace Microsoft.JSchema.Tests
       ""$type"": ""Microsoft.JSchema.Generator.InterfaceHint, Microsoft.JSchema"",
       ""description"": ""My interface.""
     }
+  ],
+  ""C.Options"": [
+    {
+      ""$type"": ""Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"",
+    }
   ]
 }",
 
-@"namespace N
+@"using System.Collections.Generic;
+
+namespace N
 {
     /// <summary>
     /// My class with an interface.
@@ -53,13 +61,15 @@ namespace Microsoft.JSchema.Tests
     public partial class C : IC
     {
         /// <summary>
-        /// The name of this instance.
+        /// The options.
         /// </summary>
-        public override string Name { get; set; }
+        public override Dictionary<string, string> Options { get; set; }
     }
 }",
 
-@"namespace N
+@"using System.Collections.Generic;
+
+namespace N
 {
     /// <summary>
     /// My interface.
@@ -67,9 +77,9 @@ namespace Microsoft.JSchema.Tests
     public interface IC
     {
         /// <summary>
-        /// The name of this instance.
+        /// The options.
         /// </summary>
-        string Name { get; set; }
+        Dictionary<string, string> Options { get; set; }
     }
 }"
             }

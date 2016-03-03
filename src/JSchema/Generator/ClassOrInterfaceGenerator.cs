@@ -41,6 +41,11 @@ namespace Microsoft.JSchema.Generator
             return SyntaxFactory.List(propDecls.Cast<MemberDeclarationSyntax>());
         }
 
+        protected virtual string MakeHintDictionaryKey(string propertyName)
+        {
+            return TypeName + "." + propertyName.ToPascalCase();
+        }
+
         /// <summary>
         /// Create a property declaration.
         /// </summary>
@@ -193,9 +198,11 @@ namespace Microsoft.JSchema.Generator
             }
 
             // Is there a DictionaryHint that targets this property?
+            string key = MakeHintDictionaryKey(propertyName);
+
             return HintDictionary != null
                 && HintDictionary.Any(
-                    kvp => kvp.Key.Equals(TypeName + "." + propertyName.ToPascalCase())
+                    kvp => kvp.Key.Equals(key)
                     && kvp.Value.Any(hint => hint is DictionaryHint));
         }
 
