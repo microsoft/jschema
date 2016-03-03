@@ -161,6 +161,14 @@ namespace Microsoft.JSchema.Generator.Tests
         /// 
         /// </summary>
         public int IntegerProp { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             actual.Should().Be(Expected);
@@ -185,6 +193,14 @@ namespace Microsoft.JSchema.Generator.Tests
         /// 
         /// </summary>
         public D ObjectProp { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             string actual = generator.Generate(schema);
@@ -281,6 +297,14 @@ namespace Microsoft.JSchema.Generator.Tests
         /// 
         /// </summary>
         public object[] ArrayProp { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             string actual = generator.Generate(schema);
@@ -306,6 +330,14 @@ namespace Microsoft.JSchema.Generator.Tests
         /// An example property.
         /// </summary>
         public string ExampleProp { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
 
@@ -373,6 +405,14 @@ namespace Microsoft.JSchema.Generator.Tests
         /// The color of the screen background.
         /// </summary>
         public Color BackgroundColor { get; set; }
+
+        public bool Equals(ConsoleWindow other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
 
@@ -398,6 +438,14 @@ namespace Microsoft.JSchema.Generator.Tests
         /// The value of the B component.
         /// </summary>
         public int Blue { get; set; }
+
+        public bool Equals(Color other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
 
@@ -452,6 +500,14 @@ namespace N
         /// An example property.
         /// </summary>
         public string ExampleProp { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             string actual = generator.Generate(schema);
@@ -479,6 +535,14 @@ namespace N
         /// 
         /// </summary>
         public bool RootProp { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
 
@@ -494,6 +558,14 @@ namespace N
         /// 
         /// </summary>
         public string Prop1 { get; set; }
+
+        public bool Equals(Def1 other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
 
@@ -509,6 +581,14 @@ namespace N
         /// 
         /// </summary>
         public int Prop2 { get; set; }
+
+        public bool Equals(Def2 other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             string def1Path = TestFileSystem.MakeOutputFilePath("Def1");
@@ -559,6 +639,14 @@ namespace N
         /// 
         /// </summary>
         public DateTime StartTime { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             string actual = generator.Generate(schema);
@@ -595,6 +683,14 @@ namespace N
         /// 
         /// </summary>
         public Uri TargetFile { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             string actual = generator.Generate(schema);
@@ -631,6 +727,14 @@ namespace N
         /// 
         /// </summary>
         public int IntDefProp { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -672,6 +776,14 @@ namespace N
         /// 
         /// </summary>
         public int[] ArrayOfIntByRef { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -715,6 +827,14 @@ namespace N
         /// 
         /// </summary>
         public int[][] ArrayOfArrayOfInt { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -758,6 +878,14 @@ namespace N
         /// 
         /// </summary>
         public object[][] ArrayOfArrayOfObject { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -805,6 +933,14 @@ namespace N
         /// 
         /// </summary>
         public D[][] ArrayOfArrayOfD { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -840,6 +976,14 @@ namespace N
         /// 
         /// </summary>
         public string Version { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);

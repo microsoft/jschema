@@ -54,6 +54,14 @@ namespace N
         /// Set of key-value pairs.
         /// </summary>
         public Dictionary<string, string> Properties { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }"
             }

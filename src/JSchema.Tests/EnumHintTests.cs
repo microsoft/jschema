@@ -61,6 +61,14 @@ namespace Microsoft.JSchema.Tests
         /// The color of the background.
         /// </summary>
         public Color BackgroundColor { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }",
                 "Color",

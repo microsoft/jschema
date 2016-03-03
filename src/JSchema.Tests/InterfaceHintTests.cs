@@ -64,6 +64,14 @@ namespace N
         /// The options.
         /// </summary>
         public override Dictionary<string, string> Options { get; set; }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }",
 
