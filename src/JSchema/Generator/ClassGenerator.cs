@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -19,6 +20,8 @@ namespace Microsoft.JSchema.Generator
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
+        private readonly Dictionary<string, ComparisonType> _propertyComparisonTypeDictionary =
+            new Dictionary<string, ComparisonType>();
 
         public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
             : base(rootSchema, hintDictionary)
@@ -73,6 +76,14 @@ namespace Microsoft.JSchema.Generator
         {
             List<MemberDeclarationSyntax> members = CreateProperties(schema);
 
+            foreach (var prop in members.Cast<PropertyDeclarationSyntax>())
+            {
+                string propName = prop.Identifier.ValueText;
+                ComparisonType comparisonType = DetermineComparisonType(prop);
+
+                _propertyComparisonTypeDictionary[propName] = comparisonType;
+            }
+
             members.AddRange(new MemberDeclarationSyntax[]
                 {
                 OverrideObjectEquals(),
@@ -82,6 +93,11 @@ namespace Microsoft.JSchema.Generator
             SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
 
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
+        }
+
+        private ComparisonType DetermineComparisonType(PropertyDeclarationSyntax prop)
+        {
+            return ComparisonType.ObjectEquals;
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()
@@ -157,10 +173,23 @@ namespace Microsoft.JSchema.Generator
             {
                 foreach (var property in schema.Properties)
                 {
-                    // TODO: Compare properties.
-                    // For scalars and strings: ==
-                    // For objects: Object.Equals
-                    // For collections: ReferenceEquals, then null check, then count check, then per property Object.Equals
+                    switch (_propertyComparisonTypeDictionary[property.Key.ToPascalCase()])
+                    {
+                        case ComparisonType.OperatorEquals:
+                            // For scalars and strings: ==
+                            break;
+
+                        case ComparisonType.ObjectEquals:
+                            // For objects: Object.Equals
+                            break;
+
+                        case ComparisonType.Collection:
+                            // For collections: ReferenceEquals, then null check, then count check, then per property Object.Equals
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }
 
@@ -176,6 +205,33 @@ namespace Microsoft.JSchema.Generator
             }
 
             return modifiers;
+        }
+
+        /// <summary>
+        /// Values that specify the type of comparison code that needs to be generated
+        /// for each property in the implementation of IEquatable<T>.Equals.
+        /// </summary>
+        private enum ComparisonType
+        {
+            /// <summary>
+            /// Do not generate comparison code for this property
+            /// </summary>
+            None = 0,
+
+            /// <summary>
+            /// Compare with a == b.
+            /// </summary>
+            OperatorEquals,
+
+            /// <summary>
+            /// Compare with Object.Equals(a, b).
+            /// </summary>
+            ObjectEquals,
+
+            /// <summary>
+            /// Compare collection elements.
+            /// </summary>
+            Collection
         }
     }
 }
