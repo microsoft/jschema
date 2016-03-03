@@ -113,7 +113,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// The description
     /// </summary>
-    public partial class C : IEquatable<C>
+    public partial class C
     {
     }
 }";
@@ -135,7 +135,9 @@ namespace Microsoft.JSchema.Generator.Tests
             string actual = generator.Generate(schema);
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -162,6 +164,11 @@ namespace Microsoft.JSchema.Generator.Tests
         /// </summary>
         public int IntegerProp { get; set; }
 
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -182,7 +189,9 @@ namespace Microsoft.JSchema.Generator.Tests
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -193,6 +202,11 @@ namespace Microsoft.JSchema.Generator.Tests
         /// 
         /// </summary>
         public D ObjectProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -286,7 +300,9 @@ namespace Microsoft.JSchema.Generator.Tests
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -297,6 +313,11 @@ namespace Microsoft.JSchema.Generator.Tests
         /// 
         /// </summary>
         public object[] ArrayProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -319,7 +340,9 @@ namespace Microsoft.JSchema.Generator.Tests
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -330,6 +353,11 @@ namespace Microsoft.JSchema.Generator.Tests
         /// An example property.
         /// </summary>
         public string ExampleProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -389,7 +417,9 @@ namespace Microsoft.JSchema.Generator.Tests
 }");
 
             const string RootClassText =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// Describes a console window.
@@ -406,6 +436,11 @@ namespace Microsoft.JSchema.Generator.Tests
         /// </summary>
         public Color BackgroundColor { get; set; }
 
+        public override bool Equals(object other)
+        {
+            return Equals(other as ConsoleWindow);
+        }
+
         public bool Equals(ConsoleWindow other)
         {
             if (other == null)
@@ -417,7 +452,9 @@ namespace Microsoft.JSchema.Generator.Tests
 }";
 
             const string ColorClassText =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// Describes a color with R, G, and B components.
@@ -438,6 +475,11 @@ namespace Microsoft.JSchema.Generator.Tests
         /// The value of the B component.
         /// </summary>
         public int Blue { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as Color);
+        }
 
         public bool Equals(Color other)
         {
@@ -489,6 +531,8 @@ namespace Microsoft.JSchema.Generator.Tests
 @"// Copyright (c) 2016. All rights reserved.
 // Licensed under Apache 2.0 license.
 
+using System;
+
 namespace N
 {
     /// <summary>
@@ -500,6 +544,11 @@ namespace N
         /// An example property.
         /// </summary>
         public string ExampleProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -524,7 +573,9 @@ namespace N
             generator.Generate(schema);
 
             const string ExpectedRootClass =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -535,6 +586,11 @@ namespace N
         /// 
         /// </summary>
         public bool RootProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -547,7 +603,9 @@ namespace N
 }";
 
             const string ExpectedDefinedClass1 =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -558,6 +616,11 @@ namespace N
         /// 
         /// </summary>
         public string Prop1 { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as Def1);
+        }
 
         public bool Equals(Def1 other)
         {
@@ -570,7 +633,9 @@ namespace N
 }";
 
             const string ExpectedDefinedClass2 =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -581,6 +646,11 @@ namespace N
         /// 
         /// </summary>
         public int Prop2 { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as Def2);
+        }
 
         public bool Equals(Def2 other)
         {
@@ -640,6 +710,11 @@ namespace N
         /// </summary>
         public DateTime StartTime { get; set; }
 
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -684,6 +759,11 @@ namespace N
         /// </summary>
         public Uri TargetFile { get; set; }
 
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -716,7 +796,9 @@ namespace N
 }");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -727,6 +809,11 @@ namespace N
         /// 
         /// </summary>
         public int IntDefProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -765,7 +852,9 @@ namespace N
 }");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -776,6 +865,11 @@ namespace N
         /// 
         /// </summary>
         public int[] ArrayOfIntByRef { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -816,7 +910,9 @@ namespace N
 }");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -827,6 +923,11 @@ namespace N
         /// 
         /// </summary>
         public int[][] ArrayOfArrayOfInt { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -867,7 +968,9 @@ namespace N
 }");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -878,6 +981,11 @@ namespace N
         /// 
         /// </summary>
         public object[][] ArrayOfArrayOfObject { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -922,7 +1030,9 @@ namespace N
 }");
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -933,6 +1043,11 @@ namespace N
         /// 
         /// </summary>
         public D[][] ArrayOfArrayOfD { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
@@ -965,7 +1080,9 @@ namespace N
 }");
 
             const string Expected =
-    @"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// 
@@ -976,6 +1093,11 @@ namespace N
         /// 
         /// </summary>
         public string Version { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {

@@ -35,7 +35,7 @@ namespace Microsoft.JSchema.Generator
 
         protected HashSet<string> Usings { get; private set; }
 
-        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration();
+        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema);
 
         /// <summary>
         /// Adds members to the type as directed by the specified schema.
@@ -70,7 +70,7 @@ namespace Microsoft.JSchema.Generator
             _description = description;
 
             TypeName = typeName.ToPascalCase();
-            TypeDeclaration = CreateTypeDeclaration();
+            TypeDeclaration = CreateTypeDeclaration(schema);
 
             AddMembers(schema);
             return Finish();

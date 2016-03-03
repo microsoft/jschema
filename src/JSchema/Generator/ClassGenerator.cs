@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,7 +26,7 @@ namespace Microsoft.JSchema.Generator
             _baseInterfaceName = interfaceName;
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
             var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
                 .WithModifiers(
@@ -46,20 +47,28 @@ namespace Microsoft.JSchema.Generator
                 baseTypes.Add(interfaceType);
             }
 
-            // Always implement IEquatable<T>.
-            var iEquatable = SyntaxFactory.SimpleBaseType(
-                SyntaxFactory.GenericName(
-                    SyntaxFactory.Identifier("IEquatable"),
-                    SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
-                        new TypeSyntax[] {
+            // Implement IEquatable<T> if there are any properties to compare.
+            if (schema.Properties != null && schema.Properties.Any())
+            {
+                var iEquatable = SyntaxFactory.SimpleBaseType(
+                    SyntaxFactory.GenericName(
+                        SyntaxFactory.Identifier("IEquatable"),
+                        SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
+                            new TypeSyntax[] {
                             SyntaxFactory.ParseTypeName(TypeName)
-                        }))));
+                            }))));
 
-            baseTypes.Add(iEquatable);
+                baseTypes.Add(iEquatable);
 
-            SeparatedSyntaxList<BaseTypeSyntax> separatedBaseList = SyntaxFactory.SeparatedList(baseTypes);
-            BaseListSyntax baseList = SyntaxFactory.BaseList(separatedBaseList);
-            classDeclaration = classDeclaration.WithBaseList(baseList);
+                AddUsing("System"); // For IEquatable<T>
+            }
+
+            if (baseTypes.Count > 0)
+            {
+                SeparatedSyntaxList<BaseTypeSyntax> separatedBaseList = SyntaxFactory.SeparatedList(baseTypes);
+                BaseListSyntax baseList = SyntaxFactory.BaseList(separatedBaseList);
+                classDeclaration = classDeclaration.WithBaseList(baseList);
+            }
 
             return classDeclaration;
         }
@@ -70,30 +79,63 @@ namespace Microsoft.JSchema.Generator
             {
                 TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax)
                     .WithMembers(CreateProperties(schema))
-                    .AddMembers(MakeEqualsOverride(schema));
+                    .AddMembers(
+                        OverrideObjectEquals(),
+                        ImplementIEquatableEquals(schema));
             }
         }
 
-        private MemberDeclarationSyntax MakeEqualsOverride(JsonSchema schema)
+        private MemberDeclarationSyntax OverrideObjectEquals()
         {
             return SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.PredefinedType(
-                    SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
-                    "Equals")
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
+                "Equals")
+                .WithModifiers(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                        SyntaxFactory.Token(SyntaxKind.OverrideKeyword)))
+                .WithParameterList(
+                    SyntaxFactory.ParameterList(
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.Parameter(
+                                default(SyntaxList<AttributeListSyntax>),
+                                default(SyntaxTokenList), // modifiers
+                                SyntaxFactory.PredefinedType(
+                                    SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
+                                SyntaxFactory.Identifier("other"),
+                                default(EqualsValueClauseSyntax)))))
+                .WithBody(
+                    SyntaxFactory.Block(
+                        SyntaxFactory.ReturnStatement(
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName("Equals"),
+                                SyntaxFactory.ArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList(
+                                        SyntaxFactory.Argument(
+                                            SyntaxFactory.BinaryExpression(
+                                                SyntaxKind.AsExpression,
+                                                SyntaxFactory.IdentifierName("other"),
+                                                SyntaxFactory.ParseTypeName(TypeName)))))))));
+
+        }
+
+        private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
+        {
+            return SyntaxFactory.MethodDeclaration(
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), "Equals")
                 .WithModifiers(
                     SyntaxFactory.TokenList(
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
                 .WithParameterList(
                     SyntaxFactory.ParameterList(
-                        SyntaxFactory.SeparatedList(new ParameterSyntax[]
-                        {
+                        SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.Parameter(
                                 default(SyntaxList<AttributeListSyntax>),
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.ParseTypeName(TypeName),
                                 SyntaxFactory.Identifier("other"),
                                 default(EqualsValueClauseSyntax))
-                        })))
+                        )))
                 .WithBody(
                     SyntaxFactory.Block(MakeEqualityTests(schema)));
         }

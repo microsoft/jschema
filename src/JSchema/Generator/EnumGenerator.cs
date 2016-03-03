@@ -19,7 +19,7 @@ namespace Microsoft.JSchema.Generator
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
             return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
                 .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));

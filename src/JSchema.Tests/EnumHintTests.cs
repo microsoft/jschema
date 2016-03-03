@@ -50,7 +50,9 @@ namespace Microsoft.JSchema.Tests
   ]
 }",
 
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// My class with an enum.
@@ -61,6 +63,11 @@ namespace Microsoft.JSchema.Tests
         /// The color of the background.
         /// </summary>
         public Color BackgroundColor { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {

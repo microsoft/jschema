@@ -21,7 +21,7 @@ namespace Microsoft.JSchema.Generator
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 

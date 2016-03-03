@@ -51,7 +51,8 @@ namespace Microsoft.JSchema.Tests
   ]
 }",
 
-@"using System.Collections.Generic;
+@"using System;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -64,6 +65,11 @@ namespace N
         /// The options.
         /// </summary>
         public override Dictionary<string, string> Options { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
 
         public bool Equals(C other)
         {
