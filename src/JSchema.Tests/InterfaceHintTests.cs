@@ -58,7 +58,7 @@ namespace N
     /// <summary>
     /// My class with an interface.
     /// </summary>
-    public partial class C : IC
+    public partial class C : IC, IEquatable<C>
     {
         /// <summary>
         /// The options.

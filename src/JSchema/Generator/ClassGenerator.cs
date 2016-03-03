@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -18,29 +17,49 @@ namespace Microsoft.JSchema.Generator
     /// </remarks>
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
-        private readonly string _interfaceName;
+        private readonly string _baseInterfaceName;
 
         public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
             : base(rootSchema, hintDictionary)
         {
-            _interfaceName = interfaceName;
+            _baseInterfaceName = interfaceName;
         }
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
-            var modifiers = SyntaxFactory.TokenList(
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+            var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
+                .WithModifiers(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                        SyntaxFactory.Token(SyntaxKind.PartialKeyword)));
 
-            var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName).WithModifiers(modifiers);
+            var baseTypes = new List<BaseTypeSyntax>();
 
-            if (_interfaceName != null)
+            // If this class implements an interface, add the interface to
+            // the base type list.
+            if (_baseInterfaceName != null)
             {
-                SimpleBaseTypeSyntax baseType = SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(_interfaceName));
-                SeparatedSyntaxList<BaseTypeSyntax> separatedBaseList = SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(baseType);
-                BaseListSyntax baseList = SyntaxFactory.BaseList(separatedBaseList);
-                classDeclaration = classDeclaration.WithBaseList(baseList);
+                SimpleBaseTypeSyntax interfaceType =
+                    SyntaxFactory.SimpleBaseType(
+                        SyntaxFactory.ParseTypeName(_baseInterfaceName));
+
+                baseTypes.Add(interfaceType);
             }
+
+            // Always implement IEquatable<T>.
+            var iEquatable = SyntaxFactory.SimpleBaseType(
+                SyntaxFactory.GenericName(
+                    SyntaxFactory.Identifier("IEquatable"),
+                    SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
+                        new TypeSyntax[] {
+                            SyntaxFactory.ParseTypeName(TypeName)
+                        }))));
+
+            baseTypes.Add(iEquatable);
+
+            SeparatedSyntaxList<BaseTypeSyntax> separatedBaseList = SyntaxFactory.SeparatedList(baseTypes);
+            BaseListSyntax baseList = SyntaxFactory.BaseList(separatedBaseList);
+            classDeclaration = classDeclaration.WithBaseList(baseList);
 
             return classDeclaration;
         }
@@ -110,7 +129,7 @@ namespace Microsoft.JSchema.Generator
         protected override SyntaxTokenList CreatePropertyModifiers()
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-            if (_interfaceName != null)
+            if (_baseInterfaceName != null)
             {
                 modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
             }

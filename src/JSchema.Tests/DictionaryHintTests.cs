@@ -48,7 +48,7 @@ namespace N
     /// <summary>
     /// Class with property bag.
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// Set of key-value pairs.

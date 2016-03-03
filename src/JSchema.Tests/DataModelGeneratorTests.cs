@@ -113,7 +113,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// The description
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
     }
 }";
@@ -140,7 +140,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -187,7 +187,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -291,7 +291,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -324,7 +324,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// An example property.
@@ -394,7 +394,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// Describes a console window.
     /// </summary>
-    public partial class ConsoleWindow
+    public partial class ConsoleWindow : IEquatable<ConsoleWindow>
     {
         /// <summary>
         /// The color of the text on the screen.
@@ -422,7 +422,7 @@ namespace Microsoft.JSchema.Generator.Tests
     /// <summary>
     /// Describes a color with R, G, and B components.
     /// </summary>
-    public partial class Color
+    public partial class Color : IEquatable<Color>
     {
         /// <summary>
         /// The value of the R component.
@@ -494,7 +494,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// An example property.
@@ -529,7 +529,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -552,7 +552,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class Def1
+    public partial class Def1 : IEquatable<Def1>
     {
         /// <summary>
         /// 
@@ -575,7 +575,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class Def2
+    public partial class Def2 : IEquatable<Def2>
     {
         /// <summary>
         /// 
@@ -633,7 +633,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -677,7 +677,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -721,7 +721,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -770,7 +770,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -821,7 +821,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -872,7 +872,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -927,7 +927,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 
@@ -970,7 +970,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// 

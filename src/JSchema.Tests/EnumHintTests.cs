@@ -55,7 +55,7 @@ namespace Microsoft.JSchema.Tests
     /// <summary>
     /// My class with an enum.
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.

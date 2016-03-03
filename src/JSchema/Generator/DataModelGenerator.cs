@@ -88,16 +88,16 @@ namespace Microsoft.JSchema.Generator
                 interfaceHint = hints.FirstOrDefault(h => h is InterfaceHint) as InterfaceHint;
             }
 
-            string interfaceName = null;
+            string baseInterfaceName = null;
             if (interfaceHint != null)
             {
-                interfaceName = "I" + className;
+                baseInterfaceName = "I" + className;
             }
 
             TypeGenerator typeGenerator;
             if (enumHint == null)
             {
-                typeGenerator = new ClassGenerator(_rootSchema, interfaceName, _settings.HintDictionary);
+                typeGenerator = new ClassGenerator(_rootSchema, baseInterfaceName, _settings.HintDictionary);
             }
             else
             {
@@ -112,8 +112,8 @@ namespace Microsoft.JSchema.Generator
                 typeGenerator = new InterfaceGenerator(_rootSchema, _settings.HintDictionary);
                 string description = interfaceHint.Description ?? schema.Description;
 
-                _pathToFileContentsDictionary[interfaceName] =
-                    typeGenerator.Generate(schema, _settings.NamespaceName, interfaceName, copyrightNotice, description);
+                _pathToFileContentsDictionary[baseInterfaceName] =
+                    typeGenerator.Generate(schema, _settings.NamespaceName, baseInterfaceName, copyrightNotice, description);
             }
 
             return _pathToFileContentsDictionary[className];
