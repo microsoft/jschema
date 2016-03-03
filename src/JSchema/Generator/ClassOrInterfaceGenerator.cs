@@ -25,20 +25,23 @@ namespace Microsoft.JSchema.Generator
 
         protected abstract SyntaxTokenList CreatePropertyModifiers();
 
-        protected SyntaxList<MemberDeclarationSyntax> CreateProperties(JsonSchema schema)
+        protected List<MemberDeclarationSyntax> CreateProperties(JsonSchema schema)
         {
-            var propDecls = new List<PropertyDeclarationSyntax>();
+            var propDecls = new List<MemberDeclarationSyntax>();
 
-            foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
+            if (schema.Properties != null)
             {
-                string propertyName = schemaProperty.Key;
-                JsonSchema subSchema = schemaProperty.Value;
+                foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
+                {
+                    string propertyName = schemaProperty.Key;
+                    JsonSchema subSchema = schemaProperty.Value;
 
-                propDecls.Add(
-                    CreatePropertyDeclaration(propertyName, subSchema));
+                    propDecls.Add(
+                        CreatePropertyDeclaration(propertyName, subSchema));
+                }
             }
 
-            return SyntaxFactory.List(propDecls.Cast<MemberDeclarationSyntax>());
+            return propDecls;
         }
 
         protected virtual string MakeHintDictionaryKey(string propertyName)

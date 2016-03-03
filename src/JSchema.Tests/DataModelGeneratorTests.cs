@@ -108,13 +108,27 @@ namespace Microsoft.JSchema.Generator.Tests
             string actual = generator.Generate(schema);
 
             const string Expected =
-@"namespace N
+@"using System;
+
+namespace N
 {
     /// <summary>
     /// The description
     /// </summary>
-    public partial class C
+    public partial class C : IEquatable<C>
     {
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+        }
     }
 }";
             actual.Should().Be(Expected);

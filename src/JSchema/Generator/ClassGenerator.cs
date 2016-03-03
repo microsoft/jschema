@@ -47,21 +47,17 @@ namespace Microsoft.JSchema.Generator
                 baseTypes.Add(interfaceType);
             }
 
-            // Implement IEquatable<T> if there are any properties to compare.
-            if (schema.Properties != null && schema.Properties.Any())
-            {
-                var iEquatable = SyntaxFactory.SimpleBaseType(
-                    SyntaxFactory.GenericName(
-                        SyntaxFactory.Identifier("IEquatable"),
-                        SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
-                            new TypeSyntax[] {
-                            SyntaxFactory.ParseTypeName(TypeName)
-                            }))));
+            var iEquatable = SyntaxFactory.SimpleBaseType(
+                SyntaxFactory.GenericName(
+                    SyntaxFactory.Identifier("IEquatable"),
+                    SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
+                        new TypeSyntax[] {
+                        SyntaxFactory.ParseTypeName(TypeName)
+                        }))));
 
-                baseTypes.Add(iEquatable);
+            baseTypes.Add(iEquatable);
 
-                AddUsing("System"); // For IEquatable<T>
-            }
+            AddUsing("System"); // For IEquatable<T>
 
             if (baseTypes.Count > 0)
             {
@@ -75,14 +71,17 @@ namespace Microsoft.JSchema.Generator
 
         public override void AddMembers(JsonSchema schema)
         {
-            if (schema.Properties != null && schema.Properties.Count > 0)
-            {
-                TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax)
-                    .WithMembers(CreateProperties(schema))
-                    .AddMembers(
-                        OverrideObjectEquals(),
-                        ImplementIEquatableEquals(schema));
-            }
+            List<MemberDeclarationSyntax> members = CreateProperties(schema);
+
+            members.AddRange(new MemberDeclarationSyntax[]
+                {
+                OverrideObjectEquals(),
+                ImplementIEquatableEquals(schema)
+                });
+
+            SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
+
+            TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()

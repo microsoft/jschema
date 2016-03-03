@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,11 +32,9 @@ namespace Microsoft.JSchema.Generator
 
         public override void AddMembers(JsonSchema schema)
         {
-            if (schema.Properties != null && schema.Properties.Count > 0)
-            {
-                SyntaxList<MemberDeclarationSyntax> members = CreateProperties(schema);
-                TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax).WithMembers(members);
-            }
+            List<MemberDeclarationSyntax> members = CreateProperties(schema);
+            SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
+            TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax).WithMembers(memberList);
         }
 
         protected override SyntaxTokenList CreatePropertyModifiers()
