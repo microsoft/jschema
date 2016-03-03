@@ -105,12 +105,61 @@ namespace Microsoft.JSchema.Generator
                      return MakeArrayType(schema);
 
                 case JsonType.None:
-                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
+                    JsonType inferredType = InferJsonTypeFromEnumValues(schema.Enum);
+                    if (inferredType == JsonType.None)
+                    {
+                        inferredType = JsonType.Object;
+                    }
+                    return MakePrimitiveType(inferredType);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(schema.Type));
             }
         }
+
+        private JsonType InferJsonTypeFromEnumValues(object[] enumValues)
+        {
+            JsonType jsonType = JsonType.None;
+
+            if (enumValues != null && enumValues.Any())
+            {
+                jsonType = GetJsonTypeFromObject(enumValues[0]);
+                for (int i = 1; i < enumValues.Length; ++i)
+                {
+                    if (GetJsonTypeFromObject(enumValues[i]) != jsonType)
+                    {
+                        jsonType = JsonType.None;
+                        break;
+                    }
+                }
+            }
+
+            return jsonType;
+        }
+        private static JsonType GetJsonTypeFromObject(object obj)
+        {
+            if (obj is string)
+            {
+                return JsonType.String;
+            }
+            else if (obj.IsIntegralType())
+            {
+                return JsonType.Integer;
+            }
+            else if (obj.IsFloatingType())
+            {
+                return JsonType.Number;
+            }
+            else if (obj is bool)
+            {
+                return JsonType.Boolean;
+            }
+            else
+            {
+                return JsonType.None;
+            }
+        }
+
 
         private bool IsDateTime(JsonSchema schema)
         {

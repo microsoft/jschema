@@ -811,5 +811,40 @@ namespace N
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
+
+        [Fact(DisplayName = "DataModelGenerator generates string for inline enum of string")]
+        public void GeneratesStringForInlineEnumOfString()
+        {
+            JsonSchema schema = SchemaReader.ReadSchema(
+    @"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""version"": {
+      ""enum"": [
+        ""v1.0"",
+        ""v2.0""
+      ]
+    }
+  }
+}");
+
+            const string Expected =
+    @"namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Version { get; set; }
+    }
+}";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
     }
 }
