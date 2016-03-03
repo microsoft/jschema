@@ -19,5 +19,11 @@ namespace Microsoft.JSchema
         /// representation as defined by RFC 3339, section 5.6.
         /// </summary>
         public const string DateTime = "date-time";
+
+        /// <summary>
+        /// Format attribute specifying that the string instance must be a valid URI
+        /// representation as defined by RFC 3986.
+        /// </summary>
+        public const string Uri = "uri";
     }
 }

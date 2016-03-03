@@ -534,7 +534,16 @@ namespace N
         {
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("DateTime");
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+  ""startTime"": {
+    ""type"": ""string"",
+    ""format"": ""date-time""
+    }
+  }
+}");
 
             const string Expected =
 @"using System;
@@ -550,6 +559,42 @@ namespace N
         /// 
         /// </summary>
         public DateTime StartTime { get; set; }
+    }
+}";
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates uri-valued properties")]
+        public void GeneratesUriValuedProperties()
+        {
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+  ""targetFile"": {
+    ""type"": ""string"",
+    ""format"": ""uri""
+    }
+  }
+}");
+
+            const string Expected =
+@"using System;
+
+namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public Uri TargetFile { get; set; }
     }
 }";
             string actual = generator.Generate(schema);
