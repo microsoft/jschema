@@ -105,13 +105,15 @@ namespace Microsoft.JSchema.Generator
             }
         
             _pathToFileContentsDictionary[className] =
-                typeGenerator.Generate(schema, _settings.NamespaceName, className.ToPascalCase(), copyrightNotice, schema.Description);
+                typeGenerator.Generate(schema, _settings.NamespaceName, className, copyrightNotice, schema.Description);
 
             if (interfaceHint != null)
             {
                 typeGenerator = new InterfaceGenerator(_rootSchema, _settings.HintDictionary);
+                string description = interfaceHint.Description ?? schema.Description;
+
                 _pathToFileContentsDictionary[interfaceName] =
-                    typeGenerator.Generate(schema, _settings.NamespaceName, interfaceName, copyrightNotice, interfaceHint.Description);
+                    typeGenerator.Generate(schema, _settings.NamespaceName, interfaceName, copyrightNotice, description);
             }
 
             return _pathToFileContentsDictionary[className];

@@ -24,6 +24,8 @@ namespace Microsoft.JSchema.Generator
             HintDictionary = hintDictionary;
         }
 
+        protected string TypeName { get; private set; }
+
         protected HintDictionary HintDictionary { get; }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace Microsoft.JSchema.Generator
 
         protected HashSet<string> Usings { get; private set; }
 
-        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName);
+        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration();
 
         /// <summary>
         /// Adds members to the type as directed by the specified schema.
@@ -63,7 +65,13 @@ namespace Microsoft.JSchema.Generator
         /// </param>
         public string Generate(JsonSchema schema, string namespaceName, string typeName, string copyrightNotice, string description)
         {
-            Start(namespaceName, typeName.ToPascalCase(), copyrightNotice, description);
+            _namespaceName = namespaceName;
+            _copyrightNotice = copyrightNotice;
+            _description = description;
+
+            TypeName = typeName.ToPascalCase();
+            TypeDeclaration = CreateTypeDeclaration();
+
             AddMembers(schema);
             return Finish();
         }
@@ -88,34 +96,6 @@ namespace Microsoft.JSchema.Generator
         }
 
         /// <summary>
-        /// Perform any actions necessary to begin generating the type.
-        /// </summary>
-        /// <param name="namespaceName">
-        /// The fully qualified namespace in which the type will be placed.
-        /// </param>
-        /// <param name="typeName">
-        /// The name of the type to generate.
-        /// </param>
-        /// <param name="description">
-        /// The summary description for the type.
-        /// </param>
-        /// <param name="copyrightNotice">
-        /// The text of the copyright notice to include at the top of each file.
-        /// </param>
-        private void Start(
-            string namespaceName,
-            string typeName,
-            string copyrightNotice,
-            string description)
-        {
-            _namespaceName = namespaceName;
-            _copyrightNotice = copyrightNotice;
-            _description = description;
-
-            TypeDeclaration = CreateTypeDeclaration(typeName);
-        }
-
-        /// <summary>
         /// Performs all actions necessary to finish generating the type.
         /// </summary>
         /// <returns></returns>
@@ -135,7 +115,7 @@ namespace Microsoft.JSchema.Generator
             if (Usings != null)
             {
                 IEnumerable<UsingDirectiveSyntax> usingDirectives =
-                    Usings.Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
+                    Usings.OrderBy(u => u).Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
 
                 compilationUnit = compilationUnit.WithUsings(SyntaxFactory.List(usingDirectives));
             }

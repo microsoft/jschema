@@ -21,11 +21,11 @@ namespace Microsoft.JSchema.Generator
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
             var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-            return SyntaxFactory.InterfaceDeclaration(typeName).WithModifiers(modifiers);
+            return SyntaxFactory.InterfaceDeclaration(TypeName).WithModifiers(modifiers);
         }
 
         public override void AddMembers(JsonSchema schema)

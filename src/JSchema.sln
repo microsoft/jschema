@@ -18,6 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModelGenerator", "DataM
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SARIF", "SARIF", "{E8219BFF-E047-492D-BBC3-36D3624C6934}"
 	ProjectSection(SolutionItems) = preProject
+		SARIF\CodeGenHints.json = SARIF\CodeGenHints.json
 		SARIF\CopyrightNotice.txt = SARIF\CopyrightNotice.txt
 		SARIF\README.md = SARIF\README.md
 		SARIF\Sarif.schema.json = SARIF\Sarif.schema.json

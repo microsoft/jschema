@@ -24,13 +24,13 @@ namespace Microsoft.JSchema.Generator
             _interfaceName = interfaceName;
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
             var modifiers = SyntaxFactory.TokenList(
                 SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                 SyntaxFactory.Token(SyntaxKind.PartialKeyword));
 
-            var classDeclaration = SyntaxFactory.ClassDeclaration(typeName).WithModifiers(modifiers);
+            var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName).WithModifiers(modifiers);
 
             if (_interfaceName != null)
             {

@@ -65,14 +65,14 @@ namespace Microsoft.JSchema.Generator
             return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 CreatePropertyModifiers(),
-                MakePropertyType(schema),
+                MakePropertyType(propertyName, schema),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
                 .WithLeadingTrivia(MakeDocCommentFromDescription(schema.Description));
         }
 
-        private TypeSyntax MakePropertyType(JsonSchema schema)
+        private TypeSyntax MakePropertyType(string propertyName, JsonSchema schema)
         {
             if (IsDateTime(schema))
             {
@@ -82,6 +82,11 @@ namespace Microsoft.JSchema.Generator
             if (IsUri(schema))
             {
                 return MakeNamedType("System.Uri");
+            }
+
+            if (ShouldBeDictionary(propertyName, schema))
+            {
+                return MakeNamedType("System.Collections.Generic.Dictionary<string, string>");
             }
 
             string referencedEnumTypeName = GetReferencedEnumTypeName(schema);
@@ -102,7 +107,7 @@ namespace Microsoft.JSchema.Generator
                     return MakeObjectType(schema);
 
                 case JsonType.Array:
-                     return MakeArrayType(schema);
+                     return MakeArrayType(propertyName, schema);
 
                 case JsonType.None:
                     JsonType inferredType = InferJsonTypeFromEnumValues(schema.Enum);
@@ -171,6 +176,29 @@ namespace Microsoft.JSchema.Generator
             return schema.Type == JsonType.String && schema.Format == FormatAttributes.Uri;
         }
 
+        private bool ShouldBeDictionary(string propertyName, JsonSchema schema)
+        {
+            // Ignore any DictionaryHint that might apply to this property
+            // if the property is not an object.
+            if (schema.Type != JsonType.Object)
+            {
+                return false;
+            }
+
+            // Likewise, don't make this property a dictionary if it defines
+            // any properties of its own
+            if (schema.Properties != null && schema.Properties.Any())
+            {
+                return false;
+            }
+
+            // Is there a DictionaryHint that targets this property?
+            return HintDictionary != null
+                && HintDictionary.Any(
+                    kvp => kvp.Key.Equals(TypeName + "." + propertyName.ToPascalCase())
+                    && kvp.Value.Any(hint => hint is DictionaryHint));
+        }
+
         private string GetReferencedEnumTypeName(JsonSchema schema)
         {
             string name = null;
@@ -225,9 +253,13 @@ namespace Microsoft.JSchema.Generator
             return SyntaxFactory.ParseTypeName(unqualifiedTypeName);
         }
 
-        private TypeSyntax MakeArrayType(JsonSchema schema)
+        private TypeSyntax MakeArrayType(string propertyName, JsonSchema schema)
         {
-            return SyntaxFactory.ArrayType(MakePropertyType(schema.Items), SyntaxFactory.SingletonList(SyntaxFactory.ArrayRankSpecifier()));
+            // Create a rank-1 array of whatever this property is. If the property
+            // is itself an array, this will result in a rank-2 jagged array and so on.
+            return SyntaxFactory.ArrayType(
+                MakePropertyType(propertyName, schema.Items),
+                SyntaxFactory.SingletonList(SyntaxFactory.ArrayRankSpecifier()));
         }
 
         private void AddUsingDirectiveForTypeName(string className, out string unqualifiedClassName)

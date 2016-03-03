@@ -81,6 +81,7 @@
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="Generator\ClassOrInterfaceGenerator.cs" />
     <Compile Include="Generator\CodeGenHint.cs" />
+    <Compile Include="Generator\DictionaryHint.cs" />
     <Compile Include="Generator\EnumGenerator.cs" />
     <Compile Include="Generator\EnumHint.cs" />
     <Compile Include="Generator\HintDictionary.cs" />

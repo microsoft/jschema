@@ -19,9 +19,9 @@ namespace Microsoft.JSchema.Generator
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(string typeName)
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
-            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(typeName))
+            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
                 .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
         }
 

@@ -1,0 +1,37 @@
+{
+  "RuleDescriptor.Options": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
+  "AnnotatedCodeLocation.Properties": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
+  "FileReference.Properties": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
+  "Location.Properties": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
+  "Result.Properties": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
+  "RuleDescriptor.Properties": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ],
+  "RunInfo.Properties": [
+    {
+      "$type": "Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"
+    }
+  ]
+}
