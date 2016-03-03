@@ -79,6 +79,11 @@ namespace Microsoft.JSchema.Generator
                 return MakeNamedType("System.DateTime");
             }
 
+            if (IsUri(schema))
+            {
+                return MakeNamedType("System.Uri");
+            }
+
             string referencedEnumTypeName = GetReferencedEnumTypeName(schema);
             if (referencedEnumTypeName != null)
             {
@@ -110,6 +115,11 @@ namespace Microsoft.JSchema.Generator
         private bool IsDateTime(JsonSchema schema)
         {
             return schema.Type == JsonType.String && schema.Format == FormatAttributes.DateTime;
+        }
+
+        private bool IsUri(JsonSchema schema)
+        {
+            return schema.Type == JsonType.String && schema.Format == FormatAttributes.Uri;
         }
 
         private string GetReferencedEnumTypeName(JsonSchema schema)
