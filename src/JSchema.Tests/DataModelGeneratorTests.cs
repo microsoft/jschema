@@ -128,6 +128,8 @@ namespace N
             {
                 return false;
             }
+
+            return true;
         }
     }
 }";
@@ -189,6 +191,28 @@ namespace N
             {
                 return false;
             }
+
+            if (StringProp != other.StringProp)
+            {
+                return false;
+            }
+
+            if (NumberProp != other.NumberProp)
+            {
+                return false;
+            }
+
+            if (BooleanProp != other.BooleanProp)
+            {
+                return false;
+            }
+
+            if (IntegerProp != other.IntegerProp)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -228,6 +252,13 @@ namespace N
             {
                 return false;
             }
+
+            if (!Object.Equals(ObjectProp, other.ObjectProp))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -339,6 +370,13 @@ namespace N
             {
                 return false;
             }
+
+            if (!Object.Equals(ArrayProp, other.ArrayProp))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -379,6 +417,13 @@ namespace N
             {
                 return false;
             }
+
+            if (ExampleProp != other.ExampleProp)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -461,6 +506,18 @@ namespace N
             {
                 return false;
             }
+
+            if (!Object.Equals(ForegroundColor, other.ForegroundColor))
+            {
+                return false;
+            }
+
+            if (!Object.Equals(BackgroundColor, other.BackgroundColor))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -501,6 +558,23 @@ namespace N
             {
                 return false;
             }
+
+            if (Red != other.Red)
+            {
+                return false;
+            }
+
+            if (Green != other.Green)
+            {
+                return false;
+            }
+
+            if (Blue != other.Blue)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -570,6 +644,13 @@ namespace N
             {
                 return false;
             }
+
+            if (ExampleProp != other.ExampleProp)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -612,6 +693,13 @@ namespace N
             {
                 return false;
             }
+
+            if (RootProp != other.RootProp)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -642,6 +730,13 @@ namespace N
             {
                 return false;
             }
+
+            if (Prop1 != other.Prop1)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -672,6 +767,13 @@ namespace N
             {
                 return false;
             }
+
+            if (Prop2 != other.Prop2)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -735,6 +837,13 @@ namespace N
             {
                 return false;
             }
+
+            if (StartTime != other.StartTime)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -784,6 +893,13 @@ namespace N
             {
                 return false;
             }
+
+            if (TargetFile != other.TargetFile)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -835,6 +951,13 @@ namespace N
             {
                 return false;
             }
+
+            if (IntDefProp != other.IntDefProp)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -864,7 +987,7 @@ namespace N
     }
   }
 }");
-
+            // The expected code is wrong because we don't yet properly compare arrays.
             const string Expected =
 @"using System;
 
@@ -891,6 +1014,13 @@ namespace N
             {
                 return false;
             }
+
+            if (ArrayOfIntByRef != other.ArrayOfIntByRef)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -949,6 +1079,13 @@ namespace N
             {
                 return false;
             }
+
+            if (ArrayOfArrayOfInt != other.ArrayOfArrayOfInt)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -1007,6 +1144,13 @@ namespace N
             {
                 return false;
             }
+
+            if (!Object.Equals(ArrayOfArrayOfObject, other.ArrayOfArrayOfObject))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -1069,6 +1213,13 @@ namespace N
             {
                 return false;
             }
+
+            if (!Object.Equals(ArrayOfArrayOfD, other.ArrayOfArrayOfD))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";
@@ -1119,6 +1270,13 @@ namespace N
             {
                 return false;
             }
+
+            if (Version != other.Version)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }";

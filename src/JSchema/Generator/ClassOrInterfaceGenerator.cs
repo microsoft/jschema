@@ -21,9 +21,12 @@ namespace Microsoft.JSchema.Generator
             : base(hintDictionary)
         {
             _rootSchema = rootSchema;
+            PropertyComparisonTypeDictionary = new Dictionary<string, ComparisonType>();
         }
 
         protected abstract SyntaxTokenList CreatePropertyModifiers();
+
+        protected Dictionary<string, ComparisonType> PropertyComparisonTypeDictionary { get; }
 
         protected List<MemberDeclarationSyntax> CreateProperties(JsonSchema schema)
         {
@@ -84,22 +87,26 @@ namespace Microsoft.JSchema.Generator
         {
             if (IsDateTime(schema))
             {
+                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
                 return MakeNamedType("System.DateTime");
             }
 
             if (IsUri(schema))
             {
+                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
                 return MakeNamedType("System.Uri");
             }
 
             if (ShouldBeDictionary(propertyName, schema))
             {
+                SetComparisonType(propertyName, ComparisonType.Dictionary);
                 return MakeNamedType("System.Collections.Generic.Dictionary<string, string>");
             }
 
             string referencedEnumTypeName = GetReferencedEnumTypeName(schema);
             if (referencedEnumTypeName != null)
             {
+                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
                 return MakeNamedType(referencedEnumTypeName);
             }
 
@@ -109,25 +116,38 @@ namespace Microsoft.JSchema.Generator
                 case JsonType.Integer:
                 case JsonType.Number:
                 case JsonType.String:
+                    SetComparisonType(propertyName, ComparisonType.OperatorEquals);
                     return MakePrimitiveType(schema.Type);
 
                 case JsonType.Object:
+                    SetComparisonType(propertyName, ComparisonType.ObjectEquals);
                     return MakeObjectType(schema);
 
                 case JsonType.Array:
-                     return MakeArrayType(propertyName, schema);
+                    SetComparisonType(propertyName, ComparisonType.Collection);
+                    return MakeArrayType(propertyName, schema);
 
                 case JsonType.None:
                     JsonType inferredType = InferJsonTypeFromEnumValues(schema.Enum);
                     if (inferredType == JsonType.None)
                     {
+                        SetComparisonType(propertyName, ComparisonType.ObjectEquals);
                         inferredType = JsonType.Object;
+                    }
+                    else
+                    {
+                        SetComparisonType(propertyName, ComparisonType.OperatorEquals);
                     }
                     return MakePrimitiveType(inferredType);
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(schema.Type));
             }
+        }
+
+        private void SetComparisonType(string propertyName, ComparisonType comparisonType)
+        {
+            PropertyComparisonTypeDictionary[propertyName] = comparisonType;
         }
 
         private JsonType InferJsonTypeFromEnumValues(object[] enumValues)

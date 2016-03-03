@@ -75,6 +75,13 @@ namespace N
             {
                 return false;
             }
+
+            if (BackgroundColor != other.BackgroundColor)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }",

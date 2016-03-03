@@ -20,8 +20,6 @@ namespace Microsoft.JSchema.Generator
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
-        private readonly Dictionary<string, ComparisonType> _propertyComparisonTypeDictionary =
-            new Dictionary<string, ComparisonType>();
 
         public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
             : base(rootSchema, hintDictionary)
@@ -76,14 +74,6 @@ namespace Microsoft.JSchema.Generator
         {
             List<MemberDeclarationSyntax> members = CreateProperties(schema);
 
-            foreach (var prop in members.Cast<PropertyDeclarationSyntax>())
-            {
-                string propName = prop.Identifier.ValueText;
-                ComparisonType comparisonType = DetermineComparisonType(prop);
-
-                _propertyComparisonTypeDictionary[propName] = comparisonType;
-            }
-
             members.AddRange(new MemberDeclarationSyntax[]
                 {
                 OverrideObjectEquals(),
@@ -93,11 +83,6 @@ namespace Microsoft.JSchema.Generator
             SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
 
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
-        }
-
-        private ComparisonType DetermineComparisonType(PropertyDeclarationSyntax prop)
-        {
-            return ComparisonType.ObjectEquals;
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()
@@ -159,6 +144,7 @@ namespace Microsoft.JSchema.Generator
         {
             var statements = new List<StatementSyntax>();
 
+            // First, check "other" against null.
             statements.Add(
                 SyntaxFactory.IfStatement(
                     SyntaxFactory.BinaryExpression(
@@ -173,14 +159,15 @@ namespace Microsoft.JSchema.Generator
             {
                 foreach (var property in schema.Properties)
                 {
-                    switch (_propertyComparisonTypeDictionary[property.Key.ToPascalCase()])
+                    string propName = property.Key.ToPascalCase();
+                    switch (PropertyComparisonTypeDictionary[propName.ToCamelCase()])
                     {
                         case ComparisonType.OperatorEquals:
-                            // For scalars and strings: ==
+                            statements.Add(MakeOperatorEqualsTest(propName));
                             break;
 
                         case ComparisonType.ObjectEquals:
-                            // For objects: Object.Equals
+                            statements.Add(MakeObjectEqualsTest(propName));
                             break;
 
                         case ComparisonType.Collection:
@@ -193,7 +180,52 @@ namespace Microsoft.JSchema.Generator
                 }
             }
 
+            // All comparisons succeeded.
+            statements.Add(
+                SyntaxFactory.ReturnStatement(
+                    SyntaxFactory.LiteralExpression(SyntaxKind.TrueLiteralExpression)));
+
             return statements.ToArray();
+        }
+
+        private StatementSyntax MakeOperatorEqualsTest(string propName)
+        {
+            return SyntaxFactory.IfStatement(
+                SyntaxFactory.BinaryExpression(
+                    SyntaxKind.NotEqualsExpression,
+                    SyntaxFactory.IdentifierName(propName),
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName("other"),
+                        SyntaxFactory.IdentifierName(propName))),
+                SyntaxFactory.Block(
+                        SyntaxFactory.ReturnStatement(SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression))));
+        }
+
+        private StatementSyntax MakeObjectEqualsTest(string propName)
+        {
+            return SyntaxFactory.IfStatement(
+                SyntaxFactory.PrefixUnaryExpression(
+                    SyntaxKind.LogicalNotExpression,
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName("Object"),
+                            SyntaxFactory.IdentifierName("Equals")),
+                        SyntaxFactory.ArgumentList(
+                            SyntaxFactory.SeparatedList(
+                                new[]
+                                {
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.IdentifierName(propName)),
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.IdentifierName("other"),
+                                            SyntaxFactory.IdentifierName(propName)))
+                                })))),
+                SyntaxFactory.Block(
+                        SyntaxFactory.ReturnStatement(SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression))));
         }
 
         protected override SyntaxTokenList CreatePropertyModifiers()
@@ -205,33 +237,6 @@ namespace Microsoft.JSchema.Generator
             }
 
             return modifiers;
-        }
-
-        /// <summary>
-        /// Values that specify the type of comparison code that needs to be generated
-        /// for each property in the implementation of IEquatable<T>.Equals.
-        /// </summary>
-        private enum ComparisonType
-        {
-            /// <summary>
-            /// Do not generate comparison code for this property
-            /// </summary>
-            None = 0,
-
-            /// <summary>
-            /// Compare with a == b.
-            /// </summary>
-            OperatorEquals,
-
-            /// <summary>
-            /// Compare with Object.Equals(a, b).
-            /// </summary>
-            ObjectEquals,
-
-            /// <summary>
-            /// Compare collection elements.
-            /// </summary>
-            Collection
         }
     }
 }
