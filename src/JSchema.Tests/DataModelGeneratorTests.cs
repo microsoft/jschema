@@ -12,19 +12,18 @@ namespace Microsoft.JSchema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {
-        private const bool ShouldWriteTestResultFiles = true;
+#if SHOULD_WRITE_TEST_RESULT_FILES
         private static readonly string TestResultFilesDirectory = "TestResultFiles";
+#endif
 
         private static void WriteTestResultFiles(string expected, string actual, string testName)
         {
-            if (ShouldWriteTestResultFiles)
-            {
-                Directory.CreateDirectory(TestResultFilesDirectory);
+#if SHOULD_WRITE_TEST_RESULT_FILES
+            Directory.CreateDirectory(TestResultFilesDirectory);
 
-                File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".expected.cs"), expected);
-                File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".actual.cs"), actual);
-
-            }
+            File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".expected.cs"), expected);
+            File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".actual.cs"), actual);
+#endif
         }
 
         private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
@@ -400,9 +399,9 @@ namespace N
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayProp.Count; ++i0)
+                for (int value_0 = 0; value_0 < ArrayProp.Count; ++value_0)
                 {
-                    if (!Object.Equals(ArrayProp[i0], other.ArrayProp[i0]))
+                    if (!Object.Equals(ArrayProp[value_0], other.ArrayProp[value_0]))
                     {
                         return false;
                     }
@@ -1064,9 +1063,9 @@ namespace N
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfIntByRef.Count; ++i0)
+                for (int value_0 = 0; value_0 < ArrayOfIntByRef.Count; ++value_0)
                 {
-                    if (ArrayOfIntByRef[i0] != other.ArrayOfIntByRef[i0])
+                    if (ArrayOfIntByRef[value_0] != other.ArrayOfIntByRef[value_0])
                     {
                         return false;
                     }
@@ -1149,23 +1148,23 @@ namespace N
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfInt.Count; ++i0)
+                for (int value_0 = 0; value_0 < ArrayOfArrayOfInt.Count; ++value_0)
                 {
-                    if (!Object.ReferenceEquals(ArrayOfArrayOfInt[i0], other.ArrayOfArrayOfInt[i0]))
+                    if (!Object.ReferenceEquals(ArrayOfArrayOfInt[value_0], other.ArrayOfArrayOfInt[value_0]))
                     {
-                        if (ArrayOfArrayOfInt[i0] == null || other.ArrayOfArrayOfInt[i0] == null)
+                        if (ArrayOfArrayOfInt[value_0] == null || other.ArrayOfArrayOfInt[value_0] == null)
                         {
                             return false;
                         }
 
-                        if (ArrayOfArrayOfInt[i0].Count != other.ArrayOfArrayOfInt[i0].Count)
+                        if (ArrayOfArrayOfInt[value_0].Count != other.ArrayOfArrayOfInt[value_0].Count)
                         {
                             return false;
                         }
 
-                        for (int i1 = 0; i1 < ArrayOfArrayOfInt[i0].Count; ++i1)
+                        for (int value_1 = 0; value_1 < ArrayOfArrayOfInt[value_0].Count; ++value_1)
                         {
-                            if (ArrayOfArrayOfInt[i0][i1] != other.ArrayOfArrayOfInt[i0][i1])
+                            if (ArrayOfArrayOfInt[value_0][value_1] != other.ArrayOfArrayOfInt[value_0][value_1])
                             {
                                 return false;
                             }
@@ -1250,23 +1249,23 @@ namespace N
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfObject.Count; ++i0)
+                for (int value_0 = 0; value_0 < ArrayOfArrayOfObject.Count; ++value_0)
                 {
-                    if (!Object.ReferenceEquals(ArrayOfArrayOfObject[i0], other.ArrayOfArrayOfObject[i0]))
+                    if (!Object.ReferenceEquals(ArrayOfArrayOfObject[value_0], other.ArrayOfArrayOfObject[value_0]))
                     {
-                        if (ArrayOfArrayOfObject[i0] == null || other.ArrayOfArrayOfObject[i0] == null)
+                        if (ArrayOfArrayOfObject[value_0] == null || other.ArrayOfArrayOfObject[value_0] == null)
                         {
                             return false;
                         }
 
-                        if (ArrayOfArrayOfObject[i0].Count != other.ArrayOfArrayOfObject[i0].Count)
+                        if (ArrayOfArrayOfObject[value_0].Count != other.ArrayOfArrayOfObject[value_0].Count)
                         {
                             return false;
                         }
 
-                        for (int i1 = 0; i1 < ArrayOfArrayOfObject[i0].Count; ++i1)
+                        for (int value_1 = 0; value_1 < ArrayOfArrayOfObject[value_0].Count; ++value_1)
                         {
-                            if (!Object.Equals(ArrayOfArrayOfObject[i0][i1], other.ArrayOfArrayOfObject[i0][i1]))
+                            if (!Object.Equals(ArrayOfArrayOfObject[value_0][value_1], other.ArrayOfArrayOfObject[value_0][value_1]))
                             {
                                 return false;
                             }
@@ -1355,23 +1354,23 @@ namespace N
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfD.Count; ++i0)
+                for (int value_0 = 0; value_0 < ArrayOfArrayOfD.Count; ++value_0)
                 {
-                    if (!Object.ReferenceEquals(ArrayOfArrayOfD[i0], other.ArrayOfArrayOfD[i0]))
+                    if (!Object.ReferenceEquals(ArrayOfArrayOfD[value_0], other.ArrayOfArrayOfD[value_0]))
                     {
-                        if (ArrayOfArrayOfD[i0] == null || other.ArrayOfArrayOfD[i0] == null)
+                        if (ArrayOfArrayOfD[value_0] == null || other.ArrayOfArrayOfD[value_0] == null)
                         {
                             return false;
                         }
 
-                        if (ArrayOfArrayOfD[i0].Count != other.ArrayOfArrayOfD[i0].Count)
+                        if (ArrayOfArrayOfD[value_0].Count != other.ArrayOfArrayOfD[value_0].Count)
                         {
                             return false;
                         }
 
-                        for (int i1 = 0; i1 < ArrayOfArrayOfD[i0].Count; ++i1)
+                        for (int value_1 = 0; value_1 < ArrayOfArrayOfD[value_0].Count; ++value_1)
                         {
-                            if (!Object.Equals(ArrayOfArrayOfD[i0][i1], other.ArrayOfArrayOfD[i0][i1]))
+                            if (!Object.Equals(ArrayOfArrayOfD[value_0][value_1], other.ArrayOfArrayOfD[value_0][value_1]))
                             {
                                 return false;
                             }

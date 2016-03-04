@@ -68,6 +68,28 @@ namespace N
                 return false;
             }
 
+            if (!Object.ReferenceEquals(Properties, other.Properties))
+            {
+                if (Properties == null || other.Properties == null || Properties.Count != other.Properties.Count)
+                {
+                    return false;
+                }
+
+                foreach (var value_0 in Properties)
+                {
+                    string value_1;
+                    if (!other.Properties.TryGetValue(value_0.Key, out value_1))
+                    {
+                        return false;
+                    }
+
+                    if (value_0.Value != value_1)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
     }

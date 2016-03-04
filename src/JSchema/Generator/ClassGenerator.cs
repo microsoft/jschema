@@ -27,7 +27,7 @@ namespace Microsoft.JSchema.Generator
         private const string ObjectType = "Object";
         private const string IntTypeAlias = "int";
 
-        private const string LoopIndexVariableNameBase = "i";
+        private const string TempVariableNameBase = "value_";
 
         // Value used to construct unique names for each of the loop variables
         // used in the implementation of the Equals method.
@@ -197,6 +197,9 @@ namespace Microsoft.JSchema.Generator
                 case ComparisonType.Collection:
                     return MakeCollectionEqualsTest(comparisonTypeKey, left, right);
 
+                case ComparisonType.Dictionary:
+                    return MakeDictionaryEqualsTest(left, right); // TODO: Dictionary a array element; array element as dictionary.
+
                 default:
                     throw new ArgumentException($"Property {comparisonTypeKey} has unknown comparison type {comparisonType}.");
             }
@@ -234,14 +237,7 @@ namespace Microsoft.JSchema.Generator
         {
             return SyntaxFactory.IfStatement(
                 // if (!Object.ReferenceEquals(Prop, other.Prop))
-                SyntaxFactory.PrefixUnaryExpression(
-                    SyntaxKind.LogicalNotExpression,
-                    SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                                SyntaxFactory.IdentifierName(ObjectType),
-                                SyntaxFactory.IdentifierName(ReferenceEqualsMethod)),
-                            ArgumentList(left, right))),
+                AreDifferentObjects(left, right),
                 SyntaxFactory.Block(
                     // if (Prop == null || other.Prop == null)
                     SyntaxFactory.IfStatement(
@@ -275,7 +271,7 @@ namespace Microsoft.JSchema.Generator
             ExpressionSyntax right)
         {
             // The name of the index variable used in the loop over elements.
-            string indexVarName = LoopIndexVariableNameBase + _loopIndexVariableCount++;
+            string indexVarName = TempVariableNameBase + _loopIndexVariableCount++;
 
             // The two elements that will be compared each time through the loop.
             ExpressionSyntax leftElement =
@@ -322,6 +318,13 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Block(comparisonStatement));
         }
 
+        private IfStatementSyntax MakeDictionaryEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
+        {
+            return SyntaxFactory.IfStatement(
+                AreDifferentObjects(left, right),
+                Return(false));
+        }
+
         #region Syntax helpers
 
         protected override SyntaxTokenList CreatePropertyModifiers()
@@ -333,6 +336,18 @@ namespace Microsoft.JSchema.Generator
             }
 
             return modifiers;
+        }
+
+        private PrefixUnaryExpressionSyntax AreDifferentObjects(ExpressionSyntax left, ExpressionSyntax right)
+        {
+            return SyntaxFactory.PrefixUnaryExpression(
+                        SyntaxKind.LogicalNotExpression,
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                    SyntaxFactory.IdentifierName(ObjectType),
+                                    SyntaxFactory.IdentifierName(ReferenceEqualsMethod)),
+                                ArgumentList(left, right)));
         }
 
         private BinaryExpressionSyntax IsNull(ExpressionSyntax expr)
