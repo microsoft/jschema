@@ -267,7 +267,7 @@ namespace Microsoft.JSchema.Generator
                                 SyntaxFactory.IdentifierName("Length"))),
                         SyntaxFactory.Block(Return(false))),
 
-                    CollectionIndexLoop(propName, _indexVarCount)
+                    CollectionIndexLoop(propName, _indexVarCount++)
                     ));
         }
 
@@ -298,7 +298,35 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.PrefixUnaryExpression(
                         SyntaxKind.PreIncrementExpression,
                         SyntaxFactory.IdentifierName(indexVarName))),
-                SyntaxFactory.Block());
+                SyntaxFactory.Block(
+                    SyntaxFactory.IfStatement(
+                        SyntaxFactory.PrefixUnaryExpression(
+                            SyntaxKind.LogicalNotExpression,
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    SyntaxFactory.IdentifierName("Object"),
+                                    SyntaxFactory.IdentifierName("Equals")),
+                                SyntaxFactory.ArgumentList(
+                                    SyntaxFactory.SeparatedList(
+                                        new[]
+                                        {
+                                            SyntaxFactory.Argument(
+                                                SyntaxFactory.ElementAccessExpression(
+                                                    SyntaxFactory.IdentifierName(propName),
+                                                    SyntaxFactory.BracketedArgumentList(
+                                                        SyntaxFactory.SingletonSeparatedList(
+                                                            SyntaxFactory.Argument(
+                                                                SyntaxFactory.IdentifierName(indexVarName)))))),
+                                            SyntaxFactory.Argument(
+                                                SyntaxFactory.ElementAccessExpression(
+                                                    OtherPropName(propName),
+                                                    SyntaxFactory.BracketedArgumentList(
+                                                        SyntaxFactory.SingletonSeparatedList(
+                                                            SyntaxFactory.Argument(
+                                                                SyntaxFactory.IdentifierName(indexVarName)))))),
+                                        })))),
+                        SyntaxFactory.Block(Return(false)))));
         }
 
         #region Syntax helpers
