@@ -31,7 +31,7 @@ namespace Microsoft.JSchema.Generator
 
         // Value used to construct unique names for each of the loop variables
         // used in the implementation of the Equals method.
-        private int _loopIndexVariableCount = 0;
+        private int _variableCount = 0;
 
         public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
             : base(rootSchema, hintDictionary)
@@ -254,11 +254,11 @@ namespace Microsoft.JSchema.Generator
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 left,
-                                SyntaxFactory.IdentifierName(CountProperty)),
+                                CountPropertyName()),
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 right,
-                                SyntaxFactory.IdentifierName(CountProperty))),
+                                CountPropertyName())),
                         SyntaxFactory.Block(Return(false))),
 
                     CollectionIndexLoop(comparisonTypeLookupKey, left, right)
@@ -271,7 +271,7 @@ namespace Microsoft.JSchema.Generator
             ExpressionSyntax right)
         {
             // The name of the index variable used in the loop over elements.
-            string indexVarName = TempVariableNameBase + _loopIndexVariableCount++;
+            string indexVarName = GetNextVariableName();
 
             // The two elements that will be compared each time through the loop.
             ExpressionSyntax leftElement =
@@ -310,7 +310,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
                         left,
-                        SyntaxFactory.IdentifierName(CountProperty))),
+                        CountPropertyName())),
                 SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
                     SyntaxFactory.PrefixUnaryExpression(
                         SyntaxKind.PreIncrementExpression,
@@ -318,14 +318,95 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Block(comparisonStatement));
         }
 
+        private string GetNextVariableName()
+        {
+            return TempVariableNameBase + _variableCount++;
+        }
+
         private IfStatementSyntax MakeDictionaryEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
         {
+            string loopVariableName = GetNextVariableName();
+            string otherPropertyVariableName = GetNextVariableName();
+
             return SyntaxFactory.IfStatement(
                 AreDifferentObjects(left, right),
-                Return(false));
+                SyntaxFactory.Block(
+                    SyntaxFactory.IfStatement(
+                        SyntaxFactory.BinaryExpression(
+                            SyntaxKind.LogicalOrExpression,
+                            IsNull(left),
+                            SyntaxFactory.BinaryExpression(
+                                SyntaxKind.LogicalOrExpression,
+                                IsNull(right),
+                                SyntaxFactory.BinaryExpression(
+                                    SyntaxKind.NotEqualsExpression,
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        left,
+                                        CountPropertyName()),
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        right,
+                                        CountPropertyName())))),
+                        SyntaxFactory.Block(Return(false))),
+                    SyntaxFactory.ForEachStatement(
+                        Var(),
+                        loopVariableName,
+                        left,
+                        SyntaxFactory.Block(
+                            SyntaxFactory.LocalDeclarationStatement(
+                                default(SyntaxTokenList), // modifiers
+                                SyntaxFactory.VariableDeclaration(
+                                    SyntaxFactory.ParseTypeName("string"), // TODO: How to get the real type of the dictionary value?
+                                    SyntaxFactory.SingletonSeparatedList(
+                                        SyntaxFactory.VariableDeclarator(otherPropertyVariableName)))),
+                            SyntaxFactory.IfStatement(
+                                SyntaxFactory.PrefixUnaryExpression(
+                                    SyntaxKind.LogicalNotExpression,
+                                    SyntaxFactory.InvocationExpression(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            right,
+                                            SyntaxFactory.IdentifierName("TryGetValue")),
+                                        SyntaxFactory.ArgumentList(
+                                            SyntaxFactory.SeparatedList(
+                                                new ArgumentSyntax[]
+                                                {
+                                                    SyntaxFactory.Argument(
+                                                        SyntaxFactory.MemberAccessExpression(
+                                                            SyntaxKind.SimpleMemberAccessExpression,
+                                                            SyntaxFactory.IdentifierName(loopVariableName),
+                                                            SyntaxFactory.IdentifierName("Key"))),
+                                                    SyntaxFactory.Argument(
+                                                        default(NameColonSyntax),
+                                                        SyntaxFactory.Token(SyntaxKind.OutKeyword),
+                                                        SyntaxFactory.IdentifierName(otherPropertyVariableName))
+
+                                                })))),
+                                SyntaxFactory.Block(Return(false))),
+                            SyntaxFactory.IfStatement(
+                                SyntaxFactory.BinaryExpression(
+                                    SyntaxKind.NotEqualsExpression,
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(loopVariableName),
+                                        SyntaxFactory.IdentifierName("Value")),
+                                    SyntaxFactory.IdentifierName(otherPropertyVariableName)),
+                                SyntaxFactory.Block(Return(false))
+                                )))));
         }
 
         #region Syntax helpers
+
+        private TypeSyntax Var()
+        {
+            return SyntaxFactory.ParseTypeName("var");
+        }
+
+        private SimpleNameSyntax CountPropertyName()
+        {
+            return SyntaxFactory.IdentifierName(CountProperty);
+        }
 
         protected override SyntaxTokenList CreatePropertyModifiers()
         {

@@ -25,5 +25,19 @@ namespace Microsoft.JSchema.Tests
             string jsonText = ReadTestDataFile(fileNameStem);
             return SchemaReader.ReadSchema(jsonText);
         }
+
+#if SHOULD_WRITE_TEST_RESULT_FILES
+        private static readonly string TestResultFilesDirectory = "TestResultFiles";
+#endif
+
+        internal static void WriteTestResultFiles(string expected, string actual, string testName)
+        {
+#if SHOULD_WRITE_TEST_RESULT_FILES
+            Directory.CreateDirectory(TestResultFilesDirectory);
+
+            File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".expected.cs"), expected);
+            File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".actual.cs"), actual);
+#endif
+        }
     }
 }

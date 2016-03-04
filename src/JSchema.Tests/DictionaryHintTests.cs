@@ -97,7 +97,7 @@ namespace N
             }
         };
 
-        [Theory(DisplayName = "DictionaryHint generates dictionary", Skip = "Dictionary comparison is NYI")]
+        [Theory(DisplayName = "DictionaryHint generates dictionary")]
         [MemberData(nameof(TestCases))]
         public void GeneratesDictionary(
             string schemaText,
@@ -109,6 +109,8 @@ namespace N
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             string actual = generator.Generate(schema);
+
+            TestUtil.WriteTestResultFiles(expected, actual, nameof(GeneratesDictionary));
 
             actual.Should().Be(expected);
         }

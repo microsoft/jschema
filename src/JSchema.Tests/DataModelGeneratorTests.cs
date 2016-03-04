@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using FluentAssertions;
 using Microsoft.JSchema.Tests;
 using Xunit;
@@ -12,20 +11,6 @@ namespace Microsoft.JSchema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {
-#if SHOULD_WRITE_TEST_RESULT_FILES
-        private static readonly string TestResultFilesDirectory = "TestResultFiles";
-#endif
-
-        private static void WriteTestResultFiles(string expected, string actual, string testName)
-        {
-#if SHOULD_WRITE_TEST_RESULT_FILES
-            Directory.CreateDirectory(TestResultFilesDirectory);
-
-            File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".expected.cs"), expected);
-            File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".actual.cs"), actual);
-#endif
-        }
-
         private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
         private const string CopyrightFilePath = @"C:\copyright.txt";
 
@@ -414,7 +399,7 @@ namespace N
 }";
             string actual = generator.Generate(schema);
 
-            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayValuedProperty));
+            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayValuedProperty));
 
             actual.Should().Be(Expected);
         }
@@ -1079,7 +1064,7 @@ namespace N
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
-            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
+            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
 
             actual.Should().Be(Expected);
         }
@@ -1180,7 +1165,7 @@ namespace N
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
-            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfPrimitiveType));
+            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfPrimitiveType));
 
             actual.Should().Be(Expected);
         }
@@ -1281,7 +1266,7 @@ namespace N
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
-            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfObjectType));
+            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfObjectType));
 
             actual.Should().Be(Expected);
         }
@@ -1386,7 +1371,7 @@ namespace N
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
-            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfClassType));
+            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfClassType));
 
             actual.Should().Be(Expected);
         }

@@ -78,6 +78,28 @@ namespace N
                 return false;
             }
 
+            if (!Object.ReferenceEquals(Options, other.Options))
+            {
+                if (Options == null || other.Options == null || Options.Count != other.Options.Count)
+                {
+                    return false;
+                }
+
+                foreach (var value_0 in Options)
+                {
+                    string value_1;
+                    if (!other.Options.TryGetValue(value_0.Key, out value_1))
+                    {
+                        return false;
+                    }
+
+                    if (value_0.Value != value_1)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
     }
@@ -101,7 +123,7 @@ namespace N
             }
         };
 
-        [Theory(DisplayName = "InterfaceHint generates interfaces in addition to classes", Skip = "Dictionary comparison is NYI")]
+        [Theory(DisplayName = "InterfaceHint generates interfaces in addition to classes")]
         [MemberData(nameof(TestCases))]
         public void GeneratesInterfaceFromClass(
             string schemaText,
