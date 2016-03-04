@@ -19,7 +19,10 @@ namespace Microsoft.JSchema.Generator
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         // Name used for the parameters of Equals methods.
-        private const string Other = "other";
+        private const string OtherParameter = "other";
+
+        // Name of the Count property of IList.
+        private const string CountProperty = "Count";
 
         private readonly string _baseInterfaceName;
 
@@ -108,7 +111,7 @@ namespace Microsoft.JSchema.Generator
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.PredefinedType(
                                     SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
-                                SyntaxFactory.Identifier(Other),
+                                SyntaxFactory.Identifier(OtherParameter),
                                 default(EqualsValueClauseSyntax)))))
                 .WithBody(
                     SyntaxFactory.Block(
@@ -118,7 +121,7 @@ namespace Microsoft.JSchema.Generator
                                 ArgumentList(
                                     SyntaxFactory.BinaryExpression(
                                         SyntaxKind.AsExpression,
-                                        SyntaxFactory.IdentifierName(Other),
+                                        SyntaxFactory.IdentifierName(OtherParameter),
                                         SyntaxFactory.ParseTypeName(TypeName)))))));
 
         }
@@ -137,7 +140,7 @@ namespace Microsoft.JSchema.Generator
                                 default(SyntaxList<AttributeListSyntax>),
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.ParseTypeName(TypeName),
-                                SyntaxFactory.Identifier(Other),
+                                SyntaxFactory.Identifier(OtherParameter),
                                 default(EqualsValueClauseSyntax))
                         )))
                 .WithBody(
@@ -152,7 +155,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.IfStatement(
                     SyntaxFactory.BinaryExpression(
                         SyntaxKind.EqualsExpression,
-                        SyntaxFactory.IdentifierName(Other),
+                        SyntaxFactory.IdentifierName(OtherParameter),
                         NullLiteralExpression()),
                     SyntaxFactory.Block(Return(false))));
 
@@ -240,19 +243,18 @@ namespace Microsoft.JSchema.Generator
                                 NullLiteralExpression())),
                         SyntaxFactory.Block(Return(false))),
 
-                    // if (Prop.Length != other.Prop.Length)
-                    // TODO: Replace Length with Count when changing from Array to List.
+                    // if (Prop.Count != other.Prop.Count)
                     SyntaxFactory.IfStatement(
                         SyntaxFactory.BinaryExpression(
                             SyntaxKind.NotEqualsExpression,
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(propName),
-                                SyntaxFactory.IdentifierName("Length")),
+                                SyntaxFactory.IdentifierName(CountProperty)),
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 OtherPropName(propName),
-                                SyntaxFactory.IdentifierName("Length"))),
+                                SyntaxFactory.IdentifierName(CountProperty))),
                         SyntaxFactory.Block(Return(false))),
 
                     CollectionIndexLoop(propName, _indexVarCount++)
@@ -281,7 +283,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
                         SyntaxFactory.IdentifierName(propName),
-                        SyntaxFactory.IdentifierName("Length"))),
+                        SyntaxFactory.IdentifierName(CountProperty))),
                 SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
                     SyntaxFactory.PrefixUnaryExpression(
                         SyntaxKind.PreIncrementExpression,
@@ -339,7 +341,7 @@ namespace Microsoft.JSchema.Generator
         {
             return SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
-                SyntaxFactory.IdentifierName(Other),
+                SyntaxFactory.IdentifierName(OtherParameter),
                 SyntaxFactory.IdentifierName(propName));
         }
 

@@ -285,11 +285,17 @@ namespace Microsoft.JSchema.Generator
 
         private TypeSyntax MakeArrayType(string propertyName, JsonSchema schema)
         {
-            // Create a rank-1 array of whatever this property is. If the property
-            // is itself an array, this will result in a rank-2 jagged array and so on.
-            return SyntaxFactory.ArrayType(
-                MakePropertyType(propertyName + "[]", schema.Items),
-                SyntaxFactory.SingletonList(SyntaxFactory.ArrayRankSpecifier()));
+            AddUsing("System.Collections.Generic"); // For IList.
+
+            // Create a list of whatever this property is. If the property
+            // is itself an array, this will result in a list of lists, and so on.
+            return SyntaxFactory.GenericName(
+                SyntaxFactory.Identifier("IList"),
+                SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
+                        new TypeSyntax[]
+                        {
+                            MakePropertyType(propertyName + "[]", schema.Items)
+                        })));
         }
 
         private void AddUsingDirectiveForTypeName(string className, out string unqualifiedClassName)

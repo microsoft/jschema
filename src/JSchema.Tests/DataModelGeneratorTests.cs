@@ -346,6 +346,7 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -357,7 +358,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public object[] ArrayProp { get; set; }
+        public IList<object> ArrayProp { get; set; }
 
         public override bool Equals(object other)
         {
@@ -378,12 +379,12 @@ namespace N
                     return false;
                 }
 
-                if (ArrayProp.Length != other.ArrayProp.Length)
+                if (ArrayProp.Count != other.ArrayProp.Count)
                 {
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayProp.Length; ++i0)
+                for (int i0 = 0; i0 < ArrayProp.Count; ++i0)
                 {
                     if (!Object.Equals(ArrayProp[i0], other.ArrayProp[i0]))
                     {
@@ -1006,6 +1007,7 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1017,7 +1019,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public int[] ArrayOfIntByRef { get; set; }
+        public IList<IList<int>> ArrayOfIntByRef { get; set; }
 
         public override bool Equals(object other)
         {
@@ -1038,12 +1040,12 @@ namespace N
                     return false;
                 }
 
-                if (ArrayOfArrayOfInt.Length != other.ArrayOfArrayOfInt.Length)
+                if (ArrayOfArrayOfInt.Count != other.ArrayOfArrayOfInt.Count)
                 {
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfInt.Length; ++i0)
+                for (int i0 = 0; i0 < ArrayOfArrayOfInt.Count; ++i0)
                 {
                     if (!Object.ReferenceEquals(ArrayOfArrayOfInt[i0], other.ArrayOfArrayOfInt[i0]))
                     {
@@ -1052,7 +1054,7 @@ namespace N
                             return false;
                         }
 
-                        if (ArrayOfArrayOfInt[i0].Length != other.ArrayOfArrayOfInt[i0].Length)
+                        if (ArrayOfArrayOfInt[i0].Count != other.ArrayOfArrayOfInt[i0].Count)
                         {
                             return false;
                         }
@@ -1100,6 +1102,7 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1111,7 +1114,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public int[][] ArrayOfArrayOfInt { get; set; }
+        public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
 
         public override bool Equals(object other)
         {
@@ -1132,12 +1135,12 @@ namespace N
                     return false;
                 }
 
-                if (ArrayOfArrayOfInt.Length != other.ArrayOfArrayOfInt.Length)
+                if (ArrayOfArrayOfInt.Count != other.ArrayOfArrayOfInt.Count)
                 {
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfInt.Length; ++i0)
+                for (int i0 = 0; i0 < ArrayOfArrayOfInt.Count; ++i0)
                 {
                     if (!Object.ReferenceEquals(ArrayOfArrayOfInt[i0], other.ArrayOfArrayOfInt[i0]))
                     {
@@ -1146,12 +1149,12 @@ namespace N
                             return false;
                         }
 
-                        if (ArrayOfArrayOfInt[i0].Length != other.ArrayOfArrayOfInt[i0].Length)
+                        if (ArrayOfArrayOfInt[i0].Count != other.ArrayOfArrayOfInt[i0].Count)
                         {
                             return false;
                         }
 
-                        for (int i1 = 0; i1 < ArrayOfArrayOfInt[i0].Length; ++i1)
+                        for (int i1 = 0; i1 < ArrayOfArrayOfInt[i0].Count; ++i1)
                         {
                             if (ArrayOfArrayOfInt[i0][i1] != other.ArrayOfArrayOfInt[i0][i1])
                             {
@@ -1197,6 +1200,7 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1208,7 +1212,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public object[][] ArrayOfArrayOfObject { get; set; }
+        public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
 
         public override bool Equals(object other)
         {
@@ -1229,12 +1233,12 @@ namespace N
                     return false;
                 }
 
-                if (ArrayOfArrayOfObject.Length != other.ArrayOfArrayOfObject.Length)
+                if (ArrayOfArrayOfObject.Count != other.ArrayOfArrayOfObject.Count)
                 {
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfObject.Length; ++i0)
+                for (int i0 = 0; i0 < ArrayOfArrayOfObject.Count; ++i0)
                 {
                     if (!Object.ReferenceEquals(ArrayOfArrayOfObject[i0], other.ArrayOfArrayOfObject[i0]))
                     {
@@ -1243,12 +1247,12 @@ namespace N
                             return false;
                         }
 
-                        if (ArrayOfArrayOfObject[i0].Length != other.ArrayOfArrayOfObject[i0].Length)
+                        if (ArrayOfArrayOfObject[i0].Count != other.ArrayOfArrayOfObject[i0].Count)
                         {
                             return false;
                         }
 
-                        for (int i1 = 0; i1 < ArrayOfArrayOfObject[i0].Length; ++i1)
+                        for (int i1 = 0; i1 < ArrayOfArrayOfObject[i0].Count; ++i1)
                         {
                             if (!Object.Equals(ArrayOfArrayOfObject[i0][i1], other.ArrayOfArrayOfObject[i0][i1]))
                             {
@@ -1298,6 +1302,7 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1309,7 +1314,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public D[][] ArrayOfArrayOfD { get; set; }
+        public IList<IList<D>> ArrayOfArrayOfD { get; set; }
 
         public override bool Equals(object other)
         {
@@ -1330,12 +1335,12 @@ namespace N
                     return false;
                 }
 
-                if (ArrayOfArrayOfD.Length != other.ArrayOfArrayOfD.Length)
+                if (ArrayOfArrayOfD.Count != other.ArrayOfArrayOfD.Count)
                 {
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfD.Length; ++i0)
+                for (int i0 = 0; i0 < ArrayOfArrayOfD.Count; ++i0)
                 {
                     if (!Object.Equals(ArrayOfArrayOfD[i0], other.ArrayOfArrayOfD[i0]))
                     {
