@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -18,17 +19,23 @@ namespace Microsoft.JSchema.Generator
     /// </remarks>
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
+        private readonly string _baseInterfaceName;
+
         // Name used for the parameters of Equals methods.
         private const string OtherParameter = "other";
 
-        // Name of the Count property of IList.
         private const string CountProperty = "Count";
+        private const string EqualsMethod = "Equals";
+        private const string ReferenceEqualsMethod = "ReferenceEquals";
+        private const string IEquatableType = "IEquatable";
+        private const string ObjectType = "Object";
+        private const string IntTypeAlias = "int";
 
-        private readonly string _baseInterfaceName;
+        private const string LoopIndexVariableNameBase = "i";
 
         // Value used to construct unique names for each of the loop variables
         // used in the implementation of the Equals method.
-        private int _indexVarCount = 0;
+        private int _loopIndexVariableCount = 0;
 
         public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
             : base(rootSchema, hintDictionary)
@@ -59,7 +66,7 @@ namespace Microsoft.JSchema.Generator
 
             var iEquatable = SyntaxFactory.SimpleBaseType(
                 SyntaxFactory.GenericName(
-                    SyntaxFactory.Identifier("IEquatable"),
+                    SyntaxFactory.Identifier(IEquatableType),
                     SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
                         new TypeSyntax[] {
                         SyntaxFactory.ParseTypeName(TypeName)
@@ -98,7 +105,7 @@ namespace Microsoft.JSchema.Generator
         {
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
-                "Equals")
+                EqualsMethod)
                 .WithModifiers(
                     SyntaxFactory.TokenList(
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -117,7 +124,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.Block(
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName("Equals"),
+                                SyntaxFactory.IdentifierName(EqualsMethod),
                                 ArgumentList(
                                     SyntaxFactory.BinaryExpression(
                                         SyntaxKind.AsExpression,
@@ -129,7 +136,7 @@ namespace Microsoft.JSchema.Generator
         private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
         {
             return SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), "Equals")
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), EqualsMethod)
                 .WithModifiers(
                     SyntaxFactory.TokenList(
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
@@ -167,7 +174,7 @@ namespace Microsoft.JSchema.Generator
                     switch (PropertyComparisonTypeDictionary[propName.ToCamelCase()])
                     {
                         case ComparisonType.OperatorEquals:
-                            statements.Add(MakeOperatorEqualsTest(propName));
+                            statements.Add(MakeOperatorEqualsTest(SyntaxFactory.IdentifierName(propName), OtherPropName(propName)));
                             break;
 
                         case ComparisonType.ObjectEquals:
@@ -191,17 +198,17 @@ namespace Microsoft.JSchema.Generator
             return statements.ToArray();
         }
 
-        private StatementSyntax MakeOperatorEqualsTest(string propName)
+        private IfStatementSyntax MakeOperatorEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
         {
             return SyntaxFactory.IfStatement(
                 SyntaxFactory.BinaryExpression(
                     SyntaxKind.NotEqualsExpression,
-                    SyntaxFactory.IdentifierName(propName),
-                    OtherPropName(propName)),
+                    left,
+                    right),
                 SyntaxFactory.Block(Return(false)));
         }
 
-        private StatementSyntax MakeObjectEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
+        private IfStatementSyntax MakeObjectEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
         {
             return SyntaxFactory.IfStatement(
                 // if (!(Object.Equals(Prop, other.Prop))
@@ -210,8 +217,8 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.InvocationExpression(
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName("Object"),
-                            SyntaxFactory.IdentifierName("Equals")),
+                            SyntaxFactory.IdentifierName(ObjectType),
+                            SyntaxFactory.IdentifierName(EqualsMethod)),
                         ArgumentList(left, right))),
                 SyntaxFactory.Block(Return(false)));
         }
@@ -225,8 +232,8 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.InvocationExpression(
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                                SyntaxFactory.IdentifierName("Object"),
-                                SyntaxFactory.IdentifierName("ReferenceEquals")),
+                                SyntaxFactory.IdentifierName(ObjectType),
+                                SyntaxFactory.IdentifierName(ReferenceEqualsMethod)),
                             ArgumentList(SyntaxFactory.IdentifierName(propName), OtherPropName(propName)))),
                 SyntaxFactory.Block(
                     // if (Prop == null || other.Prop == null)
@@ -257,17 +264,57 @@ namespace Microsoft.JSchema.Generator
                                 SyntaxFactory.IdentifierName(CountProperty))),
                         SyntaxFactory.Block(Return(false))),
 
-                    CollectionIndexLoop(propName, _indexVarCount++)
+                    CollectionIndexLoop(propName, _loopIndexVariableCount++)
                     ));
         }
 
         private ForStatementSyntax CollectionIndexLoop(string propName, int indexVarCount)
         {
-            string indexVarName = "i" + indexVarCount;
+            // The name of the index variable used in the loop over elements.
+            string indexVarName = LoopIndexVariableNameBase + indexVarCount;
+
+            // The two elements that will be compared each time through the loop.
+            ExpressionSyntax leftElement =
+                SyntaxFactory.ElementAccessExpression(
+                    SyntaxFactory.IdentifierName(propName),
+                    BracketedArgumentList(
+                        SyntaxFactory.IdentifierName(indexVarName)));
+
+            ExpressionSyntax rightElement =
+                SyntaxFactory.ElementAccessExpression(
+                OtherPropName(propName),
+                BracketedArgumentList(
+                    SyntaxFactory.IdentifierName(indexVarName)));
+
+            // From the type of the element (primitive, object, list, or dictionary), create
+            // the appropriate comparison, for example, "a == b", or "Object.Equals(a, b)".
+            string elementComparisonLookupIndex = propName.ToCamelCase() + "[]"; // TODO: DRY out propName + "[]"
+
+            IfStatementSyntax comparisonStatement;
+            ComparisonType comparisonType = PropertyComparisonTypeDictionary[elementComparisonLookupIndex];
+            switch (comparisonType)
+            {
+                case ComparisonType.OperatorEquals:
+                    comparisonStatement = MakeOperatorEqualsTest(leftElement, rightElement);
+                    break;
+
+                case ComparisonType.ObjectEquals:
+                    comparisonStatement = MakeObjectEqualsTest(leftElement, rightElement);
+                    break;
+
+                case ComparisonType.Collection:
+                    // This is wrong, we don't correctly handle this case yet.
+                    comparisonStatement = MakeObjectEqualsTest(leftElement, rightElement);
+                    //comparisonStatement = MakeCollectionEqualsTest(leftElement, rightElement);
+                    break;
+
+                default:
+                    throw new ArgumentException($"Property {propName} has unknown comparison type {comparisonType}.");
+            }
 
             return SyntaxFactory.ForStatement(
                 SyntaxFactory.VariableDeclaration(
-                    SyntaxFactory.ParseTypeName("int"),
+                    SyntaxFactory.ParseTypeName(IntTypeAlias),
                     SyntaxFactory.SingletonSeparatedList(
                         SyntaxFactory.VariableDeclarator(
                             SyntaxFactory.Identifier(indexVarName),
@@ -288,25 +335,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.PrefixUnaryExpression(
                         SyntaxKind.PreIncrementExpression,
                         SyntaxFactory.IdentifierName(indexVarName))),
-                SyntaxFactory.Block(
-                    SyntaxFactory.IfStatement(
-                        SyntaxFactory.PrefixUnaryExpression(
-                            SyntaxKind.LogicalNotExpression,
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName("Object"),
-                                    SyntaxFactory.IdentifierName("Equals")),
-                                ArgumentList(
-                                    SyntaxFactory.ElementAccessExpression(
-                                        SyntaxFactory.IdentifierName(propName),
-                                        BracketedArgumentList(
-                                            SyntaxFactory.IdentifierName(indexVarName))),
-                                    SyntaxFactory.ElementAccessExpression(
-                                        OtherPropName(propName),
-                                        BracketedArgumentList(
-                                            SyntaxFactory.IdentifierName(indexVarName)))))),
-                        SyntaxFactory.Block(Return(false)))));
+                SyntaxFactory.Block(comparisonStatement));
         }
 
         #region Syntax helpers

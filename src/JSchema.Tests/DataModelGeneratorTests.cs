@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using FluentAssertions;
 using Microsoft.JSchema.Tests;
 using Xunit;
@@ -11,6 +12,21 @@ namespace Microsoft.JSchema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {
+        private const bool ShouldWriteTestResultFiles = true;
+        private static readonly string TestResultFilesDirectory = "TestResultFiles";
+
+        private static void WriteTestResultFiles(string expected, string actual, string testName)
+        {
+            if (ShouldWriteTestResultFiles)
+            {
+                Directory.CreateDirectory(TestResultFilesDirectory);
+
+                File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".expected.cs"), expected);
+                File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".actual.cs"), actual);
+
+            }
+        }
+
         private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
         private const string CopyrightFilePath = @"C:\copyright.txt";
 
@@ -398,6 +414,9 @@ namespace N
     }
 }";
             string actual = generator.Generate(schema);
+
+            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayValuedProperty));
+
             actual.Should().Be(Expected);
         }
 
@@ -983,7 +1002,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref", Skip = "We don't yet handle array element properly")]
+        [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref")]
         public void GeneratesArrayOfPrimitiveTypeByReference()
         {
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1019,7 +1038,7 @@ namespace N
         /// <summary>
         /// 
         /// </summary>
-        public IList<IList<int>> ArrayOfIntByRef { get; set; }
+        public IList<int> ArrayOfIntByRef { get; set; }
 
         public override bool Equals(object other)
         {
@@ -1033,36 +1052,23 @@ namespace N
                 return false;
             }
 
-            if (!Object.ReferenceEquals(ArrayOfArrayOfInt, other.ArrayOfArrayOfInt))
+            if (!Object.ReferenceEquals(ArrayOfIntByRef, other.ArrayOfIntByRef))
             {
-                if (ArrayOfArrayOfInt == null || other.ArrayOfArrayOfInt == null)
+                if (ArrayOfIntByRef == null || other.ArrayOfIntByRef == null)
                 {
                     return false;
                 }
 
-                if (ArrayOfArrayOfInt.Count != other.ArrayOfArrayOfInt.Count)
+                if (ArrayOfIntByRef.Count != other.ArrayOfIntByRef.Count)
                 {
                     return false;
                 }
 
-                for (int i0 = 0; i0 < ArrayOfArrayOfInt.Count; ++i0)
+                for (int i0 = 0; i0 < ArrayOfIntByRef.Count; ++i0)
                 {
-                    if (!Object.ReferenceEquals(ArrayOfArrayOfInt[i0], other.ArrayOfArrayOfInt[i0]))
+                    if (ArrayOfIntByRef[i0] != other.ArrayOfIntByRef[i0])
                     {
-                        if (ArrayOfArrayOfInt[i0] == null || other.ArrayOfArrayOfInt[i0] == null)
-                        {
-                            return false;
-                        }
-
-                        if (ArrayOfArrayOfInt[i0].Count != other.ArrayOfArrayOfInt[i0].Count)
-                        {
-                            return false;
-                        }
-
-                        if (ArrayOfArrayOfInt[i0] != other.ArrayOfArrayOfInt[i0])
-                        {
-                            return false;
-                        }
+                        return false;
                     }
                 }
             }
@@ -1073,10 +1079,13 @@ namespace N
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
+
+            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
+
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type", Skip = "We don't yet handle array element properly")]
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type", Skip = "We don't yet handle array of array element properly")]
         public void GeneratesArrayOfArraysOfPrimitiveType()
         {
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1171,10 +1180,13 @@ namespace N
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
+
+            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfPrimitiveType));
+
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type", Skip = "We don't yet handle array element properly")]
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type", Skip = "We don't yet handle array of array element properly")]
         public void GeneratesArrayOfArraysOfObjectType()
         {
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1269,10 +1281,13 @@ namespace N
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
+
+            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfObjectType));
+
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type", Skip = "We don't yet handle array of array element properly")]
         public void GeneratesArrayOfArraysOfClassType()
         {
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1342,9 +1357,25 @@ namespace N
 
                 for (int i0 = 0; i0 < ArrayOfArrayOfD.Count; ++i0)
                 {
-                    if (!Object.Equals(ArrayOfArrayOfD[i0], other.ArrayOfArrayOfD[i0]))
+                    if (!Object.ReferenceEquals(ArrayOfArrayOfD[i0], other.ArrayOfArrayOfD[i0]))
                     {
-                        return false;
+                        if (ArrayOfArrayOfD[i0] == null || other.ArrayOfArrayOfD[i0] == null)
+                        {
+                            return false;
+                        }
+
+                        if (ArrayOfArrayOfD[i0].Count != other.ArrayOfArrayOfD[i0].Count)
+                        {
+                            return false;
+                        }
+
+                        for (int i1 = 0; i1 < ArrayOfArrayOfD[i0].Count; ++i1)
+                        {
+                            if (!Object.Equals(ArrayOfArrayOfD[i0][i1], other.ArrayOfArrayOfD[i0][i1]))
+                            {
+                                return false;
+                            }
+                        }
                     }
                 }
             }
@@ -1355,6 +1386,9 @@ namespace N
 }";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
+
+            WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfClassType));
+
             actual.Should().Be(Expected);
         }
 
