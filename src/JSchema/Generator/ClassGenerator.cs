@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,7 +17,14 @@ namespace Microsoft.JSchema.Generator
     /// </remarks>
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
+        // Name used for the parameters of Equals methods.
+        private const string Other = "other";
+
         private readonly string _baseInterfaceName;
+
+        // Value used to construct unique names for each of the loop variables
+        // used in the implementation of the Equals method.
+        private int _indexVarCount = 0;
 
         public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
             : base(rootSchema, hintDictionary)
@@ -102,7 +107,7 @@ namespace Microsoft.JSchema.Generator
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.PredefinedType(
                                     SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
-                                SyntaxFactory.Identifier("other"),
+                                SyntaxFactory.Identifier(Other),
                                 default(EqualsValueClauseSyntax)))))
                 .WithBody(
                     SyntaxFactory.Block(
@@ -114,7 +119,7 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.Argument(
                                             SyntaxFactory.BinaryExpression(
                                                 SyntaxKind.AsExpression,
-                                                SyntaxFactory.IdentifierName("other"),
+                                                SyntaxFactory.IdentifierName(Other),
                                                 SyntaxFactory.ParseTypeName(TypeName)))))))));
 
         }
@@ -133,7 +138,7 @@ namespace Microsoft.JSchema.Generator
                                 default(SyntaxList<AttributeListSyntax>),
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.ParseTypeName(TypeName),
-                                SyntaxFactory.Identifier("other"),
+                                SyntaxFactory.Identifier(Other),
                                 default(EqualsValueClauseSyntax))
                         )))
                 .WithBody(
@@ -144,16 +149,13 @@ namespace Microsoft.JSchema.Generator
         {
             var statements = new List<StatementSyntax>();
 
-            // First, check "other" against null.
             statements.Add(
                 SyntaxFactory.IfStatement(
                     SyntaxFactory.BinaryExpression(
                         SyntaxKind.EqualsExpression,
-                        SyntaxFactory.IdentifierName("other"),
-                        SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)),
-                    SyntaxFactory.Block(
-                        SyntaxFactory.ReturnStatement(SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression))))
-                );
+                        SyntaxFactory.IdentifierName(Other),
+                        NullLiteralExpression()),
+                    SyntaxFactory.Block(Return(false))));
 
             if (schema.Properties != null)
             {
@@ -171,7 +173,7 @@ namespace Microsoft.JSchema.Generator
                             break;
 
                         case ComparisonType.Collection:
-                            // For collections: ReferenceEquals, then null check, then count check, then per property Object.Equals
+                            statements.Add(MakeCollectionEqualsTest(propName));
                             break;
 
                         default:
@@ -181,9 +183,7 @@ namespace Microsoft.JSchema.Generator
             }
 
             // All comparisons succeeded.
-            statements.Add(
-                SyntaxFactory.ReturnStatement(
-                    SyntaxFactory.LiteralExpression(SyntaxKind.TrueLiteralExpression)));
+            statements.Add(Return(true));
 
             return statements.ToArray();
         }
@@ -194,17 +194,14 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.BinaryExpression(
                     SyntaxKind.NotEqualsExpression,
                     SyntaxFactory.IdentifierName(propName),
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("other"),
-                        SyntaxFactory.IdentifierName(propName))),
-                SyntaxFactory.Block(
-                        SyntaxFactory.ReturnStatement(SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression))));
+                    OtherPropName(propName)),
+                SyntaxFactory.Block(Return(false)));
         }
 
         private StatementSyntax MakeObjectEqualsTest(string propName)
         {
             return SyntaxFactory.IfStatement(
+                // if (!(Object.Equals(Prop, other.Prop))
                 SyntaxFactory.PrefixUnaryExpression(
                     SyntaxKind.LogicalNotExpression,
                     SyntaxFactory.InvocationExpression(
@@ -216,17 +213,95 @@ namespace Microsoft.JSchema.Generator
                             SyntaxFactory.SeparatedList(
                                 new[]
                                 {
-                                    SyntaxFactory.Argument(
-                                        SyntaxFactory.IdentifierName(propName)),
-                                    SyntaxFactory.Argument(
-                                        SyntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.IdentifierName("other"),
-                                            SyntaxFactory.IdentifierName(propName)))
+                                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName(propName)),
+                                    SyntaxFactory.Argument(OtherPropName(propName))
                                 })))),
-                SyntaxFactory.Block(
-                        SyntaxFactory.ReturnStatement(SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression))));
+                SyntaxFactory.Block(Return(false)));
         }
+
+        private StatementSyntax MakeCollectionEqualsTest(string propName)
+        {
+            return SyntaxFactory.IfStatement(
+                // if (!Object.ReferenceEquals(Prop, other.Prop))
+                SyntaxFactory.PrefixUnaryExpression(
+                    SyntaxKind.LogicalNotExpression,
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName("Object"),
+                                SyntaxFactory.IdentifierName("ReferenceEquals")),
+                            SyntaxFactory.ArgumentList(
+                                SyntaxFactory.SeparatedList(
+                                    new[]
+                                    {
+                                        SyntaxFactory.Argument(SyntaxFactory.IdentifierName(propName)),
+                                        SyntaxFactory.Argument(OtherPropName(propName))
+                                    })))),
+                SyntaxFactory.Block(
+                    // if (Prop == null || other.Prop == null)
+                    SyntaxFactory.IfStatement(
+                        SyntaxFactory.BinaryExpression(
+                            SyntaxKind.LogicalOrExpression,
+                            SyntaxFactory.BinaryExpression(
+                                SyntaxKind.EqualsExpression,
+                                SyntaxFactory.IdentifierName(propName),
+                                NullLiteralExpression()),
+                            SyntaxFactory.BinaryExpression(
+                                SyntaxKind.EqualsExpression,
+                                OtherPropName(propName),
+                                NullLiteralExpression())),
+                        SyntaxFactory.Block(Return(false))),
+
+                    // if (Prop.Length != other.Prop.Length)
+                    // TODO: Replace Length with Count when changing from Array to List.
+                    SyntaxFactory.IfStatement(
+                        SyntaxFactory.BinaryExpression(
+                            SyntaxKind.NotEqualsExpression,
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(propName),
+                                SyntaxFactory.IdentifierName("Length")),
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                OtherPropName(propName),
+                                SyntaxFactory.IdentifierName("Length"))),
+                        SyntaxFactory.Block(Return(false))),
+
+                    CollectionIndexLoop(propName, _indexVarCount)
+                    ));
+        }
+
+        private ForStatementSyntax CollectionIndexLoop(string propName, int indexVarCount)
+        {
+            string indexVarName = "i" + indexVarCount;
+
+            return SyntaxFactory.ForStatement(
+                SyntaxFactory.VariableDeclaration(
+                    SyntaxFactory.ParseTypeName("int"),
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.VariableDeclarator(
+                            SyntaxFactory.Identifier(indexVarName),
+                            default(BracketedArgumentListSyntax),
+                            SyntaxFactory.EqualsValueClause(
+                                SyntaxFactory.LiteralExpression(
+                                    SyntaxKind.NumericLiteralExpression,
+                                    SyntaxFactory.Literal(0)))))),
+                SyntaxFactory.SeparatedList<ExpressionSyntax>(),
+                SyntaxFactory.BinaryExpression(
+                    SyntaxKind.LessThanExpression,
+                    SyntaxFactory.IdentifierName(indexVarName),
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName(propName),
+                        SyntaxFactory.IdentifierName("Length"))),
+                SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
+                    SyntaxFactory.PrefixUnaryExpression(
+                        SyntaxKind.PreIncrementExpression,
+                        SyntaxFactory.IdentifierName(indexVarName))),
+                SyntaxFactory.Block());
+        }
+
+        #region Syntax helpers
 
         protected override SyntaxTokenList CreatePropertyModifiers()
         {
@@ -238,5 +313,29 @@ namespace Microsoft.JSchema.Generator
 
             return modifiers;
         }
+
+        private ExpressionSyntax OtherPropName(string propName)
+        {
+            return SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(Other),
+                SyntaxFactory.IdentifierName(propName));
+        }
+
+        private ExpressionSyntax NullLiteralExpression()
+        {
+            return SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression);
+        }
+
+        private StatementSyntax Return(bool value)
+        {
+            return SyntaxFactory.ReturnStatement(
+                SyntaxFactory.LiteralExpression(
+                    value
+                    ? SyntaxKind.TrueLiteralExpression
+                    : SyntaxKind.FalseLiteralExpression));
+        }
+
+        #endregion Syntax helpers
     }
 }
