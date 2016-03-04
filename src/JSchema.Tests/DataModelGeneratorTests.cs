@@ -1085,7 +1085,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type", Skip = "We don't yet handle array of array element properly")]
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type")]
         public void GeneratesArrayOfArraysOfPrimitiveType()
         {
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1186,7 +1186,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type", Skip = "We don't yet handle array of array element properly")]
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
         public void GeneratesArrayOfArraysOfObjectType()
         {
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1287,7 +1287,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type", Skip = "We don't yet handle array of array element properly")]
+        [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
         public void GeneratesArrayOfArraysOfClassType()
         {
             JsonSchema schema = SchemaReader.ReadSchema(

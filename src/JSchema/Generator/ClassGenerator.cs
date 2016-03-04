@@ -13,10 +13,6 @@ namespace Microsoft.JSchema.Generator
     /// <summary>
     /// Generate the text of a class.
     /// </summary>
-    /// <remarks>
-    /// Hat tip: Mike Bennett, "Generating Code with Roslyn",
-    /// https://dogschasingsquirrels.com/2014/07/16/generating-code-with-roslyn/
-    /// </remarks>
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
@@ -160,35 +156,21 @@ namespace Microsoft.JSchema.Generator
 
             statements.Add(
                 SyntaxFactory.IfStatement(
-                    SyntaxFactory.BinaryExpression(
-                        SyntaxKind.EqualsExpression,
-                        SyntaxFactory.IdentifierName(OtherParameter),
-                        NullLiteralExpression()),
+                    IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
                     SyntaxFactory.Block(Return(false))));
 
             if (schema.Properties != null)
             {
                 foreach (var property in schema.Properties)
                 {
+                    string comparisonTypeKey = property.Key;
                     string propName = property.Key.ToPascalCase();
-                    switch (PropertyComparisonTypeDictionary[propName.ToCamelCase()])
-                    {
-                        case ComparisonType.OperatorEquals:
-                            statements.Add(MakeOperatorEqualsTest(SyntaxFactory.IdentifierName(propName), OtherPropName(propName)));
-                            break;
 
-                        case ComparisonType.ObjectEquals:
-                            statements.Add(
-                                MakeObjectEqualsTest(SyntaxFactory.IdentifierName(propName), OtherPropName(propName)));
-                            break;
-
-                        case ComparisonType.Collection:
-                            statements.Add(MakeCollectionEqualsTest(propName));
-                            break;
-
-                        default:
-                            break;
-                    }
+                    statements.Add(
+                        MakeComparisonTest(
+                            comparisonTypeKey,
+                            SyntaxFactory.IdentifierName(propName),
+                            OtherPropName(propName)));
                 }
             }
 
@@ -196,6 +178,28 @@ namespace Microsoft.JSchema.Generator
             statements.Add(Return(true));
 
             return statements.ToArray();
+        }
+
+        private IfStatementSyntax MakeComparisonTest(
+            string comparisonTypeKey,
+            ExpressionSyntax left,
+            ExpressionSyntax right)
+       {
+            ComparisonType comparisonType = PropertyComparisonTypeDictionary[comparisonTypeKey];
+            switch (comparisonType)
+            {
+                case ComparisonType.OperatorEquals:
+                    return MakeOperatorEqualsTest(left, right);
+
+                case ComparisonType.ObjectEquals:
+                    return MakeObjectEqualsTest(left, right);
+
+                case ComparisonType.Collection:
+                    return MakeCollectionEqualsTest(comparisonTypeKey, left, right);
+
+                default:
+                    throw new ArgumentException($"Property {comparisonTypeKey} has unknown comparison type {comparisonType}.");
+            }
         }
 
         private IfStatementSyntax MakeOperatorEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
@@ -223,7 +227,10 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Block(Return(false)));
         }
 
-        private StatementSyntax MakeCollectionEqualsTest(string propName)
+        private IfStatementSyntax MakeCollectionEqualsTest(
+            string comparisonTypeLookupKey,
+            ExpressionSyntax left,
+            ExpressionSyntax right)
         {
             return SyntaxFactory.IfStatement(
                 // if (!Object.ReferenceEquals(Prop, other.Prop))
@@ -234,20 +241,14 @@ namespace Microsoft.JSchema.Generator
                             SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(ObjectType),
                                 SyntaxFactory.IdentifierName(ReferenceEqualsMethod)),
-                            ArgumentList(SyntaxFactory.IdentifierName(propName), OtherPropName(propName)))),
+                            ArgumentList(left, right))),
                 SyntaxFactory.Block(
                     // if (Prop == null || other.Prop == null)
                     SyntaxFactory.IfStatement(
                         SyntaxFactory.BinaryExpression(
                             SyntaxKind.LogicalOrExpression,
-                            SyntaxFactory.BinaryExpression(
-                                SyntaxKind.EqualsExpression,
-                                SyntaxFactory.IdentifierName(propName),
-                                NullLiteralExpression()),
-                            SyntaxFactory.BinaryExpression(
-                                SyntaxKind.EqualsExpression,
-                                OtherPropName(propName),
-                                NullLiteralExpression())),
+                            IsNull(left),
+                            IsNull(right)),
                         SyntaxFactory.Block(Return(false))),
 
                     // if (Prop.Count != other.Prop.Count)
@@ -256,61 +257,44 @@ namespace Microsoft.JSchema.Generator
                             SyntaxKind.NotEqualsExpression,
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
-                                SyntaxFactory.IdentifierName(propName),
+                                left,
                                 SyntaxFactory.IdentifierName(CountProperty)),
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
-                                OtherPropName(propName),
+                                right,
                                 SyntaxFactory.IdentifierName(CountProperty))),
                         SyntaxFactory.Block(Return(false))),
 
-                    CollectionIndexLoop(propName, _loopIndexVariableCount++)
+                    CollectionIndexLoop(comparisonTypeLookupKey, left, right)
                     ));
         }
 
-        private ForStatementSyntax CollectionIndexLoop(string propName, int indexVarCount)
+        private ForStatementSyntax CollectionIndexLoop(
+            string comparisonTypeKey,
+            ExpressionSyntax left,
+            ExpressionSyntax right)
         {
             // The name of the index variable used in the loop over elements.
-            string indexVarName = LoopIndexVariableNameBase + indexVarCount;
+            string indexVarName = LoopIndexVariableNameBase + _loopIndexVariableCount++;
 
             // The two elements that will be compared each time through the loop.
             ExpressionSyntax leftElement =
                 SyntaxFactory.ElementAccessExpression(
-                    SyntaxFactory.IdentifierName(propName),
+                    left,
                     BracketedArgumentList(
                         SyntaxFactory.IdentifierName(indexVarName)));
 
             ExpressionSyntax rightElement =
                 SyntaxFactory.ElementAccessExpression(
-                OtherPropName(propName),
+                right,
                 BracketedArgumentList(
                     SyntaxFactory.IdentifierName(indexVarName)));
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate comparison, for example, "a == b", or "Object.Equals(a, b)".
-            string elementComparisonLookupIndex = propName.ToCamelCase() + "[]"; // TODO: DRY out propName + "[]"
+            string elementTypeLookupKeyName = comparisonTypeKey + "[]"; // TODO: DRY out propName + "[]"
 
-            IfStatementSyntax comparisonStatement;
-            ComparisonType comparisonType = PropertyComparisonTypeDictionary[elementComparisonLookupIndex];
-            switch (comparisonType)
-            {
-                case ComparisonType.OperatorEquals:
-                    comparisonStatement = MakeOperatorEqualsTest(leftElement, rightElement);
-                    break;
-
-                case ComparisonType.ObjectEquals:
-                    comparisonStatement = MakeObjectEqualsTest(leftElement, rightElement);
-                    break;
-
-                case ComparisonType.Collection:
-                    // This is wrong, we don't correctly handle this case yet.
-                    comparisonStatement = MakeObjectEqualsTest(leftElement, rightElement);
-                    //comparisonStatement = MakeCollectionEqualsTest(leftElement, rightElement);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Property {propName} has unknown comparison type {comparisonType}.");
-            }
+            IfStatementSyntax comparisonStatement = MakeComparisonTest(elementTypeLookupKeyName, leftElement, rightElement);
 
             return SyntaxFactory.ForStatement(
                 SyntaxFactory.VariableDeclaration(
@@ -329,7 +313,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.IdentifierName(indexVarName),
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName(propName),
+                        left,
                         SyntaxFactory.IdentifierName(CountProperty))),
                 SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
                     SyntaxFactory.PrefixUnaryExpression(
@@ -349,6 +333,14 @@ namespace Microsoft.JSchema.Generator
             }
 
             return modifiers;
+        }
+
+        private BinaryExpressionSyntax IsNull(ExpressionSyntax expr)
+        {
+            return SyntaxFactory.BinaryExpression(
+                SyntaxKind.EqualsExpression,
+                expr,
+                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
         }
 
         private ArgumentListSyntax ArgumentList(params ExpressionSyntax[] args)
@@ -372,11 +364,6 @@ namespace Microsoft.JSchema.Generator
                 SyntaxKind.SimpleMemberAccessExpression,
                 SyntaxFactory.IdentifierName(OtherParameter),
                 SyntaxFactory.IdentifierName(propName));
-        }
-
-        private ExpressionSyntax NullLiteralExpression()
-        {
-            return SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression);
         }
 
         private StatementSyntax Return(bool value)

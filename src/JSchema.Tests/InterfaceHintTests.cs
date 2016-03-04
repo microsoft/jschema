@@ -101,7 +101,7 @@ namespace N
             }
         };
 
-        [Theory(DisplayName = "InterfaceHint generates interfaces in addition to classes")]
+        [Theory(DisplayName = "InterfaceHint generates interfaces in addition to classes", Skip = "Dictionary comparison is NYI")]
         [MemberData(nameof(TestCases))]
         public void GeneratesInterfaceFromClass(
             string schemaText,
