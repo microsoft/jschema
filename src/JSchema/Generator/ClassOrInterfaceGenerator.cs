@@ -288,7 +288,7 @@ namespace Microsoft.JSchema.Generator
             // Create a rank-1 array of whatever this property is. If the property
             // is itself an array, this will result in a rank-2 jagged array and so on.
             return SyntaxFactory.ArrayType(
-                MakePropertyType(propertyName, schema.Items),
+                MakePropertyType(propertyName + "[]", schema.Items),
                 SyntaxFactory.SingletonList(SyntaxFactory.ArrayRankSpecifier()));
         }
 
