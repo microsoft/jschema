@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -114,13 +115,11 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName("Equals"),
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.Argument(
-                                            SyntaxFactory.BinaryExpression(
-                                                SyntaxKind.AsExpression,
-                                                SyntaxFactory.IdentifierName(Other),
-                                                SyntaxFactory.ParseTypeName(TypeName)))))))));
+                                ArgumentList(
+                                    SyntaxFactory.BinaryExpression(
+                                        SyntaxKind.AsExpression,
+                                        SyntaxFactory.IdentifierName(Other),
+                                        SyntaxFactory.ParseTypeName(TypeName)))))));
 
         }
 
@@ -169,7 +168,8 @@ namespace Microsoft.JSchema.Generator
                             break;
 
                         case ComparisonType.ObjectEquals:
-                            statements.Add(MakeObjectEqualsTest(propName));
+                            statements.Add(
+                                MakeObjectEqualsTest(SyntaxFactory.IdentifierName(propName), OtherPropName(propName)));
                             break;
 
                         case ComparisonType.Collection:
@@ -198,7 +198,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Block(Return(false)));
         }
 
-        private StatementSyntax MakeObjectEqualsTest(string propName)
+        private StatementSyntax MakeObjectEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
         {
             return SyntaxFactory.IfStatement(
                 // if (!(Object.Equals(Prop, other.Prop))
@@ -209,13 +209,7 @@ namespace Microsoft.JSchema.Generator
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.IdentifierName("Object"),
                             SyntaxFactory.IdentifierName("Equals")),
-                        SyntaxFactory.ArgumentList(
-                            SyntaxFactory.SeparatedList(
-                                new[]
-                                {
-                                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName(propName)),
-                                    SyntaxFactory.Argument(OtherPropName(propName))
-                                })))),
+                        ArgumentList(left, right))),
                 SyntaxFactory.Block(Return(false)));
         }
 
@@ -230,13 +224,7 @@ namespace Microsoft.JSchema.Generator
                             SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName("Object"),
                                 SyntaxFactory.IdentifierName("ReferenceEquals")),
-                            SyntaxFactory.ArgumentList(
-                                SyntaxFactory.SeparatedList(
-                                    new[]
-                                    {
-                                        SyntaxFactory.Argument(SyntaxFactory.IdentifierName(propName)),
-                                        SyntaxFactory.Argument(OtherPropName(propName))
-                                    })))),
+                            ArgumentList(SyntaxFactory.IdentifierName(propName), OtherPropName(propName)))),
                 SyntaxFactory.Block(
                     // if (Prop == null || other.Prop == null)
                     SyntaxFactory.IfStatement(
@@ -307,25 +295,15 @@ namespace Microsoft.JSchema.Generator
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.IdentifierName("Object"),
                                     SyntaxFactory.IdentifierName("Equals")),
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SeparatedList(
-                                        new[]
-                                        {
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.ElementAccessExpression(
-                                                    SyntaxFactory.IdentifierName(propName),
-                                                    SyntaxFactory.BracketedArgumentList(
-                                                        SyntaxFactory.SingletonSeparatedList(
-                                                            SyntaxFactory.Argument(
-                                                                SyntaxFactory.IdentifierName(indexVarName)))))),
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.ElementAccessExpression(
-                                                    OtherPropName(propName),
-                                                    SyntaxFactory.BracketedArgumentList(
-                                                        SyntaxFactory.SingletonSeparatedList(
-                                                            SyntaxFactory.Argument(
-                                                                SyntaxFactory.IdentifierName(indexVarName)))))),
-                                        })))),
+                                ArgumentList(
+                                    SyntaxFactory.ElementAccessExpression(
+                                        SyntaxFactory.IdentifierName(propName),
+                                        BracketedArgumentList(
+                                            SyntaxFactory.IdentifierName(indexVarName))),
+                                    SyntaxFactory.ElementAccessExpression(
+                                        OtherPropName(propName),
+                                        BracketedArgumentList(
+                                            SyntaxFactory.IdentifierName(indexVarName)))))),
                         SyntaxFactory.Block(Return(false)))));
         }
 
@@ -340,6 +318,21 @@ namespace Microsoft.JSchema.Generator
             }
 
             return modifiers;
+        }
+
+        private ArgumentListSyntax ArgumentList(params ExpressionSyntax[] args)
+        {
+            return SyntaxFactory.ArgumentList(
+                        SyntaxFactory.SeparatedList(
+                            args.Select(arg => SyntaxFactory.Argument(arg))));
+
+        }
+
+        private  BracketedArgumentListSyntax BracketedArgumentList(params ExpressionSyntax[] args)
+        {
+            return SyntaxFactory.BracketedArgumentList(
+                        SyntaxFactory.SeparatedList(
+                            args.Select(arg => SyntaxFactory.Argument(arg))));
         }
 
         private ExpressionSyntax OtherPropName(string propName)
