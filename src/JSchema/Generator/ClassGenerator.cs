@@ -226,9 +226,31 @@ namespace Microsoft.JSchema.Generator
 
         private StatementSyntax MakeCollectionHashCodeContribution(ExpressionSyntax expression)
         {
+            string loopVariableName = GetNextVariableName();
+
             return SyntaxFactory.IfStatement(
                 IsNotNull(expression),
-                SyntaxFactory.Block());
+                SyntaxFactory.Block(
+                    SyntaxFactory.ForEachStatement(
+                        Var(),
+                        loopVariableName,
+                        expression,
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ExpressionStatement(
+                                SyntaxFactory.AssignmentExpression(
+                                    SyntaxKind.SimpleAssignmentExpression,
+                                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                    SyntaxFactory.BinaryExpression(
+                                        SyntaxKind.MultiplyExpression,
+                                        SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                        SyntaxFactory.LiteralExpression(
+                                            SyntaxKind.NumericLiteralExpression,
+                                            SyntaxFactory.Literal(GetHashCodeCombiningValue))))),
+                            SyntaxFactory.IfStatement(
+                                IsNotNull(SyntaxFactory.IdentifierName(loopVariableName)),
+                                SyntaxFactory.Block(
+                                    // TODO: Nested collections. Need to know "contribution type" at each level"
+                                    AddScalarHashCodeContribution(SyntaxFactory.IdentifierName(loopVariableName))))))));
         }
 
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
