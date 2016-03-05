@@ -193,8 +193,13 @@ namespace Microsoft.JSchema.Generator
             switch (comparisonType)
             {
                 case ComparisonType.OperatorEquals:
+                    // TODO: This isn't quite right: string and Uri must be null checked, but are compared
+                    // with ==. So my instinct that "comparisonType" wasn't the way to go here was right.
+                    // I need a different mapping for hash code contributions. Don't have a good name yet.
+                    return MakeValueTypeHashCodeContribution(expression);
+
                 case ComparisonType.ObjectEquals:
-                    return MakeScalarHashCodeContribution(expression);
+                    return MakeObjectHashCodeContribution(expression);
 
                 case ComparisonType.Collection:
                     return MakeCollectionHashCodeContribution(expression);
@@ -207,19 +212,51 @@ namespace Microsoft.JSchema.Generator
             }
         }
 
-        private StatementSyntax MakeScalarHashCodeContribution(ExpressionSyntax expression)
+        private StatementSyntax MakeValueTypeHashCodeContribution(ExpressionSyntax expression)
         {
             return SyntaxFactory.EmptyStatement();
+        }
+
+        private StatementSyntax MakeObjectHashCodeContribution(ExpressionSyntax expression)
+        {
+            return SyntaxFactory.IfStatement(
+                IsNotNull(expression),
+                SyntaxFactory.Block(AddScalarHashCodeContribution(expression)));
         }
 
         private StatementSyntax MakeCollectionHashCodeContribution(ExpressionSyntax expression)
         {
-            return SyntaxFactory.EmptyStatement();
+            return SyntaxFactory.IfStatement(
+                IsNotNull(expression),
+                SyntaxFactory.Block());
         }
 
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
         {
-            return SyntaxFactory.EmptyStatement();
+            return SyntaxFactory.IfStatement(
+                IsNotNull(expression),
+                SyntaxFactory.Block());
+        }
+
+        private StatementSyntax AddScalarHashCodeContribution(ExpressionSyntax expression)
+        {
+            return SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.AddAssignmentExpression,
+                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                        SyntaxFactory.BinaryExpression(
+                            SyntaxKind.AddExpression,
+                            SyntaxFactory.BinaryExpression(
+                                SyntaxKind.MultiplyExpression,
+                                SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                SyntaxFactory.LiteralExpression(
+                                    SyntaxKind.NumericLiteralExpression,
+                                    SyntaxFactory.Literal(GetHashCodeCombiningValue))),
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    expression,
+                                    SyntaxFactory.IdentifierName(GetHashCodeMethod))))));
         }
 
         private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
@@ -528,6 +565,14 @@ namespace Microsoft.JSchema.Generator
         {
             return SyntaxFactory.BinaryExpression(
                 SyntaxKind.EqualsExpression,
+                expr,
+                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
+        }
+
+        private BinaryExpressionSyntax IsNotNull(ExpressionSyntax expr)
+        {
+            return SyntaxFactory.BinaryExpression(
+                SyntaxKind.NotEqualsExpression,
                 expr,
                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
         }
