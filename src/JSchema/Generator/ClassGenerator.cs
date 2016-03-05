@@ -22,12 +22,17 @@ namespace Microsoft.JSchema.Generator
 
         private const string CountProperty = "Count";
         private const string EqualsMethod = "Equals";
+        private const string GetHashCodeMethod = "GetHashCode";
         private const string ReferenceEqualsMethod = "ReferenceEquals";
         private const string IEquatableType = "IEquatable";
         private const string ObjectType = "Object";
         private const string IntTypeAlias = "int";
 
         private const string TempVariableNameBase = "value_";
+        private const string GetHashCodeResultVariableName = "result";
+
+        private const int GetHashCodeSeedValue = 17;
+        private const int GetHashCodeCombiningValue = 31;
 
         // Value used to construct unique names for each of the loop variables
         // used in the implementation of the Equals method.
@@ -89,6 +94,7 @@ namespace Microsoft.JSchema.Generator
             members.AddRange(new MemberDeclarationSyntax[]
                 {
                 OverrideObjectEquals(),
+                OverrideGetHashCode(schema),
                 ImplementIEquatableEquals(schema)
                 });
 
@@ -127,6 +133,66 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.IdentifierName(OtherParameter),
                                         SyntaxFactory.ParseTypeName(TypeName)))))));
 
+        }
+        private MemberDeclarationSyntax OverrideGetHashCode(JsonSchema schema)
+        {
+            return SyntaxFactory.MethodDeclaration(
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+                GetHashCodeMethod)
+                .WithModifiers(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                        SyntaxFactory.Token(SyntaxKind.OverrideKeyword)))
+                .WithBody(
+                    SyntaxFactory.Block(MakeHashCodeContributions(schema)));
+
+        }
+
+        private StatementSyntax[] MakeHashCodeContributions(JsonSchema schema)
+        {
+            var statements = new List<StatementSyntax>();
+
+            statements.Add(SyntaxFactory.LocalDeclarationStatement(
+                            SyntaxFactory.VariableDeclaration(
+                                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.VariableDeclarator(
+                                        SyntaxFactory.Identifier(GetHashCodeResultVariableName),
+                                        default(BracketedArgumentListSyntax),
+                                        SyntaxFactory.EqualsValueClause(
+                                            SyntaxFactory.LiteralExpression(
+                                                SyntaxKind.NumericLiteralExpression,
+                                                SyntaxFactory.Literal(GetHashCodeSeedValue))))))));
+
+            if (schema.Properties != null)
+            {
+                var uncheckedStatements = new List<StatementSyntax>();
+                foreach (var property in schema.Properties)
+                {
+                    string comparisonTypeKey = property.Key;
+                    string propName = property.Key.ToPascalCase();
+
+                    uncheckedStatements.Add(
+                        MakeHashCodeContribution(
+                            comparisonTypeKey,
+                            SyntaxFactory.IdentifierName(propName),
+                            OtherPropName(propName)));
+                }
+
+                statements.Add(SyntaxFactory.CheckedStatement(
+                    SyntaxKind.UncheckedStatement,
+                    SyntaxFactory.Block(uncheckedStatements)));
+            }
+
+            statements.Add(SyntaxFactory.ReturnStatement(
+                                SyntaxFactory.IdentifierName(GetHashCodeResultVariableName)));
+
+            return statements.ToArray();
+        }
+
+        private StatementSyntax MakeHashCodeContribution(string comparisonTypeKey, IdentifierNameSyntax identifierNameSyntax, ExpressionSyntax expressionSyntax)
+        {
+            return SyntaxFactory.EmptyStatement();
         }
 
         private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
@@ -396,7 +462,7 @@ namespace Microsoft.JSchema.Generator
                                 )))));
         }
 
-        #region Syntax helpers
+#region Syntax helpers
 
         private TypeSyntax Var()
         {
@@ -471,6 +537,6 @@ namespace Microsoft.JSchema.Generator
                     : SyntaxKind.FalseLiteralExpression));
         }
 
-        #endregion Syntax helpers
+#endregion Syntax helpers
     }
 }
