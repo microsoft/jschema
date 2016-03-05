@@ -242,16 +242,17 @@ namespace Microsoft.JSchema.Generator
         {
             return SyntaxFactory.ExpressionStatement(
                 SyntaxFactory.AssignmentExpression(
-                    SyntaxKind.AddAssignmentExpression,
+                    SyntaxKind.SimpleAssignmentExpression,
                     SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
                         SyntaxFactory.BinaryExpression(
                             SyntaxKind.AddExpression,
-                            SyntaxFactory.BinaryExpression(
-                                SyntaxKind.MultiplyExpression,
-                                SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                                SyntaxFactory.LiteralExpression(
-                                    SyntaxKind.NumericLiteralExpression,
-                                    SyntaxFactory.Literal(GetHashCodeCombiningValue))),
+                            SyntaxFactory.ParenthesizedExpression(
+                                SyntaxFactory.BinaryExpression(
+                                    SyntaxKind.MultiplyExpression,
+                                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                    SyntaxFactory.LiteralExpression(
+                                        SyntaxKind.NumericLiteralExpression,
+                                        SyntaxFactory.Literal(GetHashCodeCombiningValue)))),
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
