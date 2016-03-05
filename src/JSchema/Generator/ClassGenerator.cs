@@ -173,10 +173,7 @@ namespace Microsoft.JSchema.Generator
                     string propName = property.Key.ToPascalCase();
 
                     uncheckedStatements.Add(
-                        MakeHashCodeContribution(
-                            comparisonTypeKey,
-                            SyntaxFactory.IdentifierName(propName),
-                            OtherPropName(propName)));
+                        MakeHashCodeContribution(comparisonTypeKey, SyntaxFactory.IdentifierName(propName)));
                 }
 
                 statements.Add(SyntaxFactory.CheckedStatement(
@@ -190,7 +187,37 @@ namespace Microsoft.JSchema.Generator
             return statements.ToArray();
         }
 
-        private StatementSyntax MakeHashCodeContribution(string comparisonTypeKey, IdentifierNameSyntax identifierNameSyntax, ExpressionSyntax expressionSyntax)
+        private StatementSyntax MakeHashCodeContribution(string comparisonTypeKey, ExpressionSyntax expression)
+        {
+            ComparisonType comparisonType = PropertyComparisonTypeDictionary[comparisonTypeKey];
+            switch (comparisonType)
+            {
+                case ComparisonType.OperatorEquals:
+                case ComparisonType.ObjectEquals:
+                    return MakeScalarHashCodeContribution(expression);
+
+                case ComparisonType.Collection:
+                    return MakeCollectionHashCodeContribution(expression);
+
+                case ComparisonType.Dictionary:
+                    return MakeDictionaryHashCodeContribution(expression); // TODO: Dictionary as array element; array element as dictionary.
+
+                default:
+                    throw new ArgumentException($"Property {comparisonTypeKey} has unknown comparison type {comparisonType}.");
+            }
+        }
+
+        private StatementSyntax MakeScalarHashCodeContribution(ExpressionSyntax expression)
+        {
+            return SyntaxFactory.EmptyStatement();
+        }
+
+        private StatementSyntax MakeCollectionHashCodeContribution(ExpressionSyntax expression)
+        {
+            return SyntaxFactory.EmptyStatement();
+        }
+
+        private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
         {
             return SyntaxFactory.EmptyStatement();
         }
@@ -264,7 +291,7 @@ namespace Microsoft.JSchema.Generator
                     return MakeCollectionEqualsTest(comparisonTypeKey, left, right);
 
                 case ComparisonType.Dictionary:
-                    return MakeDictionaryEqualsTest(left, right); // TODO: Dictionary a array element; array element as dictionary.
+                    return MakeDictionaryEqualsTest(left, right); // TODO: Dictionary as array element; array element as dictionary.
 
                 default:
                     throw new ArgumentException($"Property {comparisonTypeKey} has unknown comparison type {comparisonType}.");
