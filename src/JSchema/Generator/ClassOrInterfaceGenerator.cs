@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -108,6 +109,16 @@ namespace Microsoft.JSchema.Generator
             {
                 SetComparisonType(propertyName, ComparisonType.OperatorEquals);
                 return MakeNamedType(referencedEnumTypeName);
+            }
+
+            EnumHint enumHint;
+            if (ShouldBeEnum(propertyName, schema, out enumHint))
+            {
+                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+
+                OnAdditionalType(new AdditionalTypeRequiredEventArgs(enumHint, schema));
+
+                return MakeNamedType(enumHint.TypeName);
             }
 
             switch (schema.Type)
@@ -254,6 +265,38 @@ namespace Microsoft.JSchema.Generator
                 && HintDictionary.Any(
                     kvp => kvp.Key.Equals(definitionName)
                     && kvp.Value.Any(hint => hint is EnumHint));
+        }
+
+        private bool ShouldBeEnum(string propertyName, JsonSchema schema, out EnumHint enumHint)
+        {
+            bool shouldBeEnum = false;
+            enumHint = null;
+
+            string propertyKey = MakeHintDictionaryKey(propertyName);
+            if (HintDictionary != null)
+            {
+                CodeGenHint[] hints;
+                if (HintDictionary.TryGetValue(propertyKey, out hints))
+                {
+                    enumHint = hints.FirstOrDefault(hint => hint is EnumHint) as EnumHint;
+                    if (enumHint != null)
+                    {
+                        if (string.IsNullOrWhiteSpace(enumHint.TypeName))
+                        {
+                            throw new ArgumentException(
+                                string.Format(
+                                    CultureInfo.InvariantCulture,
+                                    Resources.ErrorEnumHintRequiresTypeName,
+                                    propertyKey),
+                                    nameof(enumHint.TypeName));
+                        }
+
+                        shouldBeEnum = true;
+                    }
+                }
+            }
+
+            return shouldBeEnum;
         }
 
         private TypeSyntax MakePrimitiveType(JsonType jsonType)

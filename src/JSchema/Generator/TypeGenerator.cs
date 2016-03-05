@@ -35,6 +35,17 @@ namespace Microsoft.JSchema.Generator
 
         protected HashSet<string> Usings { get; private set; }
 
+        /// <summary>
+        /// Event raised by a derived class when it discovers that another type must be
+        /// generated, in addition to the one it is already generating.
+        /// </summary>
+        /// <remarks>
+        /// For example, when the ClassGenerator encounters a property for which an
+        /// <see cref="EnumHint"/> is specified, it raises this event to signal that
+        /// an enumerated type must also be generated.
+        /// </remarks>
+        public event EventHandler<AdditionalTypeRequiredEventArgs> AdditionalTypeRequired;
+
         public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema);
 
         /// <summary>
@@ -93,6 +104,15 @@ namespace Microsoft.JSchema.Generator
             }
 
             Usings.Add(namespaceName);
+        }
+
+        protected void OnAdditionalType(AdditionalTypeRequiredEventArgs e)
+        {
+            EventHandler<AdditionalTypeRequiredEventArgs> handler = AdditionalTypeRequired;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
 
         /// <summary>

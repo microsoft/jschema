@@ -120,11 +120,20 @@
   <data name="EnumHintName" xml:space="preserve">
     <value>Generate an enumeration</value>
   </data>
+  <data name="ErrorCannotGenerateAdditionalTypeFromHintType" xml:space="preserve">
+    <value>Cannot generate a type from a {0} object of type {1}.</value>
+  </data>
   <data name="ErrorCopyrightFileNotFound" xml:space="preserve">
     <value>The copyright file "{0}" could not be found.</value>
   </data>
   <data name="ErrorDefinitionDoesNotExist" xml:space="preserve">
     <value>This schema does not contain the sub-schema definition referred to by the $ref value "{0}".</value>
+  </data>
+  <data name="ErrorEnumHintRequiresTypeName" xml:space="preserve">
+    <value>The enumeration hint for the property {0} does not specify a type name for the generated enumeration.</value>
+  </data>
+  <data name="ErrorMismatchedEnumCount" xml:space="preserve">
+    <value>The {0} object for the type {1} specifies {2} enum values, but the schema specifies {3} values. The schema and the {0} object must specify the same number of enum values.</value>
   </data>
   <data name="ErrorNoClassNameForInferredTypeKindPrimitive" xml:space="preserve">
     <value>The {0} property of this {1} instance is {2}, so it has no class name.</value>

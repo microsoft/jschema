@@ -70,6 +70,15 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot generate a type from a {0} object of type {1}..
+        /// </summary>
+        internal static string ErrorCannotGenerateAdditionalTypeFromHintType {
+            get {
+                return ResourceManager.GetString("ErrorCannotGenerateAdditionalTypeFromHintType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The copyright file &quot;{0}&quot; could not be found..
         /// </summary>
         internal static string ErrorCopyrightFileNotFound {
@@ -84,6 +93,24 @@ namespace Microsoft.JSchema {
         internal static string ErrorDefinitionDoesNotExist {
             get {
                 return ResourceManager.GetString("ErrorDefinitionDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The enumeration hint for the property {0} does not specify a type name for the generated enumeration..
+        /// </summary>
+        internal static string ErrorEnumHintRequiresTypeName {
+            get {
+                return ResourceManager.GetString("ErrorEnumHintRequiresTypeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} object for the type {1} specifies {2} enum values, but the schema specifies {3} values. The schema and the {0} object must specify the same number of enum values..
+        /// </summary>
+        internal static string ErrorMismatchedEnumCount {
+            get {
+                return ResourceManager.GetString("ErrorMismatchedEnumCount", resourceCulture);
             }
         }
         
