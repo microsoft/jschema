@@ -537,9 +537,11 @@ namespace N
             string enumFileNameStem,
             string enumText)
         {
-            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+            _settings.GenerateOverrides = true;
             _settings.HintDictionary = HintDictionary.Deserialize(hintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
 
             Action action = () => generator.Generate(schema);
 

@@ -124,9 +124,11 @@ namespace N
             string hintsText,
             string expected)
         {
-            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
             _settings.HintDictionary = HintDictionary.Deserialize(hintsText);
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
 
             string actual = generator.Generate(schema);
 

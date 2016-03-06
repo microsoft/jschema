@@ -48,7 +48,8 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                     RootClassName = options.RootClassName,
                     CopyrightFilePath = options.CopyrightFilePath,
                     HintDictionary = hintDictionary,
-                    PropertiesOnly = options.PropertiesOnly
+                    GenerateOverrides = options.GenerateOverrides,
+                    GenerateCloningCode = options.GenerateCloningCode
                 };
 
                 new DataModelGenerator(settings).Generate(schema);

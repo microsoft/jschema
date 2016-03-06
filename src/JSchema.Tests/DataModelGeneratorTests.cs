@@ -101,7 +101,6 @@ namespace Microsoft.JSchema.Generator.Tests
         [Fact(DisplayName = "DataModelGenerator generates class description")]
         public void GeneratesClassDescription()
         {
-            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
@@ -131,6 +130,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
@@ -227,6 +227,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
@@ -359,6 +360,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
@@ -447,7 +449,6 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
         public void GeneratesXmlCommentsForProperties()
         {
-            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
@@ -477,9 +478,7 @@ namespace N
         public void GeneratesXmlCommentsForPropertiesWhosePropertyTypeIsRef()
         {
             _settings.RootClassName = "consoleWindow";
-            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
 
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
@@ -592,7 +591,6 @@ namespace N
 // Licensed under Apache 2.0 license.
 ";
             _settings.CopyrightFilePath = CopyrightFilePath;
-            _settings.PropertiesOnly = true;
 
             _testFileSystem.Mock.Setup(fs => fs.FileExists(CopyrightFilePath))
                 .Returns(true);
@@ -629,6 +627,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
         public void GeneratesClassesForSchemasInDefinitions()
         {
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
@@ -802,6 +801,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -869,6 +869,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates uri-valued properties")]
         public void GeneratesUriValuedProperties()
         {
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -939,7 +940,6 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates integer property from dictionary reference")]
         public void GeneratesIntegerPropertyFromDictionaryReference()
         {
-            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -980,6 +980,9 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref")]
         public void GeneratesArrayOfPrimitiveTypeByReference()
         {
+            _settings.GenerateOverrides = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
   ""type"": ""object"",
@@ -1070,7 +1073,6 @@ namespace N
         }
     }
 }";
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
             TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
@@ -1081,6 +1083,9 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type")]
         public void GeneratesArrayOfArraysOfPrimitiveType()
         {
+            _settings.GenerateOverrides = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
   ""type"": ""object"",
@@ -1196,7 +1201,6 @@ namespace N
         }
     }
 }";
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
             TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfPrimitiveType));
@@ -1207,6 +1211,9 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
         public void GeneratesArrayOfArraysOfObjectType()
         {
+            _settings.GenerateOverrides = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
   ""type"": ""object"",
@@ -1325,7 +1332,6 @@ namespace N
         }
     }
 }";
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
             TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfObjectType));
@@ -1336,6 +1342,9 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
         public void GeneratesArrayOfArraysOfClassType()
         {
+            _settings.GenerateOverrides = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
   ""type"": ""object"",
@@ -1458,7 +1467,6 @@ namespace N
         }
     }
 }";
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
 
             TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfClassType));
@@ -1469,7 +1477,6 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates string for inline enum of string")]
         public void GeneratesStringForInlineEnumOfString()
         {
-            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(

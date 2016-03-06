@@ -45,11 +45,16 @@ namespace Microsoft.JSchema.Generator
         public HintDictionary HintDictionary { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating that only properties are to be generated:
-        /// method overrides such as <code>Equals</code> and <code>GetHashCode</code> are
-        /// not to be generated.
+        /// Gets or sets a value indicating whether method overrides such as
+        /// <code>Equals</code> and <code>GetHashCode</code> are to be generated.
         /// </summary>
-        public bool PropertiesOnly { get; set; }
+        public bool GenerateOverrides { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the code necessary to clone
+        /// instances of the classes in the object model is to be generated.
+        /// </summary>
+        public bool GenerateCloningCode { get; set; }
 
         internal void Validate()
         {

@@ -58,10 +58,19 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
         public string CodeGenHintsPath { get; set; }
 
         [Option(
-            'p',
-            "properties-only",
-            HelpText = "Only generate properties; do not generate method overrides such as Equals and GetHashCode.",
+            'd',
+            "generate-overrides",
+            HelpText = "Generate method overrides such as Equals and GetHashCode.",
+            Default = true,
             Required = false)]
-        public bool PropertiesOnly { get; set; }
+        public bool GenerateOverrides { get; set; }
+
+        [Option(
+            'k',
+            "generate-cloning-code",
+            HelpText = "Generate code necessary to clone instances",
+            Default = true,
+            Required = false)]
+        public bool GenerateCloningCode { get; set; }
     }
 }

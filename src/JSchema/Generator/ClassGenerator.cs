@@ -16,7 +16,7 @@ namespace Microsoft.JSchema.Generator
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
-        private readonly bool _propertiesOnly;
+        private readonly bool _generateOverrides;
 
         // Name used for the parameters of Equals methods.
         private const string OtherParameter = "other";
@@ -43,11 +43,11 @@ namespace Microsoft.JSchema.Generator
             JsonSchema rootSchema,
             string interfaceName,
             HintDictionary hintDictionary,
-            bool propertiesOnly = false)
+            bool generateOverrides)
             : base(rootSchema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
-            _propertiesOnly = propertiesOnly;
+            _generateOverrides = generateOverrides;
         }
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
@@ -97,7 +97,7 @@ namespace Microsoft.JSchema.Generator
         {
             List<MemberDeclarationSyntax> members = CreateProperties(schema);
 
-            if (!_propertiesOnly)
+            if (_generateOverrides)
             {
                 members.AddRange(new MemberDeclarationSyntax[]
                     {
