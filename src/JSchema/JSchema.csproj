@@ -90,6 +90,7 @@
     <Compile Include="Generator\HintDictionary.cs" />
     <Compile Include="Generator\InterfaceGenerator.cs" />
     <Compile Include="Generator\InterfaceHint.cs" />
+    <Compile Include="Generator\SyntaxInterface.cs" />
     <Compile Include="Generator\TypeGenerator.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileSystem.cs" />

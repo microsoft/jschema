@@ -612,7 +612,7 @@ namespace N
   }
 }");
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 
 namespace N
@@ -624,9 +624,23 @@ namespace N
     {
     }
 }";
+            const string ExpectedSyntaxInterface =
+@"";
             generator.Generate(schema);
 
-            _testFileSystem[PrimaryOutputFilePath].Should().Be(Expected);
+            string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISyntax");
+
+            var expectedOutputFiles = new List<string>
+            {
+                PrimaryOutputFilePath,
+                syntaxInterfacePath
+            };
+
+            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
+
+            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
+            _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]

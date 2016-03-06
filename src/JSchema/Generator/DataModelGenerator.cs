@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -68,6 +69,11 @@ namespace Microsoft.JSchema.Generator
                 GenerateAdditionalType(e.Hint, e.Schema);
             }
 
+            if (_settings.GenerateCloningCode)
+            {
+                GenerateSyntaxInterface();
+            }
+
             foreach (KeyValuePair<string, string> entry in _pathToFileContentsDictionary)
             {
                 _fileSystem.WriteAllText(Path.Combine(_settings.OutputDirectory, entry.Key + ".cs"), entry.Value);
@@ -76,6 +82,11 @@ namespace Microsoft.JSchema.Generator
             // Returning the text of the file generated from the root schema allows this method
             // to be more easily unit tested.
             return rootFileText;
+        }
+
+        private void GenerateSyntaxInterface()
+        {
+            _pathToFileContentsDictionary[SyntaxInterface.TypeName] = string.Empty;
         }
 
         internal string CreateFile(string className, JsonSchema schema)
