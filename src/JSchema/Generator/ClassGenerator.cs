@@ -261,6 +261,11 @@ namespace Microsoft.JSchema.Generator
             // the appropriate hash generation code.
             string elementHashTypeKey = MakeElementKeyName(hashTypeKey);
 
+            StatementSyntax hashCodeContribution =
+                MakeHashCodeContribution(
+                    elementHashTypeKey,
+                    SyntaxFactory.IdentifierName(loopVariableName));
+
             return SyntaxFactory.IfStatement(
                 IsNotNull(expression),
                 SyntaxFactory.Block(
@@ -279,16 +284,60 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.LiteralExpression(
                                             SyntaxKind.NumericLiteralExpression,
                                             SyntaxFactory.Literal(GetHashCodeCombiningValue))))),
-                            MakeHashCodeContribution(
-                                elementHashTypeKey,
-                                SyntaxFactory.IdentifierName(loopVariableName))))));
+                            hashCodeContribution))));
         }
 
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
         {
+            string xorValueVariableName = GetNextVariableName();
+            string loopVariableName = GetNextVariableName();
+
             return SyntaxFactory.IfStatement(
                 IsNotNull(expression),
-                SyntaxFactory.Block());
+                SyntaxFactory.Block(
+                    SyntaxFactory.LocalDeclarationStatement(
+                        SyntaxFactory.VariableDeclaration(
+                            SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.VariableDeclarator(
+                                    SyntaxFactory.Identifier(xorValueVariableName),
+                                    default(BracketedArgumentListSyntax),
+                                    SyntaxFactory.EqualsValueClause(
+                                        SyntaxFactory.LiteralExpression(
+                                            SyntaxKind.NumericLiteralExpression,
+                                            SyntaxFactory.Literal(0)))))))
+                        .WithLeadingTrivia(
+                            SyntaxFactory.ParseLeadingTrivia("// Use xor for dictionaries to be order-independent.\n")),
+                    SyntaxFactory.ForEachStatement(
+                        Var(),
+                        loopVariableName,
+                        expression,
+                        SyntaxFactory.Block(
+                            Xor(xorValueVariableName, loopVariableName, "Key"),
+                            Xor(xorValueVariableName, loopVariableName, "Value")))));
+        }
+
+        private StatementSyntax Xor(string xorValueVariableName, string loopVariableName, string keyValuePairMemberName)
+        {
+            return SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.ExclusiveOrAssignmentExpression,
+                    SyntaxFactory.IdentifierName(xorValueVariableName),
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.ParenthesizedExpression(
+                                SyntaxFactory.BinaryExpression(
+                                    SyntaxKind.CoalesceExpression,
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(loopVariableName),
+                                        SyntaxFactory.IdentifierName(keyValuePairMemberName)),
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName("string"),
+                                        SyntaxFactory.IdentifierName("Empty")))),
+                            SyntaxFactory.IdentifierName(GetHashCodeMethod)))));
         }
 
         private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
