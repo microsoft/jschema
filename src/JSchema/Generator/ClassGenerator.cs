@@ -189,7 +189,7 @@ namespace Microsoft.JSchema.Generator
 
         private StatementSyntax MakeHashCodeContribution(string comparisonTypeKey, ExpressionSyntax expression)
         {
-            ComparisonType comparisonType = PropertyComparisonTypeDictionary[comparisonTypeKey];
+            ComparisonType comparisonType = ComparisonTypeDictionary[comparisonTypeKey];
             switch (comparisonType)
             {
                 case ComparisonType.OperatorEquals:
@@ -338,7 +338,7 @@ namespace Microsoft.JSchema.Generator
             ExpressionSyntax left,
             ExpressionSyntax right)
        {
-            ComparisonType comparisonType = PropertyComparisonTypeDictionary[comparisonTypeKey];
+            ComparisonType comparisonType = ComparisonTypeDictionary[comparisonTypeKey];
             switch (comparisonType)
             {
                 case ComparisonType.OperatorEquals:

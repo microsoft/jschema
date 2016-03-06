@@ -22,12 +22,25 @@ namespace Microsoft.JSchema.Generator
             : base(hintDictionary)
         {
             _rootSchema = rootSchema;
-            PropertyComparisonTypeDictionary = new Dictionary<string, ComparisonType>();
+            ComparisonTypeDictionary = new Dictionary<string, ComparisonType>();
+            HashTypeDictionary = new Dictionary<string, HashType>();
         }
 
         protected abstract SyntaxTokenList CreatePropertyModifiers();
 
-        protected Dictionary<string, ComparisonType> PropertyComparisonTypeDictionary { get; }
+        /// <summary>
+        /// Gets a dictionary that maps the name of each property in the generated class
+        /// to a value that specifies what kind of code to generate for that property in
+        /// the implementation of <see cref="IEquatable&lt;T>.Equals" />.
+        /// </summary> 
+        protected Dictionary<string, ComparisonType> ComparisonTypeDictionary { get; }
+        
+        /// <summary>
+        /// Gets a dictionary that maps the name of each property in the generated class
+        /// to a value that specifies what kind of code to generate for that property in
+        /// the implementation of <see cref="GetHashCode" />.
+        /// </summary>
+        protected Dictionary<string, HashType> HashTypeDictionary { get; }
 
         protected List<MemberDeclarationSyntax> CreateProperties(JsonSchema schema)
         {
@@ -84,23 +97,34 @@ namespace Microsoft.JSchema.Generator
                 .WithLeadingTrivia(MakeDocCommentFromDescription(schema.Description));
         }
 
+        /// <summary>
+        /// Generates the appropriate <see cref="TypeSyntax" /> for the specified property.
+        /// At the same time, makes a note of what kind of code will need to be generated
+        /// for this property in the implementations of
+        /// <see cref="IEquatable&lt;T>.Equals" /> and <see cref="Object.Equals" />.
         private TypeSyntax MakePropertyType(string propertyName, JsonSchema schema)
         {
             if (IsDateTime(schema))
             {
                 SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                SetHashType(propertyName, HashType.ScalarValueType);
+
                 return MakeNamedType("System.DateTime");
             }
 
             if (IsUri(schema))
             {
                 SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                SetHashType(propertyName, HashType.ScalarReferenceType);
+
                 return MakeNamedType("System.Uri");
             }
 
             if (ShouldBeDictionary(propertyName, schema))
             {
                 SetComparisonType(propertyName, ComparisonType.Dictionary);
+                SetHashType(propertyName, HashType.Dictionary);
+
                 return MakeNamedType("System.Collections.Generic.Dictionary<string, string>");
             }
 
@@ -108,6 +132,8 @@ namespace Microsoft.JSchema.Generator
             if (referencedEnumTypeName != null)
             {
                 SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                SetHashType(propertyName, HashType.ScalarValueType);
+
                 return MakeNamedType(referencedEnumTypeName);
             }
 
@@ -115,6 +141,7 @@ namespace Microsoft.JSchema.Generator
             if (ShouldBeEnum(propertyName, schema, out enumHint))
             {
                 SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                SetHashType(propertyName, HashType.ScalarValueType);
 
                 OnAdditionalType(new AdditionalTypeRequiredEventArgs(enumHint, schema));
 
@@ -126,16 +153,27 @@ namespace Microsoft.JSchema.Generator
                 case JsonType.Boolean:
                 case JsonType.Integer:
                 case JsonType.Number:
+                    SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                    SetHashType(propertyName, HashType.ScalarValueType);
+
+                    return MakePrimitiveType(schema.Type);
+
                 case JsonType.String:
                     SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                    SetHashType(propertyName, HashType.ScalarReferenceType);
+
                     return MakePrimitiveType(schema.Type);
 
                 case JsonType.Object:
                     SetComparisonType(propertyName, ComparisonType.ObjectEquals);
+                    SetHashType(propertyName, HashType.ScalarReferenceType);
+                    
                     return MakeObjectType(schema);
 
                 case JsonType.Array:
                     SetComparisonType(propertyName, ComparisonType.Collection);
+                    SetHashType(propertyName, HashType.Collection);
+
                     return MakeArrayType(propertyName, schema);
 
                 case JsonType.None:
@@ -143,12 +181,21 @@ namespace Microsoft.JSchema.Generator
                     if (inferredType == JsonType.None)
                     {
                         SetComparisonType(propertyName, ComparisonType.ObjectEquals);
+                        SetHashType(propertyName, HashType.ScalarReferenceType);
+
                         inferredType = JsonType.Object;
+                    }
+                    else if (inferredType == JsonType.String)
+                    {
+                        SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                        SetHashType(propertyName, HashType.ScalarReferenceType);
                     }
                     else
                     {
                         SetComparisonType(propertyName, ComparisonType.OperatorEquals);
+                        SetHashType(propertyName, HashType.ScalarValueType);
                     }
+
                     return MakePrimitiveType(inferredType);
 
                 default:
@@ -158,7 +205,12 @@ namespace Microsoft.JSchema.Generator
 
         private void SetComparisonType(string propertyName, ComparisonType comparisonType)
         {
-            PropertyComparisonTypeDictionary[propertyName] = comparisonType;
+            ComparisonTypeDictionary[propertyName] = comparisonType;
+        }
+        
+        private void SetHashType(string propertyName, HashType hashType)
+        {
+            HashTypeDictionary[propertyName] = hashType;
         }
 
         private JsonType InferJsonTypeFromEnumValues(object[] enumValues)

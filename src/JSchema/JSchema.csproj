@@ -86,6 +86,7 @@
     <Compile Include="Generator\DictionaryHint.cs" />
     <Compile Include="Generator\EnumGenerator.cs" />
     <Compile Include="Generator\EnumHint.cs" />
+    <Compile Include="Generator\HashType.cs" />
     <Compile Include="Generator\HintDictionary.cs" />
     <Compile Include="Generator\InterfaceGenerator.cs" />
     <Compile Include="Generator\InterfaceHint.cs" />
