@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -158,12 +156,10 @@ namespace Microsoft.JSchema.Generator
             }
             else
             {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.ErrorCannotGenerateAdditionalTypeFromHintType,
-                        nameof(CodeGenHint),
-                        hint.GetType().Name));
+                throw JSchemaException.Create(
+                    Resources.ErrorCannotGenerateAdditionalTypeFromHintType,
+                    nameof(CodeGenHint),
+                    hint.GetType().Name);
             }
         }
 
@@ -173,14 +169,12 @@ namespace Microsoft.JSchema.Generator
                 && schema.Enum != null
                 && enumHint.Enum.Length > schema.Enum.Length)
             {
-                throw new ArgumentException(
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        Resources.ErrorMismatchedEnumCount,
-                        nameof(EnumHint),
-                        enumHint.TypeName,
-                        enumHint.Enum.Length,
-                        schema.Enum.Length));
+                throw JSchemaException.Create(
+                    Resources.ErrorMismatchedEnumCount,
+                    nameof(EnumHint),
+                    enumHint.TypeName,
+                    enumHint.Enum.Length,
+                    schema.Enum.Length);
             }
 
             var enumValues = new List<string>();

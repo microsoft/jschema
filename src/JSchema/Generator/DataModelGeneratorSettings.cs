@@ -77,7 +77,7 @@ namespace Microsoft.JSchema.Generator
 
             if (sb.Length > 0)
             {
-                throw new JSchemaException(sb.ToString());
+                throw JSchemaException.Create(sb.ToString());
             }
         }
 

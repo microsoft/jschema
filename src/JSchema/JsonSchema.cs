@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Newtonsoft.Json;
 
 namespace Microsoft.JSchema
@@ -228,8 +227,9 @@ namespace Microsoft.JSchema
             {
                 if (!schema.Reference.IsFragment)
                 {
-                    throw new JSchemaException(
-                        string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, schema.Reference));
+                    throw JSchemaException.Create(
+                        Resources.ErrorOnlyDefinitionFragmentsSupported,
+                        schema.Reference);
                 }
 
                 string definitionName = schema.Reference.GetDefinitionName();
@@ -237,8 +237,9 @@ namespace Microsoft.JSchema
                 JsonSchema referencedSchema;
                 if (rootSchema.Definitions == null || !rootSchema.Definitions.TryGetValue(definitionName, out referencedSchema))
                 {
-                    throw new JSchemaException(
-                        string.Format(CultureInfo.InvariantCulture, Resources.ErrorDefinitionDoesNotExist, definitionName));
+                    throw JSchemaException.Create(
+                        Resources.ErrorDefinitionDoesNotExist,
+                        definitionName);
                 }
 
                 if (collapsedSchema.Type == JsonType.None)

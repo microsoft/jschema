@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -351,12 +350,9 @@ namespace Microsoft.JSchema.Generator
                     {
                         if (string.IsNullOrWhiteSpace(enumHint.TypeName))
                         {
-                            throw new ArgumentException(
-                                string.Format(
-                                    CultureInfo.InvariantCulture,
-                                    Resources.ErrorEnumHintRequiresTypeName,
-                                    propertyKey),
-                                    nameof(enumHint.TypeName));
+                            throw JSchemaException.Create(
+                                Resources.ErrorEnumHintRequiresTypeName,
+                                propertyKey);
                         }
 
                         shouldBeEnum = true;

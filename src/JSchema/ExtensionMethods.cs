@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -164,8 +163,9 @@ namespace Microsoft.JSchema
             Match match = s_definitionRegex.Match(reference.Fragment);
             if (!match.Success)
             {
-                throw new JSchemaException(
-                    string.Format(CultureInfo.InvariantCulture, Resources.ErrorOnlyDefinitionFragmentsSupported, reference.Fragment));
+                throw JSchemaException.Create(
+                    Resources.ErrorOnlyDefinitionFragmentsSupported,
+                    reference.Fragment);
             }
 
             return match.Groups["definitionName"].Captures[0].Value;

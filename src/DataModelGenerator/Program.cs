@@ -44,6 +44,7 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                                 Resources.ErrorHintsFileNotFound,
                                 options.CodeGenHintsPath));
                     }
+
                     string hintDictionaryText = File.ReadAllText(options.CodeGenHintsPath);
                     hintDictionary = HintDictionary.Deserialize(hintDictionaryText);
                 }
