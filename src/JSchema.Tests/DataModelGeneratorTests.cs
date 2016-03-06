@@ -1020,6 +1020,24 @@ namespace N
             return Equals(other as C);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (ArrayOfIntByRef != null)
+                {
+                    foreach (var value_0 in ArrayOfIntByRef)
+                    {
+                        result = result * 31;
+                        result = (result * 31) + value_0.GetHashCode();
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -1103,6 +1121,31 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (ArrayOfArrayOfInt != null)
+                {
+                    foreach (var value_0 in ArrayOfArrayOfInt)
+                    {
+                        result = result * 31;
+                        if (value_0 != null)
+                        {
+                            foreach (var value_1 in value_0)
+                            {
+                                result = result * 31;
+                                result = (result * 31) + value_1.GetHashCode();
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         public bool Equals(C other)
@@ -1204,6 +1247,34 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (ArrayOfArrayOfObject != null)
+                {
+                    foreach (var value_0 in ArrayOfArrayOfObject)
+                    {
+                        result = result * 31;
+                        if (value_0 != null)
+                        {
+                            foreach (var value_1 in value_0)
+                            {
+                                result = result * 31;
+                                if (value_1 != null)
+                                {
+                                    result = (result * 31) + value_1.GetHashCode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         public bool Equals(C other)
@@ -1309,6 +1380,34 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (ArrayOfArrayOfD != null)
+                {
+                    foreach (var value_0 in ArrayOfArrayOfD)
+                    {
+                        result = result * 31;
+                        if (value_0 != null)
+                        {
+                            foreach (var value_1 in value_0)
+                            {
+                                result = result * 31;
+                                if (value_1 != null)
+                                {
+                                    result = (result * 31) + value_1.GetHashCode();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         public bool Equals(C other)

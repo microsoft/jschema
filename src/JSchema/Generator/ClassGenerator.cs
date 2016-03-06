@@ -212,7 +212,7 @@ namespace Microsoft.JSchema.Generator
                     return MakeScalarReferenceTypeHashCodeContribution(expression);
 
                 case HashType.Collection:
-                    return MakeCollectionHashCodeContribution(expression);
+                    return MakeCollectionHashCodeContribution(hashTypeKey, expression);
 
                 case HashType.Dictionary:
                     return MakeDictionaryHashCodeContribution(expression); // TODO: Dictionary as array element; array element as dictionary.
@@ -251,9 +251,15 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Block(MakeScalarHashCodeContribution(expression)));
         }
 
-        private StatementSyntax MakeCollectionHashCodeContribution(ExpressionSyntax expression)
+        private StatementSyntax MakeCollectionHashCodeContribution(
+            string hashTypeKey,
+            ExpressionSyntax expression)
         {
             string loopVariableName = GetNextVariableName();
+
+            // From the type of the element (primitive, object, list, or dictionary), create
+            // the appropriate hash generation code.
+            string elementHashTypeKey = hashTypeKey + "[]"; // TODO: DRY out propName + "[]"
 
             return SyntaxFactory.IfStatement(
                 IsNotNull(expression),
@@ -273,11 +279,9 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.LiteralExpression(
                                             SyntaxKind.NumericLiteralExpression,
                                             SyntaxFactory.Literal(GetHashCodeCombiningValue))))),
-                            SyntaxFactory.IfStatement(
-                                IsNotNull(SyntaxFactory.IdentifierName(loopVariableName)),
-                                SyntaxFactory.Block(
-                                    // TODO: Nested collections. Need to know "contribution type" at each level"
-                                    MakeScalarHashCodeContribution(SyntaxFactory.IdentifierName(loopVariableName))))))));
+                            MakeHashCodeContribution(
+                                elementHashTypeKey,
+                                SyntaxFactory.IdentifierName(loopVariableName))))));
         }
 
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
@@ -448,9 +452,9 @@ namespace Microsoft.JSchema.Generator
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate comparison, for example, "a == b", or "Object.Equals(a, b)".
-            string elementTypeLookupKeyName = comparisonTypeKey + "[]"; // TODO: DRY out propName + "[]"
+            string elmentComparisonTypeKey = comparisonTypeKey + "[]"; // TODO: DRY out propName + "[]"
 
-            IfStatementSyntax comparisonStatement = MakeComparisonTest(elementTypeLookupKeyName, leftElement, rightElement);
+            IfStatementSyntax comparisonStatement = MakeComparisonTest(elmentComparisonTypeKey, leftElement, rightElement);
 
             return SyntaxFactory.ForStatement(
                 SyntaxFactory.VariableDeclaration(
