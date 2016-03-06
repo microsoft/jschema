@@ -259,7 +259,7 @@ namespace Microsoft.JSchema.Generator
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate hash generation code.
-            string elementHashTypeKey = hashTypeKey + "[]"; // TODO: DRY out propName + "[]"
+            string elementHashTypeKey = MakeElementKeyName(hashTypeKey);
 
             return SyntaxFactory.IfStatement(
                 IsNotNull(expression),
@@ -452,7 +452,7 @@ namespace Microsoft.JSchema.Generator
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate comparison, for example, "a == b", or "Object.Equals(a, b)".
-            string elmentComparisonTypeKey = comparisonTypeKey + "[]"; // TODO: DRY out propName + "[]"
+            string elmentComparisonTypeKey = MakeElementKeyName(comparisonTypeKey);
 
             IfStatementSyntax comparisonStatement = MakeComparisonTest(elmentComparisonTypeKey, leftElement, rightElement);
 

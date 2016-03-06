@@ -67,6 +67,22 @@ namespace Microsoft.JSchema.Generator
         }
 
         /// <summary>
+        /// Synthesize a lookup key by which the elements of the specified collection-
+        /// valued property can be looked up in the <see cref="HashTypeDictionary"/> or
+        /// the <see cref="ComparisonTypeDictionary"/>.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The name of a collection-valued property.
+        /// </param>
+        /// <returns>
+        /// A lookup key for the elements of the property specified by <paramref name="propertyName"/>.
+        /// </returns>
+        protected string MakeElementKeyName(string propertyName)
+        {
+            return propertyName + "[]";
+        }
+
+        /// <summary>
         /// Create a property declaration.
         /// </summary>
         /// <param name="propertyName">
@@ -389,7 +405,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
                         new TypeSyntax[]
                         {
-                            MakePropertyType(propertyName + "[]", schema.Items)
+                            MakePropertyType(MakeElementKeyName(propertyName), schema.Items)
                         })));
         }
 
