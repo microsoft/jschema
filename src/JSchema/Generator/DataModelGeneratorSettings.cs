@@ -44,6 +44,13 @@ namespace Microsoft.JSchema.Generator
         /// </summary>
         public HintDictionary HintDictionary { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating that only properties are to be generated:
+        /// method overrides such as <code>Equals</code> and <code>GetHashCode</code> are
+        /// not to be generated.
+        /// </summary>
+        public bool PropertiesOnly { get; set; }
+
         internal void Validate()
         {
             var sb = new StringBuilder();

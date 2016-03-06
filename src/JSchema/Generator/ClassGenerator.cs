@@ -16,6 +16,7 @@ namespace Microsoft.JSchema.Generator
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
+        private readonly bool _propertiesOnly;
 
         // Name used for the parameters of Equals methods.
         private const string OtherParameter = "other";
@@ -35,13 +36,18 @@ namespace Microsoft.JSchema.Generator
         private const int GetHashCodeCombiningValue = 31;
 
         // Value used to construct unique names for each of the loop variables
-        // used in the implementation of the Equals method.
+        // used in the implementation of a method.
         private int _variableCount = 0;
 
-        public ClassGenerator(JsonSchema rootSchema, string interfaceName, HintDictionary hintDictionary)
+        public ClassGenerator(
+            JsonSchema rootSchema,
+            string interfaceName,
+            HintDictionary hintDictionary,
+            bool propertiesOnly = false)
             : base(rootSchema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
+            _propertiesOnly = propertiesOnly;
         }
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
@@ -91,12 +97,15 @@ namespace Microsoft.JSchema.Generator
         {
             List<MemberDeclarationSyntax> members = CreateProperties(schema);
 
-            members.AddRange(new MemberDeclarationSyntax[]
-                {
+            if (!_propertiesOnly)
+            {
+                members.AddRange(new MemberDeclarationSyntax[]
+                    {
                 OverrideObjectEquals(),
                 OverrideGetHashCode(schema),
                 ImplementIEquatableEquals(schema)
-                });
+                    });
+            }
 
             SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
 
@@ -105,6 +114,8 @@ namespace Microsoft.JSchema.Generator
 
         private MemberDeclarationSyntax OverrideObjectEquals()
         {
+            _variableCount = 0;
+
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
                 EqualsMethod)
@@ -136,6 +147,8 @@ namespace Microsoft.JSchema.Generator
         }
         private MemberDeclarationSyntax OverrideGetHashCode(JsonSchema schema)
         {
+            _variableCount = 0;
+
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
                 GetHashCodeMethod)
@@ -169,11 +182,11 @@ namespace Microsoft.JSchema.Generator
                 var uncheckedStatements = new List<StatementSyntax>();
                 foreach (var property in schema.Properties)
                 {
-                    string comparisonTypeKey = property.Key;
+                    string hashTypeKey = property.Key;
                     string propName = property.Key.ToPascalCase();
 
                     uncheckedStatements.Add(
-                        MakeHashCodeContribution(comparisonTypeKey, SyntaxFactory.IdentifierName(propName)));
+                        MakeHashCodeContribution(hashTypeKey, SyntaxFactory.IdentifierName(propName)));
                 }
 
                 statements.Add(SyntaxFactory.CheckedStatement(
@@ -187,41 +200,55 @@ namespace Microsoft.JSchema.Generator
             return statements.ToArray();
         }
 
-        private StatementSyntax MakeHashCodeContribution(string comparisonTypeKey, ExpressionSyntax expression)
+        private StatementSyntax MakeHashCodeContribution(string hashTypeKey, ExpressionSyntax expression)
         {
-            ComparisonType comparisonType = ComparisonTypeDictionary[comparisonTypeKey];
-            switch (comparisonType)
+            HashType hashType = HashTypeDictionary[hashTypeKey];
+            switch (hashType)
             {
-                case ComparisonType.OperatorEquals:
-                    // TODO: This isn't quite right: string and Uri must be null checked, but are compared
-                    // with ==. So my instinct that "comparisonType" wasn't the way to go here was right.
-                    // I need a different mapping for hash code contributions. Don't have a good name yet.
-                    return MakeValueTypeHashCodeContribution(expression);
+                case HashType.ScalarValueType:
+                    return MakeScalarHashCodeContribution(expression);
 
-                case ComparisonType.ObjectEquals:
-                    return MakeObjectHashCodeContribution(expression);
+                case HashType.ScalarReferenceType:
+                    return MakeScalarReferenceTypeHashCodeContribution(expression);
 
-                case ComparisonType.Collection:
+                case HashType.Collection:
                     return MakeCollectionHashCodeContribution(expression);
 
-                case ComparisonType.Dictionary:
+                case HashType.Dictionary:
                     return MakeDictionaryHashCodeContribution(expression); // TODO: Dictionary as array element; array element as dictionary.
 
                 default:
-                    throw new ArgumentException($"Property {comparisonTypeKey} has unknown comparison type {comparisonType}.");
+                    throw new ArgumentException($"Property {hashTypeKey} has unknown comparison type {hashType}.");
             }
         }
 
-        private StatementSyntax MakeValueTypeHashCodeContribution(ExpressionSyntax expression)
+        private StatementSyntax MakeScalarHashCodeContribution(ExpressionSyntax expression)
         {
-            return SyntaxFactory.EmptyStatement();
+            return SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                        SyntaxFactory.BinaryExpression(
+                            SyntaxKind.AddExpression,
+                            SyntaxFactory.ParenthesizedExpression(
+                                SyntaxFactory.BinaryExpression(
+                                    SyntaxKind.MultiplyExpression,
+                                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                    SyntaxFactory.LiteralExpression(
+                                        SyntaxKind.NumericLiteralExpression,
+                                        SyntaxFactory.Literal(GetHashCodeCombiningValue)))),
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    expression,
+                                    SyntaxFactory.IdentifierName(GetHashCodeMethod))))));
         }
 
-        private StatementSyntax MakeObjectHashCodeContribution(ExpressionSyntax expression)
+        private StatementSyntax MakeScalarReferenceTypeHashCodeContribution(ExpressionSyntax expression)
         {
             return SyntaxFactory.IfStatement(
                 IsNotNull(expression),
-                SyntaxFactory.Block(AddScalarHashCodeContribution(expression)));
+                SyntaxFactory.Block(MakeScalarHashCodeContribution(expression)));
         }
 
         private StatementSyntax MakeCollectionHashCodeContribution(ExpressionSyntax expression)
@@ -250,7 +277,7 @@ namespace Microsoft.JSchema.Generator
                                 IsNotNull(SyntaxFactory.IdentifierName(loopVariableName)),
                                 SyntaxFactory.Block(
                                     // TODO: Nested collections. Need to know "contribution type" at each level"
-                                    AddScalarHashCodeContribution(SyntaxFactory.IdentifierName(loopVariableName))))))));
+                                    MakeScalarHashCodeContribution(SyntaxFactory.IdentifierName(loopVariableName))))))));
         }
 
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
@@ -260,30 +287,10 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Block());
         }
 
-        private StatementSyntax AddScalarHashCodeContribution(ExpressionSyntax expression)
-        {
-            return SyntaxFactory.ExpressionStatement(
-                SyntaxFactory.AssignmentExpression(
-                    SyntaxKind.SimpleAssignmentExpression,
-                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                        SyntaxFactory.BinaryExpression(
-                            SyntaxKind.AddExpression,
-                            SyntaxFactory.ParenthesizedExpression(
-                                SyntaxFactory.BinaryExpression(
-                                    SyntaxKind.MultiplyExpression,
-                                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                                    SyntaxFactory.LiteralExpression(
-                                        SyntaxKind.NumericLiteralExpression,
-                                        SyntaxFactory.Literal(GetHashCodeCombiningValue)))),
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    expression,
-                                    SyntaxFactory.IdentifierName(GetHashCodeMethod))))));
-        }
-
         private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
         {
+            _variableCount = 0;
+
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), EqualsMethod)
                 .WithModifiers(

@@ -72,6 +72,17 @@ namespace N
             return Equals(other as C);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + BackgroundColor.GetHashCode();
+            }
+
+            return result;
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -177,6 +188,17 @@ namespace N
             return Equals(other as C);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + BackgroundColor.GetHashCode();
+            }
+
+            return result;
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -250,6 +272,17 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + BackgroundColor.GetHashCode();
+            }
+
+            return result;
         }
 
         public bool Equals(C other)
@@ -329,6 +362,17 @@ namespace N
             return Equals(other as C);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + BackgroundColor.GetHashCode();
+            }
+
+            return result;
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -386,56 +430,9 @@ namespace N
     }
   ]
 }",
-
-@"using System;
-
-namespace N
-{
-    /// <summary>
-    /// My class with an enum.
-    /// </summary>
-    public partial class C : IEquatable<C>
-    {
-        /// <summary>
-        /// The color of the background.
-        /// </summary>
-        public Color BackgroundColor { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (BackgroundColor != other.BackgroundColor)
-            {
-                return false;
-            }
-
-            return true;
-        }
-    }
-}",
-                "Color",
-
-@"namespace N
-{
-    /// <summary>
-    /// Some pretty colors.
-    /// </summary>
-    public enum Color
-    {
-        Crimson,
-        Lemon,
-        Avocado
-    }
-}"
+                null,
+                null,
+                null
             },
 
             new object[]
@@ -482,6 +479,17 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + BackgroundColor.GetHashCode();
+            }
+
+            return result;
         }
 
         public bool Equals(C other)

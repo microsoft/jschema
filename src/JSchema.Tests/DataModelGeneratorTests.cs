@@ -101,6 +101,7 @@ namespace Microsoft.JSchema.Generator.Tests
         [Fact(DisplayName = "DataModelGenerator generates class description")]
         public void GeneratesClassDescription()
         {
+            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
@@ -117,20 +118,6 @@ namespace N
     /// </summary>
     public partial class C : IEquatable<C>
     {
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
             actual.Should().Be(Expected);
@@ -183,6 +170,24 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (StringProp != null)
+                {
+                    result = (result * 31) + StringProp.GetHashCode();
+                }
+
+                result = (result * 31) + NumberProp.GetHashCode();
+                result = (result * 31) + BooleanProp.GetHashCode();
+                result = (result * 31) + IntegerProp.GetHashCode();
+            }
+
+            return result;
         }
 
         public bool Equals(C other)
@@ -244,6 +249,20 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (ObjectProp != null)
+                {
+                    result = (result * 31) + ObjectProp.GetHashCode();
+                }
+            }
+
+            return result;
         }
 
         public bool Equals(C other)
@@ -365,6 +384,27 @@ namespace N
             return Equals(other as C);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (ArrayProp != null)
+                {
+                    foreach (var value_0 in ArrayProp)
+                    {
+                        result = result * 31;
+                        if (value_0 != null)
+                        {
+                            result = (result * 31) + value_0.GetHashCode();
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -407,6 +447,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
         public void GeneratesXmlCommentsForProperties()
         {
+            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
@@ -425,26 +466,6 @@ namespace N
         /// An example property.
         /// </summary>
         public string ExampleProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (ExampleProp != other.ExampleProp)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
 
@@ -456,6 +477,7 @@ namespace N
         public void GeneratesXmlCommentsForPropertiesWhosePropertyTypeIsRef()
         {
             _settings.RootClassName = "consoleWindow";
+            _settings.PropertiesOnly = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
 
@@ -514,31 +536,6 @@ namespace N
         /// The color of the screen background.
         /// </summary>
         public Color BackgroundColor { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as ConsoleWindow);
-        }
-
-        public bool Equals(ConsoleWindow other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.Equals(ForegroundColor, other.ForegroundColor))
-            {
-                return false;
-            }
-
-            if (!Object.Equals(BackgroundColor, other.BackgroundColor))
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
 
@@ -566,36 +563,6 @@ namespace N
         /// The value of the B component.
         /// </summary>
         public int Blue { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as Color);
-        }
-
-        public bool Equals(Color other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (Red != other.Red)
-            {
-                return false;
-            }
-
-            if (Green != other.Green)
-            {
-                return false;
-            }
-
-            if (Blue != other.Blue)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
 
@@ -625,6 +592,7 @@ namespace N
 // Licensed under Apache 2.0 license.
 ";
             _settings.CopyrightFilePath = CopyrightFilePath;
+            _settings.PropertiesOnly = true;
 
             _testFileSystem.Mock.Setup(fs => fs.FileExists(CopyrightFilePath))
                 .Returns(true);
@@ -652,26 +620,6 @@ namespace N
         /// An example property.
         /// </summary>
         public string ExampleProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (ExampleProp != other.ExampleProp)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
             string actual = generator.Generate(schema);
@@ -705,6 +653,17 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + RootProp.GetHashCode();
+            }
+
+            return result;
         }
 
         public bool Equals(C other)
@@ -744,6 +703,20 @@ namespace N
             return Equals(other as Def1);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (Prop1 != null)
+                {
+                    result = (result * 31) + Prop1.GetHashCode();
+                }
+            }
+
+            return result;
+        }
+
         public bool Equals(Def1 other)
         {
             if (other == null)
@@ -779,6 +752,17 @@ namespace N
         public override bool Equals(object other)
         {
             return Equals(other as Def2);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + Prop2.GetHashCode();
+            }
+
+            return result;
         }
 
         public bool Equals(Def2 other)
@@ -851,6 +835,17 @@ namespace N
             return Equals(other as C);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + StartTime.GetHashCode();
+            }
+
+            return result;
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -907,6 +902,20 @@ namespace N
             return Equals(other as C);
         }
 
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (TargetFile != null)
+                {
+                    result = (result * 31) + TargetFile.GetHashCode();
+                }
+            }
+
+            return result;
+        }
+
         public bool Equals(C other)
         {
             if (other == null)
@@ -930,6 +939,9 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates integer property from dictionary reference")]
         public void GeneratesIntegerPropertyFromDictionaryReference()
         {
+            _settings.PropertiesOnly = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
   ""type"": ""object"",
@@ -959,29 +971,8 @@ namespace N
         /// 
         /// </summary>
         public int IntDefProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (IntDefProp != other.IntDefProp)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
@@ -1379,6 +1370,9 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates string for inline enum of string")]
         public void GeneratesStringForInlineEnumOfString()
         {
+            _settings.PropertiesOnly = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
             JsonSchema schema = SchemaReader.ReadSchema(
     @"{
   ""type"": ""object"",
@@ -1406,29 +1400,8 @@ namespace N
         /// 
         /// </summary>
         public string Version { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (Version != other.Version)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }

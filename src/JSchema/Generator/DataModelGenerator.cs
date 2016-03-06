@@ -110,7 +110,11 @@ namespace Microsoft.JSchema.Generator
             TypeGenerator typeGenerator;
             if (enumHint == null)
             {
-                typeGenerator = new ClassGenerator(_rootSchema, baseInterfaceName, _settings.HintDictionary);
+                typeGenerator = new ClassGenerator(
+                    _rootSchema,
+                    baseInterfaceName,
+                    _settings.HintDictionary,
+                    _settings.PropertiesOnly);
 
                 // Keep track of any hints that the type generator might encounter in the
                 // course of generating the type which require additional types (such as

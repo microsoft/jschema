@@ -30,11 +30,11 @@ namespace Microsoft.JSchema.Tests
   ""type"": ""object"",
   ""description"": ""My class with an interface."",
   ""properties"": {
-    ""options"": {
-      ""description"": ""The options."",
-      ""type"": ""object"",
-    },
-  },
+    ""value"": {
+      ""description"": ""The value."",
+      ""type"": ""integer""
+    }
+  }
 }",
 
 @"{
@@ -43,16 +43,10 @@ namespace Microsoft.JSchema.Tests
       ""$type"": ""Microsoft.JSchema.Generator.InterfaceHint, Microsoft.JSchema"",
       ""description"": ""My interface.""
     }
-  ],
-  ""C.Options"": [
-    {
-      ""$type"": ""Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema"",
-    }
   ]
 }",
 
 @"using System;
-using System.Collections.Generic;
 
 namespace N
 {
@@ -62,13 +56,24 @@ namespace N
     public partial class C : IC, IEquatable<C>
     {
         /// <summary>
-        /// The options.
+        /// The value.
         /// </summary>
-        public override Dictionary<string, string> Options { get; set; }
+        public override int Value { get; set; }
 
         public override bool Equals(object other)
         {
             return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + Value.GetHashCode();
+            }
+
+            return result;
         }
 
         public bool Equals(C other)
@@ -78,26 +83,9 @@ namespace N
                 return false;
             }
 
-            if (!Object.ReferenceEquals(Options, other.Options))
+            if (Value != other.Value)
             {
-                if (Options == null || other.Options == null || Options.Count != other.Options.Count)
-                {
-                    return false;
-                }
-
-                foreach (var value_0 in Options)
-                {
-                    string value_1;
-                    if (!other.Options.TryGetValue(value_0.Key, out value_1))
-                    {
-                        return false;
-                    }
-
-                    if (value_0.Value != value_1)
-                    {
-                        return false;
-                    }
-                }
+                return false;
             }
 
             return true;
@@ -105,9 +93,7 @@ namespace N
     }
 }",
 
-@"using System.Collections.Generic;
-
-namespace N
+@"namespace N
 {
     /// <summary>
     /// My interface.
@@ -115,9 +101,9 @@ namespace N
     public interface IC
     {
         /// <summary>
-        /// The options.
+        /// The value.
         /// </summary>
-        Dictionary<string, string> Options { get; set; }
+        int Value { get; set; }
     }
 }"
             }
@@ -132,6 +118,7 @@ namespace N
             string interfaceText)
         {
             JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+
             _settings.HintDictionary = HintDictionary.Deserialize(hintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 

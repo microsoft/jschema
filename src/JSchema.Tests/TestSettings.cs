@@ -16,7 +16,8 @@ namespace Microsoft.JSchema.Tests
                 NamespaceName = "N",
                 RootClassName = "C",
                 OutputDirectory = TestFileSystem.OutputDirectory,
-                ForceOverwrite = true
+                ForceOverwrite = true,
+                PropertiesOnly = false
             };
         }
     }

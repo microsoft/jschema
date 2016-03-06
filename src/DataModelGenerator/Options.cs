@@ -56,5 +56,12 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
             HelpText = "Path to a file containing hints that control code generation",
             Required = false)]
         public string CodeGenHintsPath { get; set; }
+
+        [Option(
+            'p',
+            "properties-only",
+            HelpText = "Only generate properties; do not generate method overrides such as Equals and GetHashCode.",
+            Required = false)]
+        public bool PropertiesOnly { get; set; }
     }
 }
