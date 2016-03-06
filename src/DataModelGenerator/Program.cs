@@ -40,13 +40,28 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                     hintDictionary = HintDictionary.Deserialize(hintDictionaryText);
                 }
 
+                string copyrightNotice = null;
+                if (options.CopyrightFilePath != null)
+                {
+                    if (File.Exists(options.CopyrightFilePath))
+                    {
+                        throw new ArgumentException(
+                            string.Format(
+                                CultureInfo.CurrentCulture,
+                                Resources.ErrorCopyrightFileNotFound,
+                                options.CopyrightFilePath));
+                    }
+
+                    copyrightNotice = File.ReadAllText(options.CopyrightFilePath);
+                }
+
                 DataModelGeneratorSettings settings = new DataModelGeneratorSettings
                 {
                     OutputDirectory = options.OutputDirectory,
                     ForceOverwrite = options.ForceOverwrite,
                     NamespaceName = options.NamespaceName,
                     RootClassName = options.RootClassName,
-                    CopyrightFilePath = options.CopyrightFilePath,
+                    CopyrightNotice = copyrightNotice,
                     HintDictionary = hintDictionary,
                     GenerateOverrides = options.GenerateOverrides,
                     GenerateCloningCode = options.GenerateCloningCode
@@ -58,7 +73,11 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(string.Format(CultureInfo.CurrentCulture, Resources.Error, ex.Message));
+                Console.Error.WriteLine(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        Resources.Error,
+                        ex.Message));
             }
 
             return exitCode;

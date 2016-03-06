@@ -36,7 +36,7 @@ namespace Microsoft.JSchema.Generator
         /// Gets or sets the path of the file containing the copyright notice to place
         /// at the top of each file.
         /// </summary>
-        public string CopyrightFilePath { get; set; }
+        public string CopyrightNotice { get; set; }
 
         /// <summary>
         /// Gets or sets a dictionary that maps from the URI of a schema to a set of

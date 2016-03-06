@@ -123,4 +123,7 @@
   <data name="Error" xml:space="preserve">
     <value>ERROR: {0}</value>
   </data>
+  <data name="ErrorCopyrightFileNotFound" xml:space="preserve">
+    <value>The copyright file "{0}" could not be found.</value>
+  </data>
 </root>

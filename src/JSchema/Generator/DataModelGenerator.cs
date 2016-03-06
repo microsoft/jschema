@@ -15,7 +15,6 @@ namespace Microsoft.JSchema.Generator
     public class DataModelGenerator
     {
         private readonly DataModelGeneratorSettings _settings;
-        private string _copyrightNotice;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
         private Dictionary<string, string> _pathToFileContentsDictionary;
@@ -55,13 +54,6 @@ namespace Microsoft.JSchema.Generator
             {
                 throw JSchemaException.Create(Resources.ErrorNotAnObject, _rootSchema.Type);
             }
-
-            if (_settings.CopyrightFilePath != null && !_fileSystem.FileExists(_settings.CopyrightFilePath))
-            {
-                throw JSchemaException.Create(Resources.ErrorCopyrightFileNotFound, _settings.CopyrightFilePath);
-            }
-
-            _copyrightNotice = _fileSystem.ReadAllText(_settings.CopyrightFilePath);
 
             string rootFileText = CreateFile(_settings.RootClassName, _rootSchema);
 
@@ -126,16 +118,24 @@ namespace Microsoft.JSchema.Generator
                 typeGenerator = new EnumGenerator(_settings.HintDictionary);
             }
         
-            _pathToFileContentsDictionary[className] =
-                typeGenerator.Generate(schema, _settings.NamespaceName, className, _copyrightNotice, schema.Description);
+            _pathToFileContentsDictionary[className] = typeGenerator.Generate(
+                schema,
+                _settings.NamespaceName,
+                className,
+                _settings.CopyrightNotice,
+                schema.Description);
 
             if (interfaceHint != null)
             {
                 typeGenerator = new InterfaceGenerator(_rootSchema, _settings.HintDictionary);
                 string description = interfaceHint.Description ?? schema.Description;
 
-                _pathToFileContentsDictionary[baseInterfaceName] =
-                    typeGenerator.Generate(schema, _settings.NamespaceName, baseInterfaceName, _copyrightNotice, description);
+                _pathToFileContentsDictionary[baseInterfaceName] = typeGenerator.Generate(
+                    schema,
+                    _settings.NamespaceName,
+                    baseInterfaceName,
+                    _settings.CopyrightNotice,
+                    description);
             }
 
             return _pathToFileContentsDictionary[className];
@@ -210,7 +210,7 @@ namespace Microsoft.JSchema.Generator
                     enumTypeSchema,
                     _settings.NamespaceName,
                     enumHint.TypeName,
-                    _copyrightNotice,
+                    _settings.CopyrightNotice,
                     enumTypeSchema.Description);
         }
     }

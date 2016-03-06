@@ -79,15 +79,6 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The copyright file &quot;{0}&quot; could not be found..
-        /// </summary>
-        internal static string ErrorCopyrightFileNotFound {
-            get {
-                return ResourceManager.GetString("ErrorCopyrightFileNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This schema does not contain the sub-schema definition referred to by the $ref value &quot;{0}&quot;..
         /// </summary>
         internal static string ErrorDefinitionDoesNotExist {

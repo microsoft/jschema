@@ -123,9 +123,6 @@
   <data name="ErrorCannotGenerateAdditionalTypeFromHintType" xml:space="preserve">
     <value>Cannot generate a type from a {0} object of type {1}.</value>
   </data>
-  <data name="ErrorCopyrightFileNotFound" xml:space="preserve">
-    <value>The copyright file "{0}" could not be found.</value>
-  </data>
   <data name="ErrorDefinitionDoesNotExist" xml:space="preserve">
     <value>This schema does not contain the sub-schema definition referred to by the $ref value "{0}".</value>
   </data>

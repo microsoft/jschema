@@ -77,5 +77,14 @@ namespace Microsoft.JSchema.DataModelGeneratorTool {
                 return ResourceManager.GetString("Error", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The copyright file &quot;{0}&quot; could not be found..
+        /// </summary>
+        internal static string ErrorCopyrightFileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorCopyrightFileNotFound", resourceCulture);
+            }
+        }
     }
 }

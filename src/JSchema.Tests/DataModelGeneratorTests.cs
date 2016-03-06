@@ -67,24 +67,6 @@ namespace Microsoft.JSchema.Generator.Tests
             action.ShouldNotThrow();
         }
 
-        [Fact(DisplayName = "DataModelGenerator throws if copyright file does not exist")]
-        public void ThrowsIfCopyrightFileDoesNotExist()
-        {
-            _settings.CopyrightFilePath = CopyrightFilePath;
-
-            _testFileSystem.Mock.Setup(fs => fs.FileExists(CopyrightFilePath))
-                .Returns(false);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
-
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            Action action = () => generator.Generate(schema);
-
-            // ... and the exception message should mention the file path.
-            action.ShouldThrow<JSchemaException>().WithMessage($"*{CopyrightFilePath}*");
-        }
-
         [Fact(DisplayName = "DataModelGenerator throws if root schema is not of type 'object'")]
         public void ThrowsIfRootSchemaIsNotOfTypeObject()
         {
@@ -586,17 +568,10 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates copyright notice")]
         public void GeneratesCopyrightAtTopOfFile()
         {
-            const string CopyrightNotice =
+            _settings.CopyrightNotice =
 @"// Copyright (c) 2016. All rights reserved.
 // Licensed under Apache 2.0 license.
 ";
-            _settings.CopyrightFilePath = CopyrightFilePath;
-
-            _testFileSystem.Mock.Setup(fs => fs.FileExists(CopyrightFilePath))
-                .Returns(true);
-            _testFileSystem.Mock.Setup(fs => fs.ReadAllText(CopyrightFilePath))
-                .Returns(CopyrightNotice);
-
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
