@@ -599,6 +599,36 @@ namespace N
             actual.Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates cloning code")]
+        public void GeneratesCloningCode()
+        {
+            _settings.GenerateCloningCode = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+  }
+}");
+
+            const string Expected =
+@"using System;
+
+namespace N
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class C : IEquatable<C>
+    {
+    }
+}";
+            generator.Generate(schema);
+
+            _testFileSystem[PrimaryOutputFilePath].Should().Be(Expected);
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
         public void GeneratesClassesForSchemasInDefinitions()
         {
