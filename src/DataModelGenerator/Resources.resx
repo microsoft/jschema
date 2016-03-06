@@ -126,4 +126,7 @@
   <data name="ErrorCopyrightFileNotFound" xml:space="preserve">
     <value>The copyright file "{0}" could not be found.</value>
   </data>
+  <data name="ErrorHintsFileNotFound" xml:space="preserve">
+    <value>The code generation hints file "{0}" could not be found.</value>
+  </data>
 </root>

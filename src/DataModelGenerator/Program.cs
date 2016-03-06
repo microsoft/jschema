@@ -36,6 +36,14 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                 HintDictionary hintDictionary = null;
                 if (options.CodeGenHintsPath != null)
                 {
+                    if (!File.Exists(options.CodeGenHintsPath))
+                    {
+                        throw new ArgumentException(
+                            string.Format(
+                                CultureInfo.CurrentCulture,
+                                Resources.ErrorHintsFileNotFound,
+                                options.CodeGenHintsPath));
+                    }
                     string hintDictionaryText = File.ReadAllText(options.CodeGenHintsPath);
                     hintDictionary = HintDictionary.Deserialize(hintDictionaryText);
                 }
@@ -43,7 +51,7 @@ namespace Microsoft.JSchema.DataModelGeneratorTool
                 string copyrightNotice = null;
                 if (options.CopyrightFilePath != null)
                 {
-                    if (File.Exists(options.CopyrightFilePath))
+                    if (!File.Exists(options.CopyrightFilePath))
                     {
                         throw new ArgumentException(
                             string.Format(
