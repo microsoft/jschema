@@ -647,6 +647,7 @@ namespace N
 
         ISyntax ISyntax.DeepClone()
         {
+            return DeepCloneCore();
         }
     }
 }";

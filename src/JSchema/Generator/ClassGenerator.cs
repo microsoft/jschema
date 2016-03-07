@@ -191,7 +191,11 @@ namespace Microsoft.JSchema.Generator
                 default(TypeParameterListSyntax),
                 SyntaxFactory.ParameterList(),
                 default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                SyntaxFactory.Block(),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName("DeepCloneCore"),
+                            SyntaxFactory.ArgumentList()))),
                 default(SyntaxToken));
         }
 
