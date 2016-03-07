@@ -627,27 +627,41 @@ namespace N
 @"namespace N
 {
     /// <summary>
-    /// An interface for all types generated from the SARIF schema.
+    /// An interface for all types generated from the Sarif schema.
     /// </summary>
     public interface ISyntax
     {
     }
 }";
+            const string ExpectedKindEnum =
+@"namespace N
+{
+    /// <summary>
+    /// A set of values for all the types that implement <see cref=""ISyntax"" />.
+    /// </summary>
+    public enum SarifKind
+    {
+    }
+}";
+
             generator.Generate(schema);
 
             string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISyntax");
+            string kindEnumPath = TestFileSystem.MakeOutputFilePath("SarifKind");
 
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
-                syntaxInterfacePath
+                syntaxInterfacePath,
+                kindEnumPath
             };
 
             _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
+            //_testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
             _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
+            _testFileSystem[kindEnumPath].Should().Be(ExpectedKindEnum);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]

@@ -178,6 +178,33 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A set of values for all the types that implement &lt;see cref=&quot;ISyntax&quot; /&gt;..
+        /// </summary>
+        internal static string KindEnumDescription {
+            get {
+                return ResourceManager.GetString("KindEnumDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A value indicating that the &lt;see cref=&quot;ISyntax&quot; /&gt; object is of type &lt;see cref=&quot;{0}&quot; /&gt;..
+        /// </summary>
+        internal static string KindEnumMemberDescription {
+            get {
+                return ResourceManager.GetString("KindEnumMemberDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An uninitialized kind.
+        /// </summary>
+        internal static string KindEnumNoneDescription {
+            get {
+                return ResourceManager.GetString("KindEnumNoneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An interface for all types generated from the {0} schema..
         /// </summary>
         internal static string SyntaxInterfaceDescription {

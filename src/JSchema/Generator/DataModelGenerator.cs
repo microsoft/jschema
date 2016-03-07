@@ -20,6 +20,9 @@ namespace Microsoft.JSchema.Generator
     {
         private const string SyntaxInterfaceTypeName = "ISyntax";
 
+        // TODO: Pass this in on command line.
+        private const string SchemaName = "Sarif";
+
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
@@ -79,7 +82,11 @@ namespace Microsoft.JSchema.Generator
             if (_settings.GenerateCloningCode)
             {
                 _pathToFileContentsDictionary[SyntaxInterfaceTypeName] =
-                    GenerateSyntaxInterface("SARIF");
+                    GenerateSyntaxInterface(SchemaName);
+
+                string enumName = SchemaName + "Kind";
+                _pathToFileContentsDictionary[enumName] =
+                    GenerateKindEnum(enumName);
             }
 
             foreach (KeyValuePair<string, string> entry in _pathToFileContentsDictionary)
@@ -94,24 +101,67 @@ namespace Microsoft.JSchema.Generator
 
         private string GenerateSyntaxInterface(string schemaName)
         {
-            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            SyntaxTokenList modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
-            var interfaceDeclaration = SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
-                .WithModifiers(modifiers)
-                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(
-                    string.Format(
-                        CultureInfo.CurrentCulture,
-                        Resources.SyntaxInterfaceDescription,
-                        schemaName)));
+            InterfaceDeclarationSyntax interfaceDeclaration =
+                SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
+                    .WithModifiers(modifiers)
+                    .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            Resources.SyntaxInterfaceDescription,
+                            schemaName)));
 
-            var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(interfaceDeclaration);
+            SyntaxList<MemberDeclarationSyntax> namespaceMembers =
+                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(interfaceDeclaration);
 
             NamespaceDeclarationSyntax namespaceDecl =
                 SyntaxFactory.NamespaceDeclaration(
                     SyntaxFactory.IdentifierName(_settings.NamespaceName))
                 .WithMembers(namespaceMembers);
 
-            var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
+            SyntaxList<MemberDeclarationSyntax> compilationUnitMembers =
+                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
+
+            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
+                .WithMembers(compilationUnitMembers)
+                .WithLeadingTrivia(SyntaxUtil.MakeCopyrightComment(_settings.CopyrightNotice));
+
+            var workspace = new AdhocWorkspace();
+            SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
+
+            var sb = new StringBuilder();
+            using (var writer = new StringWriter(sb))
+            {
+                formattedNode.WriteTo(writer);
+            }
+
+            return sb.ToString();
+        }
+
+        private string GenerateKindEnum(string enumName)
+        {
+            SyntaxTokenList modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+            EnumDeclarationSyntax enumDeclaration =
+                SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(enumName))
+                    .WithModifiers(modifiers)
+                    .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            Resources.KindEnumDescription,
+                            SyntaxInterfaceTypeName)));
+
+            SyntaxList<MemberDeclarationSyntax> namespaceMembers =
+                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(enumDeclaration);
+
+            NamespaceDeclarationSyntax namespaceDecl =
+                SyntaxFactory.NamespaceDeclaration(
+                    SyntaxFactory.IdentifierName(_settings.NamespaceName))
+                .WithMembers(namespaceMembers);
+
+            SyntaxList<MemberDeclarationSyntax> compilationUnitMembers =
+                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
                 .WithMembers(compilationUnitMembers)
