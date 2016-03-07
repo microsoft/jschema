@@ -644,6 +644,10 @@ namespace N
         public C()
         {
         }
+
+        ISyntax ISyntax.DeepClone()
+        {
+        }
     }
 }";
             const string ExpectedSyntaxInterface =

@@ -137,7 +137,8 @@ namespace Microsoft.JSchema.Generator
             {
                 members.AddRange(new MemberDeclarationSyntax[]
                 {
-                    GenerateDefaultConstructor()
+                    GenerateDefaultConstructor(),
+                    GenerateISyntaxDeepClone()
                 });
             }
 
@@ -176,6 +177,22 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.ParameterList(),
                 default(ConstructorInitializerSyntax),
                 SyntaxFactory.Block());
+        }
+
+        private MethodDeclarationSyntax GenerateISyntaxDeepClone()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                default(SyntaxTokenList), // modifiers
+                SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
+                SyntaxFactory.ExplicitInterfaceSpecifier(
+                    SyntaxFactory.IdentifierName(_syntaxInterfaceName)),
+                SyntaxFactory.Identifier("DeepClone"),
+                default(TypeParameterListSyntax),
+                SyntaxFactory.ParameterList(),
+                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                SyntaxFactory.Block(),
+                default(SyntaxToken));
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()
