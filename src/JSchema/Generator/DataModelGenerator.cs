@@ -1,10 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace Microsoft.JSchema.Generator
 {
@@ -13,6 +18,8 @@ namespace Microsoft.JSchema.Generator
     /// </summary>
     public class DataModelGenerator
     {
+        private const string SyntaxInterfaceTypeName = "ISyntax";
+
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
@@ -71,7 +78,8 @@ namespace Microsoft.JSchema.Generator
 
             if (_settings.GenerateCloningCode)
             {
-                GenerateSyntaxInterface();
+                _pathToFileContentsDictionary[SyntaxInterfaceTypeName] =
+                    GenerateSyntaxInterface("SARIF");
             }
 
             foreach (KeyValuePair<string, string> entry in _pathToFileContentsDictionary)
@@ -84,9 +92,41 @@ namespace Microsoft.JSchema.Generator
             return rootFileText;
         }
 
-        private void GenerateSyntaxInterface()
+        private string GenerateSyntaxInterface(string schemaName)
         {
-            _pathToFileContentsDictionary[SyntaxInterface.TypeName] = string.Empty;
+            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+            var interfaceDeclaration = SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
+                .WithModifiers(modifiers)
+                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        Resources.SyntaxInterfaceDescription,
+                        schemaName)));
+
+            var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(interfaceDeclaration);
+
+            NamespaceDeclarationSyntax namespaceDecl =
+                SyntaxFactory.NamespaceDeclaration(
+                    SyntaxFactory.IdentifierName(_settings.NamespaceName))
+                .WithMembers(namespaceMembers);
+
+            var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
+
+            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
+                .WithMembers(compilationUnitMembers)
+                .WithLeadingTrivia(SyntaxUtil.MakeCopyrightComment(_settings.CopyrightNotice));
+
+            var workspace = new AdhocWorkspace();
+            SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
+
+            var sb = new StringBuilder();
+            using (var writer = new StringWriter(sb))
+            {
+                formattedNode.WriteTo(writer);
+            }
+
+            return sb.ToString();
         }
 
         internal string CreateFile(string className, JsonSchema schema)

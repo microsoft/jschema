@@ -109,7 +109,7 @@ namespace Microsoft.JSchema.Generator
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(accessorDeclarations))
-                .WithLeadingTrivia(MakeDocCommentFromDescription(schema.Description));
+                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(schema.Description));
         }
 
         /// <summary>

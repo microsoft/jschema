@@ -176,5 +176,14 @@ namespace Microsoft.JSchema {
                 return ResourceManager.GetString("ErrorTextNotYetGenerated", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An interface for all types generated from the {0} schema..
+        /// </summary>
+        internal static string SyntaxInterfaceDescription {
+            get {
+                return ResourceManager.GetString("SyntaxInterfaceDescription", resourceCulture);
+            }
+        }
     }
 }

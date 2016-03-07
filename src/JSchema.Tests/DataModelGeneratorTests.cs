@@ -12,7 +12,6 @@ namespace Microsoft.JSchema.Generator.Tests
     public class DataModelGeneratorTests
     {
         private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
-        private const string CopyrightFilePath = @"C:\copyright.txt";
 
         private TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
@@ -625,7 +624,15 @@ namespace N
     }
 }";
             const string ExpectedSyntaxInterface =
-@"";
+@"namespace N
+{
+    /// <summary>
+    /// An interface for all types generated from the SARIF schema.
+    /// </summary>
+    public interface ISyntax
+    {
+    }
+}";
             generator.Generate(schema);
 
             string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISyntax");

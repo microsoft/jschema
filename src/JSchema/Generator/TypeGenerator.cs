@@ -87,15 +87,6 @@ namespace Microsoft.JSchema.Generator
             return Finish();
         }
 
-        protected SyntaxTriviaList MakeDocCommentFromDescription(string description)
-        {
-            return SyntaxFactory.ParseLeadingTrivia(
-@"/// <summary>
-/// " + description + @"
-/// </summary>
-");
-        }
-
         protected void AddUsing(string namespaceName)
         {
             if (Usings == null)
@@ -121,7 +112,8 @@ namespace Microsoft.JSchema.Generator
         /// <returns></returns>
         private string Finish()
         {
-            TypeDeclaration = TypeDeclaration.WithLeadingTrivia(MakeDocCommentFromDescription(_description));
+            TypeDeclaration = TypeDeclaration
+                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(_description));
 
             var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(TypeDeclaration);
 
@@ -142,7 +134,7 @@ namespace Microsoft.JSchema.Generator
 
             compilationUnit = compilationUnit
                 .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(MakeCopyrightComment(_copyrightNotice));
+                .WithLeadingTrivia(SyntaxUtil.MakeCopyrightComment(_copyrightNotice));
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
@@ -166,21 +158,6 @@ namespace Microsoft.JSchema.Generator
             }
 
             return qualifiedName;
-        }
-
-        private SyntaxTriviaList MakeCopyrightComment(string copyrightNotice)
-        {
-            var trivia = new SyntaxTriviaList();
-            if (!string.IsNullOrWhiteSpace(copyrightNotice))
-            {
-                trivia = trivia.AddRange(new SyntaxTrivia[]
-                {
-                    SyntaxFactory.Comment(copyrightNotice),
-                    SyntaxFactory.Whitespace(Environment.NewLine)
-                });
-            }
-
-            return trivia;
         }
     }
 }

@@ -156,4 +156,7 @@
   <data name="ErrorTextNotYetGenerated" xml:space="preserve">
     <value>You cannot call GetText until after you have called FinishClass.</value>
   </data>
+  <data name="SyntaxInterfaceDescription" xml:space="preserve">
+    <value>An interface for all types generated from the {0} schema.</value>
+  </data>
 </root>
