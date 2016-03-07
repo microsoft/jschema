@@ -84,10 +84,11 @@ namespace Microsoft.JSchema.Generator
 
             if (_settings.GenerateCloningCode)
             {
-                _pathToFileContentsDictionary[SyntaxInterfaceTypeName] =
-                    GenerateSyntaxInterface(SchemaName);
-
                 string enumName = SchemaName + "Kind";
+
+                _pathToFileContentsDictionary[SyntaxInterfaceTypeName] =
+                    GenerateSyntaxInterface(SchemaName, enumName);
+
                 _pathToFileContentsDictionary[enumName] =
                     GenerateKindEnum(enumName);
             }
@@ -102,9 +103,47 @@ namespace Microsoft.JSchema.Generator
             return rootFileText;
         }
 
-        private string GenerateSyntaxInterface(string schemaName)
+        private string GenerateSyntaxInterface(string schemaName, string enumName)
         {
             SyntaxTokenList modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+            var accessorDeclarations = SyntaxFactory.List(
+                new AccessorDeclarationSyntax[]
+                {
+                    SyntaxFactory.AccessorDeclaration(
+                        SyntaxKind.GetAccessorDeclaration,
+                        default(SyntaxList<AttributeListSyntax>),
+                        default(SyntaxTokenList), // modifiers
+                        SyntaxFactory.Token(SyntaxKind.GetKeyword),
+                        null, // body
+                        SyntaxFactory.Token(SyntaxKind.SemicolonToken)) // TODO: try the simpler overload.
+                });
+
+            PropertyDeclarationSyntax syntaxKindPropertyDeclaration =
+                SyntaxFactory.PropertyDeclaration(
+                    default(SyntaxList<AttributeListSyntax>),
+                    default(SyntaxTokenList), // modifiers
+                    SyntaxFactory.ParseTypeName(enumName),
+                    default(ExplicitInterfaceSpecifierSyntax),
+                    SyntaxFactory.Identifier("SyntaxKind"),
+                    SyntaxFactory.AccessorList(accessorDeclarations))
+                    .WithLeadingTrivia(
+                        SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceKindDescription));
+
+            MethodDeclarationSyntax deepCloneMethodDeclaration =
+                SyntaxFactory.MethodDeclaration(
+                    default(SyntaxList<AttributeListSyntax>),
+                    default(SyntaxTokenList), // modifiers
+                    SyntaxFactory.ParseTypeName(SyntaxInterfaceTypeName),
+                    default(ExplicitInterfaceSpecifierSyntax),
+                    SyntaxFactory.Identifier("DeepClone"),
+                    default(TypeParameterListSyntax),
+                    SyntaxFactory.ParameterList(),
+                    default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                    default(BlockSyntax), // body
+                    SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                    .WithLeadingTrivia(
+                        SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceDeepCloneDescription));
 
             InterfaceDeclarationSyntax interfaceDeclaration =
                 SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
@@ -113,7 +152,14 @@ namespace Microsoft.JSchema.Generator
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.SyntaxInterfaceDescription,
-                            schemaName)));
+                            schemaName)))
+                    .WithMembers(
+                        SyntaxFactory.List(
+                            new MemberDeclarationSyntax[]
+                            {
+                                syntaxKindPropertyDeclaration,
+                                deepCloneMethodDeclaration
+                            }));
 
             SyntaxList<MemberDeclarationSyntax> namespaceMembers =
                 SyntaxFactory.SingletonList<MemberDeclarationSyntax>(interfaceDeclaration);

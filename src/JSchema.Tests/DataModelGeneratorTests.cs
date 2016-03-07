@@ -631,6 +631,15 @@ namespace N
     /// </summary>
     public interface ISyntax
     {
+        /// <summary>
+        /// Gets a value indicating the type of object implementing <see cref=""ISyntax"" />.
+        /// </summary>
+        SarifKind SyntaxKind { get; }
+
+        /// <summary>
+        /// Makes a deep copy of this instance.
+        /// </summary>
+        ISyntax DeepClone();
     }
 }";
             const string ExpectedKindEnum =

@@ -205,11 +205,29 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Makes a deep copy of this instance..
+        /// </summary>
+        internal static string SyntaxInterfaceDeepCloneDescription {
+            get {
+                return ResourceManager.GetString("SyntaxInterfaceDeepCloneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An interface for all types generated from the {0} schema..
         /// </summary>
         internal static string SyntaxInterfaceDescription {
             get {
                 return ResourceManager.GetString("SyntaxInterfaceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gets a value indicating the type of object implementing &lt;see cref=&quot;ISyntax&quot; /&gt;..
+        /// </summary>
+        internal static string SyntaxInterfaceKindDescription {
+            get {
+                return ResourceManager.GetString("SyntaxInterfaceKindDescription", resourceCulture);
             }
         }
     }

@@ -165,7 +165,13 @@
   <data name="KindEnumNoneDescription" xml:space="preserve">
     <value>An uninitialized kind.</value>
   </data>
+  <data name="SyntaxInterfaceDeepCloneDescription" xml:space="preserve">
+    <value>Makes a deep copy of this instance.</value>
+  </data>
   <data name="SyntaxInterfaceDescription" xml:space="preserve">
     <value>An interface for all types generated from the {0} schema.</value>
+  </data>
+  <data name="SyntaxInterfaceKindDescription" xml:space="preserve">
+    <value>Gets a value indicating the type of object implementing &lt;see cref="ISyntax" /&gt;.</value>
   </data>
 </root>
