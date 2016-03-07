@@ -118,19 +118,27 @@ namespace Microsoft.JSchema.Generator
 
             if (_generateCloningCode)
             {
-              members.AddRange(GenerateSyntaxInterfaceMembers());
+              members.Add(GenerateSyntaxKindProperty());
             }
                 
-            members.AddRange(CreateProperties(schema));
+            members.AddRange(GenerateProperties(schema));
 
             if (_generateOverrides)
             {
                 members.AddRange(new MemberDeclarationSyntax[]
-                    {
-                OverrideObjectEquals(),
-                OverrideGetHashCode(schema),
-                ImplementIEquatableEquals(schema)
-                    });
+                {
+                    OverrideObjectEquals(),
+                    OverrideGetHashCode(schema),
+                    ImplementIEquatableEquals(schema)
+                });
+            }
+
+            if (_generateCloningCode)
+            {
+                members.AddRange(new MemberDeclarationSyntax[]
+                {
+                    GenerateDefaultConstructor()
+                });
             }
 
             SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
@@ -138,31 +146,36 @@ namespace Microsoft.JSchema.Generator
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
         }
 
-        private IEnumerable<MemberDeclarationSyntax> GenerateSyntaxInterfaceMembers()
+        private PropertyDeclarationSyntax GenerateSyntaxKindProperty()
         {
-            PropertyDeclarationSyntax syntaxKindPropertyDeclaration =
-                SyntaxFactory.PropertyDeclaration(
-                    default(SyntaxList<AttributeListSyntax>),
-                    SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
-                    SyntaxFactory.ParseTypeName(_kindEnumName),
-                    default(ExplicitInterfaceSpecifierSyntax),
-                    SyntaxFactory.Identifier("SyntaxKind"),
-                    SyntaxFactory.AccessorList(
-                        SyntaxFactory.SingletonList(
-                            SyntaxUtil.MakeGetAccessor(
-                                SyntaxFactory.Block(
-                                    SyntaxFactory.ReturnStatement(
-                                        SyntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.IdentifierName(_kindEnumName),
-                                            SyntaxFactory.IdentifierName(TypeName))))))))
-                    .WithLeadingTrivia(
-                        SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceKindDescription));
+            return SyntaxFactory.PropertyDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+                SyntaxFactory.ParseTypeName(_kindEnumName),
+                default(ExplicitInterfaceSpecifierSyntax),
+                SyntaxFactory.Identifier("SyntaxKind"),
+                SyntaxFactory.AccessorList(
+                    SyntaxFactory.SingletonList(
+                        SyntaxUtil.MakeGetAccessor(
+                            SyntaxFactory.Block(
+                                SyntaxFactory.ReturnStatement(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(_kindEnumName),
+                                        SyntaxFactory.IdentifierName(TypeName))))))))
+                .WithLeadingTrivia(
+                    SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceKindDescription));
+        }
 
-            return new[]
-            {
-                syntaxKindPropertyDeclaration
-            };
+        private MemberDeclarationSyntax GenerateDefaultConstructor()
+        {
+            return SyntaxFactory.ConstructorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+                SyntaxFactory.Identifier(TypeName),
+                SyntaxFactory.ParameterList(),
+                default(ConstructorInitializerSyntax),
+                SyntaxFactory.Block());
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()

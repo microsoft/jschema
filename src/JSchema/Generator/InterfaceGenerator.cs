@@ -32,7 +32,7 @@ namespace Microsoft.JSchema.Generator
 
         public override void AddMembers(JsonSchema schema)
         {
-            List<MemberDeclarationSyntax> members = CreateProperties(schema);
+            List<MemberDeclarationSyntax> members = GenerateProperties(schema);
             SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
             TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax).WithMembers(memberList);
         }

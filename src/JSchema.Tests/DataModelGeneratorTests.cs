@@ -608,6 +608,10 @@ namespace N
 @"{
   ""type"": ""object"",
   ""properties"": {
+    ""intProp"": {
+      ""type"": ""integer"",
+      ""description"": ""A property.""
+    }
   }
 }");
 
@@ -630,6 +634,15 @@ namespace N
             {
                 return SarifKind.C;
             }
+        }
+
+        /// <summary>
+        /// A property.
+        /// </summary>
+        public int IntProp { get; set; }
+
+        public C()
+        {
         }
     }
 }";

@@ -41,7 +41,7 @@ namespace Microsoft.JSchema.Generator
         /// </summary>
         protected Dictionary<string, HashType> HashTypeDictionary { get; }
 
-        protected List<MemberDeclarationSyntax> CreateProperties(JsonSchema schema)
+        protected List<MemberDeclarationSyntax> GenerateProperties(JsonSchema schema)
         {
             var propDecls = new List<MemberDeclarationSyntax>();
 
