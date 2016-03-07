@@ -196,7 +196,7 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An uninitialized kind.
+        ///   Looks up a localized string similar to An uninitialized kind..
         /// </summary>
         internal static string KindEnumNoneDescription {
             get {

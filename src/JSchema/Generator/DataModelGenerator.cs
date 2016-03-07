@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -27,6 +28,7 @@ namespace Microsoft.JSchema.Generator
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
         private Dictionary<string, string> _pathToFileContentsDictionary;
+        private List<string> _generatedClassNames;
         private List<AdditionalTypeRequiredEventArgs> _additionalTypesRequiredList;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
@@ -44,6 +46,7 @@ namespace Microsoft.JSchema.Generator
             _pathToFileContentsDictionary = new Dictionary<string, string>();
 
             _additionalTypesRequiredList = new List<AdditionalTypeRequiredEventArgs>();
+            _generatedClassNames = new List<string>();
         }
 
         public string Generate(JsonSchema rootSchema)
@@ -146,6 +149,13 @@ namespace Microsoft.JSchema.Generator
             EnumDeclarationSyntax enumDeclaration =
                 SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(enumName))
                     .WithModifiers(modifiers)
+                    .WithMembers(
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.EnumMemberDeclaration("None")
+                                .WithLeadingTrivia(
+                                    SyntaxUtil.MakeDocCommentFromDescription(Resources.KindEnumNoneDescription))))
+                    .AddMembers(
+                        _generatedClassNames.Select(gcn => GenerateKindEnumMember(gcn)).ToArray())
                     .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(
                         string.Format(
                             CultureInfo.CurrentCulture,
@@ -177,6 +187,18 @@ namespace Microsoft.JSchema.Generator
             }
 
             return sb.ToString();
+        }
+
+        private EnumMemberDeclarationSyntax GenerateKindEnumMember(string className)
+        {
+            string description = string.Format(
+                CultureInfo.CurrentCulture,
+                Resources.KindEnumMemberDescription,
+                className);
+
+            return SyntaxFactory.EnumMemberDeclaration(className)
+                .WithLeadingTrivia(
+                    SyntaxUtil.MakeDocCommentFromDescription(description));
         }
 
         internal string CreateFile(string className, JsonSchema schema)
@@ -212,6 +234,13 @@ namespace Microsoft.JSchema.Generator
                 // course of generating the type which require additional types (such as
                 // enumerations) to be generated.
                 typeGenerator.AdditionalTypeRequired += TypeGenerator_AdditionalTypeRequired;
+
+                if (_settings.GenerateCloningCode)
+                {
+                    // The cloning code includes an enumeration with one member for each
+                    // generated class, so keep track of the class names.
+                    _generatedClassNames.Add(className);
+                }
             }
             else
             {

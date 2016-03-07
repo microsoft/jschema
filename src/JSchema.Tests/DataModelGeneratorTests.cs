@@ -641,6 +641,14 @@ namespace N
     /// </summary>
     public enum SarifKind
     {
+        /// <summary>
+        /// An uninitialized kind.
+        /// </summary>
+        None,
+        /// <summary>
+        /// A value indicating that the <see cref=""ISyntax"" /> object is of type <see cref=""C"" />.
+        /// </summary>
+        C
     }
 }";
 
@@ -657,7 +665,7 @@ namespace N
             };
 
             _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-            //_testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
+            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
             _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
