@@ -155,7 +155,8 @@ namespace Microsoft.JSchema.Generator
                     _rootSchema,
                     baseInterfaceName,
                     _settings.HintDictionary,
-                    _settings.GenerateOverrides);
+                    _settings.GenerateOverrides,
+                    _settings.GenerateCloningCode ? SyntaxInterfaceTypeName : null);
 
                 // Keep track of any hints that the type generator might encounter in the
                 // course of generating the type which require additional types (such as

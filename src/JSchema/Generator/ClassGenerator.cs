@@ -17,6 +17,7 @@ namespace Microsoft.JSchema.Generator
     {
         private readonly string _baseInterfaceName;
         private readonly bool _generateOverrides;
+        private readonly string _syntaxInterfaceName;
 
         // Name used for the parameters of Equals methods.
         private const string OtherParameter = "other";
@@ -43,11 +44,13 @@ namespace Microsoft.JSchema.Generator
             JsonSchema rootSchema,
             string interfaceName,
             HintDictionary hintDictionary,
-            bool generateOverrides)
+            bool generateOverrides,
+            string syntaxInterfaceName)
             : base(rootSchema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
             _generateOverrides = generateOverrides;
+            _syntaxInterfaceName = syntaxInterfaceName;
         }
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
@@ -67,6 +70,16 @@ namespace Microsoft.JSchema.Generator
                 SimpleBaseTypeSyntax interfaceType =
                     SyntaxFactory.SimpleBaseType(
                         SyntaxFactory.ParseTypeName(_baseInterfaceName));
+
+                baseTypes.Add(interfaceType);
+            }
+
+            // If we were asked to generate cloning code, add the necessary interface.
+            if (!string.IsNullOrWhiteSpace(_syntaxInterfaceName))
+            {
+                SimpleBaseTypeSyntax interfaceType =
+                    SyntaxFactory.SimpleBaseType(
+                        SyntaxFactory.ParseTypeName(_syntaxInterfaceName));
 
                 baseTypes.Add(interfaceType);
             }

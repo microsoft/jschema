@@ -619,7 +619,7 @@ namespace N
     /// <summary>
     /// 
     /// </summary>
-    public partial class C : IEquatable<C>
+    public partial class C : ISyntax, IEquatable<C>
     {
     }
 }";
