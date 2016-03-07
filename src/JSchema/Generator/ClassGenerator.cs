@@ -138,7 +138,9 @@ namespace Microsoft.JSchema.Generator
                 members.AddRange(new MemberDeclarationSyntax[]
                 {
                     GenerateDefaultConstructor(),
-                    GenerateISyntaxDeepClone()
+                    GenerateISyntaxDeepClone(),
+                    GenerateDeepClone(),
+                    GenerateDeepCloneCore()
                 });
             }
 
@@ -196,6 +198,51 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName("DeepCloneCore"),
                             SyntaxFactory.ArgumentList()))),
+                default(SyntaxToken));
+        }
+
+        private MethodDeclarationSyntax GenerateDeepClone()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+                SyntaxFactory.ParseTypeName(TypeName),
+                default(ExplicitInterfaceSpecifierSyntax),
+                SyntaxFactory.Identifier("DeepClone"),
+                default(TypeParameterListSyntax),
+                SyntaxFactory.ParameterList(),
+                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.CastExpression(
+                            SyntaxFactory.ParseTypeName(TypeName),
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName("DeepCloneCore"),
+                                SyntaxFactory.ArgumentList())))),
+                default(SyntaxToken))
+                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(Resources.DeepCloneDescription));
+        }
+
+        private MethodDeclarationSyntax GenerateDeepCloneCore()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)),
+                SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
+                default(ExplicitInterfaceSpecifierSyntax),
+                SyntaxFactory.Identifier("DeepCloneCore"),
+                default(TypeParameterListSyntax),
+                SyntaxFactory.ParameterList(),
+                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.ObjectCreationExpression(
+                            SyntaxFactory.ParseTypeName(TypeName),
+                            SyntaxFactory.ArgumentList(
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.ThisExpression()))),
+                            default(InitializerExpressionSyntax)))),
                 default(SyntaxToken));
         }
 

@@ -61,6 +61,15 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates a deep copy of this instance..
+        /// </summary>
+        internal static string DeepCloneDescription {
+            get {
+                return ResourceManager.GetString("DeepCloneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate an enumeration.
         /// </summary>
         internal static string EnumHintName {

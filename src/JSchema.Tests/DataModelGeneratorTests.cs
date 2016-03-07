@@ -649,6 +649,19 @@ namespace N
         {
             return DeepCloneCore();
         }
+
+        /// <summary>
+        /// Creates a deep copy of this instance.
+        /// </summary>
+        public C DeepClone()
+        {
+            return (C)DeepCloneCore();
+        }
+
+        private ISyntax DeepCloneCore()
+        {
+            return new C(this);
+        }
     }
 }";
             const string ExpectedSyntaxInterface =
