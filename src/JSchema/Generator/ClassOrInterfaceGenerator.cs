@@ -95,20 +95,19 @@ namespace Microsoft.JSchema.Generator
         /// </returns>
         private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName, JsonSchema schema)
         {
-            var accessorDeclarations = SyntaxFactory.List(
-                new AccessorDeclarationSyntax[]
-                {
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.GetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, default(SyntaxList<AttributeListSyntax>), default(SyntaxTokenList), SyntaxFactory.Token(SyntaxKind.SetKeyword), null, SyntaxFactory.Token(SyntaxKind.SemicolonToken))
-                });
-
             return SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 CreatePropertyModifiers(),
                 MakePropertyType(propertyName, schema),
                 default(ExplicitInterfaceSpecifierSyntax),
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
-                SyntaxFactory.AccessorList(accessorDeclarations))
+                SyntaxFactory.AccessorList(
+                    SyntaxFactory.List(
+                        new AccessorDeclarationSyntax[]
+                        {
+                            SyntaxUtil.MakeGetAccessor(),
+                            SyntaxUtil.MakeSetAccessor()
+                        })))
                 .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(schema.Description));
         }
 

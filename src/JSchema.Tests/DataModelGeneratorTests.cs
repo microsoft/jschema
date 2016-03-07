@@ -621,6 +621,16 @@ namespace N
     /// </summary>
     public partial class C : ISyntax, IEquatable<C>
     {
+        /// <summary>
+        /// Gets a value indicating the type of object implementing <see cref=""ISyntax"" />.
+        /// </summary>
+        public SarifKind SyntaxKind
+        {
+            get
+            {
+                return SarifKind.C;
+            }
+        }
     }
 }";
             const string ExpectedSyntaxInterface =

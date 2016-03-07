@@ -4,6 +4,7 @@
 using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.JSchema.Generator
 {
@@ -31,6 +32,29 @@ namespace Microsoft.JSchema.Generator
             }
 
             return trivia;
+        }
+
+        internal static AccessorDeclarationSyntax MakeGetAccessor(BlockSyntax body = null)
+        {
+            return MakeAccessor(SyntaxKind.GetAccessorDeclaration, body);
+        }
+
+        internal static AccessorDeclarationSyntax MakeSetAccessor(BlockSyntax body = null)
+        {
+            return MakeAccessor(SyntaxKind.SetAccessorDeclaration, body);
+        }
+
+        private static AccessorDeclarationSyntax MakeAccessor(SyntaxKind getOrSet, BlockSyntax body)
+        {
+            return SyntaxFactory.AccessorDeclaration(
+                getOrSet,
+                default(SyntaxList<AttributeListSyntax>),
+                default(SyntaxTokenList),
+                getOrSet == SyntaxKind.GetAccessorDeclaration
+                    ? SyntaxFactory.Token(SyntaxKind.GetKeyword)
+                    : SyntaxFactory.Token(SyntaxKind.SetKeyword),
+                body,
+                body == null ? SyntaxFactory.Token(SyntaxKind.SemicolonToken) : default(SyntaxToken));
         }
     }
 }

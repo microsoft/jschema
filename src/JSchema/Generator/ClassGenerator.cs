@@ -17,7 +17,9 @@ namespace Microsoft.JSchema.Generator
     {
         private readonly string _baseInterfaceName;
         private readonly bool _generateOverrides;
+        private readonly bool _generateCloningCode;
         private readonly string _syntaxInterfaceName;
+        private readonly string _kindEnumName;
 
         // Name used for the parameters of Equals methods.
         private const string OtherParameter = "other";
@@ -45,12 +47,16 @@ namespace Microsoft.JSchema.Generator
             string interfaceName,
             HintDictionary hintDictionary,
             bool generateOverrides,
-            string syntaxInterfaceName)
+            bool generateCloningCode,
+            string syntaxInterfaceName,
+            string kindEnumName)
             : base(rootSchema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
             _generateOverrides = generateOverrides;
+            _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
+            _kindEnumName = kindEnumName;
         }
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
@@ -75,7 +81,7 @@ namespace Microsoft.JSchema.Generator
             }
 
             // If we were asked to generate cloning code, add the necessary interface.
-            if (!string.IsNullOrWhiteSpace(_syntaxInterfaceName))
+            if (_generateCloningCode)
             {
                 SimpleBaseTypeSyntax interfaceType =
                     SyntaxFactory.SimpleBaseType(
@@ -108,7 +114,14 @@ namespace Microsoft.JSchema.Generator
 
         public override void AddMembers(JsonSchema schema)
         {
-            List<MemberDeclarationSyntax> members = CreateProperties(schema);
+            var members = new List<MemberDeclarationSyntax>();
+
+            if (_generateCloningCode)
+            {
+              members.AddRange(GenerateSyntaxInterfaceMembers());
+            }
+                
+            members.AddRange(CreateProperties(schema));
 
             if (_generateOverrides)
             {
@@ -123,6 +136,33 @@ namespace Microsoft.JSchema.Generator
             SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
 
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
+        }
+
+        private IEnumerable<MemberDeclarationSyntax> GenerateSyntaxInterfaceMembers()
+        {
+            PropertyDeclarationSyntax syntaxKindPropertyDeclaration =
+                SyntaxFactory.PropertyDeclaration(
+                    default(SyntaxList<AttributeListSyntax>),
+                    SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+                    SyntaxFactory.ParseTypeName(_kindEnumName),
+                    default(ExplicitInterfaceSpecifierSyntax),
+                    SyntaxFactory.Identifier("SyntaxKind"),
+                    SyntaxFactory.AccessorList(
+                        SyntaxFactory.SingletonList(
+                            SyntaxUtil.MakeGetAccessor(
+                                SyntaxFactory.Block(
+                                    SyntaxFactory.ReturnStatement(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.IdentifierName(_kindEnumName),
+                                            SyntaxFactory.IdentifierName(TypeName))))))))
+                    .WithLeadingTrivia(
+                        SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceKindDescription));
+
+            return new[]
+            {
+                syntaxKindPropertyDeclaration
+            };
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()

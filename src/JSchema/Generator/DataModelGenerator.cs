@@ -29,6 +29,7 @@ namespace Microsoft.JSchema.Generator
         private JsonSchema _rootSchema;
         private Dictionary<string, string> _pathToFileContentsDictionary;
         private List<string> _generatedClassNames;
+        private string _kindEnumName;
         private List<AdditionalTypeRequiredEventArgs> _additionalTypesRequiredList;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
@@ -52,6 +53,11 @@ namespace Microsoft.JSchema.Generator
         public string Generate(JsonSchema rootSchema)
         {
             _additionalTypesRequiredList.Clear();
+
+            if (_settings.GenerateCloningCode)
+            {
+                _kindEnumName = SchemaName + "Kind";
+            }
 
             _rootSchema = JsonSchema.Collapse(rootSchema);
 
@@ -84,13 +90,11 @@ namespace Microsoft.JSchema.Generator
 
             if (_settings.GenerateCloningCode)
             {
-                string enumName = SchemaName + "Kind";
-
                 _pathToFileContentsDictionary[SyntaxInterfaceTypeName] =
-                    GenerateSyntaxInterface(SchemaName, enumName);
+                    GenerateSyntaxInterface(SchemaName, _kindEnumName);
 
-                _pathToFileContentsDictionary[enumName] =
-                    GenerateKindEnum(enumName);
+                _pathToFileContentsDictionary[_kindEnumName] =
+                    GenerateKindEnum(_kindEnumName);
             }
 
             foreach (KeyValuePair<string, string> entry in _pathToFileContentsDictionary)
@@ -110,13 +114,7 @@ namespace Microsoft.JSchema.Generator
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
                 {
-                    SyntaxFactory.AccessorDeclaration(
-                        SyntaxKind.GetAccessorDeclaration,
-                        default(SyntaxList<AttributeListSyntax>),
-                        default(SyntaxTokenList), // modifiers
-                        SyntaxFactory.Token(SyntaxKind.GetKeyword),
-                        null, // body
-                        SyntaxFactory.Token(SyntaxKind.SemicolonToken)) // TODO: try the simpler overload.
+                    SyntaxUtil.MakeGetAccessor()
                 });
 
             PropertyDeclarationSyntax syntaxKindPropertyDeclaration =
@@ -274,7 +272,9 @@ namespace Microsoft.JSchema.Generator
                     baseInterfaceName,
                     _settings.HintDictionary,
                     _settings.GenerateOverrides,
-                    _settings.GenerateCloningCode ? SyntaxInterfaceTypeName : null);
+                    _settings.GenerateCloningCode,
+                    SyntaxInterfaceTypeName,
+                    _kindEnumName);
 
                 // Keep track of any hints that the type generator might encounter in the
                 // course of generating the type which require additional types (such as
