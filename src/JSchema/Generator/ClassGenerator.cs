@@ -21,7 +21,7 @@ namespace Microsoft.JSchema.Generator
         private readonly string _syntaxInterfaceName;
         private readonly string _kindEnumName;
 
-        // Name used for the parameters of Equals methods.
+        // Name used for the parameters of Equals methods and copy ctor.
         private const string OtherParameter = "other";
 
         private const string CountProperty = "Count";
@@ -31,6 +31,7 @@ namespace Microsoft.JSchema.Generator
         private const string IEquatableType = "IEquatable";
         private const string ObjectType = "Object";
         private const string IntTypeAlias = "int";
+        private const string InitMethod = "Init";
 
         private const string TempVariableNameBase = "value_";
         private const string GetHashCodeResultVariableName = "result";
@@ -138,6 +139,7 @@ namespace Microsoft.JSchema.Generator
                 members.AddRange(new MemberDeclarationSyntax[]
                 {
                     GenerateDefaultConstructor(),
+                    GenerateCopyConstructor(),
                     GenerateISyntaxDeepClone(),
                     GenerateDeepClone(),
                     GenerateDeepCloneCore()
@@ -179,6 +181,44 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.ParameterList(),
                 default(ConstructorInitializerSyntax),
                 SyntaxFactory.Block());
+        }
+
+        private MemberDeclarationSyntax GenerateCopyConstructor()
+        {
+            return SyntaxFactory.ConstructorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+                SyntaxFactory.Identifier(TypeName),
+                SyntaxFactory.ParameterList(
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.Parameter(
+                            default(SyntaxList<AttributeListSyntax>),
+                            default(SyntaxTokenList),
+                            SyntaxFactory.ParseTypeName(TypeName),
+                            SyntaxFactory.Identifier(OtherParameter),
+                            default(EqualsValueClauseSyntax)))),
+                default(ConstructorInitializerSyntax),
+                SyntaxFactory.Block(
+                    SyntaxFactory.IfStatement(
+                        IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ThrowStatement(
+                                SyntaxFactory.ObjectCreationExpression(
+                                    SyntaxFactory.ParseTypeName("ArgumentNullException"),
+                                    SyntaxFactory.ArgumentList(
+                                        SyntaxFactory.SingletonSeparatedList(
+                                            SyntaxFactory.Argument(
+                                                SyntaxFactory.InvocationExpression(
+                                                    SyntaxFactory.IdentifierName("nameof"),
+                                                    SyntaxFactory.ArgumentList(
+                                                        SyntaxFactory.SingletonSeparatedList(
+                                                            SyntaxFactory.Argument(
+                                                                SyntaxFactory.IdentifierName(OtherParameter)))))))),
+                                    default(InitializerExpressionSyntax))))),
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(InitMethod),
+                            SyntaxFactory.ArgumentList()))));
         }
 
         private MethodDeclarationSyntax GenerateISyntaxDeepClone()

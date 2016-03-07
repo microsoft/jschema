@@ -610,7 +610,11 @@ namespace N
   ""properties"": {
     ""intProp"": {
       ""type"": ""integer"",
-      ""description"": ""A property.""
+      ""description"": ""An integer property.""
+    },
+    ""stringProp"": {
+      ""type"": ""string"",
+      ""description"": ""A string property.""
     }
   }
 }");
@@ -637,12 +641,27 @@ namespace N
         }
 
         /// <summary>
-        /// A property.
+        /// An integer property.
         /// </summary>
         public int IntProp { get; set; }
 
+        /// <summary>
+        /// A string property.
+        /// </summary>
+        public string StringProp { get; set; }
+
         public C()
         {
+        }
+
+        public C(C other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            Init();
         }
 
         ISyntax ISyntax.DeepClone()
