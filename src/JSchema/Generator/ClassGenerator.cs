@@ -250,6 +250,25 @@ namespace Microsoft.JSchema.Generator
             return SyntaxFactory.ParseTypeName(typeName);
         }
 
+        /// <summary>
+        /// Synthesize the concrete type that should be used to initialize the property
+        /// in the implementation of the generated class's <code>Init</code> method.
+        /// </summary>
+        /// <remarks>
+        /// For array-valued properties, the property type stored in the
+        /// PropertyInfoDictionary is <code>IList&lt;T></code>. But in the implementation
+        /// of the <code>Init</code> method, the concrete type used to initialize the
+        /// property is <code>List&lt;T></code>.
+        /// </remarks>
+        private TypeSyntax GetConcreteListType(string name)
+        {
+            TypeSyntax type = PropertyInfoDictionary[name.ToCamelCase()].Type;
+
+            string typeName = type.ToString().Replace("IList<", "List<");
+
+            return SyntaxFactory.ParseTypeName(typeName);
+        }
+
         private Dictionary<string, string> MakePropertyCtorParamDescriptions()
         {
             var result = new Dictionary<string, string>();
@@ -472,11 +491,25 @@ namespace Microsoft.JSchema.Generator
         private StatementSyntax GenerateCollectionInitialization(string propertyName)
         {
             string argName = propertyName.ToCamelCase();
+            TypeSyntax type = GetConcreteListType(propertyName);
+            string destinationVariableName = GetNextDestinationVariableName();
             string loopVariableName = GetNextLoopVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(argName),
                 SyntaxFactory.Block(
+                    SyntaxFactory.LocalDeclarationStatement(
+                        SyntaxFactory.VariableDeclaration(
+                            SyntaxHelper.Var(),
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.VariableDeclarator(
+                                    SyntaxFactory.Identifier(destinationVariableName),
+                                    default(BracketedArgumentListSyntax),
+                                    SyntaxFactory.EqualsValueClause(
+                                        SyntaxFactory.ObjectCreationExpression(
+                                            type,
+                                            SyntaxHelper.ArgumentList(),
+                                            default(InitializerExpressionSyntax))))))),
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
                         loopVariableName,

@@ -718,6 +718,7 @@ namespace N
             StringProp = stringProp;
             if (arrayProp != null)
             {
+                var destination_0 = new List<double>();
                 foreach (var value_0 in arrayProp)
                 {
                 }
