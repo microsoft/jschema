@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 namespace Microsoft.JSchema.Generator
 {
     /// <summary>
@@ -21,5 +23,10 @@ namespace Microsoft.JSchema.Generator
         /// <see cref="Object.GetHashCode" />.
         /// </summary>
         public HashType HashType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the property.
+        /// </summary>
+        public TypeSyntax Type { get; set; }
     }
 }

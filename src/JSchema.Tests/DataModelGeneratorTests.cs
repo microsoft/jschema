@@ -643,7 +643,7 @@ namespace N
         /// <param name=""arrayProp"">
         /// An initialization value for the <see cref=""P: ArrayProp"" /> property.
         /// </param>
-        public C()
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp)
         {
             Init(intProp, stringProp, arrayProp);
         }

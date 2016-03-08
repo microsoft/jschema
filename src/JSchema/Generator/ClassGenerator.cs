@@ -193,6 +193,18 @@ namespace Microsoft.JSchema.Generator
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
         {
+            // Generate the parameter list for the ctor.
+            IEnumerable<ParameterSyntax> parameters = GetPropertyNames()
+                .Select(name => SyntaxFactory.Parameter(
+                    default(SyntaxList<AttributeListSyntax>),
+                    default(SyntaxTokenList), // modifiers
+                    GetParameterListType(name),
+                    SyntaxFactory.Identifier(name.ToCamelCase()),
+                    default(EqualsValueClauseSyntax)));
+
+            SeparatedSyntaxList<ParameterSyntax> parameterList =
+                SyntaxFactory.SeparatedList(parameters);
+
             // Generate the argument list that will be passed from the copy ctor to the
             // Init method.
             IEnumerable<ArgumentSyntax> arguments = GetPropertyNames()
@@ -206,7 +218,7 @@ namespace Microsoft.JSchema.Generator
                 default(SyntaxList<AttributeListSyntax>),
                 SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
                 SyntaxFactory.Identifier(TypeName),
-                SyntaxFactory.ParameterList(),
+                SyntaxFactory.ParameterList(parameterList),
                 default(ConstructorInitializerSyntax),
                 SyntaxFactory.Block(
                     SyntaxFactory.ExpressionStatement(
@@ -220,6 +232,25 @@ namespace Microsoft.JSchema.Generator
                             Resources.PropertyCtorSummary,
                             TypeName),
                         paramDescriptionDictionary: MakePropertyCtorParamDescriptions()));
+        }
+
+        /// <summary>
+        /// Synthesize the type of the property as it should appear in the parameter list
+        /// of the generated class's <code>Init</code> method.
+        /// </summary>
+        /// <remarks>
+        /// For array-valued properties, the property type stored in the
+        /// PropertyInfoDictionary is <code>IList&lt;T></code>. But in the parameter list
+        /// of the <code>Init</code> method, the type appears as
+        /// <code>IEnumerable&lt;T></code>.
+        /// </remarks>
+        private TypeSyntax GetParameterListType(string name)
+        {
+            TypeSyntax type = PropertyInfoDictionary[name.ToCamelCase()].Type;
+
+            string typeName = type.ToString().Replace("IList<", "IEnumerable<");
+
+            return SyntaxFactory.ParseTypeName(typeName);
         }
 
         private Dictionary<string, string> MakePropertyCtorParamDescriptions()
