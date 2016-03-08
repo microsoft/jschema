@@ -108,7 +108,7 @@ namespace Microsoft.JSchema.Generator
                             SyntaxUtil.MakeGetAccessor(),
                             SyntaxUtil.MakeSetAccessor()
                         })))
-                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(schema.Description));
+                .WithLeadingTrivia(SyntaxUtil.MakeDocComment(schema.Description));
         }
 
         /// <summary>

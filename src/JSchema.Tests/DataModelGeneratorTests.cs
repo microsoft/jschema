@@ -123,29 +123,11 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public string StringProp { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public double NumberProp { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public bool BooleanProp { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public int IntegerProp { get; set; }
 
         public override bool Equals(object other)
@@ -218,14 +200,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public D ObjectProp { get; set; }
 
         public override bool Equals(object other)
@@ -352,14 +328,8 @@ using System.Collections.Generic;
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public IList<object> ArrayProp { get; set; }
 
         public override bool Equals(object other)
@@ -439,9 +409,6 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -583,9 +550,6 @@ using System;
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -624,9 +588,6 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : ISyntax, IEquatable<C>
     {
         /// <summary>
@@ -650,10 +611,22 @@ namespace N
         /// </summary>
         public string StringProp { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class.
+        /// </summary>
         public C()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the specified instance.
+        /// </summary>
+        /// <param name=""other"">
+        /// The instance from which the new instance is to be initialized.
+        /// </param>
+        /// <exception cref=""ArgumentNullException"">
+        /// Thrown if <paramref name=""other"" /> is null.
+        /// </exception>
         public C(C other)
         {
             if (other == null)
@@ -756,14 +729,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public bool RootProp { get; set; }
 
         public override bool Equals(object other)
@@ -804,14 +771,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Def1 : IEquatable<Def1>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public string Prop1 { get; set; }
 
         public override bool Equals(object other)
@@ -855,14 +816,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Def2 : IEquatable<Def2>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public int Prop2 { get; set; }
 
         public override bool Equals(object other)
@@ -937,14 +892,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public DateTime StartTime { get; set; }
 
         public override bool Equals(object other)
@@ -1005,14 +954,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public Uri TargetFile { get; set; }
 
         public override bool Equals(object other)
@@ -1079,14 +1022,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public int IntDefProp { get; set; }
     }
 }";
@@ -1125,14 +1062,8 @@ using System.Collections.Generic;
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public IList<int> ArrayOfIntByRef { get; set; }
 
         public override bool Equals(object other)
@@ -1230,14 +1161,8 @@ using System.Collections.Generic;
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
 
         public override bool Equals(object other)
@@ -1358,14 +1283,8 @@ using System.Collections.Generic;
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
 
         public override bool Equals(object other)
@@ -1493,14 +1412,8 @@ using System.Collections.Generic;
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
 
         public override bool Equals(object other)
@@ -1614,14 +1527,8 @@ namespace N
 
 namespace N
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class C : IEquatable<C>
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public string Version { get; set; }
     }
 }";

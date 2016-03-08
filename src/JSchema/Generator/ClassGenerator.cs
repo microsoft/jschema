@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -169,7 +170,7 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.IdentifierName(_kindEnumName),
                                         SyntaxFactory.IdentifierName(TypeName))))))))
                 .WithLeadingTrivia(
-                    SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceKindDescription));
+                    SyntaxUtil.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
         }
 
         private MemberDeclarationSyntax GenerateDefaultConstructor()
@@ -180,7 +181,13 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Identifier(TypeName),
                 SyntaxFactory.ParameterList(),
                 default(ConstructorInitializerSyntax),
-                SyntaxFactory.Block());
+                SyntaxFactory.Block())
+                .WithLeadingTrivia(
+                    SyntaxUtil.MakeDocComment(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            Resources.DefaultCtorSummary,
+                            TypeName)));
         }
 
         private MemberDeclarationSyntax GenerateCopyConstructor()
@@ -218,7 +225,26 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            SyntaxFactory.ArgumentList()))));
+                            SyntaxFactory.ArgumentList()))))
+            .WithLeadingTrivia(
+                SyntaxUtil.MakeDocComment(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        Resources.CopyCtorSummary,
+                        TypeName),
+                    returns: null,
+                    paramDescriptionDictionary: new Dictionary<string, string>
+                    {
+                        [OtherParameter] = Resources.CopyCtorOtherParam
+                    },
+                    exceptionDictionary: new Dictionary<string, string>
+                    {
+                        ["ArgumentNullException"] = 
+                            string.Format(
+                                CultureInfo.CurrentCulture,
+                                Resources.CopyCtorOtherNullException,
+                                OtherParameter)
+                    }));
         }
 
         private MethodDeclarationSyntax GenerateISyntaxDeepClone()
@@ -260,7 +286,7 @@ namespace Microsoft.JSchema.Generator
                                 SyntaxFactory.IdentifierName("DeepCloneCore"),
                                 SyntaxFactory.ArgumentList())))),
                 default(SyntaxToken))
-                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(Resources.DeepCloneDescription));
+                .WithLeadingTrivia(SyntaxUtil.MakeDocComment(Resources.DeepCloneDescription));
         }
 
         private MethodDeclarationSyntax GenerateDeepCloneCore()

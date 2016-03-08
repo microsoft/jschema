@@ -126,7 +126,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.Identifier("SyntaxKind"),
                     SyntaxFactory.AccessorList(accessorDeclarations))
                     .WithLeadingTrivia(
-                        SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceKindDescription));
+                        SyntaxUtil.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
 
             MethodDeclarationSyntax deepCloneMethodDeclaration =
                 SyntaxFactory.MethodDeclaration(
@@ -141,12 +141,12 @@ namespace Microsoft.JSchema.Generator
                     default(BlockSyntax), // body
                     SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                     .WithLeadingTrivia(
-                        SyntaxUtil.MakeDocCommentFromDescription(Resources.SyntaxInterfaceDeepCloneDescription));
+                        SyntaxUtil.MakeDocComment(Resources.SyntaxInterfaceDeepCloneDescription));
 
             InterfaceDeclarationSyntax interfaceDeclaration =
                 SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
                     .WithModifiers(modifiers)
-                    .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(
+                    .WithLeadingTrivia(SyntaxUtil.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.SyntaxInterfaceDescription,
@@ -197,10 +197,10 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.EnumMemberDeclaration("None")
                                 .WithLeadingTrivia(
-                                    SyntaxUtil.MakeDocCommentFromDescription(Resources.KindEnumNoneDescription))))
+                                    SyntaxUtil.MakeDocComment(Resources.KindEnumNoneDescription))))
                     .AddMembers(
                         _generatedClassNames.Select(gcn => GenerateKindEnumMember(gcn)).ToArray())
-                    .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(
+                    .WithLeadingTrivia(SyntaxUtil.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.KindEnumDescription,
@@ -242,7 +242,7 @@ namespace Microsoft.JSchema.Generator
 
             return SyntaxFactory.EnumMemberDeclaration(className)
                 .WithLeadingTrivia(
-                    SyntaxUtil.MakeDocCommentFromDescription(description));
+                    SyntaxUtil.MakeDocComment(description));
         }
 
         internal string CreateFile(string className, JsonSchema schema)

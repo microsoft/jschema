@@ -61,11 +61,47 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Thrown if &lt;paramref name=&quot;{0}&quot; /&gt; is null..
+        /// </summary>
+        internal static string CopyCtorOtherNullException {
+            get {
+                return ResourceManager.GetString("CopyCtorOtherNullException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance from which the new instance is to be initialized..
+        /// </summary>
+        internal static string CopyCtorOtherParam {
+            get {
+                return ResourceManager.GetString("CopyCtorOtherParam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializes a new instance of the &lt;see cref=&quot;{0}&quot; /&gt; class from the specified instance..
+        /// </summary>
+        internal static string CopyCtorSummary {
+            get {
+                return ResourceManager.GetString("CopyCtorSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a deep copy of this instance..
         /// </summary>
         internal static string DeepCloneDescription {
             get {
                 return ResourceManager.GetString("DeepCloneDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializes a new instance of the &lt;see cref=&quot;{0}&quot; /&gt; class..
+        /// </summary>
+        internal static string DefaultCtorSummary {
+            get {
+                return ResourceManager.GetString("DefaultCtorSummary", resourceCulture);
             }
         }
         

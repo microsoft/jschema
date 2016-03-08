@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CopyCtorOtherNullException" xml:space="preserve">
+    <value>Thrown if &lt;paramref name="{0}" /&gt; is null.</value>
+  </data>
+  <data name="CopyCtorOtherParam" xml:space="preserve">
+    <value>The instance from which the new instance is to be initialized.</value>
+  </data>
+  <data name="CopyCtorSummary" xml:space="preserve">
+    <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class from the specified instance.</value>
+  </data>
   <data name="DeepCloneDescription" xml:space="preserve">
     <value>Creates a deep copy of this instance.</value>
+  </data>
+  <data name="DefaultCtorSummary" xml:space="preserve">
+    <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class.</value>
   </data>
   <data name="EnumHintName" xml:space="preserve">
     <value>Generate an enumeration</value>

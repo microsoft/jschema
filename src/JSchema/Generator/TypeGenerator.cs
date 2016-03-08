@@ -113,7 +113,7 @@ namespace Microsoft.JSchema.Generator
         private string Finish()
         {
             TypeDeclaration = TypeDeclaration
-                .WithLeadingTrivia(SyntaxUtil.MakeDocCommentFromDescription(_description));
+                .WithLeadingTrivia(SyntaxUtil.MakeDocComment(_description));
 
             var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(TypeDeclaration);
 
