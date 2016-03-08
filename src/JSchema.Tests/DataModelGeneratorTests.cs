@@ -721,6 +721,7 @@ namespace N
                 var destination_0 = new List<double>();
                 foreach (var value_0 in arrayProp)
                 {
+                    destination_0.Add(value_0);
                 }
             }
 

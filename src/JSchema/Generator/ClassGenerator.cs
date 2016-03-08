@@ -461,14 +461,16 @@ namespace Microsoft.JSchema.Generator
 
         private StatementSyntax GenerateInitialization(string propertyName)
         {
-            PropertyInfo info = PropertyInfoDictionary[propertyName.ToCamelCase()];
-            switch (info.InitializationKind)
+            string propInfoKey = propertyName.ToCamelCase();
+            InitializationKind initializationKind = PropertyInfoDictionary[propInfoKey].InitializationKind;
+
+            switch (initializationKind)
             {
                 case InitializationKind.SimpleAssign:
                     return GenerateSimpleAssignmentInitialization(propertyName);
 
                 case InitializationKind.Collection:
-                    return GenerateCollectionInitialization(propertyName);
+                    return GenerateCollectionInitialization(propertyName, propInfoKey);
 
                 case InitializationKind.Uri:
                     return GenerateUriInitialization(propertyName);
@@ -488,15 +490,32 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.IdentifierName(propertyName.ToCamelCase())));
         }
 
-        private StatementSyntax GenerateCollectionInitialization(string propertyName)
+        private StatementSyntax GenerateCollectionInitialization(string propertyName, string propInfoKey)
         {
+            // The name of the argument to the Init method is related to the name of the
+            // property it will be used to initialize.
             string argName = propertyName.ToCamelCase();
-            TypeSyntax type = GetConcreteListType(propertyName);
+
+            // Get the type of the concrete collection with which to initialize the property.
+            // For example, if the property is of type IList<int>, it will be initialized
+            // with an object of type List<int>.
+            TypeSyntax type = GetConcreteListType(propInfoKey);
+
+            // The name of a temporary variable in which the collection values will be
+            // accumulated.
             string destinationVariableName = GetNextDestinationVariableName();
+
+            // The name of a variable used to loop over the elements of the argument
+            // to the Init method (the argument whose name is "argName").
             string loopVariableName = GetNextLoopVariableName();
 
+            // Find out out kind of code must be generated to initialize the elements of
+            // the collection.
+            string elementInfoKey = MakeElementKeyName(propInfoKey);
+            InitializationKind elementInitializationKind = PropertyInfoDictionary[elementInfoKey].InitializationKind;
+
             return SyntaxFactory.IfStatement(
-                SyntaxHelper.IsNotNull(argName),
+                SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
                 SyntaxFactory.Block(
                     SyntaxFactory.LocalDeclarationStatement(
                         SyntaxFactory.VariableDeclaration(
@@ -514,7 +533,38 @@ namespace Microsoft.JSchema.Generator
                         SyntaxHelper.Var(),
                         loopVariableName,
                         SyntaxFactory.IdentifierName(argName),
-                        SyntaxFactory.Block())));
+                        SyntaxFactory.Block(
+                            GenerateElementInitialization(
+                                elementInitializationKind,
+                                destinationVariableName,
+                                loopVariableName)))));
+        }
+
+        private StatementSyntax GenerateElementInitialization(
+            InitializationKind elementInitializationKind,
+            string destinationVariableName,
+            string sourceVariableName)
+        {
+            switch (elementInitializationKind)
+            {
+                case InitializationKind.SimpleAssign:
+                    return GenerateSimpleElementInitialization(destinationVariableName, sourceVariableName);
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private StatementSyntax GenerateSimpleElementInitialization(string destinationVariableName, string sourceVariableName)
+        {
+            return SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.InvocationExpression(
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName(destinationVariableName),
+                        SyntaxFactory.IdentifierName("Add")),
+                    SyntaxHelper.ArgumentList(
+                        SyntaxFactory.IdentifierName(sourceVariableName))));
         }
 
         private StatementSyntax GenerateUriInitialization(string propertyName)
