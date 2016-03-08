@@ -589,8 +589,13 @@ namespace N
     },
     ""uriProp"": {
       ""type"": ""string"",
-      ""description"": ""A URI property."",
+      ""description"": ""A Uri property."",
       ""format"": ""uri""
+    },
+    ""dateTimeProp"": {
+      ""type"": ""string"",
+      ""description"": ""A DateTime property."",
+      ""format"": ""date-time""
     }
   }
 }");
@@ -630,9 +635,14 @@ namespace N
         public IList<double> ArrayProp { get; set; }
 
         /// <summary>
-        /// A URI property.
+        /// A Uri property.
         /// </summary>
         public Uri UriProp { get; set; }
+
+        /// <summary>
+        /// A DateTime property.
+        /// </summary>
+        public DateTime DateTimeProp { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
@@ -656,9 +666,12 @@ namespace N
         /// <param name=""uriProp"">
         /// An initialization value for the <see cref=""P: UriProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp)
+        /// <param name=""dateTimeProp"">
+        /// An initialization value for the <see cref=""P: DateTimeProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp);
         }
 
         /// <summary>
@@ -677,7 +690,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp);
         }
 
         ISyntax ISyntax.DeepClone()
@@ -698,7 +711,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -706,6 +719,8 @@ namespace N
             {
                 UriProp = new Uri(uriProp.OriginalString, uriProp.IsAbsoluteUri ? UriKind.Absolute : UriKind.Relative);
             }
+
+            DateTimeProp = dateTimeProp;
         }
     }
 }";
