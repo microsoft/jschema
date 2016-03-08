@@ -114,7 +114,7 @@ namespace Microsoft.JSchema.Generator
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
                 {
-                    SyntaxUtil.MakeGetAccessor()
+                    SyntaxHelper.MakeGetAccessor()
                 });
 
             PropertyDeclarationSyntax syntaxKindPropertyDeclaration =
@@ -126,7 +126,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.Identifier("SyntaxKind"),
                     SyntaxFactory.AccessorList(accessorDeclarations))
                     .WithLeadingTrivia(
-                        SyntaxUtil.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
+                        SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
 
             MethodDeclarationSyntax deepCloneMethodDeclaration =
                 SyntaxFactory.MethodDeclaration(
@@ -141,12 +141,12 @@ namespace Microsoft.JSchema.Generator
                     default(BlockSyntax), // body
                     SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                     .WithLeadingTrivia(
-                        SyntaxUtil.MakeDocComment(Resources.SyntaxInterfaceDeepCloneDescription));
+                        SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceDeepCloneDescription));
 
             InterfaceDeclarationSyntax interfaceDeclaration =
                 SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
                     .WithModifiers(modifiers)
-                    .WithLeadingTrivia(SyntaxUtil.MakeDocComment(
+                    .WithLeadingTrivia(SyntaxHelper.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.SyntaxInterfaceDescription,
@@ -172,7 +172,7 @@ namespace Microsoft.JSchema.Generator
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
                 .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(SyntaxUtil.MakeCopyrightComment(_settings.CopyrightNotice));
+                .WithLeadingTrivia(SyntaxHelper.MakeCopyrightComment(_settings.CopyrightNotice));
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
@@ -197,10 +197,10 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.EnumMemberDeclaration("None")
                                 .WithLeadingTrivia(
-                                    SyntaxUtil.MakeDocComment(Resources.KindEnumNoneDescription))))
+                                    SyntaxHelper.MakeDocComment(Resources.KindEnumNoneDescription))))
                     .AddMembers(
                         _generatedClassNames.Select(gcn => GenerateKindEnumMember(gcn)).ToArray())
-                    .WithLeadingTrivia(SyntaxUtil.MakeDocComment(
+                    .WithLeadingTrivia(SyntaxHelper.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.KindEnumDescription,
@@ -219,7 +219,7 @@ namespace Microsoft.JSchema.Generator
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
                 .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(SyntaxUtil.MakeCopyrightComment(_settings.CopyrightNotice));
+                .WithLeadingTrivia(SyntaxHelper.MakeCopyrightComment(_settings.CopyrightNotice));
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
@@ -242,7 +242,7 @@ namespace Microsoft.JSchema.Generator
 
             return SyntaxFactory.EnumMemberDeclaration(className)
                 .WithLeadingTrivia(
-                    SyntaxUtil.MakeDocComment(description));
+                    SyntaxHelper.MakeDocComment(description));
         }
 
         internal string CreateFile(string className, JsonSchema schema)

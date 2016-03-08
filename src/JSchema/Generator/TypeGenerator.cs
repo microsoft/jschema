@@ -113,7 +113,7 @@ namespace Microsoft.JSchema.Generator
         private string Finish()
         {
             TypeDeclaration = TypeDeclaration
-                .WithLeadingTrivia(SyntaxUtil.MakeDocComment(_description));
+                .WithLeadingTrivia(SyntaxHelper.MakeDocComment(_description));
 
             var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(TypeDeclaration);
 
@@ -134,7 +134,7 @@ namespace Microsoft.JSchema.Generator
 
             compilationUnit = compilationUnit
                 .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(SyntaxUtil.MakeCopyrightComment(_copyrightNotice));
+                .WithLeadingTrivia(SyntaxHelper.MakeCopyrightComment(_copyrightNotice));
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);

@@ -114,10 +114,10 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.List(
                         new AccessorDeclarationSyntax[]
                         {
-                            SyntaxUtil.MakeGetAccessor(),
-                            SyntaxUtil.MakeSetAccessor()
+                            SyntaxHelper.MakeGetAccessor(),
+                            SyntaxHelper.MakeSetAccessor()
                         })))
-                .WithLeadingTrivia(SyntaxUtil.MakeDocComment(schema.Description));
+                .WithLeadingTrivia(SyntaxHelper.MakeDocComment(schema.Description));
         }
 
         /// <summary>

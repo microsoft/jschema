@@ -167,7 +167,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Identifier("SyntaxKind"),
                 SyntaxFactory.AccessorList(
                     SyntaxFactory.SingletonList(
-                        SyntaxUtil.MakeGetAccessor(
+                        SyntaxHelper.MakeGetAccessor(
                             SyntaxFactory.Block(
                                 SyntaxFactory.ReturnStatement(
                                     SyntaxFactory.MemberAccessExpression(
@@ -175,7 +175,7 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.IdentifierName(_kindEnumName),
                                         SyntaxFactory.IdentifierName(TypeName))))))))
                 .WithLeadingTrivia(
-                    SyntaxUtil.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
+                    SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
         }
 
         private ConstructorDeclarationSyntax GenerateDefaultConstructor()
@@ -188,7 +188,7 @@ namespace Microsoft.JSchema.Generator
                 default(ConstructorInitializerSyntax),
                 SyntaxFactory.Block())
                 .WithLeadingTrivia(
-                    SyntaxUtil.MakeDocComment(
+                    SyntaxHelper.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.DefaultCtorSummary,
@@ -217,9 +217,9 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            ArgumentList(arguments)))))
+                            SyntaxHelper.ArgumentList(arguments)))))
                 .WithLeadingTrivia(
-                    SyntaxUtil.MakeDocComment(
+                    SyntaxHelper.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.PropertyCtorSummary,
@@ -290,23 +290,23 @@ namespace Microsoft.JSchema.Generator
                 default(ConstructorInitializerSyntax),
                 SyntaxFactory.Block(
                     SyntaxFactory.IfStatement(
-                        IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
+                        SyntaxHelper.IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
                         SyntaxFactory.Block(
                             SyntaxFactory.ThrowStatement(
                                 SyntaxFactory.ObjectCreationExpression(
                                     SyntaxFactory.ParseTypeName("ArgumentNullException"),
-                                    ArgumentList(
+                                    SyntaxHelper.ArgumentList(
                                         SyntaxFactory.InvocationExpression(
                                             SyntaxFactory.IdentifierName("nameof"),
-                                            ArgumentList(
+                                            SyntaxHelper.ArgumentList(
                                                 SyntaxFactory.IdentifierName(OtherParameter)))),
                                     default(InitializerExpressionSyntax))))),
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            ArgumentList(initArguments)))))
+                            SyntaxHelper.ArgumentList(initArguments)))))
             .WithLeadingTrivia(
-                SyntaxUtil.MakeDocComment(
+                SyntaxHelper.MakeDocComment(
                     string.Format(
                         CultureInfo.CurrentCulture,
                         Resources.CopyCtorSummary,
@@ -342,7 +342,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
-                            ArgumentList()))),
+                            SyntaxHelper.ArgumentList()))),
                 default(SyntaxToken));
         }
 
@@ -363,9 +363,9 @@ namespace Microsoft.JSchema.Generator
                             SyntaxFactory.ParseTypeName(TypeName),
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
-                                ArgumentList())))),
+                                SyntaxHelper.ArgumentList())))),
                 default(SyntaxToken))
-                .WithLeadingTrivia(SyntaxUtil.MakeDocComment(Resources.DeepCloneDescription));
+                .WithLeadingTrivia(SyntaxHelper.MakeDocComment(Resources.DeepCloneDescription));
         }
 
         private MethodDeclarationSyntax GenerateDeepCloneCore()
@@ -383,7 +383,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.ObjectCreationExpression(
                             SyntaxFactory.ParseTypeName(TypeName),
-                            ArgumentList(SyntaxFactory.ThisExpression()),
+                            SyntaxHelper.ArgumentList(SyntaxFactory.ThisExpression()),
                             default(InitializerExpressionSyntax)))),
                 default(SyntaxToken));
         }
@@ -468,7 +468,7 @@ namespace Microsoft.JSchema.Generator
             string argName = propertyName.ToCamelCase();
 
             return SyntaxFactory.IfStatement(
-                IsNotNull(SyntaxFactory.IdentifierName(argName)),
+                SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
                 SyntaxFactory.Block());
         }
 
@@ -480,7 +480,7 @@ namespace Microsoft.JSchema.Generator
             string uriArgName = propertyName.ToCamelCase();
 
             return SyntaxFactory.IfStatement(
-                IsNotNull(SyntaxFactory.IdentifierName(uriArgName)),
+                SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(uriArgName)),
                 SyntaxFactory.Block(
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -488,7 +488,7 @@ namespace Microsoft.JSchema.Generator
                             SyntaxFactory.IdentifierName(propertyName),
                             SyntaxFactory.ObjectCreationExpression(
                                 type,
-                                ArgumentList(
+                                SyntaxHelper.ArgumentList(
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(uriArgName),
@@ -535,7 +535,7 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(EqualsMethod),
-                                ArgumentList(
+                                SyntaxHelper.ArgumentList(
                                     SyntaxFactory.BinaryExpression(
                                         SyntaxKind.AsExpression,
                                         SyntaxFactory.IdentifierName(OtherParameter),
@@ -644,7 +644,7 @@ namespace Microsoft.JSchema.Generator
         private StatementSyntax MakeScalarReferenceTypeHashCodeContribution(ExpressionSyntax expression)
         {
             return SyntaxFactory.IfStatement(
-                IsNotNull(expression),
+                SyntaxHelper.IsNotNull(expression),
                 SyntaxFactory.Block(MakeScalarHashCodeContribution(expression)));
         }
 
@@ -664,7 +664,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.IdentifierName(loopVariableName));
 
             return SyntaxFactory.IfStatement(
-                IsNotNull(expression),
+                SyntaxHelper.IsNotNull(expression),
                 SyntaxFactory.Block(
                     SyntaxFactory.ForEachStatement(
                         Var(),
@@ -690,7 +690,7 @@ namespace Microsoft.JSchema.Generator
             string loopVariableName = GetNextVariableName();
 
             return SyntaxFactory.IfStatement(
-                IsNotNull(expression),
+                SyntaxHelper.IsNotNull(expression),
                 SyntaxFactory.Block(
                     SyntaxFactory.LocalDeclarationStatement(
                         SyntaxFactory.VariableDeclaration(
@@ -766,8 +766,8 @@ namespace Microsoft.JSchema.Generator
 
             statements.Add(
                 SyntaxFactory.IfStatement(
-                    IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
-                    SyntaxFactory.Block(Return(false))));
+                    SyntaxHelper.IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
+                    SyntaxFactory.Block(SyntaxHelper.Return(false))));
 
             if (schema.Properties != null)
             {
@@ -785,7 +785,7 @@ namespace Microsoft.JSchema.Generator
             }
 
             // All comparisons succeeded.
-            statements.Add(Return(true));
+            statements.Add(SyntaxHelper.Return(true));
 
             return statements.ToArray();
         }
@@ -822,7 +822,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxKind.NotEqualsExpression,
                     left,
                     right),
-                SyntaxFactory.Block(Return(false)));
+                SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
 
         private IfStatementSyntax MakeObjectEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
@@ -836,8 +836,8 @@ namespace Microsoft.JSchema.Generator
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.IdentifierName(ObjectType),
                             SyntaxFactory.IdentifierName(EqualsMethod)),
-                        ArgumentList(left, right))),
-                SyntaxFactory.Block(Return(false)));
+                        SyntaxHelper.ArgumentList(left, right))),
+                SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
 
         private IfStatementSyntax MakeCollectionEqualsTest(
@@ -847,15 +847,15 @@ namespace Microsoft.JSchema.Generator
         {
             return SyntaxFactory.IfStatement(
                 // if (!Object.ReferenceEquals(Prop, other.Prop))
-                AreDifferentObjects(left, right),
+                SyntaxHelper.AreDifferentObjects(left, right),
                 SyntaxFactory.Block(
                     // if (Prop == null || other.Prop == null)
                     SyntaxFactory.IfStatement(
                         SyntaxFactory.BinaryExpression(
                             SyntaxKind.LogicalOrExpression,
-                            IsNull(left),
-                            IsNull(right)),
-                        SyntaxFactory.Block(Return(false))),
+                            SyntaxHelper.IsNull(left),
+                            SyntaxHelper.IsNull(right)),
+                        SyntaxFactory.Block(SyntaxHelper.Return(false))),
 
                     // if (Prop.Count != other.Prop.Count)
                     SyntaxFactory.IfStatement(
@@ -869,7 +869,7 @@ namespace Microsoft.JSchema.Generator
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 right,
                                 CountPropertyName())),
-                        SyntaxFactory.Block(Return(false))),
+                        SyntaxFactory.Block(SyntaxHelper.Return(false))),
 
                     CollectionIndexLoop(comparisonKindKey, left, right)
                     ));
@@ -887,13 +887,13 @@ namespace Microsoft.JSchema.Generator
             ExpressionSyntax leftElement =
                 SyntaxFactory.ElementAccessExpression(
                     left,
-                    BracketedArgumentList(
+                    SyntaxHelper.BracketedArgumentList(
                         SyntaxFactory.IdentifierName(indexVarName)));
 
             ExpressionSyntax rightElement =
                 SyntaxFactory.ElementAccessExpression(
                 right,
-                BracketedArgumentList(
+                SyntaxHelper.BracketedArgumentList(
                     SyntaxFactory.IdentifierName(indexVarName)));
 
             // From the type of the element (primitive, object, list, or dictionary), create
@@ -939,15 +939,15 @@ namespace Microsoft.JSchema.Generator
             string otherPropertyVariableName = GetNextVariableName();
 
             return SyntaxFactory.IfStatement(
-                AreDifferentObjects(left, right),
+                SyntaxHelper.AreDifferentObjects(left, right),
                 SyntaxFactory.Block(
                     SyntaxFactory.IfStatement(
                         SyntaxFactory.BinaryExpression(
                             SyntaxKind.LogicalOrExpression,
-                            IsNull(left),
+                            SyntaxHelper.IsNull(left),
                             SyntaxFactory.BinaryExpression(
                                 SyntaxKind.LogicalOrExpression,
-                                IsNull(right),
+                                SyntaxHelper.IsNull(right),
                                 SyntaxFactory.BinaryExpression(
                                     SyntaxKind.NotEqualsExpression,
                                     SyntaxFactory.MemberAccessExpression(
@@ -958,7 +958,7 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         right,
                                         CountPropertyName())))),
-                        SyntaxFactory.Block(Return(false))),
+                        SyntaxFactory.Block(SyntaxHelper.Return(false))),
                     SyntaxFactory.ForEachStatement(
                         Var(),
                         loopVariableName,
@@ -993,7 +993,7 @@ namespace Microsoft.JSchema.Generator
                                                         SyntaxFactory.IdentifierName(otherPropertyVariableName))
 
                                                 })))),
-                                SyntaxFactory.Block(Return(false))),
+                                SyntaxFactory.Block(SyntaxHelper.Return(false))),
                             SyntaxFactory.IfStatement(
                                 SyntaxFactory.BinaryExpression(
                                     SyntaxKind.NotEqualsExpression,
@@ -1002,7 +1002,7 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.IdentifierName(loopVariableName),
                                         SyntaxFactory.IdentifierName("Value")),
                                     SyntaxFactory.IdentifierName(otherPropertyVariableName)),
-                                SyntaxFactory.Block(Return(false))
+                                SyntaxFactory.Block(SyntaxHelper.Return(false))
                                 )))));
         }
 
@@ -1029,64 +1029,12 @@ namespace Microsoft.JSchema.Generator
             return modifiers;
         }
 
-        private PrefixUnaryExpressionSyntax AreDifferentObjects(ExpressionSyntax left, ExpressionSyntax right)
-        {
-            return SyntaxFactory.PrefixUnaryExpression(
-                        SyntaxKind.LogicalNotExpression,
-                        SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName(ObjectType),
-                                    SyntaxFactory.IdentifierName(ReferenceEqualsMethod)),
-                                ArgumentList(left, right)));
-        }
-
-        private static BinaryExpressionSyntax IsNull(ExpressionSyntax expr)
-        {
-            return SyntaxFactory.BinaryExpression(
-                SyntaxKind.EqualsExpression,
-                expr,
-                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
-        }
-
-        private static BinaryExpressionSyntax IsNotNull(ExpressionSyntax expr)
-        {
-            return SyntaxFactory.BinaryExpression(
-                SyntaxKind.NotEqualsExpression,
-                expr,
-                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
-        }
-
-        private static ArgumentListSyntax ArgumentList(params ExpressionSyntax[] args)
-        {
-            return SyntaxFactory.ArgumentList(
-                        SyntaxFactory.SeparatedList(
-                            args.Select(arg => SyntaxFactory.Argument(arg))));
-
-        }
-
-        private  BracketedArgumentListSyntax BracketedArgumentList(params ExpressionSyntax[] args)
-        {
-            return SyntaxFactory.BracketedArgumentList(
-                        SyntaxFactory.SeparatedList(
-                            args.Select(arg => SyntaxFactory.Argument(arg))));
-        }
-
         private ExpressionSyntax OtherPropName(string propName)
         {
             return SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 SyntaxFactory.IdentifierName(OtherParameter),
                 SyntaxFactory.IdentifierName(propName));
-        }
-
-        private StatementSyntax Return(bool value)
-        {
-            return SyntaxFactory.ReturnStatement(
-                SyntaxFactory.LiteralExpression(
-                    value
-                    ? SyntaxKind.TrueLiteralExpression
-                    : SyntaxKind.FalseLiteralExpression));
         }
 
 #endregion Syntax helpers

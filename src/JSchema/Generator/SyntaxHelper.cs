@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -11,8 +12,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.JSchema.Generator
 {
-    internal static class SyntaxUtil
+    internal static class SyntaxHelper
     {
+        private const string ObjectType = "Object";
+        private const string ReferenceEqualsMethod = "ReferenceEquals";
+
         private const string DocCommentSummaryFormat =
 @"/// <summary>
 /// {0}
@@ -34,7 +38,6 @@ namespace Microsoft.JSchema.Generator
 /// {1}
 /// </exception>
 ";
-
 
         internal static SyntaxTriviaList MakeDocComment(
             string summary,
@@ -112,7 +115,7 @@ namespace Microsoft.JSchema.Generator
             return MakeAccessor(SyntaxKind.SetAccessorDeclaration, body);
         }
 
-        private static AccessorDeclarationSyntax MakeAccessor(SyntaxKind getOrSet, BlockSyntax body)
+        internal static AccessorDeclarationSyntax MakeAccessor(SyntaxKind getOrSet, BlockSyntax body)
         {
             return SyntaxFactory.AccessorDeclaration(
                 getOrSet,
@@ -123,6 +126,58 @@ namespace Microsoft.JSchema.Generator
                     : SyntaxFactory.Token(SyntaxKind.SetKeyword),
                 body,
                 body == null ? SyntaxFactory.Token(SyntaxKind.SemicolonToken) : default(SyntaxToken));
+        }
+
+        internal static PrefixUnaryExpressionSyntax AreDifferentObjects(ExpressionSyntax left, ExpressionSyntax right)
+        {
+            return SyntaxFactory.PrefixUnaryExpression(
+                        SyntaxKind.LogicalNotExpression,
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                    SyntaxFactory.IdentifierName(ObjectType),
+                                    SyntaxFactory.IdentifierName(ReferenceEqualsMethod)),
+                                ArgumentList(left, right)));
+        }
+
+        internal static BinaryExpressionSyntax IsNull(ExpressionSyntax expr)
+        {
+            return SyntaxFactory.BinaryExpression(
+                SyntaxKind.EqualsExpression,
+                expr,
+                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
+        }
+
+        internal static BinaryExpressionSyntax IsNotNull(ExpressionSyntax expr)
+        {
+            return SyntaxFactory.BinaryExpression(
+                SyntaxKind.NotEqualsExpression,
+                expr,
+                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
+        }
+
+        internal static ArgumentListSyntax ArgumentList(params ExpressionSyntax[] args)
+        {
+            return SyntaxFactory.ArgumentList(
+                        SyntaxFactory.SeparatedList(
+                            args.Select(arg => SyntaxFactory.Argument(arg))));
+
+        }
+
+        internal static BracketedArgumentListSyntax BracketedArgumentList(params ExpressionSyntax[] args)
+        {
+            return SyntaxFactory.BracketedArgumentList(
+                        SyntaxFactory.SeparatedList(
+                            args.Select(arg => SyntaxFactory.Argument(arg))));
+        }
+
+        internal static StatementSyntax Return(bool value)
+        {
+            return SyntaxFactory.ReturnStatement(
+                SyntaxFactory.LiteralExpression(
+                    value
+                    ? SyntaxKind.TrueLiteralExpression
+                    : SyntaxKind.FalseLiteralExpression));
         }
     }
 }
