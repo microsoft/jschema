@@ -20,6 +20,11 @@ namespace Microsoft.JSchema.Generator
         SimpleAssign,
 
         /// <summary>
+        /// Initialize this property by assigning collection elements.
+        /// </summary>
+        Collection,
+
+        /// <summary>
         /// Initialize this property with special code to handle Uris.
         /// </summary>
         Uri

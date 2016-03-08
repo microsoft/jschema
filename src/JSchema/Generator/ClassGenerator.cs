@@ -203,12 +203,9 @@ namespace Microsoft.JSchema.Generator
 
             // Generate the argument list that will be passed from the copy ctor to the
             // Init method.
-            IEnumerable<ArgumentSyntax> arguments = GetPropertyNames()
-                .Select(name => SyntaxFactory.Argument(
-                    SyntaxFactory.IdentifierName(name.ToCamelCase())));
-
-            SeparatedSyntaxList<ArgumentSyntax> initArgumentList =
-                SyntaxFactory.SeparatedList(arguments);
+            ExpressionSyntax[] arguments = GetPropertyNames()
+                .Select(name =>  SyntaxFactory.IdentifierName(name.ToCamelCase()))
+                .ToArray();
 
             return SyntaxFactory.ConstructorDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
@@ -220,7 +217,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            SyntaxFactory.ArgumentList(initArgumentList)))))
+                            ArgumentList(arguments)))))
                 .WithLeadingTrivia(
                     SyntaxUtil.MakeDocComment(
                         string.Format(
@@ -270,15 +267,13 @@ namespace Microsoft.JSchema.Generator
         {
             // Generate the argument list that will be passed from the copy ctor to the
             // Init method.
-            IEnumerable<ArgumentSyntax> arguments = GetPropertyNames()
-                .Select(name => SyntaxFactory.Argument(
+            ExpressionSyntax[] initArguments = GetPropertyNames()
+                .Select(name => 
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
                         SyntaxFactory.IdentifierName(OtherParameter),
-                        SyntaxFactory.IdentifierName(name))));
-
-            SeparatedSyntaxList<ArgumentSyntax> initArgumentList =
-                SyntaxFactory.SeparatedList(arguments);
+                        SyntaxFactory.IdentifierName(name)))
+                    .ToArray();
 
             return SyntaxFactory.ConstructorDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
@@ -300,20 +295,16 @@ namespace Microsoft.JSchema.Generator
                             SyntaxFactory.ThrowStatement(
                                 SyntaxFactory.ObjectCreationExpression(
                                     SyntaxFactory.ParseTypeName("ArgumentNullException"),
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.InvocationExpression(
-                                                    SyntaxFactory.IdentifierName("nameof"),
-                                                    SyntaxFactory.ArgumentList(
-                                                        SyntaxFactory.SingletonSeparatedList(
-                                                            SyntaxFactory.Argument(
-                                                                SyntaxFactory.IdentifierName(OtherParameter)))))))),
+                                    ArgumentList(
+                                        SyntaxFactory.InvocationExpression(
+                                            SyntaxFactory.IdentifierName("nameof"),
+                                            ArgumentList(
+                                                SyntaxFactory.IdentifierName(OtherParameter)))),
                                     default(InitializerExpressionSyntax))))),
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            SyntaxFactory.ArgumentList(initArgumentList)))))
+                            ArgumentList(initArguments)))))
             .WithLeadingTrivia(
                 SyntaxUtil.MakeDocComment(
                     string.Format(
@@ -351,7 +342,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
-                            SyntaxFactory.ArgumentList()))),
+                            ArgumentList()))),
                 default(SyntaxToken));
         }
 
@@ -372,7 +363,7 @@ namespace Microsoft.JSchema.Generator
                             SyntaxFactory.ParseTypeName(TypeName),
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
-                                SyntaxFactory.ArgumentList())))),
+                                ArgumentList())))),
                 default(SyntaxToken))
                 .WithLeadingTrivia(SyntaxUtil.MakeDocComment(Resources.DeepCloneDescription));
         }
@@ -392,10 +383,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.ObjectCreationExpression(
                             SyntaxFactory.ParseTypeName(TypeName),
-                            SyntaxFactory.ArgumentList(
-                                SyntaxFactory.SingletonSeparatedList(
-                                    SyntaxFactory.Argument(
-                                        SyntaxFactory.ThisExpression()))),
+                            ArgumentList(SyntaxFactory.ThisExpression()),
                             default(InitializerExpressionSyntax)))),
                 default(SyntaxToken));
         }
@@ -436,24 +424,34 @@ namespace Microsoft.JSchema.Generator
 
             foreach (string propertyName in GetPropertyNames())
             {
-                PropertyInfo info = PropertyInfoDictionary[propertyName.ToCamelCase()];
-                switch (info.InitializationKind)
+                StatementSyntax statement = GenerateInitialization(propertyName);
+                if (statement != null)
                 {
-                    case InitializationKind.SimpleAssign:
-                        statements.Add(GenerateSimpleAssignmentInitialization(propertyName));
-                        break;
-
-                    case InitializationKind.Uri:
-                        statements.Add(GenerateUriInitialization(propertyName));
-                        break;
-
-                    default:
-                        // Do not generate initialization code for this property.
-                        break;
+                    statements.Add(statement);
                 }
             }
 
             return statements.ToArray();
+        }
+
+        private StatementSyntax GenerateInitialization(string propertyName)
+        {
+            PropertyInfo info = PropertyInfoDictionary[propertyName.ToCamelCase()];
+            switch (info.InitializationKind)
+            {
+                case InitializationKind.SimpleAssign:
+                    return GenerateSimpleAssignmentInitialization(propertyName);
+
+                case InitializationKind.Collection:
+                    return GenerateCollectionAssignment(propertyName);
+
+                case InitializationKind.Uri:
+                    return GenerateUriInitialization(propertyName);
+
+                default:
+                    // Do not generate initialization code for this property.
+                    return null;
+            }
         }
 
         private StatementSyntax GenerateSimpleAssignmentInitialization(string propertyName)
@@ -463,6 +461,15 @@ namespace Microsoft.JSchema.Generator
                     SyntaxKind.SimpleAssignmentExpression,
                     SyntaxFactory.IdentifierName(propertyName),
                     SyntaxFactory.IdentifierName(propertyName.ToCamelCase())));
+        }
+
+        private StatementSyntax GenerateCollectionAssignment(string propertyName)
+        {
+            string argName = propertyName.ToCamelCase();
+
+            return SyntaxFactory.IfStatement(
+                IsNotNull(SyntaxFactory.IdentifierName(argName)),
+                SyntaxFactory.Block());
         }
 
         private StatementSyntax GenerateUriInitialization(string propertyName)
@@ -481,31 +488,24 @@ namespace Microsoft.JSchema.Generator
                             SyntaxFactory.IdentifierName(propertyName),
                             SyntaxFactory.ObjectCreationExpression(
                                 type,
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SeparatedList(
-                                        new ArgumentSyntax[]
-                                        {
-                                            SyntaxFactory.Argument(
+                                ArgumentList(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(uriArgName),
+                                        SyntaxFactory.IdentifierName("OriginalString")),
+                                            SyntaxFactory.ConditionalExpression(
                                                 SyntaxFactory.MemberAccessExpression(
                                                     SyntaxKind.SimpleMemberAccessExpression,
                                                     SyntaxFactory.IdentifierName(uriArgName),
-                                                    SyntaxFactory.IdentifierName("OriginalString"))),
-
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.ConditionalExpression(
-                                                    SyntaxFactory.MemberAccessExpression(
-                                                        SyntaxKind.SimpleMemberAccessExpression,
-                                                        SyntaxFactory.IdentifierName(uriArgName),
-                                                        SyntaxFactory.IdentifierName("IsAbsoluteUri")),
-                                                    SyntaxFactory.MemberAccessExpression(
-                                                        SyntaxKind.SimpleMemberAccessExpression,
-                                                        SyntaxFactory.IdentifierName("UriKind"),
-                                                        SyntaxFactory.IdentifierName("Absolute")),
-                                                    SyntaxFactory.MemberAccessExpression(
-                                                        SyntaxKind.SimpleMemberAccessExpression,
-                                                        SyntaxFactory.IdentifierName("UriKind"),
-                                                        SyntaxFactory.IdentifierName("Relative"))))
-                                        })),
+                                                    SyntaxFactory.IdentifierName("IsAbsoluteUri")),
+                                                SyntaxFactory.MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    SyntaxFactory.IdentifierName("UriKind"),
+                                                    SyntaxFactory.IdentifierName("Absolute")),
+                                                SyntaxFactory.MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    SyntaxFactory.IdentifierName("UriKind"),
+                                                    SyntaxFactory.IdentifierName("Relative")))),
                                 default(InitializerExpressionSyntax))))));
         }
 
@@ -1041,7 +1041,7 @@ namespace Microsoft.JSchema.Generator
                                 ArgumentList(left, right)));
         }
 
-        private BinaryExpressionSyntax IsNull(ExpressionSyntax expr)
+        private static BinaryExpressionSyntax IsNull(ExpressionSyntax expr)
         {
             return SyntaxFactory.BinaryExpression(
                 SyntaxKind.EqualsExpression,
@@ -1049,7 +1049,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
         }
 
-        private BinaryExpressionSyntax IsNotNull(ExpressionSyntax expr)
+        private static BinaryExpressionSyntax IsNotNull(ExpressionSyntax expr)
         {
             return SyntaxFactory.BinaryExpression(
                 SyntaxKind.NotEqualsExpression,
@@ -1057,7 +1057,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
         }
 
-        private ArgumentListSyntax ArgumentList(params ExpressionSyntax[] args)
+        private static ArgumentListSyntax ArgumentList(params ExpressionSyntax[] args)
         {
             return SyntaxFactory.ArgumentList(
                         SyntaxFactory.SeparatedList(
