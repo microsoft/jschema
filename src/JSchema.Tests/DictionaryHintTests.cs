@@ -69,12 +69,14 @@ namespace N
                 if (Properties != null)
                 {
                     // Use xor for dictionaries to be order-independent.
-                    int value_0 = 0;
-                    foreach (var value_1 in Properties)
+                    int xor_0 = 0;
+                    foreach (var value_0 in Properties)
                     {
-                        value_0 ^= (value_1.Key ?? string.Empty).GetHashCode();
-                        value_0 ^= (value_1.Value ?? string.Empty).GetHashCode();
+                        xor_0 ^= (value_0.Key ?? string.Empty).GetHashCode();
+                        xor_0 ^= (value_0.Value ?? string.Empty).GetHashCode();
                     }
+
+                    result = (result * 31) + xor_0;
                 }
             }
 

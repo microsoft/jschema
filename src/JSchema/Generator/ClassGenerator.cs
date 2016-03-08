@@ -37,15 +37,19 @@ namespace Microsoft.JSchema.Generator
         private const string DeepCloneMethod = "DeepClone";
         private const string DeepCloneCoreMethod = "DeepCloneCore";
 
-        private const string TempVariableNameBase = "value_";
+        private const string LoopVariableNameBase = "value_";
+        private const string DestinationVariableNameBase = "destination_";
+        private const string XorVariableNameBase = "xor_";
         private const string GetHashCodeResultVariableName = "result";
 
         private const int GetHashCodeSeedValue = 17;
         private const int GetHashCodeCombiningValue = 31;
 
-        // Value used to construct unique names for each of the loop variables
-        // used in the implementation of a method.
-        private int _variableCount = 0;
+        // Values used to construct unique names for each of the variables used in the
+        // generated method implementations.
+        private int _loopVariableCount = 0;
+        private int _destinationVariableCount = 0;
+        private int _xorVariableCount = 0;
 
         public ClassGenerator(
             JsonSchema rootSchema,
@@ -390,7 +394,7 @@ namespace Microsoft.JSchema.Generator
 
         private MethodDeclarationSyntax GenerateInitMethod()
         {
-            _variableCount = 0;
+            ResetVariableCounts();
 
             SeparatedSyntaxList<ParameterSyntax> parameterList = GenerateInitMethodParameterList();
 
@@ -468,7 +472,7 @@ namespace Microsoft.JSchema.Generator
         private StatementSyntax GenerateCollectionInitialization(string propertyName)
         {
             string argName = propertyName.ToCamelCase();
-            string loopVariableName = GetNextVariableName();
+            string loopVariableName = GetNextLoopVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(argName),
@@ -519,7 +523,7 @@ namespace Microsoft.JSchema.Generator
 
         private MemberDeclarationSyntax OverrideObjectEquals()
         {
-            _variableCount = 0;
+            ResetVariableCounts();
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
@@ -552,7 +556,7 @@ namespace Microsoft.JSchema.Generator
         }
         private MemberDeclarationSyntax OverrideGetHashCode(JsonSchema schema)
         {
-            _variableCount = 0;
+            ResetVariableCounts();
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
@@ -660,7 +664,7 @@ namespace Microsoft.JSchema.Generator
             string hashKindKey,
             ExpressionSyntax expression)
         {
-            string loopVariableName = GetNextVariableName();
+            string loopVariableName = GetNextLoopVariableName();
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate hash generation code.
@@ -694,8 +698,8 @@ namespace Microsoft.JSchema.Generator
 
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
         {
-            string xorValueVariableName = GetNextVariableName();
-            string loopVariableName = GetNextVariableName();
+            string xorValueVariableName = GetNextXorVariableName();
+            string loopVariableName = GetNextLoopVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(expression),
@@ -713,13 +717,29 @@ namespace Microsoft.JSchema.Generator
                                             SyntaxFactory.Literal(0)))))))
                         .WithLeadingTrivia(
                             SyntaxFactory.ParseLeadingTrivia("// Use xor for dictionaries to be order-independent.\n")),
+
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
                         loopVariableName,
                         expression,
                         SyntaxFactory.Block(
                             Xor(xorValueVariableName, loopVariableName, "Key"),
-                            Xor(xorValueVariableName, loopVariableName, "Value")))));
+                            Xor(xorValueVariableName, loopVariableName, "Value"))),
+
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                            SyntaxFactory.BinaryExpression(
+                                SyntaxKind.AddExpression,
+                                SyntaxFactory.ParenthesizedExpression(
+                                    SyntaxFactory.BinaryExpression(
+                                        SyntaxKind.MultiplyExpression,
+                                            SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                                SyntaxFactory.LiteralExpression(
+                                                    SyntaxKind.NumericLiteralExpression,
+                                                    SyntaxFactory.Literal(GetHashCodeCombiningValue)))),
+                                SyntaxFactory.IdentifierName(xorValueVariableName))))));
         }
 
         private StatementSyntax Xor(string xorValueVariableName, string loopVariableName, string keyValuePairMemberName)
@@ -747,7 +767,7 @@ namespace Microsoft.JSchema.Generator
 
         private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
         {
-            _variableCount = 0;
+            ResetVariableCounts();
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), EqualsMethod)
@@ -889,7 +909,7 @@ namespace Microsoft.JSchema.Generator
             ExpressionSyntax right)
         {
             // The name of the index variable used in the loop over elements.
-            string indexVarName = GetNextVariableName();
+            string indexVarName = GetNextLoopVariableName();
 
             // The two elements that will be compared each time through the loop.
             ExpressionSyntax leftElement =
@@ -936,15 +956,10 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.Block(comparisonStatement));
         }
 
-        private string GetNextVariableName()
-        {
-            return TempVariableNameBase + _variableCount++;
-        }
-
         private IfStatementSyntax MakeDictionaryEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
         {
-            string loopVariableName = GetNextVariableName();
-            string otherPropertyVariableName = GetNextVariableName();
+            string loopVariableName = GetNextLoopVariableName();
+            string otherPropertyVariableName = GetNextLoopVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.AreDifferentObjects(left, right),
@@ -1014,7 +1029,29 @@ namespace Microsoft.JSchema.Generator
                                 )))));
         }
 
-#region Syntax helpers
+        private void ResetVariableCounts()
+        {
+            _loopVariableCount = 0;
+            _destinationVariableCount = 0;
+            _xorVariableCount = 0;
+        }
+
+        private string GetNextLoopVariableName()
+        {
+            return LoopVariableNameBase + _loopVariableCount++;
+        }
+
+        private string GetNextDestinationVariableName()
+        {
+            return DestinationVariableNameBase + _destinationVariableCount++;
+        }
+
+        private string GetNextXorVariableName()
+        {
+            return XorVariableNameBase + _xorVariableCount++;
+        }
+
+        #region Syntax helpers
 
         private SimpleNameSyntax CountPropertyName()
         {
