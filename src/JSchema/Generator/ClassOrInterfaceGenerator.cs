@@ -251,7 +251,7 @@ namespace Microsoft.JSchema.Generator
                         type,
                         ComparisonKind.Collection,
                         HashKind.Collection,
-                        InitializationKind.None);
+                        InitializationKind.Collection);
 
                     return type;
 

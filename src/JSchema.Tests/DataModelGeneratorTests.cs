@@ -715,6 +715,13 @@ namespace N
         {
             IntProp = intProp;
             StringProp = stringProp;
+            if (arrayProp != null)
+            {
+                foreach (var value_0 in arrayProp)
+                {
+                }
+            }
+
             if (uriProp != null)
             {
                 UriProp = new Uri(uriProp.OriginalString, uriProp.IsAbsoluteUri ? UriKind.Absolute : UriKind.Relative);

@@ -189,5 +189,10 @@ namespace Microsoft.JSchema.Generator
                     ? SyntaxKind.TrueLiteralExpression
                     : SyntaxKind.FalseLiteralExpression));
         }
+
+        internal static TypeSyntax Var()
+        {
+            return SyntaxFactory.ParseTypeName("var");
+        }
     }
 }

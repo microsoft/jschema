@@ -390,6 +390,8 @@ namespace Microsoft.JSchema.Generator
 
         private MethodDeclarationSyntax GenerateInitMethod()
         {
+            _variableCount = 0;
+
             SeparatedSyntaxList<ParameterSyntax> parameterList = GenerateInitMethodParameterList();
 
             return SyntaxFactory.MethodDeclaration(
@@ -443,7 +445,7 @@ namespace Microsoft.JSchema.Generator
                     return GenerateSimpleAssignmentInitialization(propertyName);
 
                 case InitializationKind.Collection:
-                    return GenerateCollectionAssignment(propertyName);
+                    return GenerateCollectionInitialization(propertyName);
 
                 case InitializationKind.Uri:
                     return GenerateUriInitialization(propertyName);
@@ -463,13 +465,19 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.IdentifierName(propertyName.ToCamelCase())));
         }
 
-        private StatementSyntax GenerateCollectionAssignment(string propertyName)
+        private StatementSyntax GenerateCollectionInitialization(string propertyName)
         {
             string argName = propertyName.ToCamelCase();
+            string loopVariableName = GetNextVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(argName),
-                SyntaxFactory.Block());
+                SyntaxFactory.Block(
+                    SyntaxFactory.ForEachStatement(
+                        SyntaxHelper.Var(),
+                        loopVariableName,
+                        SyntaxFactory.IdentifierName(argName),
+                        SyntaxFactory.Block())));
         }
 
         private StatementSyntax GenerateUriInitialization(string propertyName)
@@ -667,7 +675,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxHelper.IsNotNull(expression),
                 SyntaxFactory.Block(
                     SyntaxFactory.ForEachStatement(
-                        Var(),
+                        SyntaxHelper.Var(),
                         loopVariableName,
                         expression,
                         SyntaxFactory.Block(
@@ -706,7 +714,7 @@ namespace Microsoft.JSchema.Generator
                         .WithLeadingTrivia(
                             SyntaxFactory.ParseLeadingTrivia("// Use xor for dictionaries to be order-independent.\n")),
                     SyntaxFactory.ForEachStatement(
-                        Var(),
+                        SyntaxHelper.Var(),
                         loopVariableName,
                         expression,
                         SyntaxFactory.Block(
@@ -960,7 +968,7 @@ namespace Microsoft.JSchema.Generator
                                         CountPropertyName())))),
                         SyntaxFactory.Block(SyntaxHelper.Return(false))),
                     SyntaxFactory.ForEachStatement(
-                        Var(),
+                        SyntaxHelper.Var(),
                         loopVariableName,
                         left,
                         SyntaxFactory.Block(
@@ -1007,11 +1015,6 @@ namespace Microsoft.JSchema.Generator
         }
 
 #region Syntax helpers
-
-        private TypeSyntax Var()
-        {
-            return SyntaxFactory.ParseTypeName("var");
-        }
 
         private SimpleNameSyntax CountPropertyName()
         {
