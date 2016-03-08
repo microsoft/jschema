@@ -13,5 +13,10 @@ namespace Microsoft.JSchema.Generator
         /// Do not generate code to initialize this property
         /// </summary>
         None,
+
+        /// <summary>
+        /// Initialize this property with an assignment without a null check.
+        /// </summary>
+        SimpleAssign
     }
 }

@@ -687,6 +687,8 @@ namespace N
 
         private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp)
         {
+            IntProp = intProp;
+            StringProp = stringProp;
         }
     }
 }";

@@ -138,7 +138,7 @@ namespace Microsoft.JSchema.Generator
                     type,
                     ComparisonKind.OperatorEquals,
                     HashKind.ScalarValueType,
-                    InitializationKind.None);
+                    InitializationKind.SimpleAssign);
 
                 return type;
             }
@@ -181,7 +181,7 @@ namespace Microsoft.JSchema.Generator
                     type,
                     ComparisonKind.OperatorEquals,
                     HashKind.ScalarValueType,
-                    InitializationKind.None);
+                    InitializationKind.SimpleAssign);
 
                 return type;
             }
@@ -196,7 +196,7 @@ namespace Microsoft.JSchema.Generator
                     type,
                     ComparisonKind.OperatorEquals,
                     HashKind.ScalarValueType,
-                    InitializationKind.None);
+                    InitializationKind.SimpleAssign);
 
                 OnAdditionalType(new AdditionalTypeRequiredEventArgs(enumHint, schema));
 
@@ -215,7 +215,7 @@ namespace Microsoft.JSchema.Generator
                         type,
                         ComparisonKind.OperatorEquals,
                         HashKind.ScalarValueType,
-                        InitializationKind.None);
+                        InitializationKind.SimpleAssign);
 
                     return type;
 
@@ -227,7 +227,7 @@ namespace Microsoft.JSchema.Generator
                         type,
                         ComparisonKind.OperatorEquals,
                         HashKind.ScalarReferenceType,
-                        InitializationKind.None);
+                        InitializationKind.SimpleAssign);
 
                     return type;
 
@@ -278,7 +278,7 @@ namespace Microsoft.JSchema.Generator
                             type,
                             ComparisonKind.OperatorEquals,
                             HashKind.ScalarReferenceType,
-                            InitializationKind.None);
+                            InitializationKind.SimpleAssign);
                     }
                     else
                     {
@@ -289,7 +289,7 @@ namespace Microsoft.JSchema.Generator
                             type,
                             ComparisonKind.OperatorEquals,
                             HashKind.ScalarValueType,
-                            InitializationKind.None);
+                            InitializationKind.SimpleAssign);
                     }
 
                     return type;

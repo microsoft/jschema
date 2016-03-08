@@ -413,7 +413,7 @@ namespace Microsoft.JSchema.Generator
                 default(TypeParameterListSyntax),
                 SyntaxFactory.ParameterList(parameterList),
                 default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                SyntaxFactory.Block(),
+                SyntaxFactory.Block(GenerateInitializations()),
                 default(SyntaxToken));
         }
 
@@ -428,6 +428,37 @@ namespace Microsoft.JSchema.Generator
                     default(EqualsValueClauseSyntax)));
 
             return SyntaxFactory.SeparatedList(parameters);
+        }
+
+        private StatementSyntax[] GenerateInitializations()
+        {
+            var statements = new List<StatementSyntax>();
+
+            foreach (string propertyName in GetPropertyNames())
+            {
+                PropertyInfo info = PropertyInfoDictionary[propertyName.ToCamelCase()];
+                switch (info.InitializationKind)
+                {
+                    case InitializationKind.SimpleAssign:
+                        statements.Add(GenerateSimpleAssignmentInitialization(propertyName));
+                        break;
+
+                    default:
+                        // Do not generate initialization code for this property.
+                        break;
+                }
+            }
+
+            return statements.ToArray();
+        }
+
+        private StatementSyntax GenerateSimpleAssignmentInitialization(string propertyName)
+        {
+            return SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    SyntaxFactory.IdentifierName(propertyName),
+                    SyntaxFactory.IdentifierName(propertyName.ToCamelCase())));
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()
@@ -678,10 +709,10 @@ namespace Microsoft.JSchema.Generator
                                 default(EqualsValueClauseSyntax))
                         )))
                 .WithBody(
-                    SyntaxFactory.Block(MakeEqualityTests(schema)));
+                    SyntaxFactory.Block(GenerateEqualityTests(schema)));
         }
 
-        private StatementSyntax[] MakeEqualityTests(JsonSchema schema)
+        private StatementSyntax[] GenerateEqualityTests(JsonSchema schema)
         {
             var statements = new List<StatementSyntax>();
 
