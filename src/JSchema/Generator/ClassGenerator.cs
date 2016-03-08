@@ -290,7 +290,7 @@ namespace Microsoft.JSchema.Generator
                 default(ConstructorInitializerSyntax),
                 SyntaxFactory.Block(
                     SyntaxFactory.IfStatement(
-                        SyntaxHelper.IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
+                        SyntaxHelper.IsNull(OtherParameter),
                         SyntaxFactory.Block(
                             SyntaxFactory.ThrowStatement(
                                 SyntaxFactory.ObjectCreationExpression(
@@ -468,7 +468,7 @@ namespace Microsoft.JSchema.Generator
             string argName = propertyName.ToCamelCase();
 
             return SyntaxFactory.IfStatement(
-                SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
+                SyntaxHelper.IsNotNull(argName),
                 SyntaxFactory.Block());
         }
 
@@ -480,7 +480,7 @@ namespace Microsoft.JSchema.Generator
             string uriArgName = propertyName.ToCamelCase();
 
             return SyntaxFactory.IfStatement(
-                SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(uriArgName)),
+                SyntaxHelper.IsNotNull(uriArgName),
                 SyntaxFactory.Block(
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -766,7 +766,7 @@ namespace Microsoft.JSchema.Generator
 
             statements.Add(
                 SyntaxFactory.IfStatement(
-                    SyntaxHelper.IsNull(SyntaxFactory.IdentifierName(OtherParameter)),
+                    SyntaxHelper.IsNull(OtherParameter),
                     SyntaxFactory.Block(SyntaxHelper.Return(false))));
 
             if (schema.Properties != null)

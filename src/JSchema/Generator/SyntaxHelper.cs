@@ -140,12 +140,22 @@ namespace Microsoft.JSchema.Generator
                                 ArgumentList(left, right)));
         }
 
+        internal static BinaryExpressionSyntax IsNull(string identifierName)
+        {
+            return IsNull(SyntaxFactory.IdentifierName(identifierName));
+        }
+
         internal static BinaryExpressionSyntax IsNull(ExpressionSyntax expr)
         {
             return SyntaxFactory.BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 expr,
                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
+        }
+
+        internal static BinaryExpressionSyntax IsNotNull(string identifierName)
+        {
+            return IsNotNull(SyntaxFactory.IdentifierName(identifierName));
         }
 
         internal static BinaryExpressionSyntax IsNotNull(ExpressionSyntax expr)
