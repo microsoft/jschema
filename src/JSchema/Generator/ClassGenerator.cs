@@ -500,11 +500,11 @@ namespace Microsoft.JSchema.Generator
                 var uncheckedStatements = new List<StatementSyntax>();
                 foreach (var property in schema.Properties)
                 {
-                    string hashTypeKey = property.Key;
+                    string hashKindKey = property.Key;
                     string propName = property.Key.ToPascalCase();
 
                     uncheckedStatements.Add(
-                        MakeHashCodeContribution(hashTypeKey, SyntaxFactory.IdentifierName(propName)));
+                        MakeHashCodeContribution(hashKindKey, SyntaxFactory.IdentifierName(propName)));
                 }
 
                 statements.Add(SyntaxFactory.CheckedStatement(
@@ -518,25 +518,25 @@ namespace Microsoft.JSchema.Generator
             return statements.ToArray();
         }
 
-        private StatementSyntax MakeHashCodeContribution(string hashTypeKey, ExpressionSyntax expression)
+        private StatementSyntax MakeHashCodeContribution(string hashKindKey, ExpressionSyntax expression)
         {
-            HashType hashType = PropertyInfoDictionary[hashTypeKey].HashType;
-            switch (hashType)
+            HashKind hashKind = PropertyInfoDictionary[hashKindKey].HashKind;
+            switch (hashKind)
             {
-                case HashType.ScalarValueType:
+                case HashKind.ScalarValueType:
                     return MakeScalarHashCodeContribution(expression);
 
-                case HashType.ScalarReferenceType:
+                case HashKind.ScalarReferenceType:
                     return MakeScalarReferenceTypeHashCodeContribution(expression);
 
-                case HashType.Collection:
-                    return MakeCollectionHashCodeContribution(hashTypeKey, expression);
+                case HashKind.Collection:
+                    return MakeCollectionHashCodeContribution(hashKindKey, expression);
 
-                case HashType.Dictionary:
+                case HashKind.Dictionary:
                     return MakeDictionaryHashCodeContribution(expression); // TODO: Dictionary as array element; array element as dictionary.
 
                 default:
-                    throw new ArgumentException($"Property {hashTypeKey} has unknown comparison type {hashType}.");
+                    throw new ArgumentException($"Property {hashKindKey} has unknown comparison type {hashKind}.");
             }
         }
 
@@ -570,14 +570,14 @@ namespace Microsoft.JSchema.Generator
         }
 
         private StatementSyntax MakeCollectionHashCodeContribution(
-            string hashTypeKey,
+            string hashKindKey,
             ExpressionSyntax expression)
         {
             string loopVariableName = GetNextVariableName();
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate hash generation code.
-            string elementHashTypeKey = MakeElementKeyName(hashTypeKey);
+            string elementHashTypeKey = MakeElementKeyName(hashKindKey);
 
             StatementSyntax hashCodeContribution =
                 MakeHashCodeContribution(
@@ -694,12 +694,12 @@ namespace Microsoft.JSchema.Generator
             {
                 foreach (var property in schema.Properties)
                 {
-                    string comparisonTypeKey = property.Key;
+                    string comparisonKindKey = property.Key;
                     string propName = property.Key.ToPascalCase();
 
                     statements.Add(
                         MakeComparisonTest(
-                            comparisonTypeKey,
+                            comparisonKindKey,
                             SyntaxFactory.IdentifierName(propName),
                             OtherPropName(propName)));
                 }
@@ -712,27 +712,27 @@ namespace Microsoft.JSchema.Generator
         }
 
         private IfStatementSyntax MakeComparisonTest(
-            string comparisonTypeKey,
+            string comparisonKindKey,
             ExpressionSyntax left,
             ExpressionSyntax right)
        {
-            ComparisonType comparisonType = PropertyInfoDictionary[comparisonTypeKey].ComparisonType;
-            switch (comparisonType)
+            ComparisonKind comparisonKind = PropertyInfoDictionary[comparisonKindKey].ComparisonKind;
+            switch (comparisonKind)
             {
-                case ComparisonType.OperatorEquals:
+                case ComparisonKind.OperatorEquals:
                     return MakeOperatorEqualsTest(left, right);
 
-                case ComparisonType.ObjectEquals:
+                case ComparisonKind.ObjectEquals:
                     return MakeObjectEqualsTest(left, right);
 
-                case ComparisonType.Collection:
-                    return MakeCollectionEqualsTest(comparisonTypeKey, left, right);
+                case ComparisonKind.Collection:
+                    return MakeCollectionEqualsTest(comparisonKindKey, left, right);
 
-                case ComparisonType.Dictionary:
+                case ComparisonKind.Dictionary:
                     return MakeDictionaryEqualsTest(left, right); // TODO: Dictionary as array element; array element as dictionary.
 
                 default:
-                    throw new ArgumentException($"Property {comparisonTypeKey} has unknown comparison type {comparisonType}.");
+                    throw new ArgumentException($"Property {comparisonKindKey} has unknown comparison type {comparisonKind}.");
             }
         }
 
@@ -762,7 +762,7 @@ namespace Microsoft.JSchema.Generator
         }
 
         private IfStatementSyntax MakeCollectionEqualsTest(
-            string comparisonTypeLookupKey,
+            string comparisonKindKey,
             ExpressionSyntax left,
             ExpressionSyntax right)
         {
@@ -792,12 +792,12 @@ namespace Microsoft.JSchema.Generator
                                 CountPropertyName())),
                         SyntaxFactory.Block(Return(false))),
 
-                    CollectionIndexLoop(comparisonTypeLookupKey, left, right)
+                    CollectionIndexLoop(comparisonKindKey, left, right)
                     ));
         }
 
         private ForStatementSyntax CollectionIndexLoop(
-            string comparisonTypeKey,
+            string comparisonKindKey,
             ExpressionSyntax left,
             ExpressionSyntax right)
         {
@@ -819,7 +819,7 @@ namespace Microsoft.JSchema.Generator
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate comparison, for example, "a == b", or "Object.Equals(a, b)".
-            string elmentComparisonTypeKey = MakeElementKeyName(comparisonTypeKey);
+            string elmentComparisonTypeKey = MakeElementKeyName(comparisonKindKey);
 
             IfStatementSyntax comparisonStatement = MakeComparisonTest(elmentComparisonTypeKey, leftElement, rightElement);
 

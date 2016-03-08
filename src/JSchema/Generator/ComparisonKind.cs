@@ -4,10 +4,11 @@
 namespace Microsoft.JSchema.Generator
 {
     /// <summary>
-    /// Values that specify the type of comparison code that needs to be generated
-    /// for each property in the implementation of IEquatable&lt;T>.Equals.
+    /// Values that specify the type of comparison code that must be generated
+    /// for each property in the implementation of the
+    /// <code>IEquatable&lt;T>.Equals</code> method.
     /// </summary>
-    public enum ComparisonType
+    public enum ComparisonKind
     {
         /// <summary>
         /// Do not generate comparison code for this property

@@ -4,10 +4,11 @@
 namespace Microsoft.JSchema.Generator
 {
     /// <summary>
-    /// Values that specify the type of code that needs to be generated to compute the
-    /// hash for each property in the implementation of <see cref="Object.GetHashCode" />.
+    /// Values that specify the type of code that must be generated to compute the
+    /// hash for each property in the implementation of the
+    /// <see cref="Object.GetHashCode" /> method.
     /// </summary>
-    public enum HashType
+    public enum HashKind
     {
         /// <summary>
         /// Do not generate code to compute the hash for this property.

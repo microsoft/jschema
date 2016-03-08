@@ -11,22 +11,56 @@ namespace Microsoft.JSchema.Generator
     public class PropertyInfo
     {
         /// <summary>
-        /// Gets or sets a value that specifies the type of comparison code that needs
-        /// to be generated for the property in the implementation of
-        /// IEquatable&lt;T>.Equals.
+        /// Initializes a new instance of the <see cref="PropertyInfo"/> class.
         /// </summary>
-        public ComparisonType ComparisonType { get; set; }
+        /// <param name="comparisonKind">
+        /// The kind of comparison code required by the property.
+        /// </param>
+        /// <param name="hashKind">
+        /// The kind of hash value computation code required by the property.
+        /// </param>
+        /// <param name="initializationKind">
+        /// The kind of initialization code required by the property.
+        /// </param>
+        /// <param name="type">
+        /// The type of the property.
+        /// </param>
+        public PropertyInfo(
+            ComparisonKind comparisonKind,
+            HashKind hashKind,
+            InitializationKind initializationKind,
+            TypeSyntax type)
+        {
+            ComparisonKind = comparisonKind;
+            HashKind = hashKind;
+            InitializationKind = initializationKind;
+            Type = type;
+        }
 
         /// <summary>
-        /// Gets or sets a value that specifies the type of code that needs to be
-        /// generated to compute the for the property in the implementation of
-        /// <see cref="Object.GetHashCode" />.
+        /// Gets a value that specifies the kind of comparison code that must be
+        /// generated for the property in the implementation of the
+        /// <code>IEquatable&lt;T>.Equals</code> method.
         /// </summary>
-        public HashType HashType { get; set; }
+        public ComparisonKind ComparisonKind { get; }
 
         /// <summary>
-        /// Gets or sets the type of the property.
+        /// Gets a value that specifies the kind of code that must be generated to
+        /// compute the hash for the property in the implementation of the
+        /// <see cref="Object.GetHashCode" /> method.
         /// </summary>
-        public TypeSyntax Type { get; set; }
+        public HashKind HashKind { get; }
+
+        /// <summary>
+        /// Gets a value that specifies the kind of initialization code that must be
+        /// generated for the property in the implementation of the <code>Init</code>
+        /// method.
+        /// </summary>
+        public InitializationKind InitializationKind { get; }
+
+        /// <summary>
+        /// Gets the type of the property.
+        /// </summary>
+        public TypeSyntax Type { get; }
     }
 }

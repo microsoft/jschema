@@ -136,8 +136,9 @@ namespace Microsoft.JSchema.Generator
                 SetPropertyInfo(
                     propertyName,
                     type,
-                    ComparisonType.OperatorEquals,
-                    HashType.ScalarValueType);
+                    ComparisonKind.OperatorEquals,
+                    HashKind.ScalarValueType,
+                    InitializationKind.None);
 
                 return type;
             }
@@ -149,8 +150,9 @@ namespace Microsoft.JSchema.Generator
                 SetPropertyInfo(
                     propertyName,
                     type,
-                    ComparisonType.OperatorEquals,
-                    HashType.ScalarReferenceType);
+                    ComparisonKind.OperatorEquals,
+                    HashKind.ScalarReferenceType,
+                    InitializationKind.None);
 
                 return type;
             }
@@ -162,8 +164,9 @@ namespace Microsoft.JSchema.Generator
                 SetPropertyInfo(
                     propertyName,
                     type,
-                    ComparisonType.Dictionary,
-                    HashType.Dictionary);
+                    ComparisonKind.Dictionary,
+                    HashKind.Dictionary,
+                    InitializationKind.None);
 
                 return type;
             }
@@ -176,8 +179,9 @@ namespace Microsoft.JSchema.Generator
                 SetPropertyInfo(
                     propertyName,
                     type,
-                    ComparisonType.OperatorEquals,
-                    HashType.ScalarValueType);
+                    ComparisonKind.OperatorEquals,
+                    HashKind.ScalarValueType,
+                    InitializationKind.None);
 
                 return type;
             }
@@ -190,8 +194,9 @@ namespace Microsoft.JSchema.Generator
                 SetPropertyInfo(
                     propertyName,
                     type,
-                    ComparisonType.OperatorEquals,
-                    HashType.ScalarValueType);
+                    ComparisonKind.OperatorEquals,
+                    HashKind.ScalarValueType,
+                    InitializationKind.None);
 
                 OnAdditionalType(new AdditionalTypeRequiredEventArgs(enumHint, schema));
 
@@ -208,8 +213,9 @@ namespace Microsoft.JSchema.Generator
                     SetPropertyInfo(
                         propertyName,
                         type,
-                        ComparisonType.OperatorEquals,
-                        HashType.ScalarValueType);
+                        ComparisonKind.OperatorEquals,
+                        HashKind.ScalarValueType,
+                        InitializationKind.None);
 
                     return type;
 
@@ -219,8 +225,9 @@ namespace Microsoft.JSchema.Generator
                     SetPropertyInfo(
                         propertyName,
                         type,
-                        ComparisonType.OperatorEquals,
-                        HashType.ScalarReferenceType);
+                        ComparisonKind.OperatorEquals,
+                        HashKind.ScalarReferenceType,
+                        InitializationKind.None);
 
                     return type;
 
@@ -230,8 +237,9 @@ namespace Microsoft.JSchema.Generator
                     SetPropertyInfo(
                         propertyName,
                         type,
-                        ComparisonType.ObjectEquals,
-                        HashType.ScalarReferenceType);
+                        ComparisonKind.ObjectEquals,
+                        HashKind.ScalarReferenceType,
+                        InitializationKind.None);
 
                     return type;
 
@@ -241,8 +249,9 @@ namespace Microsoft.JSchema.Generator
                     SetPropertyInfo(
                         propertyName,
                         type,
-                        ComparisonType.Collection,
-                        HashType.Collection);
+                        ComparisonKind.Collection,
+                        HashKind.Collection,
+                        InitializationKind.None);
 
                     return type;
 
@@ -255,8 +264,9 @@ namespace Microsoft.JSchema.Generator
                         SetPropertyInfo(
                             propertyName,
                             type,
-                            ComparisonType.ObjectEquals,
-                            HashType.ScalarReferenceType);
+                            ComparisonKind.ObjectEquals,
+                            HashKind.ScalarReferenceType,
+                            InitializationKind.None);
 
                     }
                     else if (inferredType == JsonType.String)
@@ -266,8 +276,9 @@ namespace Microsoft.JSchema.Generator
                         SetPropertyInfo(
                             propertyName,
                             type,
-                            ComparisonType.OperatorEquals,
-                            HashType.ScalarReferenceType);
+                            ComparisonKind.OperatorEquals,
+                            HashKind.ScalarReferenceType,
+                            InitializationKind.None);
                     }
                     else
                     {
@@ -276,8 +287,9 @@ namespace Microsoft.JSchema.Generator
                         SetPropertyInfo(
                             propertyName,
                             type,
-                            ComparisonType.OperatorEquals,
-                            HashType.ScalarValueType);
+                            ComparisonKind.OperatorEquals,
+                            HashKind.ScalarValueType,
+                            InitializationKind.None);
                     }
 
                     return type;
@@ -290,15 +302,12 @@ namespace Microsoft.JSchema.Generator
         private void SetPropertyInfo(
             string propertyName,
             TypeSyntax type,
-            ComparisonType comparisonType,
-            HashType hashType)
+            ComparisonKind comparisonKind,
+            HashKind hashKind,
+            InitializationKind initializationKind)
         {
-            PropertyInfoDictionary[propertyName] = new PropertyInfo
-            {
-                ComparisonType = comparisonType,
-                HashType = hashType,
-                Type = type
-            };
+            PropertyInfoDictionary[propertyName] =
+                new PropertyInfo(comparisonKind, hashKind, initializationKind, type);
         }
 
         private JsonType InferJsonTypeFromEnumValues(object[] enumValues)
