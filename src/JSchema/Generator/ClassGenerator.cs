@@ -716,7 +716,7 @@ namespace Microsoft.JSchema.Generator
                                             SyntaxKind.NumericLiteralExpression,
                                             SyntaxFactory.Literal(0)))))))
                         .WithLeadingTrivia(
-                            SyntaxFactory.ParseLeadingTrivia("// Use xor for dictionaries to be order-independent.\n")),
+                            SyntaxFactory.ParseLeadingTrivia(Resources.XorDictionaryComment)),
 
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),

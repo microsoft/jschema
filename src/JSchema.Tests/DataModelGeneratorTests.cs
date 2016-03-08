@@ -537,6 +537,7 @@ namespace N
             _settings.CopyrightNotice =
 @"// Copyright (c) 2016. All rights reserved.
 // Licensed under Apache 2.0 license.
+
 ";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 

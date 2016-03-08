@@ -293,5 +293,15 @@ namespace Microsoft.JSchema {
                 return ResourceManager.GetString("SyntaxInterfaceKindDescription", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Use xor for dictionaries to be order-independent.
+        ///.
+        /// </summary>
+        internal static string XorDictionaryComment {
+            get {
+                return ResourceManager.GetString("XorDictionaryComment", resourceCulture);
+            }
+        }
     }
 }

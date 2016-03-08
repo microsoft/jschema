@@ -133,8 +133,13 @@ namespace Microsoft.JSchema.Generator
             }
 
             compilationUnit = compilationUnit
-                .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(SyntaxHelper.MakeCopyrightComment(_copyrightNotice));
+                .WithMembers(compilationUnitMembers);
+
+            if (!string.IsNullOrWhiteSpace(_copyrightNotice))
+            {
+                compilationUnit = compilationUnit.WithLeadingTrivia(
+                    SyntaxFactory.ParseLeadingTrivia(_copyrightNotice));
+            }
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);

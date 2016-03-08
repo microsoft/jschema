@@ -195,4 +195,8 @@
   <data name="SyntaxInterfaceKindDescription" xml:space="preserve">
     <value>Gets a value indicating the type of object implementing &lt;see cref="ISyntax" /&gt;.</value>
   </data>
+  <data name="XorDictionaryComment" xml:space="preserve">
+    <value>// Use xor for dictionaries to be order-independent.
+</value>
+  </data>
 </root>

@@ -171,8 +171,13 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(SyntaxHelper.MakeCopyrightComment(_settings.CopyrightNotice));
+                .WithMembers(compilationUnitMembers);
+
+            if (!string.IsNullOrWhiteSpace(_settings.CopyrightNotice))
+            {
+                compilationUnit = compilationUnit.WithLeadingTrivia(
+                    SyntaxFactory.ParseLeadingTrivia(_settings.CopyrightNotice));
+            }
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
@@ -218,8 +223,13 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .WithMembers(compilationUnitMembers)
-                .WithLeadingTrivia(SyntaxHelper.MakeCopyrightComment(_settings.CopyrightNotice));
+                .WithMembers(compilationUnitMembers);
+
+            if (!string.IsNullOrWhiteSpace(_settings.CopyrightNotice))
+            {
+                compilationUnit = compilationUnit.WithLeadingTrivia(
+                    SyntaxFactory.ParseLeadingTrivia(_settings.CopyrightNotice));
+            }
 
             var workspace = new AdhocWorkspace();
             SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);

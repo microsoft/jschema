@@ -90,21 +90,6 @@ namespace Microsoft.JSchema.Generator
             return SyntaxFactory.ParseLeadingTrivia(sb.ToString());
         }
 
-        internal static SyntaxTriviaList MakeCopyrightComment(string copyrightNotice)
-        {
-            var trivia = new SyntaxTriviaList();
-            if (!string.IsNullOrWhiteSpace(copyrightNotice))
-            {
-                trivia = trivia.AddRange(new SyntaxTrivia[]
-                {
-                    SyntaxFactory.Comment(copyrightNotice),
-                    SyntaxFactory.Whitespace(Environment.NewLine)
-                });
-            }
-
-            return trivia;
-        }
-
         internal static AccessorDeclarationSyntax MakeGetAccessor(BlockSyntax body = null)
         {
             return MakeAccessor(SyntaxKind.GetAccessorDeclaration, body);
