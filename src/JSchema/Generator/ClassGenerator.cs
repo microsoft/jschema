@@ -193,13 +193,26 @@ namespace Microsoft.JSchema.Generator
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
         {
+            // Generate the argument list that will be passed from the copy ctor to the
+            // Init method.
+            IEnumerable<ArgumentSyntax> arguments = GetPropertyNames()
+                .Select(name => SyntaxFactory.Argument(
+                    SyntaxFactory.IdentifierName(name.ToCamelCase())));
+
+            SeparatedSyntaxList<ArgumentSyntax> initArgumentList =
+                SyntaxFactory.SeparatedList(arguments);
+
             return SyntaxFactory.ConstructorDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
                 SyntaxFactory.Identifier(TypeName),
                 SyntaxFactory.ParameterList(),
                 default(ConstructorInitializerSyntax),
-                SyntaxFactory.Block())
+                SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(InitMethod),
+                            SyntaxFactory.ArgumentList(initArgumentList)))))
                 .WithLeadingTrivia(
                     SyntaxUtil.MakeDocComment(
                         string.Format(
@@ -215,7 +228,9 @@ namespace Microsoft.JSchema.Generator
 
             foreach (string propertyName in GetPropertyNames())
             {
-                result[propertyName] = string.Format(
+                string paramName = propertyName.ToCamelCase();
+
+                result[paramName] = string.Format(
                     CultureInfo.CurrentCulture,
                     Resources.PropertyCtorParamDescription,
                     propertyName);

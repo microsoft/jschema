@@ -129,24 +129,23 @@ namespace Microsoft.JSchema.Generator
         {
             if (IsDateTime(schema))
             {
-                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                SetHashType(propertyName, HashType.ScalarValueType);
+                string typeName = "System.DateTime";
 
-                return MakeNamedType("System.DateTime");
+                SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarValueType);
+
+                return MakeNamedType(typeName);
             }
 
             if (IsUri(schema))
             {
-                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                SetHashType(propertyName, HashType.ScalarReferenceType);
+                SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarReferenceType);
 
                 return MakeNamedType("System.Uri");
             }
 
             if (ShouldBeDictionary(propertyName, schema))
             {
-                SetComparisonType(propertyName, ComparisonType.Dictionary);
-                SetHashType(propertyName, HashType.Dictionary);
+                SetPropertyInfo(propertyName, ComparisonType.Dictionary, HashType.Dictionary);
 
                 return MakeNamedType("System.Collections.Generic.Dictionary<string, string>");
             }
@@ -154,8 +153,7 @@ namespace Microsoft.JSchema.Generator
             string referencedEnumTypeName = GetReferencedEnumTypeName(schema);
             if (referencedEnumTypeName != null)
             {
-                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                SetHashType(propertyName, HashType.ScalarValueType);
+                SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarValueType);
 
                 return MakeNamedType(referencedEnumTypeName);
             }
@@ -163,8 +161,7 @@ namespace Microsoft.JSchema.Generator
             EnumHint enumHint;
             if (ShouldBeEnum(propertyName, schema, out enumHint))
             {
-                SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                SetHashType(propertyName, HashType.ScalarValueType);
+                SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarValueType);
 
                 OnAdditionalType(new AdditionalTypeRequiredEventArgs(enumHint, schema));
 
@@ -176,26 +173,22 @@ namespace Microsoft.JSchema.Generator
                 case JsonType.Boolean:
                 case JsonType.Integer:
                 case JsonType.Number:
-                    SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                    SetHashType(propertyName, HashType.ScalarValueType);
+                    SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarValueType);
 
                     return MakePrimitiveType(schema.Type);
 
                 case JsonType.String:
-                    SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                    SetHashType(propertyName, HashType.ScalarReferenceType);
+                    SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarReferenceType);
 
                     return MakePrimitiveType(schema.Type);
 
                 case JsonType.Object:
-                    SetComparisonType(propertyName, ComparisonType.ObjectEquals);
-                    SetHashType(propertyName, HashType.ScalarReferenceType);
+                    SetPropertyInfo(propertyName, ComparisonType.ObjectEquals, HashType.ScalarReferenceType);
                     
                     return MakeObjectType(schema);
 
                 case JsonType.Array:
-                    SetComparisonType(propertyName, ComparisonType.Collection);
-                    SetHashType(propertyName, HashType.Collection);
+                    SetPropertyInfo(propertyName, ComparisonType.Collection, HashType.Collection);
 
                     return MakeArrayType(propertyName, schema);
 
@@ -203,20 +196,17 @@ namespace Microsoft.JSchema.Generator
                     JsonType inferredType = InferJsonTypeFromEnumValues(schema.Enum);
                     if (inferredType == JsonType.None)
                     {
-                        SetComparisonType(propertyName, ComparisonType.ObjectEquals);
-                        SetHashType(propertyName, HashType.ScalarReferenceType);
+                        SetPropertyInfo(propertyName, ComparisonType.ObjectEquals, HashType.ScalarReferenceType);
 
                         inferredType = JsonType.Object;
                     }
                     else if (inferredType == JsonType.String)
                     {
-                        SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                        SetHashType(propertyName, HashType.ScalarReferenceType);
+                        SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarReferenceType);
                     }
                     else
                     {
-                        SetComparisonType(propertyName, ComparisonType.OperatorEquals);
-                        SetHashType(propertyName, HashType.ScalarValueType);
+                        SetPropertyInfo(propertyName, ComparisonType.OperatorEquals, HashType.ScalarValueType);
                     }
 
                     return MakePrimitiveType(inferredType);
@@ -226,24 +216,13 @@ namespace Microsoft.JSchema.Generator
             }
         }
 
-        private void SetComparisonType(string propertyName, ComparisonType comparisonType)
+        private void SetPropertyInfo(string propertyName, ComparisonType comparisonType, HashType hashType)
         {
-            if (!PropertyInfoDictionary.Keys.Contains(propertyName))
+            PropertyInfoDictionary[propertyName] = new PropertyInfo
             {
-                PropertyInfoDictionary[propertyName] = new PropertyInfo();
-            }
-
-            PropertyInfoDictionary[propertyName].ComparisonType = comparisonType;
-        }
-        
-        private void SetHashType(string propertyName, HashType hashType)
-        {
-            if (!PropertyInfoDictionary.Keys.Contains(propertyName))
-            {
-                PropertyInfoDictionary[propertyName] = new PropertyInfo();
-            }
-
-            PropertyInfoDictionary[propertyName].HashType = hashType;
+                ComparisonType = comparisonType,
+                HashType = hashType
+            };
         }
 
         private JsonType InferJsonTypeFromEnumValues(object[] enumValues)
