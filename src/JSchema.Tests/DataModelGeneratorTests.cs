@@ -597,6 +597,14 @@ namespace N
       ""type"": ""string"",
       ""description"": ""A DateTime property."",
       ""format"": ""date-time""
+    },
+    ""referencedTypeProp"": {
+      ""$ref"": ""#/definitions/d""
+    }
+  },
+  ""definitions"": {
+    ""d"": {
+      ""type"": ""object""
     }
   }
 }");
@@ -644,6 +652,7 @@ namespace N
         /// A DateTime property.
         /// </summary>
         public DateTime DateTimeProp { get; set; }
+        public D ReferencedTypeProp { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
@@ -670,9 +679,12 @@ namespace N
         /// <param name=""dateTimeProp"">
         /// An initialization value for the <see cref=""P: DateTimeProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp)
+        /// <param name=""referencedTypeProp"">
+        /// An initialization value for the <see cref=""P: ReferencedTypeProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp);
         }
 
         /// <summary>
@@ -691,7 +703,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp);
         }
 
         ISyntax ISyntax.DeepClone()
@@ -712,7 +724,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -770,7 +782,11 @@ namespace N
         /// <summary>
         /// A value indicating that the <see cref=""ISyntax"" /> object is of type <see cref=""C"" />.
         /// </summary>
-        C
+        C,
+        /// <summary>
+        /// A value indicating that the <see cref=""ISyntax"" /> object is of type <see cref=""D"" />.
+        /// </summary>
+        D
     }
 }";
 
@@ -778,12 +794,14 @@ namespace N
 
             string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISyntax");
             string kindEnumPath = TestFileSystem.MakeOutputFilePath("SarifKind");
+            string referencedTypePath = TestFileSystem.MakeOutputFilePath("D");
 
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
                 syntaxInterfacePath,
-                kindEnumPath
+                kindEnumPath,
+                referencedTypePath
             };
 
             _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);

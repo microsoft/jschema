@@ -234,12 +234,20 @@ namespace Microsoft.JSchema.Generator
                 case JsonType.Object:
                     type = MakeObjectType(schema);
 
+                    // If the schema for this property references a named type,
+                    // the generated Init method will initialize it by cloning an object
+                    // of that type. Otherwise, we treat this property as a System.Object
+                    // and just initialize it by assignment.
+                    InitializationKind initializationKind = schema.Reference != null
+                        ? InitializationKind.Clone
+                        : InitializationKind.SimpleAssign;
+
                     SetPropertyInfo(
                         propertyName,
                         type,
                         ComparisonKind.ObjectEquals,
                         HashKind.ScalarReferenceType,
-                        InitializationKind.None);
+                        initializationKind);
 
                     return type;
 

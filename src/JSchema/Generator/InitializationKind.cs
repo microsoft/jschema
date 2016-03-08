@@ -25,6 +25,11 @@ namespace Microsoft.JSchema.Generator
         Collection,
 
         /// <summary>
+        /// Initialize this property by cloning an object of the same type.
+        /// </summary>
+        Clone,
+
+        /// <summary>
         /// Initialize this property with special code to handle Uris.
         /// </summary>
         Uri
