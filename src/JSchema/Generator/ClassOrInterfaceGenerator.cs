@@ -21,26 +21,17 @@ namespace Microsoft.JSchema.Generator
             : base(hintDictionary)
         {
             _rootSchema = rootSchema;
-            ComparisonTypeDictionary = new Dictionary<string, ComparisonType>();
-            HashTypeDictionary = new Dictionary<string, HashType>();
+            PropertyInfoDictionary = new Dictionary<string, PropertyInfo>();
         }
 
         protected abstract SyntaxTokenList CreatePropertyModifiers();
 
         /// <summary>
         /// Gets a dictionary that maps the name of each property in the generated class
-        /// to a value that specifies what kind of code to generate for that property in
-        /// the implementation of <see cref="IEquatable&lt;T>.Equals" />.
+        /// to a information about the property derived from the JSON schema.
         /// </summary> 
-        protected Dictionary<string, ComparisonType> ComparisonTypeDictionary { get; }
+        protected Dictionary<string, PropertyInfo> PropertyInfoDictionary { get; }
         
-        /// <summary>
-        /// Gets a dictionary that maps the name of each property in the generated class
-        /// to a value that specifies what kind of code to generate for that property in
-        /// the implementation of <see cref="GetHashCode" />.
-        /// </summary>
-        protected Dictionary<string, HashType> HashTypeDictionary { get; }
-
         protected List<MemberDeclarationSyntax> GenerateProperties(JsonSchema schema)
         {
             var propDecls = new List<MemberDeclarationSyntax>();
@@ -67,8 +58,7 @@ namespace Microsoft.JSchema.Generator
 
         /// <summary>
         /// Synthesize a lookup key by which the elements of the specified collection-
-        /// valued property can be looked up in the <see cref="HashTypeDictionary"/> or
-        /// the <see cref="ComparisonTypeDictionary"/>.
+        /// valued property can be looked up in the <see cref="PropertyInfoDictionary"/>.
         /// </summary>
         /// <param name="propertyName">
         /// The name of a collection-valued property.
@@ -219,12 +209,22 @@ namespace Microsoft.JSchema.Generator
 
         private void SetComparisonType(string propertyName, ComparisonType comparisonType)
         {
-            ComparisonTypeDictionary[propertyName] = comparisonType;
+            if (!PropertyInfoDictionary.Keys.Contains(propertyName))
+            {
+                PropertyInfoDictionary[propertyName] = new PropertyInfo();
+            }
+
+            PropertyInfoDictionary[propertyName].ComparisonType = comparisonType;
         }
         
         private void SetHashType(string propertyName, HashType hashType)
         {
-            HashTypeDictionary[propertyName] = hashType;
+            if (!PropertyInfoDictionary.Keys.Contains(propertyName))
+            {
+                PropertyInfoDictionary[propertyName] = new PropertyInfo();
+            }
+
+            PropertyInfoDictionary[propertyName].HashType = hashType;
         }
 
         private JsonType InferJsonTypeFromEnumValues(object[] enumValues)

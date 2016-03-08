@@ -192,6 +192,24 @@ namespace Microsoft.JSchema.Generator
 
         private MemberDeclarationSyntax GenerateCopyConstructor()
         {
+            // Generate the argument list that will be passed from the copy ctor to the
+            // Init method. Don't include information about array elements. For example,
+            // if the class has an array-valued property ArrayProp, then include "ArrayProp"
+            // in the list, but not "ArrayProp[]".
+            IEnumerable<string> propertyNames = PropertyInfoDictionary.Keys
+                .Where(key => key.IndexOf("[]") == -1)
+                .Select(key => key.ToPascalCase());
+
+            IEnumerable<ArgumentSyntax> arguments = propertyNames
+                .Select(name => SyntaxFactory.Argument(
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName(OtherParameter),
+                        SyntaxFactory.IdentifierName(name))));
+
+            SeparatedSyntaxList<ArgumentSyntax> initArgumentList =
+                SyntaxFactory.SeparatedList(arguments);
+
             return SyntaxFactory.ConstructorDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
@@ -225,7 +243,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            SyntaxFactory.ArgumentList()))))
+                            SyntaxFactory.ArgumentList(initArgumentList)))))
             .WithLeadingTrivia(
                 SyntaxUtil.MakeDocComment(
                     string.Format(
@@ -402,7 +420,7 @@ namespace Microsoft.JSchema.Generator
 
         private StatementSyntax MakeHashCodeContribution(string hashTypeKey, ExpressionSyntax expression)
         {
-            HashType hashType = HashTypeDictionary[hashTypeKey];
+            HashType hashType = PropertyInfoDictionary[hashTypeKey].HashType;
             switch (hashType)
             {
                 case HashType.ScalarValueType:
@@ -598,7 +616,7 @@ namespace Microsoft.JSchema.Generator
             ExpressionSyntax left,
             ExpressionSyntax right)
        {
-            ComparisonType comparisonType = ComparisonTypeDictionary[comparisonTypeKey];
+            ComparisonType comparisonType = PropertyInfoDictionary[comparisonTypeKey].ComparisonType;
             switch (comparisonType)
             {
                 case ComparisonType.OperatorEquals:

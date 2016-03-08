@@ -579,12 +579,20 @@ namespace N
     ""stringProp"": {
       ""type"": ""string"",
       ""description"": ""A string property.""
+    },
+    ""arrayProp"": {
+      ""type"": ""array"",
+      ""description"": ""An array property."",
+      ""items"": {
+        ""type"": ""number""
+      }
     }
   }
 }");
 
             const string ExpectedClass =
 @"using System;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -612,6 +620,11 @@ namespace N
         public string StringProp { get; set; }
 
         /// <summary>
+        /// An array property.
+        /// </summary>
+        public IList<double> ArrayProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -634,7 +647,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init();
+            Init(other.IntProp, other.StringProp, other.ArrayProp);
         }
 
         ISyntax ISyntax.DeepClone()

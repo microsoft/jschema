@@ -5,7 +5,7 @@ namespace Microsoft.JSchema.Generator
 {
     /// <summary>
     /// Values that specify the type of comparison code that needs to be generated
-    /// for each property in the implementation of IEquatable<T>.Equals.
+    /// for each property in the implementation of IEquatable&lt;T>.Equals.
     /// </summary>
     public enum ComparisonType
     {
