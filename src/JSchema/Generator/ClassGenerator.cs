@@ -443,6 +443,10 @@ namespace Microsoft.JSchema.Generator
                         statements.Add(GenerateSimpleAssignmentInitialization(propertyName));
                         break;
 
+                    case InitializationKind.Uri:
+                        statements.Add(GenerateUriInitialization(propertyName));
+                        break;
+
                     default:
                         // Do not generate initialization code for this property.
                         break;
@@ -459,6 +463,50 @@ namespace Microsoft.JSchema.Generator
                     SyntaxKind.SimpleAssignmentExpression,
                     SyntaxFactory.IdentifierName(propertyName),
                     SyntaxFactory.IdentifierName(propertyName.ToCamelCase())));
+        }
+
+        private StatementSyntax GenerateUriInitialization(string propertyName)
+        {
+            PropertyInfo info = PropertyInfoDictionary[propertyName.ToCamelCase()];
+            TypeSyntax type = info.Type;
+
+            string uriArgName = propertyName.ToCamelCase();
+
+            return SyntaxFactory.IfStatement(
+                IsNotNull(SyntaxFactory.IdentifierName(uriArgName)),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            SyntaxFactory.IdentifierName(propertyName),
+                            SyntaxFactory.ObjectCreationExpression(
+                                type,
+                                SyntaxFactory.ArgumentList(
+                                    SyntaxFactory.SeparatedList(
+                                        new ArgumentSyntax[]
+                                        {
+                                            SyntaxFactory.Argument(
+                                                SyntaxFactory.MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    SyntaxFactory.IdentifierName(uriArgName),
+                                                    SyntaxFactory.IdentifierName("OriginalString"))),
+
+                                            SyntaxFactory.Argument(
+                                                SyntaxFactory.ConditionalExpression(
+                                                    SyntaxFactory.MemberAccessExpression(
+                                                        SyntaxKind.SimpleMemberAccessExpression,
+                                                        SyntaxFactory.IdentifierName(uriArgName),
+                                                        SyntaxFactory.IdentifierName("IsAbsoluteUri")),
+                                                    SyntaxFactory.MemberAccessExpression(
+                                                        SyntaxKind.SimpleMemberAccessExpression,
+                                                        SyntaxFactory.IdentifierName("UriKind"),
+                                                        SyntaxFactory.IdentifierName("Absolute")),
+                                                    SyntaxFactory.MemberAccessExpression(
+                                                        SyntaxKind.SimpleMemberAccessExpression,
+                                                        SyntaxFactory.IdentifierName("UriKind"),
+                                                        SyntaxFactory.IdentifierName("Relative"))))
+                                        })),
+                                default(InitializerExpressionSyntax))))));
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()

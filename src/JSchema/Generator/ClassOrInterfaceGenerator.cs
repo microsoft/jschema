@@ -152,7 +152,7 @@ namespace Microsoft.JSchema.Generator
                     type,
                     ComparisonKind.OperatorEquals,
                     HashKind.ScalarReferenceType,
-                    InitializationKind.None);
+                    InitializationKind.Uri);
 
                 return type;
             }

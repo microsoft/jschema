@@ -586,6 +586,11 @@ namespace N
       ""items"": {
         ""type"": ""number""
       }
+    },
+    ""uriProp"": {
+      ""type"": ""string"",
+      ""description"": ""A URI property."",
+      ""format"": ""uri""
     }
   }
 }");
@@ -625,6 +630,11 @@ namespace N
         public IList<double> ArrayProp { get; set; }
 
         /// <summary>
+        /// A URI property.
+        /// </summary>
+        public Uri UriProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -643,9 +653,12 @@ namespace N
         /// <param name=""arrayProp"">
         /// An initialization value for the <see cref=""P: ArrayProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp)
+        /// <param name=""uriProp"">
+        /// An initialization value for the <see cref=""P: UriProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp)
         {
-            Init(intProp, stringProp, arrayProp);
+            Init(intProp, stringProp, arrayProp, uriProp);
         }
 
         /// <summary>
@@ -664,7 +677,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp);
         }
 
         ISyntax ISyntax.DeepClone()
@@ -685,10 +698,14 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
+            if (uriProp != null)
+            {
+                UriProp = new Uri(uriProp.OriginalString, uriProp.IsAbsoluteUri ? UriKind.Absolute : UriKind.Relative);
+            }
         }
     }
 }";

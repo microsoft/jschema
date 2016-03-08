@@ -17,6 +17,11 @@ namespace Microsoft.JSchema.Generator
         /// <summary>
         /// Initialize this property with an assignment without a null check.
         /// </summary>
-        SimpleAssign
+        SimpleAssign,
+
+        /// <summary>
+        /// Initialize this property with special code to handle Uris.
+        /// </summary>
+        Uri
     }
 }
