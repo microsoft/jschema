@@ -250,6 +250,24 @@ namespace Microsoft.JSchema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An initialization value for the &lt;see cref=&quot;P: {0}&quot; /&gt; property..
+        /// </summary>
+        internal static string PropertyCtorParamDescription {
+            get {
+                return ResourceManager.GetString("PropertyCtorParamDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializes a new instance of the &lt;see cref=&quot;{0}&quot; /&gt; class from the supplied values..
+        /// </summary>
+        internal static string PropertyCtorSummary {
+            get {
+                return ResourceManager.GetString("PropertyCtorSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Makes a deep copy of this instance..
         /// </summary>
         internal static string SyntaxInterfaceDeepCloneDescription {

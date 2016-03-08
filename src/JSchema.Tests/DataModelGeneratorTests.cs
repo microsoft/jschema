@@ -632,6 +632,22 @@ namespace N
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
+        /// </summary>
+        /// <param name=""IntProp"">
+        /// An initialization value for the <see cref=""P: IntProp"" /> property.
+        /// </param>
+        /// <param name=""StringProp"">
+        /// An initialization value for the <see cref=""P: StringProp"" /> property.
+        /// </param>
+        /// <param name=""ArrayProp"">
+        /// An initialization value for the <see cref=""P: ArrayProp"" /> property.
+        /// </param>
+        public C()
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class from the specified instance.
         /// </summary>
         /// <param name=""other"">

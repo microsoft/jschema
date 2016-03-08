@@ -72,6 +72,25 @@ namespace Microsoft.JSchema.Generator
         }
 
         /// <summary>
+        /// Gets the list of all properties declared in the schema.
+        /// </summary>
+        /// <remarks>
+        /// Don't include information about array elements. For example, if the class has
+        /// an array-valued property ArrayProp, then include "ArrayProp" in the list, but
+        /// not "ArrayProp[]".
+        /// </remarks>
+        /// <returns>
+        /// An array containing the names of the properties.
+        /// </returns>
+        protected string[] GetPropertyNames()
+        {
+            return PropertyInfoDictionary.Keys
+                .Where(key => key.IndexOf("[]") == -1)
+                .Select(key => key.ToPascalCase())
+                .ToArray();
+        }
+
+        /// <summary>
         /// Create a property declaration.
         /// </summary>
         /// <param name="propertyName">

@@ -140,6 +140,7 @@ namespace Microsoft.JSchema.Generator
                 members.AddRange(new MemberDeclarationSyntax[]
                 {
                     GenerateDefaultConstructor(),
+                    GeneratePropertyCtor(),
                     GenerateCopyConstructor(),
                     GenerateISyntaxDeepClone(),
                     GenerateDeepClone(),
@@ -173,7 +174,7 @@ namespace Microsoft.JSchema.Generator
                     SyntaxUtil.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
         }
 
-        private MemberDeclarationSyntax GenerateDefaultConstructor()
+        private ConstructorDeclarationSyntax GenerateDefaultConstructor()
         {
             return SyntaxFactory.ConstructorDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
@@ -190,17 +191,44 @@ namespace Microsoft.JSchema.Generator
                             TypeName)));
         }
 
-        private MemberDeclarationSyntax GenerateCopyConstructor()
+        private ConstructorDeclarationSyntax GeneratePropertyCtor()
+        {
+            return SyntaxFactory.ConstructorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
+                SyntaxFactory.Identifier(TypeName),
+                SyntaxFactory.ParameterList(),
+                default(ConstructorInitializerSyntax),
+                SyntaxFactory.Block())
+                .WithLeadingTrivia(
+                    SyntaxUtil.MakeDocComment(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            Resources.PropertyCtorSummary,
+                            TypeName),
+                        paramDescriptionDictionary: MakePropertyCtorParamDescriptions()));
+        }
+
+        private Dictionary<string, string> MakePropertyCtorParamDescriptions()
+        {
+            var result = new Dictionary<string, string>();
+
+            foreach (string propertyName in GetPropertyNames())
+            {
+                result[propertyName] = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Resources.PropertyCtorParamDescription,
+                    propertyName);
+            }
+
+            return result;
+        }
+
+        private ConstructorDeclarationSyntax GenerateCopyConstructor()
         {
             // Generate the argument list that will be passed from the copy ctor to the
-            // Init method. Don't include information about array elements. For example,
-            // if the class has an array-valued property ArrayProp, then include "ArrayProp"
-            // in the list, but not "ArrayProp[]".
-            IEnumerable<string> propertyNames = PropertyInfoDictionary.Keys
-                .Where(key => key.IndexOf("[]") == -1)
-                .Select(key => key.ToPascalCase());
-
-            IEnumerable<ArgumentSyntax> arguments = propertyNames
+            // Init method.
+            IEnumerable<ArgumentSyntax> arguments = GetPropertyNames()
                 .Select(name => SyntaxFactory.Argument(
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
