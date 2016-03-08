@@ -32,7 +32,10 @@ namespace Microsoft.JSchema.Generator
         private const string IEquatableType = "IEquatable";
         private const string ObjectType = "Object";
         private const string IntTypeAlias = "int";
+
         private const string InitMethod = "Init";
+        private const string DeepCloneMethod = "DeepClone";
+        private const string DeepCloneCoreMethod = "DeepCloneCore";
 
         private const string TempVariableNameBase = "value_";
         private const string GetHashCodeResultVariableName = "result";
@@ -144,7 +147,8 @@ namespace Microsoft.JSchema.Generator
                     GenerateCopyConstructor(),
                     GenerateISyntaxDeepClone(),
                     GenerateDeepClone(),
-                    GenerateDeepCloneCore()
+                    GenerateDeepCloneCore(),
+                    GenerateInitMethod()
                 });
             }
 
@@ -193,17 +197,9 @@ namespace Microsoft.JSchema.Generator
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
         {
-            // Generate the parameter list for the ctor.
-            IEnumerable<ParameterSyntax> parameters = GetPropertyNames()
-                .Select(name => SyntaxFactory.Parameter(
-                    default(SyntaxList<AttributeListSyntax>),
-                    default(SyntaxTokenList), // modifiers
-                    GetParameterListType(name),
-                    SyntaxFactory.Identifier(name.ToCamelCase()),
-                    default(EqualsValueClauseSyntax)));
-
-            SeparatedSyntaxList<ParameterSyntax> parameterList =
-                SyntaxFactory.SeparatedList(parameters);
+            // Generate the parameter list for the ctor. It takes the same parameters as
+            // the Init method.
+            SeparatedSyntaxList<ParameterSyntax> parameterList = GenerateInitMethodParameterList();
 
             // Generate the argument list that will be passed from the copy ctor to the
             // Init method.
@@ -347,14 +343,14 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
                 SyntaxFactory.ExplicitInterfaceSpecifier(
                     SyntaxFactory.IdentifierName(_syntaxInterfaceName)),
-                SyntaxFactory.Identifier("DeepClone"),
+                SyntaxFactory.Identifier(DeepCloneMethod),
                 default(TypeParameterListSyntax),
                 SyntaxFactory.ParameterList(),
                 default(SyntaxList<TypeParameterConstraintClauseSyntax>),
                 SyntaxFactory.Block(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName("DeepCloneCore"),
+                            SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
                             SyntaxFactory.ArgumentList()))),
                 default(SyntaxToken));
         }
@@ -366,7 +362,7 @@ namespace Microsoft.JSchema.Generator
                 SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
                 SyntaxFactory.ParseTypeName(TypeName),
                 default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier("DeepClone"),
+                SyntaxFactory.Identifier(DeepCloneMethod),
                 default(TypeParameterListSyntax),
                 SyntaxFactory.ParameterList(),
                 default(SyntaxList<TypeParameterConstraintClauseSyntax>),
@@ -375,7 +371,7 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.CastExpression(
                             SyntaxFactory.ParseTypeName(TypeName),
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName("DeepCloneCore"),
+                                SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
                                 SyntaxFactory.ArgumentList())))),
                 default(SyntaxToken))
                 .WithLeadingTrivia(SyntaxUtil.MakeDocComment(Resources.DeepCloneDescription));
@@ -402,6 +398,36 @@ namespace Microsoft.JSchema.Generator
                                         SyntaxFactory.ThisExpression()))),
                             default(InitializerExpressionSyntax)))),
                 default(SyntaxToken));
+        }
+
+        private MethodDeclarationSyntax GenerateInitMethod()
+        {
+            SeparatedSyntaxList<ParameterSyntax> parameterList = GenerateInitMethodParameterList();
+
+            return SyntaxFactory.MethodDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)),
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)),
+                default(ExplicitInterfaceSpecifierSyntax),
+                SyntaxFactory.Identifier(InitMethod),
+                default(TypeParameterListSyntax),
+                SyntaxFactory.ParameterList(parameterList),
+                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                SyntaxFactory.Block(),
+                default(SyntaxToken));
+        }
+
+        private SeparatedSyntaxList<ParameterSyntax> GenerateInitMethodParameterList()
+        {
+            IEnumerable<ParameterSyntax> parameters = GetPropertyNames()
+                .Select(name => SyntaxFactory.Parameter(
+                    default(SyntaxList<AttributeListSyntax>),
+                    default(SyntaxTokenList), // modifiers
+                    GetParameterListType(name),
+                    SyntaxFactory.Identifier(name.ToCamelCase()),
+                    default(EqualsValueClauseSyntax)));
+
+            return SyntaxFactory.SeparatedList(parameters);
         }
 
         private MemberDeclarationSyntax OverrideObjectEquals()

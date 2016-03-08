@@ -684,6 +684,10 @@ namespace N
         {
             return new C(this);
         }
+
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp)
+        {
+        }
     }
 }";
             const string ExpectedSyntaxInterface =
