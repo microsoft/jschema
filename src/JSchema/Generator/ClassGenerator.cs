@@ -537,7 +537,13 @@ namespace Microsoft.JSchema.Generator
                             GenerateElementInitialization(
                                 elementInitializationKind,
                                 destinationVariableName,
-                                loopVariableName)))));
+                                loopVariableName))),
+                    
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            SyntaxFactory.IdentifierName(propertyName),
+                            SyntaxFactory.IdentifierName(destinationVariableName)))));
         }
 
         private StatementSyntax GenerateElementInitialization(

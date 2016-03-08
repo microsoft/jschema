@@ -723,6 +723,8 @@ namespace N
                 {
                     destination_0.Add(value_0);
                 }
+
+                ArrayProp = destination_0;
             }
 
             if (uriProp != null)
