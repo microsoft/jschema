@@ -644,9 +644,9 @@ namespace Microsoft.JSchema.Generator
         }
 
         private StatementSyntax GenerateCollectionElementInitialization(
-            string destinationVariableName, // TODO: REMOVE THIS COMMENT: destination_2 (outer collection to be added to)
-            string sourceVariableName,      // TODO: REMOVE THIS COMMENT: value_2 (inner collection whose values are to be added to destination_2)
-            string elementInfoKey)          // TODO: REMOVE THIS COMMENT: arrayOfArrayProp[] (information about the elements of the outer collection)
+            string destinationVariableName,
+            string sourceVariableName,
+            string elementInfoKey)
         {
             // The name of a variable used to loop over the elements of the collection
             // held in sourceVariableName.
