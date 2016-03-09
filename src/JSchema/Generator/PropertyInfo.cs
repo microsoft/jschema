@@ -40,14 +40,14 @@ namespace Microsoft.JSchema.Generator
         /// <summary>
         /// Gets a value that specifies the kind of comparison code that must be
         /// generated for the property in the implementation of the
-        /// <code>IEquatable&lt;T>.Equals</code> method.
+        /// <see cref="IEquatable{T}.Equals()" /> method.
         /// </summary>
         public ComparisonKind ComparisonKind { get; }
 
         /// <summary>
         /// Gets a value that specifies the kind of code that must be generated to
         /// compute the hash for the property in the implementation of the
-        /// <see cref="Object.GetHashCode" /> method.
+        /// <see cref="Object.GetHashCode()" /> method.
         /// </summary>
         public HashKind HashKind { get; }
 

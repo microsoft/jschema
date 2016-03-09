@@ -600,6 +600,13 @@ namespace N
     },
     ""referencedTypeProp"": {
       ""$ref"": ""#/definitions/d""
+    },
+    ""arrayOfRefProp"": {
+      ""type"": ""array"",
+      ""description"": ""An array of a cloneable type."",
+      ""items"": {
+        ""$ref"": ""#/definitions/d""
+      }
     }
   },
   ""definitions"": {
@@ -655,6 +662,11 @@ namespace N
         public D ReferencedTypeProp { get; set; }
 
         /// <summary>
+        /// An array of a cloneable type.
+        /// </summary>
+        public IList<D> ArrayOfRefProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -682,9 +694,12 @@ namespace N
         /// <param name=""referencedTypeProp"">
         /// An initialization value for the <see cref=""P: ReferencedTypeProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp)
+        /// <param name=""arrayOfRefProp"">
+        /// An initialization value for the <see cref=""P: ArrayOfRefProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp);
         }
 
         /// <summary>
@@ -703,7 +718,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp);
         }
 
         ISyntax ISyntax.DeepClone()
@@ -724,7 +739,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -748,6 +763,24 @@ namespace N
             if (referencedTypeProp != null)
             {
                 ReferencedTypeProp = new D(referencedTypeProp);
+            }
+
+            if (arrayOfRefProp != null)
+            {
+                var destination_1 = new List<D>();
+                foreach (var value_1 in arrayOfRefProp)
+                {
+                    if (value_1 == null)
+                    {
+                        destination_1.Add(null);
+                    }
+                    else
+                    {
+                        destination_1.Add(new D(value_1));
+                    }
+                }
+
+                ArrayOfRefProp = destination_1;
             }
         }
     }

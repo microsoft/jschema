@@ -33,6 +33,7 @@ namespace Microsoft.JSchema.Generator
         private const string ObjectType = "Object";
         private const string IntTypeAlias = "int";
 
+        private const string AddMethod = "Add";
         private const string InitMethod = "Init";
         private const string DeepCloneMethod = "DeepClone";
         private const string DeepCloneCoreMethod = "DeepCloneCore";
@@ -237,9 +238,9 @@ namespace Microsoft.JSchema.Generator
         /// </summary>
         /// <remarks>
         /// For array-valued properties, the property type stored in the
-        /// PropertyInfoDictionary is <code>IList&lt;T></code>. But in the parameter list
+        /// PropertyInfoDictionary is <see cref="IList{T}" />. But in the parameter list
         /// of the <code>Init</code> method, the type appears as
-        /// <code>IEnumerable&lt;T></code>.
+        /// <see cref="IEnumerable{T}" />.
         /// </remarks>
         private TypeSyntax GetParameterListType(string name)
         {
@@ -256,9 +257,9 @@ namespace Microsoft.JSchema.Generator
         /// </summary>
         /// <remarks>
         /// For array-valued properties, the property type stored in the
-        /// PropertyInfoDictionary is <code>IList&lt;T></code>. But in the implementation
+        /// PropertyInfoDictionary is <see cref="IList{T}" />. But in the implementation
         /// of the <code>Init</code> method, the concrete type used to initialize the
-        /// property is <code>List&lt;T></code>.
+        /// property is <see cref="List{T}" />.
         /// </remarks>
         private TypeSyntax GetConcreteListType(string name)
         {
@@ -544,6 +545,7 @@ namespace Microsoft.JSchema.Generator
             // the collection.
             string elementInfoKey = MakeElementKeyName(propInfoKey);
             InitializationKind elementInitializationKind = PropertyInfoDictionary[elementInfoKey].InitializationKind;
+            TypeSyntax elementType = PropertyInfoDictionary[elementInfoKey].Type;
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
@@ -560,6 +562,7 @@ namespace Microsoft.JSchema.Generator
                                             type,
                                             SyntaxHelper.ArgumentList(),
                                             default(InitializerExpressionSyntax))))))),
+
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
                         loopVariableName,
@@ -569,7 +572,7 @@ namespace Microsoft.JSchema.Generator
                                 elementInitializationKind,
                                 destinationVariableName,
                                 loopVariableName,
-                                type))),
+                                elementType))),
                     
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -582,7 +585,7 @@ namespace Microsoft.JSchema.Generator
             InitializationKind elementInitializationKind,
             string destinationVariableName,
             string sourceVariableName,
-            TypeSyntax type)
+            TypeSyntax elementType)
         {
             switch (elementInitializationKind)
             {
@@ -590,7 +593,7 @@ namespace Microsoft.JSchema.Generator
                     return GenerateSimpleElementInitialization(destinationVariableName, sourceVariableName);
 
                 case InitializationKind.Clone:
-                    return GenerateCloneElementInitialization(destinationVariableName, sourceVariableName, type);
+                    return GenerateCloneElementInitialization(destinationVariableName, sourceVariableName, elementType);
 
                 default:
                     throw new NotImplementedException();
@@ -604,18 +607,43 @@ namespace Microsoft.JSchema.Generator
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
                         SyntaxFactory.IdentifierName(destinationVariableName),
-                        SyntaxFactory.IdentifierName("Add")),
+                        SyntaxFactory.IdentifierName(AddMethod)),
                     SyntaxHelper.ArgumentList(
                         SyntaxFactory.IdentifierName(sourceVariableName))));
         }
 
-        private StatementSyntax GenerateCloneElementInitialization(string destinationVariableName, string sourceVariableName, TypeSyntax type)
+        private StatementSyntax GenerateCloneElementInitialization(
+            string destinationVariableName,
+            string sourceVariableName,
+            TypeSyntax elementType)
         {
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNull(sourceVariableName),
-                SyntaxFactory.Block(),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(destinationVariableName),
+                                SyntaxFactory.IdentifierName(AddMethod)),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.LiteralExpression(
+                                    SyntaxKind.NullLiteralExpression,
+                                    SyntaxFactory.Token(SyntaxKind.NullKeyword)))))),
                 SyntaxFactory.ElseClause(
-                    SyntaxFactory.Block()));
+                    SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(destinationVariableName),
+                                SyntaxFactory.IdentifierName(AddMethod)),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.ObjectCreationExpression(
+                                    elementType,
+                                    SyntaxHelper.ArgumentList(
+                                        SyntaxFactory.IdentifierName(sourceVariableName)),
+                                    default(InitializerExpressionSyntax))))))));
         }
 
         private StatementSyntax GenerateUriInitialization(string propertyName)

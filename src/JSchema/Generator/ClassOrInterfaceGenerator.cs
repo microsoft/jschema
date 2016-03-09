@@ -124,7 +124,7 @@ namespace Microsoft.JSchema.Generator
         /// Generates the appropriate <see cref="TypeSyntax" /> for the specified property.
         /// At the same time, makes a note of what kind of code will need to be generated
         /// for this property in the implementations of
-        /// <see cref="IEquatable&lt;T>.Equals" /> and <see cref="Object.Equals" />.
+        /// <see cref="IEquatable{T}.Equals" /> and <see cref="object.Equals" />.
         private TypeSyntax MakePropertyType(string propertyName, JsonSchema schema)
         {
             TypeSyntax type;
