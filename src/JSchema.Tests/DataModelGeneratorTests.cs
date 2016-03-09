@@ -605,6 +605,16 @@ namespace N
         ""$ref"": ""#/definitions/d""
       }
     },
+    ""arrayOfArrayProp"": {
+      ""type"": ""array"",
+      ""description"": ""An array of arrays."",
+      ""items"": {
+        ""type"": ""array"",
+        ""items"": {
+          ""$ref"": ""#/definitions/d""
+        }
+      }
+    },
     ""dictionaryProp"": {
       ""description"": ""A dictionary property."",
       ""type"": ""object""
@@ -677,6 +687,11 @@ namespace N
         public IList<D> ArrayOfRefProp { get; set; }
 
         /// <summary>
+        /// An array of arrays.
+        /// </summary>
+        public IList<IList<D>> ArrayOfArrayProp { get; set; }
+
+        /// <summary>
         /// A dictionary property.
         /// </summary>
         public Dictionary<string, string> DictionaryProp { get; set; }
@@ -712,12 +727,15 @@ namespace N
         /// <param name=""arrayOfRefProp"">
         /// An initialization value for the <see cref=""P: ArrayOfRefProp"" /> property.
         /// </param>
+        /// <param name=""arrayOfArrayProp"">
+        /// An initialization value for the <see cref=""P: ArrayOfArrayProp"" /> property.
+        /// </param>
         /// <param name=""dictionaryProp"">
         /// An initialization value for the <see cref=""P: DictionaryProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, Dictionary<string, string> dictionaryProp)
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, dictionaryProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp);
         }
 
         /// <summary>
@@ -736,7 +754,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.DictionaryProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp);
         }
 
         ISyntax ISyntax.DeepClone()
@@ -757,7 +775,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, Dictionary<string, string> dictionaryProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -799,6 +817,37 @@ namespace N
                 }
 
                 ArrayOfRefProp = destination_1;
+            }
+
+            if (arrayOfArrayProp != null)
+            {
+                var destination_2 = new List<List<D>>();
+                foreach (var value_2 in arrayOfArrayProp)
+                {
+                    if (value_2 == null)
+                    {
+                        destination_2.Add(null);
+                    }
+                    else
+                    {
+                        var destination_3 = new List<D>();
+                        foreach (var value_3 in value_2)
+                        {
+                            if (value_3 == null)
+                            {
+                                destination_3.Add(null);
+                            }
+                            else
+                            {
+                                destination_3.Add(new D(value_3));
+                            }
+                        }
+
+                        destination_2.Add(destination_3);
+                    }
+                }
+
+                ArrayOfArrayProp = destination_2;
             }
 
             if (dictionaryProp != null)

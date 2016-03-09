@@ -544,8 +544,6 @@ namespace Microsoft.JSchema.Generator
             // Find out out kind of code must be generated to initialize the elements of
             // the collection.
             string elementInfoKey = MakeElementKeyName(propInfoKey);
-            InitializationKind elementInitializationKind = PropertyInfoDictionary[elementInfoKey].InitializationKind;
-            TypeSyntax elementType = PropertyInfoDictionary[elementInfoKey].Type;
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
@@ -569,10 +567,9 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.IdentifierName(argName),
                         SyntaxFactory.Block(
                             GenerateElementInitialization(
-                                elementInitializationKind,
+                                elementInfoKey,
                                 destinationVariableName,
-                                loopVariableName,
-                                elementType))),
+                                loopVariableName))),
                     
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -582,21 +579,20 @@ namespace Microsoft.JSchema.Generator
         }
 
         private StatementSyntax GenerateElementInitialization(
-            InitializationKind elementInitializationKind,
+            string elementInfoKey,
             string destinationVariableName,
-            string sourceVariableName,
-            TypeSyntax elementType)
+            string sourceVariableName)
         {
-            switch (elementInitializationKind)
+            switch (PropertyInfoDictionary[elementInfoKey].InitializationKind)
             {
                 case InitializationKind.SimpleAssign:
                     return GenerateSimpleElementInitialization(destinationVariableName, sourceVariableName);
 
                 case InitializationKind.Clone:
-                    return GenerateCloneElementInitialization(destinationVariableName, sourceVariableName, elementType);
+                    return GenerateCloneElementInitialization(destinationVariableName, sourceVariableName, elementInfoKey);
 
                 default:
-                    throw new NotImplementedException();
+                    return GenerateCollectionElementInitialization(destinationVariableName, sourceVariableName, elementInfoKey);
             }
         }
 
@@ -615,8 +611,10 @@ namespace Microsoft.JSchema.Generator
         private StatementSyntax GenerateCloneElementInitialization(
             string destinationVariableName,
             string sourceVariableName,
-            TypeSyntax elementType)
+            string elementInfoKey)
         {
+            TypeSyntax elementType = PropertyInfoDictionary[elementInfoKey].Type;
+
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNull(sourceVariableName),
                 SyntaxFactory.Block(
@@ -628,8 +626,7 @@ namespace Microsoft.JSchema.Generator
                                 SyntaxFactory.IdentifierName(AddMethod)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.LiteralExpression(
-                                    SyntaxKind.NullLiteralExpression,
-                                    SyntaxFactory.Token(SyntaxKind.NullKeyword)))))),
+                                    SyntaxKind.NullLiteralExpression))))),
                 SyntaxFactory.ElseClause(
                     SyntaxFactory.Block(
                     SyntaxFactory.ExpressionStatement(
@@ -644,6 +641,72 @@ namespace Microsoft.JSchema.Generator
                                     SyntaxHelper.ArgumentList(
                                         SyntaxFactory.IdentifierName(sourceVariableName)),
                                     default(InitializerExpressionSyntax))))))));
+        }
+
+        private StatementSyntax GenerateCollectionElementInitialization(
+            string destinationVariableName, // TODO: REMOVE THIS COMMENT: destination_2 (outer collection to be added to)
+            string sourceVariableName,      // TODO: REMOVE THIS COMMENT: value_2 (inner collection whose values are to be added to destination_2)
+            string elementInfoKey)          // TODO: REMOVE THIS COMMENT: arrayOfArrayProp[] (information about the elements of the outer collection)
+        {
+            // The name of a variable used to loop over the elements of the collection
+            // held in sourceVariableName.
+            string loopVariableName = GetNextLoopVariableName();
+
+            // The name of the variable that holds a collection that will contain
+            // copies of the elements in the source collection.
+            string innerDestinationVariableName = GetNextDestinationVariableName();
+
+            // Find out out kind of code must be generated to initialize the elements of
+            // the collection.
+            string sourceElementInfoKey = MakeElementKeyName(elementInfoKey);
+            InitializationKind elementInitializationKind = PropertyInfoDictionary[sourceElementInfoKey].InitializationKind;
+            TypeSyntax sourceElementType = PropertyInfoDictionary[elementInfoKey].Type;
+
+            return SyntaxFactory.IfStatement(
+                SyntaxHelper.IsNull(SyntaxFactory.IdentifierName(sourceVariableName)),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(destinationVariableName),
+                                SyntaxFactory.IdentifierName(AddMethod)),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.LiteralExpression(
+                                    SyntaxKind.NullLiteralExpression))))),
+                SyntaxFactory.ElseClause(
+                    SyntaxFactory.Block(
+                        SyntaxFactory.LocalDeclarationStatement(
+                            SyntaxFactory.VariableDeclaration(
+                                SyntaxHelper.Var(),
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.VariableDeclarator(
+                                        SyntaxFactory.Identifier(innerDestinationVariableName),
+                                        default(BracketedArgumentListSyntax),
+                                        SyntaxFactory.EqualsValueClause(
+                                            SyntaxFactory.ObjectCreationExpression(
+                                                GetConcreteListType(elementInfoKey),
+                                                SyntaxHelper.ArgumentList(),
+                                                default(InitializerExpressionSyntax))))))),
+
+                        SyntaxFactory.ForEachStatement(
+                            SyntaxHelper.Var(),
+                            loopVariableName,
+                            SyntaxFactory.IdentifierName(sourceVariableName),
+                            SyntaxFactory.Block(
+                                GenerateElementInitialization(
+                                    sourceElementInfoKey,
+                                    innerDestinationVariableName,
+                                    loopVariableName))),
+
+                        SyntaxFactory.ExpressionStatement(
+                            SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(destinationVariableName),
+                                SyntaxFactory.IdentifierName(AddMethod)),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.IdentifierName(innerDestinationVariableName)))))));
         }
 
         private StatementSyntax GenerateUriInitialization(string propertyName)
@@ -1213,7 +1276,7 @@ namespace Microsoft.JSchema.Generator
             return XorVariableNameBase + _xorVariableCount++;
         }
 
-        #region Syntax helpers
+#region Syntax helpers
 
         private SimpleNameSyntax CountPropertyName()
         {
