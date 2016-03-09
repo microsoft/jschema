@@ -166,7 +166,7 @@ namespace Microsoft.JSchema.Generator
                     type,
                     ComparisonKind.Dictionary,
                     HashKind.Dictionary,
-                    InitializationKind.None);
+                    InitializationKind.Clone);
 
                 return type;
             }

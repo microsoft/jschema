@@ -566,9 +566,6 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates cloning code")]
         public void GeneratesCloningCode()
         {
-            _settings.GenerateCloningCode = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
   ""type"": ""object"",
@@ -607,6 +604,10 @@ namespace N
       ""items"": {
         ""$ref"": ""#/definitions/d""
       }
+    },
+    ""dictionaryProp"": {
+      ""description"": ""A dictionary property."",
+      ""type"": ""object""
     }
   },
   ""definitions"": {
@@ -615,6 +616,15 @@ namespace N
     }
   }
 }");
+
+            const string HintsText =
+@"{
+  ""C.DictionaryProp"": [
+    {
+      ""$type"": ""Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema""
+    }
+  ]
+}";
 
             const string ExpectedClass =
 @"using System;
@@ -667,6 +677,11 @@ namespace N
         public IList<D> ArrayOfRefProp { get; set; }
 
         /// <summary>
+        /// A dictionary property.
+        /// </summary>
+        public Dictionary<string, string> DictionaryProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -697,9 +712,12 @@ namespace N
         /// <param name=""arrayOfRefProp"">
         /// An initialization value for the <see cref=""P: ArrayOfRefProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp)
+        /// <param name=""dictionaryProp"">
+        /// An initialization value for the <see cref=""P: DictionaryProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, Dictionary<string, string> dictionaryProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, dictionaryProp);
         }
 
         /// <summary>
@@ -718,7 +736,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.DictionaryProp);
         }
 
         ISyntax ISyntax.DeepClone()
@@ -739,7 +757,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, Dictionary<string, string> dictionaryProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -781,6 +799,11 @@ namespace N
                 }
 
                 ArrayOfRefProp = destination_1;
+            }
+
+            if (dictionaryProp != null)
+            {
+                DictionaryProp = new Dictionary<string, string>(dictionaryProp);
             }
         }
     }
@@ -826,6 +849,9 @@ namespace N
         D
     }
 }";
+            _settings.GenerateCloningCode = true;
+            _settings.HintDictionary = HintDictionary.Deserialize(HintsText);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             generator.Generate(schema);
 
