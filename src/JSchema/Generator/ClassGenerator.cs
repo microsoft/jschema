@@ -162,6 +162,17 @@ namespace Microsoft.JSchema.Generator
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
         }
 
+        protected override SyntaxTokenList CreatePropertyModifiers()
+        {
+            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            if (_baseInterfaceName != null)
+            {
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
+            }
+
+            return modifiers;
+        }
+
         private PropertyDeclarationSyntax GenerateSyntaxKindProperty()
         {
             return SyntaxFactory.PropertyDeclaration(
@@ -1281,17 +1292,6 @@ namespace Microsoft.JSchema.Generator
         private SimpleNameSyntax CountPropertyName()
         {
             return SyntaxFactory.IdentifierName(CountProperty);
-        }
-
-        protected override SyntaxTokenList CreatePropertyModifiers()
-        {
-            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-            if (_baseInterfaceName != null)
-            {
-                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
-            }
-
-            return modifiers;
         }
 
         private ExpressionSyntax OtherPropName(string propName)
