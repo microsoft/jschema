@@ -469,6 +469,9 @@ namespace Microsoft.JSchema.Generator
                 case InitializationKind.SimpleAssign:
                     return GenerateSimpleAssignmentInitialization(propertyName);
 
+                case InitializationKind.Clone:
+                    return GenerateCloneInitialization(propertyName);
+
                 case InitializationKind.Collection:
                     return GenerateCollectionInitialization(propertyName, propInfoKey);
 
@@ -488,6 +491,34 @@ namespace Microsoft.JSchema.Generator
                     SyntaxKind.SimpleAssignmentExpression,
                     SyntaxFactory.IdentifierName(propertyName),
                     SyntaxFactory.IdentifierName(propertyName.ToCamelCase())));
+        }
+
+        private StatementSyntax GenerateCloneInitialization(string propertyName)
+        {
+            // The name of the argument to the Init method is related to the name of the
+            // property it will be used to initialize.
+            string argName = propertyName.ToCamelCase();
+
+            // The name of the key into the PropertyInformationDictionary for the property
+            // is also related to the name of the property, but we used a separate
+            // variable for clarity.
+            string propKeyName = argName;
+
+            // Get the type of this property, which we will use when we clone it.
+            TypeSyntax type = PropertyInfoDictionary[propKeyName].Type;
+
+            return SyntaxFactory.IfStatement(
+                SyntaxHelper.IsNotNull(argName),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            SyntaxFactory.IdentifierName(propertyName),
+                            SyntaxFactory.ObjectCreationExpression(
+                                type,
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.IdentifierName(argName)),
+                                default(InitializerExpressionSyntax))))));
         }
 
         private StatementSyntax GenerateCollectionInitialization(string propertyName, string propInfoKey)
@@ -537,7 +568,8 @@ namespace Microsoft.JSchema.Generator
                             GenerateElementInitialization(
                                 elementInitializationKind,
                                 destinationVariableName,
-                                loopVariableName))),
+                                loopVariableName,
+                                type))),
                     
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -549,12 +581,16 @@ namespace Microsoft.JSchema.Generator
         private StatementSyntax GenerateElementInitialization(
             InitializationKind elementInitializationKind,
             string destinationVariableName,
-            string sourceVariableName)
+            string sourceVariableName,
+            TypeSyntax type)
         {
             switch (elementInitializationKind)
             {
                 case InitializationKind.SimpleAssign:
                     return GenerateSimpleElementInitialization(destinationVariableName, sourceVariableName);
+
+                case InitializationKind.Clone:
+                    return GenerateCloneElementInitialization(destinationVariableName, sourceVariableName, type);
 
                 default:
                     throw new NotImplementedException();
@@ -571,6 +607,15 @@ namespace Microsoft.JSchema.Generator
                         SyntaxFactory.IdentifierName("Add")),
                     SyntaxHelper.ArgumentList(
                         SyntaxFactory.IdentifierName(sourceVariableName))));
+        }
+
+        private StatementSyntax GenerateCloneElementInitialization(string destinationVariableName, string sourceVariableName, TypeSyntax type)
+        {
+            return SyntaxFactory.IfStatement(
+                SyntaxHelper.IsNull(sourceVariableName),
+                SyntaxFactory.Block(),
+                SyntaxFactory.ElseClause(
+                    SyntaxFactory.Block()));
         }
 
         private StatementSyntax GenerateUriInitialization(string propertyName)

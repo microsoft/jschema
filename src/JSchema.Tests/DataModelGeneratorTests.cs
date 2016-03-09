@@ -745,6 +745,10 @@ namespace N
             }
 
             DateTimeProp = dateTimeProp;
+            if (referencedTypeProp != null)
+            {
+                ReferencedTypeProp = new D(referencedTypeProp);
+            }
         }
     }
 }";
