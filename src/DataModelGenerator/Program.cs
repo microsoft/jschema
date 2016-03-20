@@ -8,9 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
-using Microsoft.Json.Schema.ToDotNet;
 
-namespace Microsoft.Json.Schema.DataModelGeneratorTool
+namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 {
     internal class Program
     {

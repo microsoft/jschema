@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.Json.Schema.DataModelGeneratorTool {
+namespace Microsoft.Json.Schema.ToDotNet.CommandLine {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Microsoft.Json.Schema.DataModelGeneratorTool {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.JSchema.DataModelGeneratorTool.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Json.Schema.ToDotNet.CommandLine.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

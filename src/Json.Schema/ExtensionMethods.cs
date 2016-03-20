@@ -25,46 +25,6 @@ namespace Microsoft.Json.Schema
             // http://stackoverflow.com/questions/3804367/testing-for-equality-between-dictionaries-in-c-sharp
             return left.Count == right.Count && !left.Except(right).Any();
         }
-
-        internal static bool IsIntegralType(this object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            switch (Type.GetTypeCode(obj.GetType()))
-            {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        internal static bool IsFloatingType(this object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            switch (Type.GetTypeCode(obj.GetType()))
-            {
-                case TypeCode.Double:
-                case TypeCode.Single:
-                    return true;
-                default:
-                    return false;
-            }
-        }
     }
 
     internal static class IEnumerableExtensions
@@ -82,39 +42,6 @@ namespace Microsoft.Json.Schema
             }
 
             return left.Count() == right.Count() && !left.Except(right).Any();
-        }
-    }
-
-    internal static class StringExtensions
-    {
-        /// <summary>
-        /// Upper-case the first letter of a string to change it from camelCase to
-        /// PascalCase.
-        /// </summary>
-        /// <param name="s">
-        /// The string whose first letter is to be upper-cased.
-        /// </param>
-        /// <returns>
-        /// A copy of <paramref name="s"/> in which the first letter has been upper-cased.
-        /// </returns>
-        internal static string ToPascalCase(this string s)
-        {
-            return s[0].ToString().ToUpperInvariant() + s.Substring(1);
-        }
-
-        /// <summary>
-        /// Lower-case the first letter of a string to change it from PascalCase to
-        /// camelCase.
-        /// </summary>
-        /// <param name="s">
-        /// The string whose first letter is to be lower-cased.
-        /// </param>
-        /// <returns>
-        /// A copy of <paramref name="s"/> in which the first letter has been lower-cased.
-        /// </returns>
-        internal static string ToCamelCase(this string s)
-        {
-            return s[0].ToString().ToLowerInvariant() + s.Substring(1);
         }
     }
 
