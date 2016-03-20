@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CopyCtorOtherNullException" xml:space="preserve">
+    <value>Thrown if &lt;paramref name="{0}" /&gt; is null.</value>
+  </data>
+  <data name="CopyCtorOtherParam" xml:space="preserve">
+    <value>The instance from which the new instance is to be initialized.</value>
+  </data>
+  <data name="CopyCtorSummary" xml:space="preserve">
+    <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class from the specified instance.</value>
+  </data>
+  <data name="DeepCloneDescription" xml:space="preserve">
+    <value>Creates a deep copy of this instance.</value>
+  </data>
+  <data name="DefaultCtorSummary" xml:space="preserve">
+    <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class.</value>
+  </data>
+  <data name="ErrorCannotGenerateAdditionalTypeFromHintType" xml:space="preserve">
+    <value>Cannot generate a type from a {0} object of type {1}.</value>
+  </data>
+  <data name="ErrorEnumHintRequiresTypeName" xml:space="preserve">
+    <value>The enumeration hint for the property {0} does not specify a type name for the generated enumeration.</value>
+  </data>
+  <data name="ErrorMismatchedEnumCount" xml:space="preserve">
+    <value>The {0} object for the type {1} specifies {2} enum values, but the schema specifies {3} values. The schema and the {0} object must specify the same number of enum values.</value>
+  </data>
+  <data name="ErrorNotAnObject" xml:space="preserve">
+    <value>The specified schema has type="{0}". Data model generation requires a schema whose top-level type is "object".</value>
+  </data>
+  <data name="ErrorOutputDirectoryExists" xml:space="preserve">
+    <value>The output directory {0} already exists.</value>
+  </data>
+  <data name="ErrorSettingsPropertyMissing" xml:space="preserve">
+    <value>You must specify a non-null, non-blank value for the {0} property of the {1} object.</value>
+  </data>
+  <data name="KindEnumDescription" xml:space="preserve">
+    <value>A set of values for all the types that implement &lt;see cref="ISyntax" /&gt;.</value>
+  </data>
+  <data name="KindEnumMemberDescription" xml:space="preserve">
+    <value>A value indicating that the &lt;see cref="ISyntax" /&gt; object is of type &lt;see cref="{0}" /&gt;.</value>
+  </data>
+  <data name="KindEnumNoneDescription" xml:space="preserve">
+    <value>An uninitialized kind.</value>
+  </data>
+  <data name="PropertyCtorParamDescription" xml:space="preserve">
+    <value>An initialization value for the &lt;see cref="P: {0}" /&gt; property.</value>
+  </data>
+  <data name="PropertyCtorSummary" xml:space="preserve">
+    <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class from the supplied values.</value>
+  </data>
+  <data name="SyntaxInterfaceDeepCloneDescription" xml:space="preserve">
+    <value>Makes a deep copy of this instance.</value>
+  </data>
+  <data name="SyntaxInterfaceDescription" xml:space="preserve">
+    <value>An interface for all types generated from the {0} schema.</value>
+  </data>
+  <data name="SyntaxInterfaceKindDescription" xml:space="preserve">
+    <value>Gets a value indicating the type of object implementing &lt;see cref="ISyntax" /&gt;.</value>
+  </data>
+  <data name="XorDictionaryComment" xml:space="preserve">
+    <value>// Use xor for dictionaries to be order-independent.
+</value>
+  </data>
+</root>

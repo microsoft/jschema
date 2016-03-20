@@ -154,11 +154,11 @@ namespace Microsoft.JSchema
         }
     }
 
-    internal static class UriOrFragmentExtensions
+    public static class UriOrFragmentExtensions
     {
         private static readonly Regex s_definitionRegex = new Regex(@"^#/definitions/(?<definitionName>[^/]+)$");
 
-        internal static string GetDefinitionName(this UriOrFragment reference)
+        public static string GetDefinitionName(this UriOrFragment reference)
         {
             Match match = s_definitionRegex.Match(reference.Fragment);
             if (!match.Success)
