@@ -2,5 +2,5 @@
 
 using System.Reflection;
 
-[assembly: AssemblyTitle("Data Model Generator Tool")]
+[assembly: AssemblyTitle("Json Schema to .NET Code Generation Tool")]
 [assembly: AssemblyDescription("Command line tool to generate a set of .NET classes from a JSON Schema")]
