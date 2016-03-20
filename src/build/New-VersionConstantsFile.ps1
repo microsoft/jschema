@@ -23,6 +23,11 @@ $versionConstantsFileContents =
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Reflection;
+
+[assembly: AssemblyVersion(${namespace}.VersionConstants.AssemblyVersion)]
+[assembly: AssemblyFileVersion(${namespace}.VersionConstants.FileVersion)]
+
 namespace $namespace
 {
     public static class VersionConstants
