@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\BuildAndTest.cmd = ..\BuildAndTest.cmd
 		build\CommonAssemblyInfo.cs = build\CommonAssemblyInfo.cs
 		build\CopyRoslynImplementationAssemblies.targets = build\CopyRoslynImplementationAssemblies.targets
+		build\CreateNuGetPackage.targets = build\CreateNuGetPackage.targets
 		build\CurrentVersion.xml = build\CurrentVersion.xml
+		build\New-NuGetPackage.ps1 = build\New-NuGetPackage.ps1
 		build\New-VersionConstantsFile.ps1 = build\New-VersionConstantsFile.ps1
 	EndProjectSection
 EndProject
