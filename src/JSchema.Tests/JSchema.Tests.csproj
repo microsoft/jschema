@@ -71,7 +71,7 @@
     <Compile Include="UriOrFragmentTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JSchema\JSchema.csproj">
+    <ProjectReference Include="..\Json.Schema\Json.Schema.csproj">
       <Project>{4da17661-563a-45ee-9731-eea9360f6c5d}</Project>
       <Name>JSchema</Name>
     </ProjectReference>
