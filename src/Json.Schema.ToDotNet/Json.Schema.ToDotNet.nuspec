@@ -15,6 +15,7 @@
     <tags></tags>
     <dependencies>
       <group>
+        <dependency id="Microsoft.Json.Schema" version="$major$.$minor$.$patch$$prerelease$" />
         <dependency id="Microsoft.CodeAnalysis" version="1.1.1" />
         <dependency id="Microsoft.CodeAnalysis.Analyzers" version="1.1.0" />
         <dependency id="Microsoft.CodeAnalysis.Common" version="1.1.1" />
