@@ -1,7 +1,0 @@
-﻿{
-  "id": "http://www.example.com/schemas/basic#",
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Not an object",
-  "description": "A schema that does not describe a JSON object",
-  "type": "number"
-}
