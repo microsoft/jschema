@@ -66,6 +66,10 @@
     <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj">
+      <Project>{d9489164-0b7d-4f90-9e3e-339238a86542}</Project>
+      <Name>Json.Schema.ToDotNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj">
       <Project>{4da17661-563a-45ee-9731-eea9360f6c5d}</Project>
       <Name>JSchema</Name>

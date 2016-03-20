@@ -79,26 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FormatAttributes.cs" />
-    <Compile Include="Generator\AdditionalTypeRequiredEventArgs.cs" />
-    <Compile Include="Generator\ClassOrInterfaceGenerator.cs" />
-    <Compile Include="Generator\CodeGenHint.cs" />
-    <Compile Include="Generator\ComparisonKind.cs" />
-    <Compile Include="Generator\DictionaryHint.cs" />
-    <Compile Include="Generator\EnumGenerator.cs" />
-    <Compile Include="Generator\EnumHint.cs" />
-    <Compile Include="Generator\HashKind.cs" />
-    <Compile Include="Generator\HintDictionary.cs" />
-    <Compile Include="Generator\InitializationKind.cs" />
-    <Compile Include="Generator\InterfaceGenerator.cs" />
-    <Compile Include="Generator\InterfaceHint.cs" />
-    <Compile Include="Generator\PropertyInfo.cs" />
-    <Compile Include="Generator\SyntaxHelper.cs" />
-    <Compile Include="Generator\TypeGenerator.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileSystem.cs" />
-    <Compile Include="Generator\ClassGenerator.cs" />
-    <Compile Include="Generator\DataModelGenerator.cs" />
-    <Compile Include="Generator\DataModelGeneratorSettings.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="JSchemaException.cs" />

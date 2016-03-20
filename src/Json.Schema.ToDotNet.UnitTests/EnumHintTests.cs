@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.Json.Schema.Generator;
-using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.UnitTests
@@ -49,7 +47,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 @"{
   ""color"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema""
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet""
     }
   ]
 }",
@@ -134,7 +132,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet"",
       ""description"": ""Some pretty colors.""
     }
   ]
@@ -163,7 +161,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors.""
     }
@@ -250,7 +248,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet"",
       ""typeName"": ""Color""
     }
   ]
@@ -336,7 +334,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors."",
       ""enum"": [ ""crimson"", ""lemon"", ""avocado"" ]
@@ -424,7 +422,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors."",
       ""enum"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
@@ -454,7 +452,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors."",
       ""enum"": [ ""crimson"", ""lemon"", ""avocado"" ],

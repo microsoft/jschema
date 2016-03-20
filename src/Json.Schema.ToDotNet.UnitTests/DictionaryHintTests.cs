@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using FluentAssertions;
-using Microsoft.Json.Schema.Generator;
 using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
@@ -37,7 +36,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 @"{
   ""C.Properties"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.DictionaryHint, Microsoft.Json.Schema""
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
   ]
 }",

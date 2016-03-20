@@ -3,8 +3,6 @@
 
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.Json.Schema.Generator;
-using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.UnitTests
@@ -41,7 +39,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 @"{
   ""c"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.InterfaceHint, Microsoft.Json.Schema"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.InterfaceHint, Microsoft.Json.Schema.ToDotNet"",
       ""description"": ""My interface.""
     }
   ]

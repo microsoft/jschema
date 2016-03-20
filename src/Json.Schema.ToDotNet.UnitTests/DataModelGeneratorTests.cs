@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.Json.Schema.Generator;
 using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
@@ -632,7 +631,7 @@ namespace N
 @"{
   ""C.DictionaryProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.Generator.DictionaryHint, Microsoft.Json.Schema""
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
   ]
 }";
