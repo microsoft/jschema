@@ -4,7 +4,7 @@
     <ProjectGuid>{BC2D0831-21D6-4586-B045-CADF22430850}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Microsoft.Json.Schema.ToDotNet.CommandLine</RootNamespace>
-    <AssemblyName>DataModelGenerator</AssemblyName>
+    <AssemblyName>JsonSchemaToDotNet</AssemblyName>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
   <ItemGroup>
