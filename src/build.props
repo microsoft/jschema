@@ -28,6 +28,6 @@
     <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MsBuildThisFileDirectory)CommonAssemblyInfo.cs" />
+    <Compile Include="$(MsBuildThisFileDirectory)build\CommonAssemblyInfo.cs" />
   </ItemGroup>
 </Project>
