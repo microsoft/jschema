@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\BuildAndTest.cmd = ..\BuildAndTest.cmd
 		build\CommonAssemblyInfo.cs = build\CommonAssemblyInfo.cs
 		build\CopyRoslynImplementationAssemblies.targets = build\CopyRoslynImplementationAssemblies.targets
+		build\CurrentVersion.xml = build\CurrentVersion.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSchemaToDotNet", "JsonSchemaToDotNet\JsonSchemaToDotNet.csproj", "{BC2D0831-21D6-4586-B045-CADF22430850}"
