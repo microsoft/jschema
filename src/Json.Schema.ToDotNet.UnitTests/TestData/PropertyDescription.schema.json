@@ -1,0 +1,10 @@
+﻿{
+  "type": "object",
+
+  "properties": {
+    "exampleProp": {
+      "type": "string",
+      "description": "An example property."
+    }
+  }
+}

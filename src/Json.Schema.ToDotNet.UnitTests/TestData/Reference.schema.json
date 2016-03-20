@@ -1,0 +1,18 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "rootProp": {
+      "$ref": "#/definitions/def1"
+    }
+  },
+  "definitions": {
+    "def1": {
+      "id": "def1",
+      "properties": {
+        "prop1": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

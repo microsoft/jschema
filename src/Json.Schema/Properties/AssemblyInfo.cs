@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("JSON Schema Library")]
 [assembly: AssemblyDescription("Classes for working with JSON Schema")]
 
-[assembly: InternalsVisibleTo("Microsoft.Json.Schema.UnitTests")]
+[assembly: InternalsVisibleTo("Microsoft.Json.Schema.ToDotNet.UnitTests")]
 
 // This allows Moq to mock internal interfaces of assemblies that are not strong named.
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
