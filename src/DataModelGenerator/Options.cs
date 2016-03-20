@@ -3,7 +3,7 @@
 
 using CommandLine;
 
-namespace Microsoft.JSchema.DataModelGeneratorTool
+namespace Microsoft.Json.Schema.DataModelGeneratorTool
 {
     internal class Options
     {

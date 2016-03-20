@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.JSchema.Tests;
+using Microsoft.Json.Schema.Tests;
 using Xunit;
 
-namespace Microsoft.JSchema.Generator.Tests
+namespace Microsoft.Json.Schema.Generator.Tests
 {
     public class DataModelGeneratorTests
     {
@@ -631,7 +631,7 @@ namespace N
 @"{
   ""C.DictionaryProp"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema""
+      ""$type"": ""Microsoft.Json.Schema.Generator.DictionaryHint, Microsoft.Json.Schema""
     }
   ]
 }";

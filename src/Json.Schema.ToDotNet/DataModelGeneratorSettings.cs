@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Text;
-using Microsoft.JSchema;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {

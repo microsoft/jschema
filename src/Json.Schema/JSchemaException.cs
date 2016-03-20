@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     [Serializable]
     public class JSchemaException : Exception

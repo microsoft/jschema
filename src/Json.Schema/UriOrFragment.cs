@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     /// <summary>
     /// Represents a value that is either a URI reference that is valid according to RFC 2396,

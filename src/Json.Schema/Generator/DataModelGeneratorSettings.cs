@@ -4,7 +4,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace Microsoft.JSchema.Generator
+namespace Microsoft.Json.Schema.Generator
 {
     /// <summary>
     /// Settings that control the operation of the <see cref="DataModelGenerator"/>.

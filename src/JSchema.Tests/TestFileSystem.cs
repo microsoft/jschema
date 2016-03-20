@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 
-namespace Microsoft.JSchema.Tests
+namespace Microsoft.Json.Schema.Tests
 {
     /// <summary>
     /// Wrapper around the mock file system used in the unit tests.

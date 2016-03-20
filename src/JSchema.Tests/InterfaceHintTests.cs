@@ -3,10 +3,10 @@
 
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.JSchema.Generator;
+using Microsoft.Json.Schema.Generator;
 using Xunit;
 
-namespace Microsoft.JSchema.Tests
+namespace Microsoft.Json.Schema.Tests
 {
     public class InterfaceHintTests
     {
@@ -40,7 +40,7 @@ namespace Microsoft.JSchema.Tests
 @"{
   ""c"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.InterfaceHint, Microsoft.JSchema"",
+      ""$type"": ""Microsoft.Json.Schema.Generator.InterfaceHint, Microsoft.Json.Schema"",
       ""description"": ""My interface.""
     }
   ]

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     internal static class DictionaryExtensions
     {

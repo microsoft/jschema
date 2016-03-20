@@ -7,7 +7,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Microsoft.JSchema.Tests
+namespace Microsoft.Json.Schema.Tests
 {
     public class SchemaWriterTests
     {

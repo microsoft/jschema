@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     internal class FileSystem : IFileSystem
     {

@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Microsoft.JSchema.Generator
+namespace Microsoft.Json.Schema.Generator
 {
     /// <summary>
     /// Generate the text of a class.

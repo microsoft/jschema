@@ -3,7 +3,7 @@
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Microsoft.JSchema.Generator
+namespace Microsoft.Json.Schema.Generator
 {
     /// <summary>
     /// Contains information about a property inferred from the schema.

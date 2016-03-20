@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 
-namespace Microsoft.JSchema.Generator
+namespace Microsoft.Json.Schema.Generator
 {
     public abstract class TypeGenerator
     {

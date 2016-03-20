@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.JSchema.Generator;
+using Microsoft.Json.Schema.Generator;
 using Xunit;
 
-namespace Microsoft.JSchema.Tests
+namespace Microsoft.Json.Schema.Tests
 {
     public class EnumHintTests
     {
@@ -48,7 +48,7 @@ namespace Microsoft.JSchema.Tests
 @"{
   ""color"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema""
+      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema""
     }
   ]
 }",
@@ -133,7 +133,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema"",
+      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
       ""description"": ""Some pretty colors.""
     }
   ]
@@ -162,7 +162,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema"",
+      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors.""
     }
@@ -249,7 +249,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema"",
+      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
       ""typeName"": ""Color""
     }
   ]
@@ -335,7 +335,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema"",
+      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors."",
       ""enum"": [ ""crimson"", ""lemon"", ""avocado"" ]
@@ -423,7 +423,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema"",
+      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors."",
       ""enum"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
@@ -453,7 +453,7 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.EnumHint, Microsoft.JSchema"",
+      ""$type"": ""Microsoft.Json.Schema.Generator.EnumHint, Microsoft.Json.Schema"",
       ""typeName"": ""Color"",
       ""description"": ""Some pretty colors."",
       ""enum"": [ ""crimson"", ""lemon"", ""avocado"" ],

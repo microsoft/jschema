@@ -4,7 +4,7 @@
 using System;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     public class JsonSchemaContractResolver : CamelCasePropertyNamesContractResolver
     {

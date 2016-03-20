@@ -4,7 +4,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     /// <summary>
     /// Converts a property of type <see cref="UriOrFragment"/> to or from a string

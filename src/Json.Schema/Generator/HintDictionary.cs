@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Microsoft.JSchema.Generator
+namespace Microsoft.Json.Schema.Generator
 {
     /// <summary>
     /// Represents a dictionary that maps from the URI of a schema to an array of code

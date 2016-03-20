@@ -5,7 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     public static class SchemaWriter
     {

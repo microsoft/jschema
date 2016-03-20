@@ -3,7 +3,7 @@
 
 using System.Text.RegularExpressions;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     /// <summary>
     /// Works around Json.NET's special treatment of properties named "$ref".

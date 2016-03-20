@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.JSchema.DataModelGeneratorTool {
+namespace Microsoft.Json.Schema.DataModelGeneratorTool {
     using System;
     
     

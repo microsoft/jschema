@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
-using Microsoft.JSchema.Generator;
+using Microsoft.Json.Schema.Generator;
 
-namespace Microsoft.JSchema.DataModelGeneratorTool
+namespace Microsoft.Json.Schema.DataModelGeneratorTool
 {
     internal class Program
     {

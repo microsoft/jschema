@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     public class JsonSchema : IEquatable<JsonSchema>
     {

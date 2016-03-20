@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using FluentAssertions;
-using Microsoft.JSchema.Generator;
+using Microsoft.Json.Schema.Generator;
 using Xunit;
 
-namespace Microsoft.JSchema.Tests
+namespace Microsoft.Json.Schema.Tests
 {
     public class DictionaryHintTests
     {
@@ -36,7 +36,7 @@ namespace Microsoft.JSchema.Tests
 @"{
   ""C.Properties"": [
     {
-      ""$type"": ""Microsoft.JSchema.Generator.DictionaryHint, Microsoft.JSchema""
+      ""$type"": ""Microsoft.Json.Schema.Generator.DictionaryHint, Microsoft.Json.Schema""
     }
   ]
 }",

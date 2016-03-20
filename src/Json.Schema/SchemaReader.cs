@@ -4,7 +4,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Microsoft.JSchema
+namespace Microsoft.Json.Schema
 {
     public static class SchemaReader
     {
