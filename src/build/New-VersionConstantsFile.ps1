@@ -9,14 +9,7 @@ param(
     [Parameter(Mandatory=$true)] $namespace
 )
 
-$currentVersionXmlFile = "$PSScriptRoot\CurrentVersion.xml"
-[xml]$currentVersionInfo = Get-Content $currentVersionXmlFile
-
-$currentVersion = $currentVersionInfo.CurrentVersion
-$major = $currentVersion.Major
-$minor = $currentVersion.Minor
-$patch = $currentVersion.Patch
-$preRelease = $currentVersion.PreRelease
+$major, $minor, $patch, $preRelease = & "$PSScriptRoot\Get-VersionConstants.ps1"
 
 $versionConstantsFileContents =
 @"
