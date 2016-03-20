@@ -40,7 +40,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj">
       <Project>{4da17661-563a-45ee-9731-eea9360f6c5d}</Project>
-      <Name>JSchema</Name>
+      <Name>Json.Schema</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
