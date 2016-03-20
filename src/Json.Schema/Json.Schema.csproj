@@ -80,9 +80,7 @@
   <ItemGroup>
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="FileSystem.cs" />
     <Compile Include="Hash.cs" />
-    <Compile Include="IFileSystem.cs" />
     <Compile Include="JSchemaException.cs" />
     <Compile Include="JsonType.cs" />
     <Compile Include="JsonSchema.cs" />
