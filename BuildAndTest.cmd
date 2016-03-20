@@ -1,9 +1,11 @@
 @echo off
 setlocal
 
-rmdir /s /q bld
+if exist bld rmdir /s /q bld
 
 set Configuration=Release
+
+.nuget\NuGet.exe restore src\Everything.sln -ConfigFile .nuget\NuGet.Config
 
 msbuild /verbosity:minimal /target:rebuild src\Everything.sln /p:Configuration=%Configuration%
 if "%ERRORLEVEL%" NEQ "0" (
