@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Microsoft.Json.Schema.Tests
+namespace Microsoft.Json.Schema.UnitTests
 {
     internal static class ReaderWriter
     {

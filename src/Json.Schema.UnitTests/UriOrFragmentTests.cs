@@ -5,7 +5,7 @@ using System;
 using FluentAssertions;
 using Xunit;
 
-namespace Microsoft.Json.Schema.Tests
+namespace Microsoft.Json.Schema.UnitTests
 {
     public class UriOrFragmentTests
     {

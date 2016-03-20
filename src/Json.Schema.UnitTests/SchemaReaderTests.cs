@@ -6,7 +6,7 @@ using System.IO;
 using FluentAssertions;
 using Xunit;
 
-namespace Microsoft.Json.Schema.Tests
+namespace Microsoft.Json.Schema.UnitTests
 {
     public class SchemaReaderTests
     {

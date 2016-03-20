@@ -4,10 +4,11 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using Microsoft.Json.Schema.Tests;
+using Microsoft.Json.Schema.Generator;
+using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
-namespace Microsoft.Json.Schema.Generator.Tests
+namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 {
     public class DataModelGeneratorTests
     {

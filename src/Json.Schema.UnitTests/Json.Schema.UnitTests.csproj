@@ -4,8 +4,8 @@
   <PropertyGroup>
     <ProjectGuid>{55223B39-FA1A-4838-AB9B-A7B60A7C1BCE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.JSchema.Tests</RootNamespace>
-    <AssemblyName>Microsoft.JSchema.Tests</AssemblyName>
+    <RootNamespace>Microsoft.Json.Schema.UnitTests</RootNamespace>
+    <AssemblyName>Microsoft.Json.Schema.UnitTests</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>

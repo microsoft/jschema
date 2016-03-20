@@ -5,9 +5,10 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.Json.Schema.Generator;
+using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
-namespace Microsoft.Json.Schema.Tests
+namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 {
     public class EnumHintTests
     {

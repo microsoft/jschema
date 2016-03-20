@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Microsoft.Json.Schema.Tests
+namespace Microsoft.Json.Schema.UnitTests
 {
     internal static class TestUtil
     {
