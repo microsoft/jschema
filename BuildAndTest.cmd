@@ -31,23 +31,6 @@ if "%ERRORLEVEL%" NEQ "0" (
 goto ExitFailed
 )
 
-REM Build NuGet packages.
-set NUGET_OUTPUT_DIRECTORY= bld\bin\NuGet
-
-if not exist %NUGET_OUTPUT_DIRECTORY% mkdir %NUGET_OUTPUT_DIRECTORY%
-
-.nuget\NuGet.exe pack src\Json.Schema\Json.Schema.nuspec ^
- -Properties id=Microsoft.Json.Schema;major=%MAJOR%;minor=%MINOR%;patch=%PATCH%;prerelease=%PRERELEASE% ^
- -Verbosity Quiet ^
- -BasePath bld\bin\Json.Schema\AnyCPU_Release ^
- -OutputDirectory %NUGET_OUTPUT_DIRECTORY%
-
-.nuget\NuGet.exe pack src\Json.Schema.ToDotNet\Json.Schema.ToDotNet.nuspec ^
- -Properties id=Microsoft.Json.Schema.ToDotNet;major=%MAJOR%;minor=%MINOR%;patch=%PATCH%;prerelease=%PRERELEASE% ^
- -Verbosity Quiet ^
- -BasePath bld\bin\Json.Schema.ToDotNet\AnyCPU_Release ^
- -OutputDirectory %NUGET_OUTPUT_DIRECTORY%
-
 goto Exit
 
 :ExitFailed

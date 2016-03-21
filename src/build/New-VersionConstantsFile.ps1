@@ -5,7 +5,7 @@ compilation constants used to set the version attributes of the assembly being b
 #>
 
 param(
-    [Parameter(Mandatory=$true)] $outputPath,
+    [Parameter(Mandatory=$true)] $outputDirectory,
     [Parameter(Mandatory=$true)] $namespace
 )
 
@@ -33,6 +33,6 @@ namespace $namespace
 }
 "@
 
-$outputFile = "$outputPath\VersionConstants.cs"
+$outputFile = "$outputDirectory\VersionConstants.cs"
 
 Set-Content $outputFile $versionConstantsFileContents
