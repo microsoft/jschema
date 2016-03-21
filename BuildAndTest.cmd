@@ -5,14 +5,10 @@ if exist bld rmdir /s /q bld
 
 set Configuration=Release
 
-REM Set environment variables containing the components of the versions for the
-REM .NET assemblies and corresponding NuGet packages.
-call SetCurrentVersion.cmd
-
 REM Restore NuGet packages.
 .nuget\NuGet.exe restore src\Everything.sln -ConfigFile .nuget\NuGet.Config
 
-REM Build solution.
+REM Build solution, including NuGet packages.
 msbuild /verbosity:minimal /target:rebuild src\Everything.sln /p:Configuration=%Configuration% /filelogger /fileloggerparameters:Verbosity=normal
 if "%ERRORLEVEL%" NEQ "0" (
 goto ExitFailed
