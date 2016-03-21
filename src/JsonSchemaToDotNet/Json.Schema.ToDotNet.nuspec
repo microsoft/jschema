@@ -52,5 +52,27 @@
 
     <file src='Microsoft.Json.Schema.ToDotNet.dll' target='lib\net45\Microsoft.Json.Schema.ToDotNet.dll'/>
     <file src='Microsoft.Json.Schema.ToDotNet.pdb' target='lib\net45\Microsoft.Json.Schema.ToDotNet.pdb'/>
+
+    <file src='JsonSchemaToDotNet.exe' target='tools\JsonSchemaToDotNet.exe' />
+    <file src='JsonSchemaToDotNet.pdb' target='tools\JsonSchemaToDotNet.pdb' />
+    <file src='Microsoft.Json.Schema.ToDotNet.dll' target='tools\Microsoft.Json.Schema.ToDotNet.dll' />
+    <file src='Microsoft.Json.Schema.ToDotNet.pdb' target='tools\Microsoft.Json.Schema.ToDotNet.pdb' />
+    <file src='Microsoft.Json.Schema.dll' target='tools\Microsoft.Json.Schema.dll' />
+    <file src='Microsoft.Json.Schema.pdb' target='tools\Microsoft.Json.Schema.pdb' />
+    <file src='CommandLine.dll' target='tools\CommandLine.dll' />
+    <file src='FSharp.Core.dll' target='tools\FSharp.Core.dll' />
+    <file src='Microsoft.CodeAnalysis.CSharp.dll' target='tools\Microsoft.CodeAnalysis.CSharp.dll' />
+    <file src='Microsoft.CodeAnalysis.CSharp.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.CSharp.Workspaces.dll' />
+    <file src='Microsoft.CodeAnalysis.dll' target='tools\Microsoft.CodeAnalysis.dll' />
+    <file src='Microsoft.CodeAnalysis.VisualBasic.dll' target='tools\Microsoft.CodeAnalysis.VisualBasic.dll' />
+    <file src='Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll' />
+    <file src='Microsoft.CodeAnalysis.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.Workspaces.dll' />
+    <file src='Newtonsoft.Json.dll' target='tools\Newtonsoft.Json.dll' />
+    <file src='System.Collections.Immutable.dll' target='tools\System.Collections.Immutable.dll' />
+    <file src='System.Composition.AttributedModel.dll' target='tools\System.Composition.AttributedModel.dll' />
+    <file src='System.Composition.Hosting.dll' target='tools\System.Composition.Hosting.dll' />
+    <file src='System.Composition.Runtime.dll' target='tools\System.Composition.Runtime.dll' />
+    <file src='System.Composition.TypedParts.dll' target='tools\System.Composition.TypedParts.dll' />
+    <file src='System.Reflection.Metadata.dll' target='tools\System.Reflection.Metadata.dll' />
   </files>
 </package>

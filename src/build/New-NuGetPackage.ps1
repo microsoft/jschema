@@ -5,12 +5,13 @@ file.
 #>
 
 param(
-    [Parameter(Mandatory=$true)] $projectName,
-    [Parameter(Mandatory=$true)] $configuration,
-    [Parameter(Mandatory=$true)] $outputDirectory
+    [Parameter(Mandatory=$true)] $packageName,
+    [Parameter(Mandatory=$true)] $binariesDirectory,
+    [Parameter(Mandatory=$true)] $configuration
 )
 
-$outputDirectory = "$outputDirectory\$configuration"
+$repoRoot = Resolve-Path "$PSScriptRoot\..\.."
+$outputDirectory = "$binariesDirectory..\..\NuGet\$configuration"
 
 if (-not (Test-Path $outputDirectory)) {
     New-Item -ItemType Directory -Path $outputDirectory | Out-Null
@@ -18,16 +19,14 @@ if (-not (Test-Path $outputDirectory)) {
 
 $outputDirectory = Resolve-Path "$outputDirectory"
 
-"Creating NuGet package file $outputDirectory\$projectName.nupkg..."
-
-$repoRoot = Resolve-Path "$PSScriptRoot\..\.."
+"Creating NuGet package file $outputDirectory\$packageName.nupkg..."
 
 $major, $minor, $patch, $preRelease = & "$PSScriptRoot\Get-VersionConstants.ps1"
 
-& "$repoRoot\.nuget\NuGet.exe" pack "$projectName.nuspec" `
+& "$repoRoot\.nuget\NuGet.exe" pack "$packageName.nuspec" `
  -Verbosity Quiet `
- -Properties id=Microsoft.$projectName`;major=$major`;minor=$minor`;patch=$patch`;prerelease=$prerelease `
- -BasePath $repoRoot\bld\bin\$projectName\AnyCPU_$configuration `
+ -Properties id=Microsoft.$packageName`;major=$major`;minor=$minor`;patch=$patch`;prerelease=$prerelease `
+ -BasePath $binariesDirectory `
  -OutputDirectory $outputDirectory
 
 if ($?) {
