@@ -821,7 +821,7 @@ namespace N
 
             if (arrayOfArrayProp != null)
             {
-                var destination_2 = new List<List<D>>();
+                var destination_2 = new List<IList<D>>();
                 foreach (var value_2 in arrayOfArrayProp)
                 {
                     if (value_2 == null)

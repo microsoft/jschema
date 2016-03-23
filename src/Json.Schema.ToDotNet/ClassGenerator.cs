@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -270,7 +271,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             TypeSyntax type = PropertyInfoDictionary[name.ToCamelCase()].Type;
 
-            string typeName = type.ToString().Replace("IList<", "List<");
+            string typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
 
             return SyntaxFactory.ParseTypeName(typeName);
         }
