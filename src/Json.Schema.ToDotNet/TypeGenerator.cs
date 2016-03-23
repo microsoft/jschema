@@ -99,11 +99,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected void OnAdditionalType(AdditionalTypeRequiredEventArgs e)
         {
-            EventHandler<AdditionalTypeRequiredEventArgs> handler = AdditionalTypeRequired;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            AdditionalTypeRequired?.Invoke(this, e);
         }
 
         /// <summary>

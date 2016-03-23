@@ -45,6 +45,19 @@
       "description": "Interface exposed by objects that provide information about analysis rules."
     }
   ],
+  "SarifLog.Version": [
+    {
+      "$type": "Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet",
+      "typeName": "SarifVersion",
+      "description": "Possible values for the SARIF schema version",
+      "zeroValue": "Unknown",
+      "enum": [
+        "ZeroDotFour",
+        "OneZeroZeroBetaOne",
+        "OneZeroZeroBetaTwo"
+      ]
+    }
+  ],
   "Hash.Algorithm": [
     {
       "$type": "Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet",

@@ -57,7 +57,7 @@ namespace N
         /// <summary>
         /// The value.
         /// </summary>
-        public override int Value { get; set; }
+        public int Value { get; set; }
 
         public override bool Equals(object other)
         {

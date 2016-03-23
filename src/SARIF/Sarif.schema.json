@@ -1,14 +1,14 @@
-﻿{
+{
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Static Analysis Results Format (SARIF) Version 1.0 JSON Schema (Draft 1.0.0-beta.1)",
-  "description": "Static Analysis Results Format (SARIF) Version 1.0 JSON Schema (Draft 1.0.0-beta.1). SARIF defines a standard format for the output of static analysis tools.",
+  "title": "Static Analysis Results Format (SARIF) Version 1.0 JSON Schema (Draft 1.0.0-beta.2)",
+  "description": "Static Analysis Results Format (SARIF) Version 1.0 JSON Schema (Draft 1.0.0-beta.2). SARIF defines a standard format for the output of static analysis tools.",
   "additionalProperties": false,
   "type": "object",
   "properties": {
     "version": 
     {
-      "description": "The SARIF tool format version of this log file. This value should be set to 1.0.0-beta.1, currently. This is the third proposed revision of a file format that is not yet completely finalized.",
-      "enum": [ "1.0.0-beta.1"]
+      "description": "The SARIF tool format version of this log file. This value should be set to 1.0.0-beta.2, currently. This is the third proposed revision of a file format that is not yet completely finalized.",
+      "enum": [ "0.4", "1.0.0-beta.1", "1.0.0-beta.2"]
     },
 
     "runLogs": 
@@ -34,11 +34,7 @@
         "physicalLocation": 
         {
           "description": "A code location to which this annotation refers.",
-          "type": "array",
-          "items":
-          {
-            "$ref": "#/definitions/physicalLocationComponent"
-          }
+          "$ref": "#/definitions/physicalLocation"
         },
 
         "message": 
@@ -86,6 +82,13 @@
           "description": "The location of the file as a valid URI",
           "type": "string",
           "format": "uri"
+        },
+
+        "mimeType": 
+        {
+          "description": "The MIME content type (RFC 2045) of the file.",
+          "type": "string",
+          "pattern": "[^/]+/.+"
         },
 
         "hashes": 
@@ -196,21 +199,13 @@
         "analysisTarget": 
         {
           "description": "A source file that is associated with the item that the static analysis tool scanned. This may be a .dll in the case of a binary analysis tool like FxCop, or a C++ file in the case of a source analysis tool like PREfast. Note that the defect may not actually occur in this file.",
-          "type": "array",
-          "items":
-          {
-            "$ref": "#/definitions/physicalLocationComponent"
-          }
+          "$ref": "#/definitions/physicalLocation"
         },
 
         "resultFile": 
         {
           "description": "A source file that is associated with the current result if and only if that is not the same as the analysis target. This member will populated or not, in many cases, depending on whether PDBs associated with the analysis target are available. Examples include a C# file in the FxCop-like binary analysis case, or possibly a .H C++ file in the case of a source analysis tool like PREfast.",
-          "type": "array",
-          "items":
-          {
-            "$ref": "#/definitions/physicalLocationComponent"
-          }
+          "$ref": "#/definitions/physicalLocation"
         },
 
         "logicalLocation": 
@@ -268,9 +263,9 @@
       },
       "required": ["name"]
     },
-    "physicalLocationComponent": 
+    "physicalLocation": 
     {
-      "description": "A part of a location that refers to a file.",
+      "description": "A location that refers to a file.",
       "additionalProperties": false,
       "type": "object",
       "properties": {
@@ -281,16 +276,9 @@
           "format": "uri"
         },
 
-        "mimeType": 
-        {
-          "description": "The MIME content type (RFC 2045) of the item referred to by this location.",
-          "type": "string",
-          "pattern": "[^/]+/.+"
-        },
-
         "region": 
         {
-          "description": "The specific region within the analysis where the result was detected. This SHOULD only be set on the last physicalLocationComponent in a physicalLocation most of the time. (There are some exceptions e.g. an embedded .SWF in an Office 2003 format ppt)",
+          "description": "The specific region within the analysis where the result was detected.",
           "$ref": "#/definitions/region"
         }
       },
@@ -511,8 +499,7 @@
             "default": []
           }
         }
-      },
-      "required": ["locations"]
+      }
     },
     "ruleDescriptor": 
     {
@@ -595,14 +582,54 @@
           "type": "string"
         },
 
-        "analysisTargets": 
+        "fileInfo": 
         {
-          "description": "An array, each of whose elements is a fileReference object representing the location of a single analysis target scanned during the run. When present, this array shall contain one entry fo reach analysis target that was scanned, even if the analysis targets were not individually specified on the command line. NOTE 1: The command line with which the tool was invoked might specify its input files by means of a wild card such as *.cc, or it might specify them implicitly, for example, by scanning the files in the current directory. The analysisTargets array shall be empty if no analysis targets were scanned in the course of the run. NOTE 2: This could happen if the command line specified a wildcard such as *.cc for the input files, and no files matched the wildcard.",
+          "description": "A dictionary each of whose keys is a URI and each of whose values is an array of fileReference objects representing the location of a single file target scanned during the run.",
+          "type": "object",
+          "default": {}
+        },
+
+        "runStartTime": 
+        {
+          "description": "An optional string specifying the date and time at which the run started.",
+          "type": "string",
+          "format": "date-time"
+        },
+
+        "runEndTime": 
+        {
+          "description": "An optional string specifying the date and time at which the run ended.",
+          "type": "string",
+          "format": "date-time"
+        },
+
+        "correlationId": 
+        {
+          "description": "An optional string identifier that allows the run to be associated with a larger automation process.",
+          "type": "string"
+        },
+
+        "architecture": 
+        {
+          "description": "An optional string identifier that specifies the hardware architecture for which the run was targeted.",
+          "type": "string"
+        },
+
+        "properties": 
+        {
+          "description": "Key/value pairs that provide additional details about the run.",
+          "type": "object",
+          "default": {}
+        },
+
+        "tag": 
+        {
+          "description": "A unique set of strings that provide additional information for the run.",
           "type": "array",
-          "minItems": 0,
           "items":
           {
-            "$ref": "#/definitions/fileReference"
+            "type": "string",
+            "default": []
           }
         }
       }
@@ -646,7 +673,7 @@
           }
         }
       },
-      "required": ["toolInfo"]
+      "required": ["toolInfo", "results"]
     },
     "toolInfo": 
     {
@@ -677,20 +704,6 @@
           "description": "For operating systems (such as Windows) that provide the data, the binary version of the primary tool exe.",
           "type": "string",
           "pattern": "[0-9]+(\\.[0-9]+){3}"
-        },
-
-        "runStartTime": 
-        {
-          "description": "An optional string specifying the date and time at which the run started.",
-          "type": "string",
-          "format": "date-time"
-        },
-
-        "runEndTime": 
-        {
-          "description": "An optional string specifying the date and time at which the run ended.",
-          "type": "string",
-          "format": "date-time"
         }
       },
       "required": ["name"]

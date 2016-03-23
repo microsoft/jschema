@@ -164,13 +164,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected override SyntaxTokenList CreatePropertyModifiers()
         {
-            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-            if (_baseInterfaceName != null)
-            {
-                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
-            }
-
-            return modifiers;
+            return SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 
         private PropertyDeclarationSyntax GenerateSyntaxKindProperty()
