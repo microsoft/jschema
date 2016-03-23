@@ -49,7 +49,7 @@
     {
       "$type": "Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet",
       "typeName": "SarifVersion",
-      "description": "Possible values for the SARIF schema version",
+      "description": "Possible values for the SARIF schema version.",
       "zeroValue": "Unknown",
       "enum": [
         "ZeroDotFour",
@@ -62,7 +62,7 @@
     {
       "$type": "Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet",
       "typeName": "AlgorithmKind",
-      "description": "Values specifying different hashing algorithms",
+      "description": "Values specifying different hashing algorithms.",
       "zeroValue": "Unknown",
       "enum": [
         "Blake256",
@@ -95,6 +95,23 @@
         "Swifft",
         "Tiger",
         "Whirlpool"
+      ]
+    }
+  ],
+  "Result.Kind": [
+    {
+      "$type": "Microsoft.Json.Schema.ToDotNet.EnumHint, Microsoft.Json.Schema.ToDotNet",
+      "typeName": "ResultKind",
+      "description": "Values specifying the category of the result.",
+      "zeroValue": "Unknown",
+      "enum": [
+        "Error",
+        "Warning",
+        "Pass",
+        "Note",
+        "NotApplicable",
+        "InternalError",
+        "ConfigurationError"
       ]
     }
   ]
