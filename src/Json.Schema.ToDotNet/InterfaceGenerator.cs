@@ -41,6 +41,14 @@ namespace Microsoft.Json.Schema.ToDotNet
             return default(SyntaxTokenList);
         }
 
+        protected override IEnumerable<AccessorDeclarationSyntax> CreateAccessorDeclarations()
+        {
+            return new AccessorDeclarationSyntax[]
+                        {
+                            SyntaxHelper.MakeGetAccessor()
+                        };
+        }
+
         protected override string MakeHintDictionaryKey(string propertyName)
         {
             // We want the interface to use the same hints as the class it was made from.

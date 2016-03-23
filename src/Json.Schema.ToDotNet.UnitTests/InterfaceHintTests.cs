@@ -102,7 +102,7 @@ namespace N
         /// <summary>
         /// The value.
         /// </summary>
-        int Value { get; set; }
+        int Value { get; }
     }
 }"
             }

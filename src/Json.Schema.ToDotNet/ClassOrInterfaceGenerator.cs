@@ -26,6 +26,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected abstract SyntaxTokenList CreatePropertyModifiers();
 
+        protected abstract IEnumerable<AccessorDeclarationSyntax> CreateAccessorDeclarations();
+
         /// <summary>
         /// Gets a dictionary that maps the name of each property in the generated class
         /// to a information about the property derived from the JSON schema.
@@ -112,11 +114,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(
                     SyntaxFactory.List(
-                        new AccessorDeclarationSyntax[]
-                        {
-                            SyntaxHelper.MakeGetAccessor(),
-                            SyntaxHelper.MakeSetAccessor()
-                        })))
+                        CreateAccessorDeclarations())))
                 .WithLeadingTrivia(SyntaxHelper.MakeDocComment(schema.Description));
         }
 

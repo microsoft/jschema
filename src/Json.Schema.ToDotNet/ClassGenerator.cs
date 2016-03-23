@@ -168,6 +168,15 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 
+        protected override IEnumerable<AccessorDeclarationSyntax> CreateAccessorDeclarations()
+        {
+            return new AccessorDeclarationSyntax[]
+                        {
+                            SyntaxHelper.MakeGetAccessor(),
+                            SyntaxHelper.MakeSetAccessor()
+                        };
+        }
+
         private PropertyDeclarationSyntax GenerateSyntaxKindProperty()
         {
             return SyntaxFactory.PropertyDeclaration(
@@ -1297,6 +1306,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.IdentifierName(propName));
         }
 
-#endregion Syntax helpers
+        #endregion Syntax helpers
     }
 }
