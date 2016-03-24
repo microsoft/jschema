@@ -36,7 +36,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </summary> 
         protected Dictionary<string, PropertyInfo> PropertyInfoDictionary { get; }
         
-        protected List<MemberDeclarationSyntax> GenerateProperties(JsonSchema schema)
+        protected MemberDeclarationSyntax[] GenerateProperties(JsonSchema schema)
         {
             var propDecls = new List<MemberDeclarationSyntax>();
 
@@ -52,7 +52,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
-            return propDecls;
+            return propDecls.ToArray();
         }
 
         protected virtual string MakeHintDictionaryKey(string propertyName)
@@ -121,14 +121,12 @@ namespace Microsoft.Json.Schema.ToDotNet
             AttributeSyntax[] attributes = CreatePropertyAttributes();
             if (attributes.Length > 0)
             {
-                propDecl = propDecl
-                    .WithAttributeLists(
-                        SyntaxFactory.List(
-                            new AttributeListSyntax[]
-                            {
-                                SyntaxFactory.AttributeList(
-                                    SyntaxFactory.SeparatedList(attributes))
-                            }));
+                propDecl = propDecl.AddAttributeLists(
+                    new AttributeListSyntax[]
+                    {
+                        SyntaxFactory.AttributeList(
+                            SyntaxFactory.SeparatedList(attributes))
+                    });
             }
 
             return propDecl.WithLeadingTrivia(

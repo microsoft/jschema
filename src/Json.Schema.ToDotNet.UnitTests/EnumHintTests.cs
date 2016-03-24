@@ -53,6 +53,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 }",
 
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -60,7 +61,7 @@ namespace N
     /// <summary>
     /// My class with an enum.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -103,11 +104,14 @@ namespace N
 }",
                 "Color",
 
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// Some pretty colors.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public enum Color
     {
         Red,
@@ -172,6 +176,7 @@ namespace N
 }",
 
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -179,7 +184,7 @@ namespace N
     /// <summary>
     /// My class with an enum.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -222,11 +227,14 @@ namespace N
 }",
                 "Color",
 
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// Some pretty colors.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public enum Color
     {
         Red,
@@ -261,6 +269,7 @@ namespace N
 }",
 
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -268,7 +277,7 @@ namespace N
     /// <summary>
     /// My class with an enum.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -311,11 +320,14 @@ namespace N
 }",
                 "Color",
 
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// The color of the background.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public enum Color
     {
         Red,
@@ -352,6 +364,7 @@ namespace N
 }",
 
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -359,7 +372,7 @@ namespace N
     /// <summary>
     /// My class with an enum.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -402,11 +415,14 @@ namespace N
 }",
                 "Color",
 
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// Some pretty colors.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public enum Color
     {
         Crimson,
@@ -474,6 +490,7 @@ namespace N
 }",
 
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -481,7 +498,7 @@ namespace N
     /// <summary>
     /// My class with an enum.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -524,11 +541,14 @@ namespace N
 }",
                 "Color",
 
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// Some pretty colors.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public enum Color
     {
         Colorless,

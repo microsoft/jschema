@@ -24,16 +24,18 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
-            var modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
-            return SyntaxFactory.InterfaceDeclaration(TypeName).WithModifiers(modifiers);
+            return SyntaxFactory.InterfaceDeclaration(TypeName)
+                .AddAttributeLists(
+                    SyntaxFactory.AttributeList(
+                        SyntaxFactory.SeparatedList(
+                            CreateTypeAttributes())))
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 
         public override void AddMembers(JsonSchema schema)
         {
-            List<MemberDeclarationSyntax> members = GenerateProperties(schema);
-            SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
-            TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax).WithMembers(memberList);
+            TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax)
+                .AddMembers(GenerateProperties(schema));
         }
 
         protected override AttributeSyntax[] CreatePropertyAttributes()

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -18,6 +19,10 @@ namespace Microsoft.Json.Schema.ToDotNet
         private string _namespaceName;
         private string _copyrightNotice;
         private string _description;
+
+        private const string GeneratedCodeAttributeName = "GeneratedCode";
+        private static readonly string s_assemblyName = Assembly.GetCallingAssembly().GetName().Name;
+        private static readonly string s_assemblyVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
 
         protected TypeGenerator(HintDictionary hintDictionary)
         {
@@ -47,6 +52,28 @@ namespace Microsoft.Json.Schema.ToDotNet
         public event EventHandler<AdditionalTypeRequiredEventArgs> AdditionalTypeRequired;
 
         public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema);
+
+        protected virtual AttributeSyntax[] CreateTypeAttributes()
+        {
+            return new AttributeSyntax[]
+            {
+                SyntaxFactory.Attribute(
+                    SyntaxFactory.IdentifierName(GeneratedCodeAttributeName),
+                    SyntaxFactory.AttributeArgumentList(
+                        SyntaxFactory.SeparatedList(
+                            new AttributeArgumentSyntax[]
+                            {
+                                SyntaxFactory.AttributeArgument(
+                                    SyntaxFactory.LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        SyntaxFactory.Literal(s_assemblyName))),
+                                SyntaxFactory.AttributeArgument(
+                                    SyntaxFactory.LiteralExpression(
+                                        SyntaxKind.StringLiteralExpression,
+                                        SyntaxFactory.Literal(s_assemblyVersion))),
+                            })))
+            };
+        }
 
         /// <summary>
         /// Adds members to the type as directed by the specified schema.
@@ -79,6 +106,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             _namespaceName = namespaceName;
             _copyrightNotice = copyrightNotice;
             _description = description;
+
+            AddUsing("System.CodeDom.Compiler");    // For GeneratedCodeAttribute.
 
             TypeName = typeName.ToPascalCase();
             TypeDeclaration = CreateTypeDeclaration(schema);

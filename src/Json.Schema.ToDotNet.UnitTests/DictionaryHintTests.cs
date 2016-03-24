@@ -42,6 +42,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 }",
 
 @"using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -50,7 +51,7 @@ namespace N
     /// <summary>
     /// Class with property bag.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>

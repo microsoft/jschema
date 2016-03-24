@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -22,25 +21,30 @@ namespace Microsoft.Json.Schema.ToDotNet
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
             return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
-                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
+                .AddAttributeLists(
+                    new AttributeListSyntax[]
+                    {
+                        SyntaxFactory.AttributeList(
+                            SyntaxFactory.SeparatedList(
+                                CreateTypeAttributes()))
+                    })
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 
         public override void AddMembers(JsonSchema schema)
         {
             if (schema.Enum != null)
             {
-                var enumMemberDeclarations = new List<EnumMemberDeclarationSyntax>(
+                var enumMembers =
                         schema.Enum.Select(
                             enumName => SyntaxFactory.EnumMemberDeclaration(
-                                SyntaxFactory.Identifier(enumName.ToString().ToPascalCase()))));
+                                SyntaxFactory.Identifier(enumName.ToString().ToPascalCase())))
+                            .ToArray();
 
-                if (enumMemberDeclarations.Any())
+                if (enumMembers.Any())
                 {
-                    SeparatedSyntaxList<EnumMemberDeclarationSyntax> enumMemberList =
-                        SyntaxFactory.SeparatedList(enumMemberDeclarations);
-
                     var enumDeclaration = TypeDeclaration as EnumDeclarationSyntax;
-                    TypeDeclaration = enumDeclaration.WithMembers(enumMemberList);
+                    TypeDeclaration = enumDeclaration.AddMembers(enumMembers);
                 }
             }
         }

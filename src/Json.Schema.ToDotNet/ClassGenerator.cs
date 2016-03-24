@@ -76,19 +76,15 @@ namespace Microsoft.Json.Schema.ToDotNet
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
             var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
-                .WithAttributeLists(
-                    SyntaxFactory.List(
-                        new AttributeListSyntax[]
-                        {
-                            SyntaxFactory.AttributeList(
-                                SyntaxFactory.SingletonSeparatedList(
-                                    SyntaxFactory.Attribute(
-                                        SyntaxFactory.IdentifierName(DataContractAttributeName))))
-                        }))
-                .WithModifiers(
-                    SyntaxFactory.TokenList(
-                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                        SyntaxFactory.Token(SyntaxKind.PartialKeyword)));
+                .AddAttributeLists(new AttributeListSyntax[]
+                    {
+                        SyntaxFactory.AttributeList(
+                            SyntaxFactory.SeparatedList(
+                                CreateTypeAttributes()))
+                    })
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.PartialKeyword));
 
             var baseTypes = new List<BaseTypeSyntax>();
 
@@ -171,11 +167,20 @@ namespace Microsoft.Json.Schema.ToDotNet
                 });
             }
 
-            SyntaxList<MemberDeclarationSyntax> memberList = SyntaxFactory.List(members);
-
-            TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
+            TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).AddMembers(members.ToArray());
         }
 
+        protected override AttributeSyntax[] CreateTypeAttributes()
+        {
+            var attributes = new List<AttributeSyntax>
+            {
+                SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(DataContractAttributeName))
+            }; 
+
+            attributes.AddRange(base.CreateTypeAttributes());
+
+            return attributes.ToArray();
+        }
 
         protected override AttributeSyntax[] CreatePropertyAttributes()
         {
@@ -791,10 +796,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
                 EqualsMethod)
-                .WithModifiers(
-                    SyntaxFactory.TokenList(
-                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                        SyntaxFactory.Token(SyntaxKind.OverrideKeyword)))
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.OverrideKeyword))
                 .WithParameterList(
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SingletonSeparatedList(
@@ -824,10 +828,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
                 GetHashCodeMethod)
-                .WithModifiers(
-                    SyntaxFactory.TokenList(
-                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                        SyntaxFactory.Token(SyntaxKind.OverrideKeyword)))
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.OverrideKeyword))
                 .WithBody(
                     SyntaxFactory.Block(MakeHashCodeContributions(schema)));
 
@@ -1034,9 +1037,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), EqualsMethod)
-                .WithModifiers(
-                    SyntaxFactory.TokenList(
-                        SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .WithParameterList(
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SingletonSeparatedList(

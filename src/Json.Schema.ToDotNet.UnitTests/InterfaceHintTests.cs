@@ -46,6 +46,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 }",
 
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -53,7 +54,7 @@ namespace N
     /// <summary>
     /// My class with an interface.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IC, IEquatable<C>
     {
         /// <summary>
@@ -95,11 +96,14 @@ namespace N
     }
 }",
 
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// My interface.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public interface IC
     {
         /// <summary>

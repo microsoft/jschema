@@ -108,8 +108,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private string GenerateSyntaxInterface(string schemaName, string enumName)
         {
-            SyntaxTokenList modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
                 {
@@ -144,33 +142,23 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             InterfaceDeclarationSyntax interfaceDeclaration =
                 SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
-                    .WithModifiers(modifiers)
+                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                     .WithLeadingTrivia(SyntaxHelper.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.SyntaxInterfaceDescription,
                             schemaName)))
-                    .WithMembers(
-                        SyntaxFactory.List(
-                            new MemberDeclarationSyntax[]
-                            {
-                                syntaxKindPropertyDeclaration,
-                                deepCloneMethodDeclaration
-                            }));
-
-            SyntaxList<MemberDeclarationSyntax> namespaceMembers =
-                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(interfaceDeclaration);
+                    .AddMembers(
+                        syntaxKindPropertyDeclaration,
+                        deepCloneMethodDeclaration);
 
             NamespaceDeclarationSyntax namespaceDecl =
                 SyntaxFactory.NamespaceDeclaration(
                     SyntaxFactory.IdentifierName(_settings.NamespaceName))
-                .WithMembers(namespaceMembers);
-
-            SyntaxList<MemberDeclarationSyntax> compilationUnitMembers =
-                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
+                .AddMembers(interfaceDeclaration);
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .WithMembers(compilationUnitMembers);
+                .AddMembers(namespaceDecl);
 
             if (!string.IsNullOrWhiteSpace(_settings.CopyrightNotice))
             {
@@ -192,16 +180,13 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private string GenerateKindEnum(string enumName)
         {
-            SyntaxTokenList modifiers = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
             EnumDeclarationSyntax enumDeclaration =
                 SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(enumName))
-                    .WithModifiers(modifiers)
-                    .WithMembers(
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.EnumMemberDeclaration("None")
-                                .WithLeadingTrivia(
-                                    SyntaxHelper.MakeDocComment(Resources.KindEnumNoneDescription))))
+                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                    .AddMembers(
+                        SyntaxFactory.EnumMemberDeclaration("None")
+                            .WithLeadingTrivia(
+                                SyntaxHelper.MakeDocComment(Resources.KindEnumNoneDescription)))
                     .AddMembers(
                         _generatedClassNames.Select(gcn => GenerateKindEnumMember(gcn)).ToArray())
                     .WithLeadingTrivia(SyntaxHelper.MakeDocComment(
@@ -210,19 +195,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                             Resources.KindEnumDescription,
                             SyntaxInterfaceTypeName)));
 
-            SyntaxList<MemberDeclarationSyntax> namespaceMembers =
-                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(enumDeclaration);
-
             NamespaceDeclarationSyntax namespaceDecl =
                 SyntaxFactory.NamespaceDeclaration(
                     SyntaxFactory.IdentifierName(_settings.NamespaceName))
-                .WithMembers(namespaceMembers);
-
-            SyntaxList<MemberDeclarationSyntax> compilationUnitMembers =
-                SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
+                .AddMembers(enumDeclaration);
 
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .WithMembers(compilationUnitMembers);
+                .AddMembers(namespaceDecl);
 
             if (!string.IsNullOrWhiteSpace(_settings.CopyrightNotice))
             {

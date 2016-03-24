@@ -90,6 +90,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -97,7 +98,7 @@ namespace N
     /// <summary>
     /// The description
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
     }
@@ -122,11 +123,12 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -205,11 +207,12 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -335,12 +338,13 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -420,11 +424,12 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -483,6 +488,7 @@ namespace N
 
             const string RootClassText =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -490,7 +496,7 @@ namespace N
     /// <summary>
     /// Describes a console window.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class ConsoleWindow : IEquatable<ConsoleWindow>
     {
         /// <summary>
@@ -509,6 +515,7 @@ namespace N
 
             const string ColorClassText =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
@@ -516,7 +523,7 @@ namespace N
     /// <summary>
     /// Describes a color with R, G, and B components.
     /// </summary>
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class Color : IEquatable<Color>
     {
         /// <summary>
@@ -574,11 +581,12 @@ namespace N
 // Licensed under Apache 2.0 license.
 
 using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -667,12 +675,13 @@ namespace N
 
             const string ExpectedClass =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : ISyntax, IEquatable<C>
     {
         /// <summary>
@@ -976,11 +985,12 @@ namespace N
 
             const string ExpectedRootClass =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1021,11 +1031,12 @@ namespace N
 
             const string ExpectedDefinedClass1 =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class Def1 : IEquatable<Def1>
     {
         [DataMember]
@@ -1069,11 +1080,12 @@ namespace N
 
             const string ExpectedDefinedClass2 =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class Def2 : IEquatable<Def2>
     {
         [DataMember]
@@ -1148,11 +1160,12 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1213,11 +1226,12 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1284,11 +1298,12 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1326,12 +1341,13 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1428,12 +1444,13 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1553,12 +1570,13 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1685,12 +1703,13 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
@@ -1804,11 +1823,12 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract]
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public partial class C : IEquatable<C>
     {
         [DataMember]
