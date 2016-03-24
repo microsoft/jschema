@@ -60,7 +60,7 @@ namespace N
         /// <summary>
         /// The value.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""value"")]
         public int Value { get; set; }
 
         public override bool Equals(object other)

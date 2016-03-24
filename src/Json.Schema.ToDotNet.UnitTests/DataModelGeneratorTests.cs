@@ -131,13 +131,13 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""stringProp"")]
         public string StringProp { get; set; }
-        [DataMember]
+        [DataMember(Name = ""numberProp"")]
         public double NumberProp { get; set; }
-        [DataMember]
+        [DataMember(Name = ""booleanProp"")]
         public bool BooleanProp { get; set; }
-        [DataMember]
+        [DataMember(Name = ""integerProp"")]
         public int IntegerProp { get; set; }
 
         public override bool Equals(object other)
@@ -215,7 +215,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""objectProp"")]
         public D ObjectProp { get; set; }
 
         public override bool Equals(object other)
@@ -347,7 +347,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""arrayProp"")]
         public IList<object> ArrayProp { get; set; }
 
         public override bool Equals(object other)
@@ -435,7 +435,7 @@ namespace N
         /// <summary>
         /// An example property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""exampleProp"")]
         public string ExampleProp { get; set; }
     }
 }";
@@ -502,13 +502,13 @@ namespace N
         /// <summary>
         /// The color of the text on the screen.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""foregroundColor"")]
         public Color ForegroundColor { get; set; }
 
         /// <summary>
         /// The color of the screen background.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""backgroundColor"")]
         public Color BackgroundColor { get; set; }
     }
 }";
@@ -529,19 +529,19 @@ namespace N
         /// <summary>
         /// The value of the R component.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""red"")]
         public int Red { get; set; }
 
         /// <summary>
         /// The value of the G component.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""green"")]
         public int Green { get; set; }
 
         /// <summary>
         /// The value of the B component.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""blue"")]
         public int Blue { get; set; }
     }
 }";
@@ -592,7 +592,7 @@ namespace N
         /// <summary>
         /// An example property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""exampleProp"")]
         public string ExampleProp { get; set; }
     }
 }";
@@ -698,51 +698,51 @@ namespace N
         /// <summary>
         /// An integer property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""intProp"")]
         public int IntProp { get; set; }
 
         /// <summary>
         /// A string property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""stringProp"")]
         public string StringProp { get; set; }
 
         /// <summary>
         /// An array property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""arrayProp"")]
         public IList<double> ArrayProp { get; set; }
 
         /// <summary>
         /// A Uri property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""uriProp"")]
         public Uri UriProp { get; set; }
 
         /// <summary>
         /// A DateTime property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""dateTimeProp"")]
         public DateTime DateTimeProp { get; set; }
-        [DataMember]
+        [DataMember(Name = ""referencedTypeProp"")]
         public D ReferencedTypeProp { get; set; }
 
         /// <summary>
         /// An array of a cloneable type.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""arrayOfRefProp"")]
         public IList<D> ArrayOfRefProp { get; set; }
 
         /// <summary>
         /// An array of arrays.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""arrayOfArrayProp"")]
         public IList<IList<D>> ArrayOfArrayProp { get; set; }
 
         /// <summary>
         /// A dictionary property.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""dictionaryProp"")]
         public Dictionary<string, string> DictionaryProp { get; set; }
 
         /// <summary>
@@ -993,7 +993,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""rootProp"")]
         public bool RootProp { get; set; }
 
         public override bool Equals(object other)
@@ -1039,7 +1039,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class Def1 : IEquatable<Def1>
     {
-        [DataMember]
+        [DataMember(Name = ""prop1"")]
         public string Prop1 { get; set; }
 
         public override bool Equals(object other)
@@ -1088,7 +1088,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class Def2 : IEquatable<Def2>
     {
-        [DataMember]
+        [DataMember(Name = ""prop2"")]
         public int Prop2 { get; set; }
 
         public override bool Equals(object other)
@@ -1168,7 +1168,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""startTime"")]
         public DateTime StartTime { get; set; }
 
         public override bool Equals(object other)
@@ -1234,7 +1234,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""targetFile"")]
         public Uri TargetFile { get; set; }
 
         public override bool Equals(object other)
@@ -1306,7 +1306,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""intDefProp"")]
         public int IntDefProp { get; set; }
     }
 }";
@@ -1350,7 +1350,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""arrayOfIntByRef"")]
         public IList<int> ArrayOfIntByRef { get; set; }
 
         public override bool Equals(object other)
@@ -1453,7 +1453,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""arrayOfArrayOfInt"")]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
 
         public override bool Equals(object other)
@@ -1579,7 +1579,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""arrayOfArrayOfObject"")]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
 
         public override bool Equals(object other)
@@ -1712,7 +1712,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""arrayOfArrayOfD"")]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
 
         public override bool Equals(object other)
@@ -1831,7 +1831,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember]
+        [DataMember(Name = ""version"")]
         public string Version { get; set; }
     }
 }";

@@ -24,7 +24,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyInfoDictionary = new Dictionary<string, PropertyInfo>();
         }
 
-        protected abstract AttributeSyntax[] CreatePropertyAttributes();
+        protected abstract AttributeSyntax[] CreatePropertyAttributes(string propertyName);
 
         protected abstract SyntaxTokenList CreatePropertyModifiers();
 
@@ -118,7 +118,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.List(
                         CreatePropertyAccessors())));
 
-            AttributeSyntax[] attributes = CreatePropertyAttributes();
+            AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName);
             if (attributes.Length > 0)
             {
                 propDecl = propDecl.AddAttributeLists(

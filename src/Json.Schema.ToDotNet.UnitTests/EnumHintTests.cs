@@ -67,7 +67,7 @@ namespace N
         /// <summary>
         /// The color of the background.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""backgroundColor"")]
         public Color BackgroundColor { get; set; }
 
         public override bool Equals(object other)
@@ -190,7 +190,7 @@ namespace N
         /// <summary>
         /// The color of the background.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""backgroundColor"")]
         public Color BackgroundColor { get; set; }
 
         public override bool Equals(object other)
@@ -283,7 +283,7 @@ namespace N
         /// <summary>
         /// The color of the background.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""backgroundColor"")]
         public Color BackgroundColor { get; set; }
 
         public override bool Equals(object other)
@@ -378,7 +378,7 @@ namespace N
         /// <summary>
         /// The color of the background.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""backgroundColor"")]
         public Color BackgroundColor { get; set; }
 
         public override bool Equals(object other)
@@ -504,7 +504,7 @@ namespace N
         /// <summary>
         /// The color of the background.
         /// </summary>
-        [DataMember]
+        [DataMember(Name = ""backgroundColor"")]
         public Color BackgroundColor { get; set; }
 
         public override bool Equals(object other)
