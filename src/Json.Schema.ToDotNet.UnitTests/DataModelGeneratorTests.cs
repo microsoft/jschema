@@ -129,9 +129,13 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public string StringProp { get; set; }
+        [DataMember]
         public double NumberProp { get; set; }
+        [DataMember]
         public bool BooleanProp { get; set; }
+        [DataMember]
         public int IntegerProp { get; set; }
 
         public override bool Equals(object other)
@@ -208,6 +212,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public D ObjectProp { get; set; }
 
         public override bool Equals(object other)
@@ -338,6 +343,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public IList<object> ArrayProp { get; set; }
 
         public override bool Equals(object other)
@@ -424,6 +430,7 @@ namespace N
         /// <summary>
         /// An example property.
         /// </summary>
+        [DataMember]
         public string ExampleProp { get; set; }
     }
 }";
@@ -489,11 +496,13 @@ namespace N
         /// <summary>
         /// The color of the text on the screen.
         /// </summary>
+        [DataMember]
         public Color ForegroundColor { get; set; }
 
         /// <summary>
         /// The color of the screen background.
         /// </summary>
+        [DataMember]
         public Color BackgroundColor { get; set; }
     }
 }";
@@ -513,16 +522,19 @@ namespace N
         /// <summary>
         /// The value of the R component.
         /// </summary>
+        [DataMember]
         public int Red { get; set; }
 
         /// <summary>
         /// The value of the G component.
         /// </summary>
+        [DataMember]
         public int Green { get; set; }
 
         /// <summary>
         /// The value of the B component.
         /// </summary>
+        [DataMember]
         public int Blue { get; set; }
     }
 }";
@@ -572,6 +584,7 @@ namespace N
         /// <summary>
         /// An example property.
         /// </summary>
+        [DataMember]
         public string ExampleProp { get; set; }
     }
 }";
@@ -676,42 +689,51 @@ namespace N
         /// <summary>
         /// An integer property.
         /// </summary>
+        [DataMember]
         public int IntProp { get; set; }
 
         /// <summary>
         /// A string property.
         /// </summary>
+        [DataMember]
         public string StringProp { get; set; }
 
         /// <summary>
         /// An array property.
         /// </summary>
+        [DataMember]
         public IList<double> ArrayProp { get; set; }
 
         /// <summary>
         /// A Uri property.
         /// </summary>
+        [DataMember]
         public Uri UriProp { get; set; }
 
         /// <summary>
         /// A DateTime property.
         /// </summary>
+        [DataMember]
         public DateTime DateTimeProp { get; set; }
+        [DataMember]
         public D ReferencedTypeProp { get; set; }
 
         /// <summary>
         /// An array of a cloneable type.
         /// </summary>
+        [DataMember]
         public IList<D> ArrayOfRefProp { get; set; }
 
         /// <summary>
         /// An array of arrays.
         /// </summary>
+        [DataMember]
         public IList<IList<D>> ArrayOfArrayProp { get; set; }
 
         /// <summary>
         /// A dictionary property.
         /// </summary>
+        [DataMember]
         public Dictionary<string, string> DictionaryProp { get; set; }
 
         /// <summary>
@@ -961,6 +983,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public bool RootProp { get; set; }
 
         public override bool Equals(object other)
@@ -1005,6 +1028,7 @@ namespace N
     [DataContract]
     public partial class Def1 : IEquatable<Def1>
     {
+        [DataMember]
         public string Prop1 { get; set; }
 
         public override bool Equals(object other)
@@ -1052,6 +1076,7 @@ namespace N
     [DataContract]
     public partial class Def2 : IEquatable<Def2>
     {
+        [DataMember]
         public int Prop2 { get; set; }
 
         public override bool Equals(object other)
@@ -1130,6 +1155,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public DateTime StartTime { get; set; }
 
         public override bool Equals(object other)
@@ -1194,6 +1220,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public Uri TargetFile { get; set; }
 
         public override bool Equals(object other)
@@ -1264,6 +1291,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public int IntDefProp { get; set; }
     }
 }";
@@ -1306,6 +1334,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public IList<int> ArrayOfIntByRef { get; set; }
 
         public override bool Equals(object other)
@@ -1407,6 +1436,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
 
         public override bool Equals(object other)
@@ -1531,6 +1561,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
 
         public override bool Equals(object other)
@@ -1662,6 +1693,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
 
         public override bool Equals(object other)
@@ -1779,6 +1811,7 @@ namespace N
     [DataContract]
     public partial class C : IEquatable<C>
     {
+        [DataMember]
         public string Version { get; set; }
     }
 }";

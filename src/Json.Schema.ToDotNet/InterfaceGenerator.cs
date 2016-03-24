@@ -36,12 +36,17 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax).WithMembers(memberList);
         }
 
+        protected override AttributeSyntax[] CreatePropertyAttributes()
+        {
+            return new AttributeSyntax[0];
+        }
+
         protected override SyntaxTokenList CreatePropertyModifiers()
         {
             return default(SyntaxTokenList);
         }
 
-        protected override IEnumerable<AccessorDeclarationSyntax> CreateAccessorDeclarations()
+        protected override IEnumerable<AccessorDeclarationSyntax> CreatePropertyAccessors()
         {
             return new AccessorDeclarationSyntax[]
                         {

@@ -24,9 +24,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyInfoDictionary = new Dictionary<string, PropertyInfo>();
         }
 
+        protected abstract AttributeSyntax[] CreatePropertyAttributes();
+
         protected abstract SyntaxTokenList CreatePropertyModifiers();
 
-        protected abstract IEnumerable<AccessorDeclarationSyntax> CreateAccessorDeclarations();
+        protected abstract IEnumerable<AccessorDeclarationSyntax> CreatePropertyAccessors();
 
         /// <summary>
         /// Gets a dictionary that maps the name of each property in the generated class
@@ -106,7 +108,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </returns>
         private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName, JsonSchema schema)
         {
-            return SyntaxFactory.PropertyDeclaration(
+            PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 CreatePropertyModifiers(),
                 MakePropertyType(propertyName, schema),
@@ -114,8 +116,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.Identifier(propertyName.ToPascalCase()),
                 SyntaxFactory.AccessorList(
                     SyntaxFactory.List(
-                        CreateAccessorDeclarations())))
-                .WithLeadingTrivia(SyntaxHelper.MakeDocComment(schema.Description));
+                        CreatePropertyAccessors())));
+
+            AttributeSyntax[] attributes = CreatePropertyAttributes();
+            if (attributes.Length > 0)
+            {
+                propDecl = propDecl
+                    .WithAttributeLists(
+                        SyntaxFactory.List(
+                            new AttributeListSyntax[]
+                            {
+                                SyntaxFactory.AttributeList(
+                                    SyntaxFactory.SeparatedList(attributes))
+                            }));
+            }
+
+            return propDecl.WithLeadingTrivia(
+                SyntaxHelper.MakeDocComment(schema.Description));
         }
 
         /// <summary>

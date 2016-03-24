@@ -27,6 +27,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string OtherParameter = "other";
 
         private const string DataContractAttributeName = "DataContract";
+        private const string DataMemberAttributeName = "DataMember";
 
         private const string CountProperty = "Count";
         private const string EqualsMethod = "Equals";
@@ -175,12 +176,22 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).WithMembers(memberList);
         }
 
+
+        protected override AttributeSyntax[] CreatePropertyAttributes()
+        {
+            return new[]
+            {
+                SyntaxFactory.Attribute(
+                    SyntaxFactory.IdentifierName(DataMemberAttributeName))
+            };
+        }
+
         protected override SyntaxTokenList CreatePropertyModifiers()
         {
             return SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 
-        protected override IEnumerable<AccessorDeclarationSyntax> CreateAccessorDeclarations()
+        protected override IEnumerable<AccessorDeclarationSyntax> CreatePropertyAccessors()
         {
             return new AccessorDeclarationSyntax[]
                         {
