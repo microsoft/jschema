@@ -55,7 +55,7 @@ namespace N
     /// My class with an interface.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IC, IEquatable<C>
+    public sealed class C : IC, IEquatable<C>
     {
         /// <summary>
         /// The value.

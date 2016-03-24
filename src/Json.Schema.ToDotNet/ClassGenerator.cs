@@ -84,7 +84,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     })
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                    SyntaxFactory.Token(SyntaxKind.PartialKeyword));
+                    SyntaxFactory.Token(SyntaxKind.SealedKeyword));
 
             var baseTypes = new List<BaseTypeSyntax>();
 

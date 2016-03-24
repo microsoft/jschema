@@ -99,7 +99,7 @@ namespace N
     /// The description
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
     }
 }";
@@ -129,7 +129,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public string StringProp { get; set; }
@@ -213,7 +213,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public D ObjectProp { get; set; }
@@ -345,7 +345,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public IList<object> ArrayProp { get; set; }
@@ -430,7 +430,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// An example property.
@@ -497,7 +497,7 @@ namespace N
     /// Describes a console window.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class ConsoleWindow : IEquatable<ConsoleWindow>
+    public sealed class ConsoleWindow : IEquatable<ConsoleWindow>
     {
         /// <summary>
         /// The color of the text on the screen.
@@ -524,7 +524,7 @@ namespace N
     /// Describes a color with R, G, and B components.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class Color : IEquatable<Color>
+    public sealed class Color : IEquatable<Color>
     {
         /// <summary>
         /// The value of the R component.
@@ -587,7 +587,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// An example property.
@@ -682,7 +682,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : ISyntax, IEquatable<C>
+    public sealed class C : ISyntax, IEquatable<C>
     {
         /// <summary>
         /// Gets a value indicating the type of object implementing <see cref=""ISyntax"" />.
@@ -991,7 +991,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public bool RootProp { get; set; }
@@ -1037,7 +1037,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class Def1 : IEquatable<Def1>
+    public sealed class Def1 : IEquatable<Def1>
     {
         [DataMember]
         public string Prop1 { get; set; }
@@ -1086,7 +1086,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class Def2 : IEquatable<Def2>
+    public sealed class Def2 : IEquatable<Def2>
     {
         [DataMember]
         public int Prop2 { get; set; }
@@ -1166,7 +1166,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public DateTime StartTime { get; set; }
@@ -1232,7 +1232,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public Uri TargetFile { get; set; }
@@ -1304,7 +1304,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public int IntDefProp { get; set; }
@@ -1348,7 +1348,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public IList<int> ArrayOfIntByRef { get; set; }
@@ -1451,7 +1451,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
@@ -1577,7 +1577,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
@@ -1710,7 +1710,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
@@ -1829,7 +1829,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         [DataMember]
         public string Version { get; set; }

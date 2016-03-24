@@ -52,7 +52,7 @@ namespace N
     /// Class with property bag.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// Set of key-value pairs.

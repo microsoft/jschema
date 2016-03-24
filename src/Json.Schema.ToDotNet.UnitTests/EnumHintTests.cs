@@ -62,7 +62,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -185,7 +185,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -278,7 +278,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -373,7 +373,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -499,7 +499,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
-    public partial class C : IEquatable<C>
+    public sealed class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
