@@ -43,12 +43,14 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
 @"using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// Class with property bag.
     /// </summary>
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>

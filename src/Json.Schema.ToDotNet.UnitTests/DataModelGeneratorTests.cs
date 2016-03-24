@@ -90,12 +90,14 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// The description
     /// </summary>
+    [DataContract]
     public partial class C : IEquatable<C>
     {
     }
@@ -120,9 +122,11 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public string StringProp { get; set; }
@@ -197,9 +201,11 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public D ObjectProp { get; set; }
@@ -325,9 +331,11 @@ namespace N
             const string Expected =
 @"using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public IList<object> ArrayProp { get; set; }
@@ -406,9 +414,11 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -466,12 +476,14 @@ namespace N
 
             const string RootClassText =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// Describes a console window.
     /// </summary>
+    [DataContract]
     public partial class ConsoleWindow : IEquatable<ConsoleWindow>
     {
         /// <summary>
@@ -488,12 +500,14 @@ namespace N
 
             const string ColorClassText =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// Describes a color with R, G, and B components.
     /// </summary>
+    [DataContract]
     public partial class Color : IEquatable<Color>
     {
         /// <summary>
@@ -548,9 +562,11 @@ namespace N
 // Licensed under Apache 2.0 license.
 
 using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -639,9 +655,11 @@ namespace N
             const string ExpectedClass =
 @"using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : ISyntax, IEquatable<C>
     {
         /// <summary>
@@ -936,9 +954,11 @@ namespace N
 
             const string ExpectedRootClass =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public bool RootProp { get; set; }
@@ -978,9 +998,11 @@ namespace N
 
             const string ExpectedDefinedClass1 =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class Def1 : IEquatable<Def1>
     {
         public string Prop1 { get; set; }
@@ -1023,9 +1045,11 @@ namespace N
 
             const string ExpectedDefinedClass2 =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class Def2 : IEquatable<Def2>
     {
         public int Prop2 { get; set; }
@@ -1099,9 +1123,11 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public DateTime StartTime { get; set; }
@@ -1161,9 +1187,11 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public Uri TargetFile { get; set; }
@@ -1229,9 +1257,11 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public int IntDefProp { get; set; }
@@ -1269,9 +1299,11 @@ namespace N
             const string Expected =
 @"using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public IList<int> ArrayOfIntByRef { get; set; }
@@ -1368,9 +1400,11 @@ namespace N
             const string Expected =
 @"using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
@@ -1490,9 +1524,11 @@ namespace N
             const string Expected =
 @"using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
@@ -1619,9 +1655,11 @@ namespace N
             const string Expected =
 @"using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
@@ -1734,9 +1772,11 @@ namespace N
 
             const string Expected =
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         public string Version { get; set; }

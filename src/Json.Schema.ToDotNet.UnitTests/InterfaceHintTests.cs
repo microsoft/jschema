@@ -46,12 +46,14 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 }",
 
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// My class with an interface.
     /// </summary>
+    [DataContract]
     public partial class C : IC, IEquatable<C>
     {
         /// <summary>

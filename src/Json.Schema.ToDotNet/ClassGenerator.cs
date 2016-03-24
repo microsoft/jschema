@@ -26,6 +26,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         // Name used for the parameters of Equals methods and copy ctor.
         private const string OtherParameter = "other";
 
+        private const string DataContractAttributeName = "DataContract";
+
         private const string CountProperty = "Count";
         private const string EqualsMethod = "Equals";
         private const string GetHashCodeMethod = "GetHashCode";
@@ -73,6 +75,15 @@ namespace Microsoft.Json.Schema.ToDotNet
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
             var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
+                .WithAttributeLists(
+                    SyntaxFactory.List(
+                        new AttributeListSyntax[]
+                        {
+                            SyntaxFactory.AttributeList(
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.Attribute(
+                                        SyntaxFactory.IdentifierName(DataContractAttributeName))))
+                        }))
                 .WithModifiers(
                     SyntaxFactory.TokenList(
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -111,7 +122,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             baseTypes.Add(iEquatable);
 
-            AddUsing("System"); // For IEquatable<T>
+            AddUsing("System");                         // For IEquatable<T>
+            AddUsing("System.Runtime.Serialization");   // For DataContractAttribute;
 
             if (baseTypes.Count > 0)
             {

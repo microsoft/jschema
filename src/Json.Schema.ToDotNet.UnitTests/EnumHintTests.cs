@@ -53,12 +53,14 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 }",
 
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// My class with an enum.
     /// </summary>
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -169,12 +171,14 @@ namespace N
 }",
 
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// My class with an enum.
     /// </summary>
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -255,12 +259,14 @@ namespace N
 }",
 
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// My class with an enum.
     /// </summary>
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -343,12 +349,14 @@ namespace N
 }",
 
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// My class with an enum.
     /// </summary>
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>
@@ -462,12 +470,14 @@ namespace N
 }",
 
 @"using System;
+using System.Runtime.Serialization;
 
 namespace N
 {
     /// <summary>
     /// My class with an enum.
     /// </summary>
+    [DataContract]
     public partial class C : IEquatable<C>
     {
         /// <summary>
