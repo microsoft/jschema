@@ -29,6 +29,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string DataContractAttributeName = "DataContract";
         private const string DataMemberAttributeName = "DataMember";
         private const string DataMemberNamePropertyName = "Name";
+        private const string DataMemberIsRequiredPropertyName = "IsRequired";
+        private const string DataMemberEmitDefaultValuePropertyName = "EmitDefaultValue";
 
         private const string CountProperty = "Count";
         private const string EqualsMethod = "Equals";
@@ -183,21 +185,38 @@ namespace Microsoft.Json.Schema.ToDotNet
             return attributes.ToArray();
         }
 
-        protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName)
+        protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired)
         {
+            var dataMemberAttributeArguments =
+                new List<AttributeArgumentSyntax>
+                {
+                    SyntaxFactory.AttributeArgument(
+                        SyntaxFactory.NameEquals(DataMemberNamePropertyName),
+                        default(NameColonSyntax),
+                        SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(propertyName))),
+                    SyntaxFactory.AttributeArgument(
+                        SyntaxFactory.NameEquals(DataMemberIsRequiredPropertyName),
+                        default(NameColonSyntax),
+                        SyntaxFactory.LiteralExpression(isRequired
+                            ? SyntaxKind.TrueLiteralExpression
+                            : SyntaxKind.FalseLiteralExpression))
+                };
+
+            if (!isRequired)
+            {
+                dataMemberAttributeArguments.Add(
+                    SyntaxFactory.AttributeArgument(
+                        SyntaxFactory.NameEquals(DataMemberEmitDefaultValuePropertyName),
+                        default(NameColonSyntax),
+                        SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression)));
+            }
+
             return new[]
             {
                 SyntaxFactory.Attribute(
                     SyntaxFactory.IdentifierName(DataMemberAttributeName),
                     SyntaxFactory.AttributeArgumentList(
-                        SyntaxFactory.SeparatedList(
-                            new AttributeArgumentSyntax[]
-                            {
-                                SyntaxFactory.AttributeArgument(
-                                    SyntaxFactory.NameEquals(DataMemberNamePropertyName),
-                                    default(NameColonSyntax),
-                                    SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(propertyName)))
-                            })))
+                        SyntaxFactory.SeparatedList(dataMemberAttributeArguments)))
             };
         }
 

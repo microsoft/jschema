@@ -57,7 +57,7 @@ namespace N
         /// <summary>
         /// Set of key-value pairs.
         /// </summary>
-        [DataMember(Name = ""properties"")]
+        [DataMember(Name = ""properties"", IsRequired = false, EmitDefaultValue = false)]
         public Dictionary<string, string> Properties { get; set; }
 
         public override bool Equals(object other)

@@ -24,7 +24,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyInfoDictionary = new Dictionary<string, PropertyInfo>();
         }
 
-        protected abstract AttributeSyntax[] CreatePropertyAttributes(string propertyName);
+        protected abstract AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired);
 
         protected abstract SyntaxTokenList CreatePropertyModifiers();
 
@@ -46,9 +46,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 {
                     string propertyName = schemaProperty.Key;
                     JsonSchema subSchema = schemaProperty.Value;
+                    bool isRequired = schema.Required?.Contains(propertyName) == true;
 
                     propDecls.Add(
-                        CreatePropertyDeclaration(propertyName, subSchema));
+                        CreatePropertyDeclaration(propertyName, subSchema, isRequired));
                 }
             }
 
@@ -104,9 +105,13 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// The schema that defines the type of the property.
         /// </param>
         /// <returns>
+        /// <param name="isRequired">
+        /// <code>true</code> if this property is required by its parent schema;
+        /// otherwise <code>false</code>.
+        /// </param>
         /// A property declaration built from the specified schema.
         /// </returns>
-        private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName, JsonSchema schema)
+        private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName, JsonSchema schema, bool isRequired)
         {
             PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
@@ -118,7 +123,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.List(
                         CreatePropertyAccessors())));
 
-            AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName);
+            AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName, isRequired);
             if (attributes.Length > 0)
             {
                 propDecl = propDecl.AddAttributeLists(

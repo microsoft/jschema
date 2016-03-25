@@ -131,13 +131,13 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""stringProp"")]
+        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProp { get; set; }
-        [DataMember(Name = ""numberProp"")]
+        [DataMember(Name = ""numberProp"", IsRequired = false, EmitDefaultValue = false)]
         public double NumberProp { get; set; }
-        [DataMember(Name = ""booleanProp"")]
+        [DataMember(Name = ""booleanProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool BooleanProp { get; set; }
-        [DataMember(Name = ""integerProp"")]
+        [DataMember(Name = ""integerProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntegerProp { get; set; }
 
         public override bool Equals(object other)
@@ -215,7 +215,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""objectProp"")]
+        [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ObjectProp { get; set; }
 
         public override bool Equals(object other)
@@ -347,7 +347,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""arrayProp"")]
+        [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
 
         public override bool Equals(object other)
@@ -435,7 +435,7 @@ namespace N
         /// <summary>
         /// An example property.
         /// </summary>
-        [DataMember(Name = ""exampleProp"")]
+        [DataMember(Name = ""exampleProp"", IsRequired = false, EmitDefaultValue = false)]
         public string ExampleProp { get; set; }
     }
 }";
@@ -502,13 +502,13 @@ namespace N
         /// <summary>
         /// The color of the text on the screen.
         /// </summary>
-        [DataMember(Name = ""foregroundColor"")]
+        [DataMember(Name = ""foregroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color ForegroundColor { get; set; }
 
         /// <summary>
         /// The color of the screen background.
         /// </summary>
-        [DataMember(Name = ""backgroundColor"")]
+        [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
     }
 }";
@@ -529,19 +529,19 @@ namespace N
         /// <summary>
         /// The value of the R component.
         /// </summary>
-        [DataMember(Name = ""red"")]
+        [DataMember(Name = ""red"", IsRequired = false, EmitDefaultValue = false)]
         public int Red { get; set; }
 
         /// <summary>
         /// The value of the G component.
         /// </summary>
-        [DataMember(Name = ""green"")]
+        [DataMember(Name = ""green"", IsRequired = false, EmitDefaultValue = false)]
         public int Green { get; set; }
 
         /// <summary>
         /// The value of the B component.
         /// </summary>
-        [DataMember(Name = ""blue"")]
+        [DataMember(Name = ""blue"", IsRequired = false, EmitDefaultValue = false)]
         public int Blue { get; set; }
     }
 }";
@@ -592,7 +592,7 @@ namespace N
         /// <summary>
         /// An example property.
         /// </summary>
-        [DataMember(Name = ""exampleProp"")]
+        [DataMember(Name = ""exampleProp"", IsRequired = false, EmitDefaultValue = false)]
         public string ExampleProp { get; set; }
     }
 }";
@@ -698,51 +698,51 @@ namespace N
         /// <summary>
         /// An integer property.
         /// </summary>
-        [DataMember(Name = ""intProp"")]
+        [DataMember(Name = ""intProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntProp { get; set; }
 
         /// <summary>
         /// A string property.
         /// </summary>
-        [DataMember(Name = ""stringProp"")]
+        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProp { get; set; }
 
         /// <summary>
         /// An array property.
         /// </summary>
-        [DataMember(Name = ""arrayProp"")]
+        [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<double> ArrayProp { get; set; }
 
         /// <summary>
         /// A Uri property.
         /// </summary>
-        [DataMember(Name = ""uriProp"")]
+        [DataMember(Name = ""uriProp"", IsRequired = false, EmitDefaultValue = false)]
         public Uri UriProp { get; set; }
 
         /// <summary>
         /// A DateTime property.
         /// </summary>
-        [DataMember(Name = ""dateTimeProp"")]
+        [DataMember(Name = ""dateTimeProp"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateTimeProp { get; set; }
-        [DataMember(Name = ""referencedTypeProp"")]
+        [DataMember(Name = ""referencedTypeProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ReferencedTypeProp { get; set; }
 
         /// <summary>
         /// An array of a cloneable type.
         /// </summary>
-        [DataMember(Name = ""arrayOfRefProp"")]
+        [DataMember(Name = ""arrayOfRefProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<D> ArrayOfRefProp { get; set; }
 
         /// <summary>
         /// An array of arrays.
         /// </summary>
-        [DataMember(Name = ""arrayOfArrayProp"")]
+        [DataMember(Name = ""arrayOfArrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayProp { get; set; }
 
         /// <summary>
         /// A dictionary property.
         /// </summary>
-        [DataMember(Name = ""dictionaryProp"")]
+        [DataMember(Name = ""dictionaryProp"", IsRequired = false, EmitDefaultValue = false)]
         public Dictionary<string, string> DictionaryProp { get; set; }
 
         /// <summary>
@@ -993,7 +993,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""rootProp"")]
+        [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool RootProp { get; set; }
 
         public override bool Equals(object other)
@@ -1039,7 +1039,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class Def1 : IEquatable<Def1>
     {
-        [DataMember(Name = ""prop1"")]
+        [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
         public string Prop1 { get; set; }
 
         public override bool Equals(object other)
@@ -1088,7 +1088,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class Def2 : IEquatable<Def2>
     {
-        [DataMember(Name = ""prop2"")]
+        [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
         public int Prop2 { get; set; }
 
         public override bool Equals(object other)
@@ -1168,7 +1168,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""startTime"")]
+        [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
 
         public override bool Equals(object other)
@@ -1234,7 +1234,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""targetFile"")]
+        [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
 
         public override bool Equals(object other)
@@ -1306,7 +1306,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""intDefProp"")]
+        [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntDefProp { get; set; }
     }
 }";
@@ -1350,7 +1350,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""arrayOfIntByRef"")]
+        [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
         public IList<int> ArrayOfIntByRef { get; set; }
 
         public override bool Equals(object other)
@@ -1453,7 +1453,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""arrayOfArrayOfInt"")]
+        [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
 
         public override bool Equals(object other)
@@ -1579,7 +1579,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""arrayOfArrayOfObject"")]
+        [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
 
         public override bool Equals(object other)
@@ -1712,7 +1712,7 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""arrayOfArrayOfD"")]
+        [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
 
         public override bool Equals(object other)
@@ -1831,8 +1831,52 @@ namespace N
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
     public sealed class C : IEquatable<C>
     {
-        [DataMember(Name = ""version"")]
+        [DataMember(Name = ""version"", IsRequired = false, EmitDefaultValue = false)]
         public string Version { get; set; }
+    }
+}";
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates attributes for required and optional properties")]
+        public void GeneratesAttributesForRequiredAndOptionalProperties()
+        {
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+    @"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""requiredProp1"": {
+      ""type"": ""string""
+    },
+    ""optionalProp"": {
+      ""type"": ""string""
+    },
+    ""requiredProp2"": {
+      ""type"": ""string""
+    }
+  },
+  ""required"": [ ""requiredProp1"", ""requiredProp2"" ]
+}");
+
+            const string Expected =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.5.0.0"")]
+    public sealed class C : IEquatable<C>
+    {
+        [DataMember(Name = ""requiredProp1"", IsRequired = true)]
+        public string RequiredProp1 { get; set; }
+        [DataMember(Name = ""optionalProp"", IsRequired = false, EmitDefaultValue = false)]
+        public string OptionalProp { get; set; }
+        [DataMember(Name = ""requiredProp2"", IsRequired = true)]
+        public string RequiredProp2 { get; set; }
     }
 }";
             string actual = generator.Generate(schema);
