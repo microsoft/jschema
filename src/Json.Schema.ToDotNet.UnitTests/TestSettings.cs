@@ -13,6 +13,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             {
                 NamespaceName = "N",
                 RootClassName = "C",
+                SchemaName = "S",
                 OutputDirectory = TestFileSystem.OutputDirectory,
                 ForceOverwrite = true,
                 GenerateOverrides = false,

@@ -682,16 +682,16 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
-    public sealed class C : ISyntax, IEquatable<C>
+    public sealed class C : ISNode, IEquatable<C>
     {
         /// <summary>
-        /// Gets a value indicating the type of object implementing <see cref=""ISyntax"" />.
+        /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
         /// </summary>
-        public SarifKind SyntaxKind
+        public SNodeKind SNodeKind
         {
             get
             {
-                return SarifKind.C;
+                return SNodeKind.C;
             }
         }
 
@@ -806,7 +806,7 @@ namespace N
             Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp);
         }
 
-        ISyntax ISyntax.DeepClone()
+        ISNode ISNode.DeepClone()
         {
             return DeepCloneCore();
         }
@@ -819,7 +819,7 @@ namespace N
             return (C)DeepCloneCore();
         }
 
-        private ISyntax DeepCloneCore()
+        private ISNode DeepCloneCore()
         {
             return new C(this);
         }
@@ -910,39 +910,39 @@ namespace N
 @"namespace N
 {
     /// <summary>
-    /// An interface for all types generated from the Sarif schema.
+    /// An interface for all types generated from the S schema.
     /// </summary>
-    public interface ISyntax
+    public interface ISNode
     {
         /// <summary>
-        /// Gets a value indicating the type of object implementing <see cref=""ISyntax"" />.
+        /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
         /// </summary>
-        SarifKind SyntaxKind { get; }
+        SNodeKind SNodeKind { get; }
 
         /// <summary>
         /// Makes a deep copy of this instance.
         /// </summary>
-        ISyntax DeepClone();
+        ISNode DeepClone();
     }
 }";
             const string ExpectedKindEnum =
 @"namespace N
 {
     /// <summary>
-    /// A set of values for all the types that implement <see cref=""ISyntax"" />.
+    /// A set of values for all the types that implement <see cref=""ISNode"" />.
     /// </summary>
-    public enum SarifKind
+    public enum SNodeKind
     {
         /// <summary>
         /// An uninitialized kind.
         /// </summary>
         None,
         /// <summary>
-        /// A value indicating that the <see cref=""ISyntax"" /> object is of type <see cref=""C"" />.
+        /// A value indicating that the <see cref=""ISNode"" /> object is of type <see cref=""C"" />.
         /// </summary>
         C,
         /// <summary>
-        /// A value indicating that the <see cref=""ISyntax"" /> object is of type <see cref=""D"" />.
+        /// A value indicating that the <see cref=""ISNode"" /> object is of type <see cref=""D"" />.
         /// </summary>
         D
     }
@@ -953,8 +953,8 @@ namespace N
 
             generator.Generate(schema);
 
-            string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISyntax");
-            string kindEnumPath = TestFileSystem.MakeOutputFilePath("SarifKind");
+            string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISNode");
+            string kindEnumPath = TestFileSystem.MakeOutputFilePath("SNodeKind");
             string referencedTypePath = TestFileSystem.MakeOutputFilePath("D");
 
             var expectedOutputFiles = new List<string>

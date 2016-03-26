@@ -18,14 +18,13 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </summary>
     public class DataModelGenerator
     {
-        private const string SyntaxInterfaceTypeName = "ISyntax";
-
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
         private Dictionary<string, string> _pathToFileContentsDictionary;
         private List<string> _generatedClassNames;
         private string _kindEnumName;
+        private string _syntaxInterfaceName;
         private List<AdditionalTypeRequiredEventArgs> _additionalTypesRequiredList;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
@@ -53,6 +52,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (_settings.GenerateCloningCode)
             {
                 _kindEnumName = _settings.SchemaName + "NodeKind";
+                _syntaxInterfaceName = "I" + _settings.SchemaName + "Node";
             }
 
             _rootSchema = JsonSchema.Collapse(rootSchema);
@@ -86,8 +86,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_settings.GenerateCloningCode)
             {
-                _pathToFileContentsDictionary[SyntaxInterfaceTypeName] =
-                    GenerateSyntaxInterface(_settings.SchemaName, _kindEnumName);
+                _pathToFileContentsDictionary[_syntaxInterfaceName] =
+                    GenerateSyntaxInterface(_settings.SchemaName, _kindEnumName, _syntaxInterfaceName);
 
                 _pathToFileContentsDictionary[_kindEnumName] =
                     GenerateKindEnum(_kindEnumName);
@@ -103,7 +103,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return rootFileText;
         }
 
-        private string GenerateSyntaxInterface(string schemaName, string enumName)
+        private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
         {
             var accessorDeclarations = SyntaxFactory.List(
                 new AccessorDeclarationSyntax[]
@@ -117,16 +117,17 @@ namespace Microsoft.Json.Schema.ToDotNet
                     default(SyntaxTokenList), // modifiers
                     SyntaxFactory.ParseTypeName(enumName),
                     default(ExplicitInterfaceSpecifierSyntax),
-                    SyntaxFactory.Identifier("SyntaxKind"),
+                    SyntaxFactory.Identifier(enumName),
                     SyntaxFactory.AccessorList(accessorDeclarations))
                     .WithLeadingTrivia(
-                        SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
+                        SyntaxHelper.MakeDocComment(
+                            string.Format(CultureInfo.CurrentCulture, Resources.SyntaxInterfaceKindDescription, syntaxInterfaceName)));
 
             MethodDeclarationSyntax deepCloneMethodDeclaration =
                 SyntaxFactory.MethodDeclaration(
                     default(SyntaxList<AttributeListSyntax>),
                     default(SyntaxTokenList), // modifiers
-                    SyntaxFactory.ParseTypeName(SyntaxInterfaceTypeName),
+                    SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
                     default(ExplicitInterfaceSpecifierSyntax),
                     SyntaxFactory.Identifier("DeepClone"),
                     default(TypeParameterListSyntax),
@@ -138,7 +139,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceDeepCloneDescription));
 
             InterfaceDeclarationSyntax interfaceDeclaration =
-                SyntaxFactory.InterfaceDeclaration(SyntaxInterfaceTypeName)
+                SyntaxFactory.InterfaceDeclaration(_syntaxInterfaceName)
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                     .WithLeadingTrivia(SyntaxHelper.MakeDocComment(
                         string.Format(
@@ -190,7 +191,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.KindEnumDescription,
-                            SyntaxInterfaceTypeName)));
+                            _syntaxInterfaceName)));
 
             NamespaceDeclarationSyntax namespaceDecl =
                 SyntaxFactory.NamespaceDeclaration(
@@ -223,6 +224,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string description = string.Format(
                 CultureInfo.CurrentCulture,
                 Resources.KindEnumMemberDescription,
+                _syntaxInterfaceName,
                 className);
 
             return SyntaxFactory.EnumMemberDeclaration(className)
@@ -258,7 +260,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     _settings.HintDictionary,
                     _settings.GenerateOverrides,
                     _settings.GenerateCloningCode,
-                    SyntaxInterfaceTypeName,
+                    _syntaxInterfaceName,
                     _kindEnumName);
 
                 // Keep track of any hints that the type generator might encounter in the

@@ -160,7 +160,7 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A set of values for all the types that implement &lt;see cref=&quot;ISyntax&quot; /&gt;..
+        ///   Looks up a localized string similar to A set of values for all the types that implement &lt;see cref=&quot;{0}&quot; /&gt;..
         /// </summary>
         internal static string KindEnumDescription {
             get {
@@ -169,7 +169,7 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A value indicating that the &lt;see cref=&quot;ISyntax&quot; /&gt; object is of type &lt;see cref=&quot;{0}&quot; /&gt;..
+        ///   Looks up a localized string similar to A value indicating that the &lt;see cref=&quot;{0}&quot; /&gt; object is of type &lt;see cref=&quot;{1}&quot; /&gt;..
         /// </summary>
         internal static string KindEnumMemberDescription {
             get {
@@ -223,7 +223,7 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gets a value indicating the type of object implementing &lt;see cref=&quot;ISyntax&quot; /&gt;..
+        ///   Looks up a localized string similar to Gets a value indicating the type of object implementing &lt;see cref=&quot;{0}&quot; /&gt;..
         /// </summary>
         internal static string SyntaxInterfaceKindDescription {
             get {

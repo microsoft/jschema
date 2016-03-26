@@ -241,7 +241,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
                 SyntaxFactory.ParseTypeName(_kindEnumName),
                 default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier("SyntaxKind"),
+                SyntaxFactory.Identifier(_kindEnumName),
                 SyntaxFactory.AccessorList(
                     SyntaxFactory.SingletonList(
                         SyntaxHelper.MakeGetAccessor(
@@ -252,7 +252,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                                         SyntaxFactory.IdentifierName(_kindEnumName),
                                         SyntaxFactory.IdentifierName(TypeName))))))))
                 .WithLeadingTrivia(
-                    SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceKindDescription));
+                    SyntaxHelper.MakeDocComment(
+                        string.Format(CultureInfo.CurrentCulture, Resources.SyntaxInterfaceKindDescription, _syntaxInterfaceName)));
         }
 
         private ConstructorDeclarationSyntax GenerateDefaultConstructor()

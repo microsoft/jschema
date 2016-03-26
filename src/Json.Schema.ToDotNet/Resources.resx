@@ -151,10 +151,10 @@
     <value>You must specify a non-null, non-blank value for the {0} property of the {1} object.</value>
   </data>
   <data name="KindEnumDescription" xml:space="preserve">
-    <value>A set of values for all the types that implement &lt;see cref="ISyntax" /&gt;.</value>
+    <value>A set of values for all the types that implement &lt;see cref="{0}" /&gt;.</value>
   </data>
   <data name="KindEnumMemberDescription" xml:space="preserve">
-    <value>A value indicating that the &lt;see cref="ISyntax" /&gt; object is of type &lt;see cref="{0}" /&gt;.</value>
+    <value>A value indicating that the &lt;see cref="{0}" /&gt; object is of type &lt;see cref="{1}" /&gt;.</value>
   </data>
   <data name="KindEnumNoneDescription" xml:space="preserve">
     <value>An uninitialized kind.</value>
@@ -172,7 +172,7 @@
     <value>An interface for all types generated from the {0} schema.</value>
   </data>
   <data name="SyntaxInterfaceKindDescription" xml:space="preserve">
-    <value>Gets a value indicating the type of object implementing &lt;see cref="ISyntax" /&gt;.</value>
+    <value>Gets a value indicating the type of object implementing &lt;see cref="{0}" /&gt;.</value>
   </data>
   <data name="XorDictionaryComment" xml:space="preserve">
     <value>// Use xor for dictionaries to be order-independent.
