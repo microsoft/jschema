@@ -43,6 +43,13 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         public string RootClassName { get; set; }
 
         [Option(
+            'e',
+            "schema-name",
+            HelpText = "The name of the schema",
+            Required = true)]
+        public string SchemaName { get; set; }
+
+        [Option(
             'c',
             "copyright-file-path",
             HelpText = "Path to the file containing the copyright notice to place at the top of each file. "

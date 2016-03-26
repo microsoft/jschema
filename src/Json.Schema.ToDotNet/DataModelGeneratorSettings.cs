@@ -33,6 +33,14 @@ namespace Microsoft.Json.Schema.ToDotNet
         public string RootClassName { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the schema.
+        /// </summary>
+        /// <remarks>
+        /// This name is used as a prefix for some of the generated type names.
+        /// </remarks>
+        public string SchemaName { get; set; }
+
+        /// <summary>
         /// Gets or sets the path of the file containing the copyright notice to place
         /// at the top of each file.
         /// </summary>

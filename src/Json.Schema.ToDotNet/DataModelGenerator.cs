@@ -20,9 +20,6 @@ namespace Microsoft.Json.Schema.ToDotNet
     {
         private const string SyntaxInterfaceTypeName = "ISyntax";
 
-        // TODO: Pass this in on command line.
-        private const string SchemaName = "Sarif";
-
         private readonly DataModelGeneratorSettings _settings;
         private readonly IFileSystem _fileSystem;
         private JsonSchema _rootSchema;
@@ -55,7 +52,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_settings.GenerateCloningCode)
             {
-                _kindEnumName = SchemaName + "Kind";
+                _kindEnumName = _settings.SchemaName + "NodeKind";
             }
 
             _rootSchema = JsonSchema.Collapse(rootSchema);
@@ -90,7 +87,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (_settings.GenerateCloningCode)
             {
                 _pathToFileContentsDictionary[SyntaxInterfaceTypeName] =
-                    GenerateSyntaxInterface(SchemaName, _kindEnumName);
+                    GenerateSyntaxInterface(_settings.SchemaName, _kindEnumName);
 
                 _pathToFileContentsDictionary[_kindEnumName] =
                     GenerateKindEnum(_kindEnumName);

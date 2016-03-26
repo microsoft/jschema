@@ -69,6 +69,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     ForceOverwrite = options.ForceOverwrite,
                     NamespaceName = options.NamespaceName,
                     RootClassName = options.RootClassName,
+                    SchemaName = options.SchemaName,
                     CopyrightNotice = copyrightNotice,
                     HintDictionary = hintDictionary,
                     GenerateOverrides = options.GenerateOverrides,
