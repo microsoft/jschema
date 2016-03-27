@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -94,14 +95,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </param>
         public string Generate(JsonSchema schema, string namespaceName, string typeName, string copyrightNotice, string description)
         {
-            AddUsing("System.CodeDom.Compiler");    // For GeneratedCodeAttribute.
-
             TypeName = typeName.ToPascalCase();
             TypeDeclaration = CreateTypeDeclaration(schema);
 
             AddMembers(schema);
 
-            return TypeDeclaration.Format(copyrightNotice, Usings, namespaceName, description);
+            return TypeDeclaration.Format(copyrightNotice, Usings?.ToList(), namespaceName, description);
         }
 
         protected void AddUsing(string namespaceName)

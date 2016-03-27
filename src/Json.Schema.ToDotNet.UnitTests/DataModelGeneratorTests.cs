@@ -907,7 +907,9 @@ namespace N
     }
 }";
             const string ExpectedSyntaxInterface =
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// An interface for all types generated from the S schema.
@@ -926,7 +928,9 @@ namespace N
     }
 }";
             const string ExpectedKindEnum =
-@"namespace N
+@"using System.CodeDom.Compiler;
+
+namespace N
 {
     /// <summary>
     /// A set of values for all the types that implement <see cref=""ISNode"" />.
@@ -949,6 +953,7 @@ namespace N
 }";
             const string ExpectedRewritingVisitor =
 @"using System;
+using System.CodeDom.Compiler;
 
 namespace N
 {

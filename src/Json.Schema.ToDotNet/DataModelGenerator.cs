@@ -113,7 +113,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                         SyntaxFactory.Token(SyntaxKind.AbstractKeyword));
 
-            var usings = new string[] { "System" };
+            var usings = new List<string> { "System" };
 
             string summaryComment = string.Format(
                 CultureInfo.CurrentCulture,

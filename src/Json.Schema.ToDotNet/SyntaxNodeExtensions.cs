@@ -42,7 +42,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         internal static string Format(
             this BaseTypeDeclarationSyntax typeDecl,
             string copyrightNotice,
-            IEnumerable<string> usings,
+            List<string> usings,
             string namespaceName,
             string summaryComment)
         {
@@ -60,15 +60,19 @@ namespace Microsoft.Json.Schema.ToDotNet
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
                 .AddMembers(namespaceDecl);
 
-            if (usings != null)
+            if (usings == null)
             {
-                UsingDirectiveSyntax[] usingDirectives = usings
-                    .OrderBy(u => u)
-                    .Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)))
-                    .ToArray();
-
-                compilationUnit = compilationUnit.AddUsings(usingDirectives);
+                usings = new List<string>();
             }
+
+            usings.Add("System.CodeDom.Compiler"); // For GeneratedCodeAttribute
+
+            UsingDirectiveSyntax[] usingDirectives = usings
+                .OrderBy(u => u)
+                .Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)))
+                .ToArray();
+
+            compilationUnit = compilationUnit.AddUsings(usingDirectives);
 
             if (!string.IsNullOrWhiteSpace(copyrightNotice))
             {
