@@ -947,6 +947,8 @@ namespace N
         D
     }
 }";
+            const string ExpectedRewritingVisitor =
+@"";
             _settings.GenerateCloningCode = true;
             _settings.HintDictionary = HintDictionary.Deserialize(HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -956,12 +958,14 @@ namespace N
             string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISNode");
             string kindEnumPath = TestFileSystem.MakeOutputFilePath("SNodeKind");
             string referencedTypePath = TestFileSystem.MakeOutputFilePath("D");
+            string rewritingVisitorClassPath = TestFileSystem.MakeOutputFilePath("SRewritingVisitor");
 
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
                 syntaxInterfacePath,
                 kindEnumPath,
+                rewritingVisitorClassPath,
                 referencedTypePath
             };
 
@@ -971,6 +975,7 @@ namespace N
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
             _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
             _testFileSystem[kindEnumPath].Should().Be(ExpectedKindEnum);
+            _testFileSystem[rewritingVisitorClassPath].Should().Be(ExpectedRewritingVisitor);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]

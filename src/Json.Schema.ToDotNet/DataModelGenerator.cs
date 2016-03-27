@@ -91,6 +91,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                 _pathToFileContentsDictionary[_kindEnumName] =
                     GenerateKindEnum(_kindEnumName);
+
+                string rewritingVisitorClassName = _settings.SchemaName + "RewritingVisitor";
+                _pathToFileContentsDictionary[rewritingVisitorClassName] =
+                    GenerateRewritingVisitory(rewritingVisitorClassName);
             }
 
             foreach (KeyValuePair<string, string> entry in _pathToFileContentsDictionary)
@@ -101,6 +105,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             // Returning the text of the file generated from the root schema allows this method
             // to be more easily unit tested.
             return rootFileText;
+        }
+
+        private string GenerateRewritingVisitory(string rewritingVisitorClassName)
+        {
+            return string.Empty;
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
