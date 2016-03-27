@@ -205,6 +205,15 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rewriting visitor for the {0} object model..
+        /// </summary>
+        internal static string RewritingVisitorSummary {
+            get {
+                return ResourceManager.GetString("RewritingVisitorSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Makes a deep copy of this instance..
         /// </summary>
         internal static string SyntaxInterfaceDeepCloneDescription {

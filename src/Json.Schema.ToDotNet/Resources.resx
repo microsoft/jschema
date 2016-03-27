@@ -165,6 +165,9 @@
   <data name="PropertyCtorSummary" xml:space="preserve">
     <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class from the supplied values.</value>
   </data>
+  <data name="RewritingVisitorSummary" xml:space="preserve">
+    <value>Rewriting visitor for the {0} object model.</value>
+  </data>
   <data name="SyntaxInterfaceDeepCloneDescription" xml:space="preserve">
     <value>Makes a deep copy of this instance.</value>
   </data>

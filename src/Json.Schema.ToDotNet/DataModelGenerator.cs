@@ -107,7 +107,21 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private string GenerateRewritingVisitory(string rewritingVisitorClassName)
         {
-            return string.Empty;
+            ClassDeclarationSyntax visitorClassDeclaration =
+                SyntaxFactory.ClassDeclaration(rewritingVisitorClassName)
+                    .AddModifiers(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                        SyntaxFactory.Token(SyntaxKind.AbstractKeyword))
+                    .WithLeadingTrivia(
+                        SyntaxHelper.MakeDocComment(
+                            string.Format(
+                                CultureInfo.CurrentCulture,
+                                Resources.RewritingVisitorSummary,
+                                _settings.SchemaName)));
+
+            var usings = new string[] { "System" };
+
+            return visitorClassDeclaration.Format(_settings.NamespaceName, usings, _settings.CopyrightNotice);
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
@@ -157,15 +171,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         syntaxKindPropertyDeclaration,
                         deepCloneMethodDeclaration);
 
-            NamespaceDeclarationSyntax namespaceDecl =
-                SyntaxFactory.NamespaceDeclaration(
-                    SyntaxFactory.IdentifierName(_settings.NamespaceName))
-                .AddMembers(interfaceDeclaration);
-
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .AddMembers(namespaceDecl);
-
-            return compilationUnit.Format(_settings.CopyrightNotice);
+            return interfaceDeclaration.Format(_settings.NamespaceName, null, _settings.CopyrightNotice);
         }
 
         private string GenerateKindEnum(string enumName)
@@ -185,15 +191,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             Resources.KindEnumDescription,
                             _syntaxInterfaceName)));
 
-            NamespaceDeclarationSyntax namespaceDecl =
-                SyntaxFactory.NamespaceDeclaration(
-                    SyntaxFactory.IdentifierName(_settings.NamespaceName))
-                .AddMembers(enumDeclaration);
-
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .AddMembers(namespaceDecl);
-
-            return compilationUnit.Format(_settings.CopyrightNotice);
+            return enumDeclaration.Format(_settings.NamespaceName, null, _settings.CopyrightNotice);
         }
 
         private EnumMemberDeclarationSyntax GenerateKindEnumMember(string className)

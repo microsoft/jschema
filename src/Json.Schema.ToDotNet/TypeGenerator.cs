@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -137,35 +136,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeDeclaration = TypeDeclaration
                 .WithLeadingTrivia(SyntaxHelper.MakeDocComment(_description));
 
-            NamespaceDeclarationSyntax namespaceDecl = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_namespaceName))
-                .AddMembers(TypeDeclaration);
-
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
-                .AddMembers(namespaceDecl);
-
-            if (Usings != null)
-            {
-                UsingDirectiveSyntax[] usingDirectives = Usings
-                    .OrderBy(u => u)
-                    .Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)))
-                    .ToArray();
-
-                compilationUnit = compilationUnit.AddUsings(usingDirectives);
-            }
-
-            return compilationUnit.Format(_copyrightNotice);
-        }
-
-        private NameSyntax MakeQualifiedName(string dottedName)
-        {
-            string[] components = dottedName.Split(new[] { '.' });
-            NameSyntax qualifiedName = SyntaxFactory.ParseName(components[0]);
-            for (int i = 1; i < components.Length; ++i)
-            {
-                qualifiedName = SyntaxFactory.QualifiedName(qualifiedName, SyntaxFactory.IdentifierName(components[i]));
-            }
-
-            return qualifiedName;
+            return TypeDeclaration.Format(_namespaceName, Usings, _copyrightNotice);
         }
     }
 }

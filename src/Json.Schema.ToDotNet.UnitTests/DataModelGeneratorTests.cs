@@ -948,7 +948,17 @@ namespace N
     }
 }";
             const string ExpectedRewritingVisitor =
-@"";
+@"using System;
+
+namespace N
+{
+    /// <summary>
+    /// Rewriting visitor for the S object model.
+    /// </summary>
+    public abstract class SRewritingVisitor
+    {
+    }
+}";
             _settings.GenerateCloningCode = true;
             _settings.HintDictionary = HintDictionary.Deserialize(HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
