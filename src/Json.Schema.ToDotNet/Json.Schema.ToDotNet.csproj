@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="StringExtensions.cs" />
     <Compile Include="SyntaxHelper.cs" />
+    <Compile Include="CompilationUnitExtensions.cs" />
     <Compile Include="TypeGenerator.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,14 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Formatting;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -160,22 +157,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             compilationUnit = compilationUnit
                 .WithMembers(compilationUnitMembers);
 
-            if (!string.IsNullOrWhiteSpace(_copyrightNotice))
-            {
-                compilationUnit = compilationUnit.WithLeadingTrivia(
-                    SyntaxFactory.ParseLeadingTrivia(_copyrightNotice));
-            }
-
-            var workspace = new AdhocWorkspace();
-            SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
-
-            var sb = new StringBuilder();
-            using (var writer = new StringWriter(sb))
-            {
-                formattedNode.WriteTo(writer);
-            }
-
-            return sb.ToString();
+            return compilationUnit.Format(_copyrightNotice);
         }
 
         private NameSyntax MakeQualifiedName(string dottedName)

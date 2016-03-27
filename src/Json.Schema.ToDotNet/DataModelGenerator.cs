@@ -5,11 +5,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Formatting;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -167,22 +165,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
                 .AddMembers(namespaceDecl);
 
-            if (!string.IsNullOrWhiteSpace(_settings.CopyrightNotice))
-            {
-                compilationUnit = compilationUnit.WithLeadingTrivia(
-                    SyntaxFactory.ParseLeadingTrivia(_settings.CopyrightNotice));
-            }
-
-            var workspace = new AdhocWorkspace();
-            SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
-
-            var sb = new StringBuilder();
-            using (var writer = new StringWriter(sb))
-            {
-                formattedNode.WriteTo(writer);
-            }
-
-            return sb.ToString();
+            return compilationUnit.Format(_settings.CopyrightNotice);
         }
 
         private string GenerateKindEnum(string enumName)
@@ -210,22 +193,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
                 .AddMembers(namespaceDecl);
 
-            if (!string.IsNullOrWhiteSpace(_settings.CopyrightNotice))
-            {
-                compilationUnit = compilationUnit.WithLeadingTrivia(
-                    SyntaxFactory.ParseLeadingTrivia(_settings.CopyrightNotice));
-            }
-
-            var workspace = new AdhocWorkspace();
-            SyntaxNode formattedNode = Formatter.Format(compilationUnit, workspace);
-
-            var sb = new StringBuilder();
-            using (var writer = new StringWriter(sb))
-            {
-                formattedNode.WriteTo(writer);
-            }
-
-            return sb.ToString();
+            return compilationUnit.Format(_settings.CopyrightNotice);
         }
 
         private EnumMemberDeclarationSyntax GenerateKindEnumMember(string className)
