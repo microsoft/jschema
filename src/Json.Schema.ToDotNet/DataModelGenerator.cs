@@ -111,17 +111,20 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.ClassDeclaration(rewritingVisitorClassName)
                     .AddModifiers(
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                        SyntaxFactory.Token(SyntaxKind.AbstractKeyword))
-                    .WithLeadingTrivia(
-                        SyntaxHelper.MakeDocComment(
-                            string.Format(
-                                CultureInfo.CurrentCulture,
-                                Resources.RewritingVisitorSummary,
-                                _settings.SchemaName)));
+                        SyntaxFactory.Token(SyntaxKind.AbstractKeyword));
 
             var usings = new string[] { "System" };
 
-            return visitorClassDeclaration.Format(_settings.NamespaceName, usings, _settings.CopyrightNotice);
+            string summaryComment = string.Format(
+                CultureInfo.CurrentCulture,
+                Resources.RewritingVisitorSummary,
+                _settings.SchemaName);
+
+            return visitorClassDeclaration.Format(
+                _settings.CopyrightNotice, 
+                usings,
+                _settings.NamespaceName,
+                summaryComment);
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
@@ -162,16 +165,20 @@ namespace Microsoft.Json.Schema.ToDotNet
             InterfaceDeclarationSyntax interfaceDeclaration =
                 SyntaxFactory.InterfaceDeclaration(_syntaxInterfaceName)
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                    .WithLeadingTrivia(SyntaxHelper.MakeDocComment(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            Resources.SyntaxInterfaceDescription,
-                            schemaName)))
                     .AddMembers(
                         syntaxKindPropertyDeclaration,
                         deepCloneMethodDeclaration);
 
-            return interfaceDeclaration.Format(_settings.NamespaceName, null, _settings.CopyrightNotice);
+            string summaryComment = string.Format(
+                CultureInfo.CurrentCulture,
+                Resources.SyntaxInterfaceDescription,
+                schemaName);
+
+            return interfaceDeclaration.Format(
+                _settings.CopyrightNotice,
+                null, // usings
+                _settings.NamespaceName,
+                summaryComment);
         }
 
         private string GenerateKindEnum(string enumName)
@@ -184,14 +191,18 @@ namespace Microsoft.Json.Schema.ToDotNet
                             .WithLeadingTrivia(
                                 SyntaxHelper.MakeDocComment(Resources.KindEnumNoneDescription)))
                     .AddMembers(
-                        _generatedClassNames.Select(gcn => GenerateKindEnumMember(gcn)).ToArray())
-                    .WithLeadingTrivia(SyntaxHelper.MakeDocComment(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            Resources.KindEnumDescription,
-                            _syntaxInterfaceName)));
+                        _generatedClassNames.Select(gcn => GenerateKindEnumMember(gcn)).ToArray());
 
-            return enumDeclaration.Format(_settings.NamespaceName, null, _settings.CopyrightNotice);
+            string summaryComment = string.Format(
+                CultureInfo.CurrentCulture,
+                Resources.KindEnumDescription,
+                _syntaxInterfaceName);
+
+            return enumDeclaration.Format(
+                _settings.CopyrightNotice,
+                null, // usings
+                _settings.NamespaceName,
+                summaryComment);
         }
 
         private EnumMemberDeclarationSyntax GenerateKindEnumMember(string className)

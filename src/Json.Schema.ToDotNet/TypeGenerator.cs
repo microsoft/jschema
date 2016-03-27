@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -12,10 +11,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 {
     public abstract class TypeGenerator
     {
-        private string _namespaceName;
-        private string _copyrightNotice;
-        private string _description;
-
         private const string GeneratedCodeAttributeName = "GeneratedCode";
         private static readonly string s_assemblyName = Assembly.GetCallingAssembly().GetName().Name;
         private static readonly string s_assemblyVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
@@ -99,17 +94,14 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </param>
         public string Generate(JsonSchema schema, string namespaceName, string typeName, string copyrightNotice, string description)
         {
-            _namespaceName = namespaceName;
-            _copyrightNotice = copyrightNotice;
-            _description = description;
-
             AddUsing("System.CodeDom.Compiler");    // For GeneratedCodeAttribute.
 
             TypeName = typeName.ToPascalCase();
             TypeDeclaration = CreateTypeDeclaration(schema);
 
             AddMembers(schema);
-            return Finish();
+
+            return TypeDeclaration.Format(copyrightNotice, Usings, namespaceName, description);
         }
 
         protected void AddUsing(string namespaceName)
@@ -125,18 +117,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         protected void OnAdditionalType(AdditionalTypeRequiredEventArgs e)
         {
             AdditionalTypeRequired?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// Performs all actions necessary to finish generating the type.
-        /// </summary>
-        /// <returns></returns>
-        private string Finish()
-        {
-            TypeDeclaration = TypeDeclaration
-                .WithLeadingTrivia(SyntaxHelper.MakeDocComment(_description));
-
-            return TypeDeclaration.Format(_namespaceName, Usings, _copyrightNotice);
         }
     }
 }

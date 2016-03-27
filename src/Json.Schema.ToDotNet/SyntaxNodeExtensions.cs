@@ -22,24 +22,36 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <param name="typeDecl">
         /// The type declaration to be formatted.
         /// </param>
-        /// <param name="namespaceName">
-        /// The name of the namespace containing the type declaration.
+        /// <param name="copyrightNotice">
+        /// The copyright notice to display at the top of the file, or null if there is
+        /// no copyright notice.
         /// </param>
         /// <param name="usings">
-        /// The names of any namespaces required by the type declaration.
+        /// A list containing the names of any namespaces required by the type declaration,
+        /// or null if no namespaces are required.
         /// </param>
-        /// <param name="copyrightNotice">
-        /// The copyright notice to display at the top of the file.
+        /// <param name="namespaceName">
+        /// The name of the namespace containing the type declaration. Required.
+        /// </param>
+        /// <param name="summaryComment">
+        /// The summary comment for the type, or null if there is no summary comment.
         /// </param>
         /// <returns>
         /// The formatted string.
         /// </returns>
         internal static string Format(
             this BaseTypeDeclarationSyntax typeDecl,
-            string namespaceName,
+            string copyrightNotice,
             IEnumerable<string> usings,
-            string copyrightNotice)
+            string namespaceName,
+            string summaryComment)
         {
+            if (summaryComment != null)
+            {
+                typeDecl = typeDecl.WithLeadingTrivia(
+                    SyntaxHelper.MakeDocComment(summaryComment));
+            }
+
             NamespaceDeclarationSyntax namespaceDecl =
                 SyntaxFactory.NamespaceDeclaration(
                     SyntaxFactory.IdentifierName(namespaceName))
