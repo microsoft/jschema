@@ -137,25 +137,21 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeDeclaration = TypeDeclaration
                 .WithLeadingTrivia(SyntaxHelper.MakeDocComment(_description));
 
-            var namespaceMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(TypeDeclaration);
-
             NamespaceDeclarationSyntax namespaceDecl = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName(_namespaceName))
-                .WithMembers(namespaceMembers);
+                .AddMembers(TypeDeclaration);
 
-            var compilationUnitMembers = SyntaxFactory.SingletonList<MemberDeclarationSyntax>(namespaceDecl);
-
-            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit();
+            CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
+                .AddMembers(namespaceDecl);
 
             if (Usings != null)
             {
-                IEnumerable<UsingDirectiveSyntax> usingDirectives =
-                    Usings.OrderBy(u => u).Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)));
+                UsingDirectiveSyntax[] usingDirectives = Usings
+                    .OrderBy(u => u)
+                    .Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)))
+                    .ToArray();
 
-                compilationUnit = compilationUnit.WithUsings(SyntaxFactory.List(usingDirectives));
+                compilationUnit = compilationUnit.AddUsings(usingDirectives);
             }
-
-            compilationUnit = compilationUnit
-                .WithMembers(compilationUnitMembers);
 
             return compilationUnit.Format(_copyrightNotice);
         }
