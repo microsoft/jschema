@@ -82,8 +82,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddAttributeLists(new AttributeListSyntax[]
                     {
                         SyntaxFactory.AttributeList(
-                            SyntaxFactory.SeparatedList(
-                                CreateTypeAttributes()))
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.Attribute(
+                                    SyntaxFactory.IdentifierName(DataContractAttributeName))))
                     })
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -171,18 +172,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).AddMembers(members.ToArray());
-        }
-
-        protected override AttributeSyntax[] CreateTypeAttributes()
-        {
-            var attributes = new List<AttributeSyntax>
-            {
-                SyntaxFactory.Attribute(SyntaxFactory.IdentifierName(DataContractAttributeName))
-            }; 
-
-            attributes.AddRange(base.CreateTypeAttributes());
-
-            return attributes.ToArray();
         }
 
         protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired)

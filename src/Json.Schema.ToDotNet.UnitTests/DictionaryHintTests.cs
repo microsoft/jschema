@@ -51,7 +51,8 @@ namespace N
     /// <summary>
     /// Class with property bag.
     /// </summary>
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>

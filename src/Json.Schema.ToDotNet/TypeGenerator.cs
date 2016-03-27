@@ -3,19 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
     public abstract class TypeGenerator
     {
-        private const string GeneratedCodeAttributeName = "GeneratedCode";
-        private static readonly string s_assemblyName = Assembly.GetCallingAssembly().GetName().Name;
-        private static readonly string s_assemblyVersion = Assembly.GetCallingAssembly().GetName().Version.ToString();
-
         protected TypeGenerator(HintDictionary hintDictionary)
         {
             HintDictionary = hintDictionary;
@@ -30,7 +23,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </summary>
         protected BaseTypeDeclarationSyntax TypeDeclaration { get; set; }
 
-        protected HashSet<string> Usings { get; private set; }
+        protected List<string> Usings { get; private set; }
 
         /// <summary>
         /// Event raised by a derived class when it discovers that another type must be
@@ -44,28 +37,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         public event EventHandler<AdditionalTypeRequiredEventArgs> AdditionalTypeRequired;
 
         public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema);
-
-        protected virtual AttributeSyntax[] CreateTypeAttributes()
-        {
-            return new AttributeSyntax[]
-            {
-                SyntaxFactory.Attribute(
-                    SyntaxFactory.IdentifierName(GeneratedCodeAttributeName),
-                    SyntaxFactory.AttributeArgumentList(
-                        SyntaxFactory.SeparatedList(
-                            new AttributeArgumentSyntax[]
-                            {
-                                SyntaxFactory.AttributeArgument(
-                                    SyntaxFactory.LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        SyntaxFactory.Literal(s_assemblyName))),
-                                SyntaxFactory.AttributeArgument(
-                                    SyntaxFactory.LiteralExpression(
-                                        SyntaxKind.StringLiteralExpression,
-                                        SyntaxFactory.Literal(s_assemblyVersion))),
-                            })))
-            };
-        }
 
         /// <summary>
         /// Adds members to the type as directed by the specified schema.
@@ -100,14 +71,14 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             AddMembers(schema);
 
-            return TypeDeclaration.Format(copyrightNotice, Usings?.ToList(), namespaceName, description);
+            return TypeDeclaration.Format(copyrightNotice, Usings, namespaceName, description);
         }
 
         protected void AddUsing(string namespaceName)
         {
             if (Usings == null)
             {
-                Usings = new HashSet<string>();
+                Usings = new List<string>();
             }
 
             Usings.Add(namespaceName);

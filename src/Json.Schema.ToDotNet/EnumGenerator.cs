@@ -21,13 +21,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
         {
             return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
-                .AddAttributeLists(
-                    new AttributeListSyntax[]
-                    {
-                        SyntaxFactory.AttributeList(
-                            SyntaxFactory.SeparatedList(
-                                CreateTypeAttributes()))
-                    })
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 

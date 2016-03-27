@@ -98,7 +98,8 @@ namespace N
     /// <summary>
     /// The description
     /// </summary>
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
     }
@@ -128,7 +129,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -212,7 +214,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -344,7 +347,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -429,7 +433,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>
@@ -496,7 +501,8 @@ namespace N
     /// <summary>
     /// Describes a console window.
     /// </summary>
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class ConsoleWindow : IEquatable<ConsoleWindow>
     {
         /// <summary>
@@ -523,7 +529,8 @@ namespace N
     /// <summary>
     /// Describes a color with R, G, and B components.
     /// </summary>
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class Color : IEquatable<Color>
     {
         /// <summary>
@@ -586,7 +593,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>
@@ -681,7 +689,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : ISNode, IEquatable<C>
     {
         /// <summary>
@@ -914,6 +923,7 @@ namespace N
     /// <summary>
     /// An interface for all types generated from the S schema.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public interface ISNode
     {
         /// <summary>
@@ -935,6 +945,7 @@ namespace N
     /// <summary>
     /// A set of values for all the types that implement <see cref=""ISNode"" />.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public enum SNodeKind
     {
         /// <summary>
@@ -960,6 +971,7 @@ namespace N
     /// <summary>
     /// Rewriting visitor for the S object model.
     /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public abstract class SRewritingVisitor
     {
     }
@@ -1010,7 +1022,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -1056,7 +1069,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class Def1 : IEquatable<Def1>
     {
         [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
@@ -1105,7 +1119,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class Def2 : IEquatable<Def2>
     {
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
@@ -1185,7 +1200,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
@@ -1251,7 +1267,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
@@ -1323,7 +1340,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -1367,7 +1385,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
@@ -1470,7 +1489,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
@@ -1596,7 +1616,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
@@ -1729,7 +1750,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
@@ -1848,7 +1870,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""version"", IsRequired = false, EmitDefaultValue = false)]
@@ -1888,7 +1911,8 @@ using System.Runtime.Serialization;
 
 namespace N
 {
-    [DataContract, GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""requiredProp1"", IsRequired = true)]
