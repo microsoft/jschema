@@ -168,6 +168,15 @@
   <data name="RewritingVisitorSummary" xml:space="preserve">
     <value>Rewriting visitor for the {0} object model.</value>
   </data>
+  <data name="RewritingVisitorVisitMethodNodeParameter" xml:space="preserve">
+    <value>The node to rewrite.</value>
+  </data>
+  <data name="RewritingVisitorVisitMethodReturns" xml:space="preserve">
+    <value>A rewritten instance of the node.</value>
+  </data>
+  <data name="RewritingVisitorVisitMethodSummary" xml:space="preserve">
+    <value>Starts a rewriting visit of a node in the {0} object model.</value>
+  </data>
   <data name="SyntaxInterfaceDeepCloneDescription" xml:space="preserve">
     <value>Makes a deep copy of this instance.</value>
   </data>

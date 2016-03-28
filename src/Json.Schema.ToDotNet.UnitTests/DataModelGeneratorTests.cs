@@ -974,6 +974,19 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
     public abstract class SRewritingVisitor
     {
+        /// <summary>
+        /// Starts a rewriting visit of a node in the S object model.
+        /// </summary>
+        /// <param name=""node"">
+        /// The node to rewrite.
+        /// </param>
+        /// <returns>
+        /// A rewritten instance of the node.
+        /// </returns>
+        public virtual object Visit(ISNode node)
+        {
+            return this.VisitActual(node);
+        }
     }
 }";
             _settings.GenerateCloningCode = true;

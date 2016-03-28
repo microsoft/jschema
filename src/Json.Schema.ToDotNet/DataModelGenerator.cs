@@ -22,7 +22,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private Dictionary<string, string> _pathToFileContentsDictionary;
         private List<string> _generatedClassNames;
         private string _kindEnumName;
-        private string _syntaxInterfaceName;
+        private string _nodeInterfaceName;
         private List<AdditionalTypeRequiredEventArgs> _additionalTypesRequiredList;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
@@ -50,7 +50,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (_settings.GenerateCloningCode)
             {
                 _kindEnumName = _settings.SchemaName + "NodeKind";
-                _syntaxInterfaceName = "I" + _settings.SchemaName + "Node";
+                _nodeInterfaceName = "I" + _settings.SchemaName + "Node";
             }
 
             _rootSchema = JsonSchema.Collapse(rootSchema);
@@ -84,15 +84,22 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_settings.GenerateCloningCode)
             {
-                _pathToFileContentsDictionary[_syntaxInterfaceName] =
-                    GenerateSyntaxInterface(_settings.SchemaName, _kindEnumName, _syntaxInterfaceName);
+                _pathToFileContentsDictionary[_nodeInterfaceName] =
+                    GenerateSyntaxInterface(_settings.SchemaName, _kindEnumName, _nodeInterfaceName);
 
                 _pathToFileContentsDictionary[_kindEnumName] =
                     GenerateKindEnum(_kindEnumName);
 
                 string rewritingVisitorClassName = _settings.SchemaName + "RewritingVisitor";
                 _pathToFileContentsDictionary[rewritingVisitorClassName] =
-                    GenerateRewritingVisitory(rewritingVisitorClassName);
+                    new RewritingVisitorGenerator(
+                        _settings.CopyrightNotice,
+                        _settings.NamespaceName,                        
+                        rewritingVisitorClassName,
+                        _settings.SchemaName,
+                        _kindEnumName,
+                        _nodeInterfaceName)
+                        .GenerateRewritingVisitor();
             }
 
             foreach (KeyValuePair<string, string> entry in _pathToFileContentsDictionary)
@@ -103,28 +110,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             // Returning the text of the file generated from the root schema allows this method
             // to be more easily unit tested.
             return rootFileText;
-        }
-
-        private string GenerateRewritingVisitory(string rewritingVisitorClassName)
-        {
-            ClassDeclarationSyntax visitorClassDeclaration =
-                SyntaxFactory.ClassDeclaration(rewritingVisitorClassName)
-                    .AddModifiers(
-                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                        SyntaxFactory.Token(SyntaxKind.AbstractKeyword));
-
-            var usings = new List<string> { "System" };
-
-            string summaryComment = string.Format(
-                CultureInfo.CurrentCulture,
-                Resources.RewritingVisitorSummary,
-                _settings.SchemaName);
-
-            return visitorClassDeclaration.Format(
-                _settings.CopyrightNotice, 
-                usings,
-                _settings.NamespaceName,
-                summaryComment);
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
@@ -151,7 +136,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     default(SyntaxList<AttributeListSyntax>),
                     default(SyntaxTokenList), // modifiers
-                    SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
+                    SyntaxFactory.ParseTypeName(_nodeInterfaceName),
                     default(ExplicitInterfaceSpecifierSyntax),
                     SyntaxFactory.Identifier("DeepClone"),
                     default(TypeParameterListSyntax),
@@ -163,7 +148,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceDeepCloneDescription));
 
             InterfaceDeclarationSyntax interfaceDeclaration =
-                SyntaxFactory.InterfaceDeclaration(_syntaxInterfaceName)
+                SyntaxFactory.InterfaceDeclaration(_nodeInterfaceName)
                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                     .AddMembers(
                         syntaxKindPropertyDeclaration,
@@ -196,7 +181,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string summaryComment = string.Format(
                 CultureInfo.CurrentCulture,
                 Resources.KindEnumDescription,
-                _syntaxInterfaceName);
+                _nodeInterfaceName);
 
             return enumDeclaration.Format(
                 _settings.CopyrightNotice,
@@ -210,7 +195,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string description = string.Format(
                 CultureInfo.CurrentCulture,
                 Resources.KindEnumMemberDescription,
-                _syntaxInterfaceName,
+                _nodeInterfaceName,
                 className);
 
             return SyntaxFactory.EnumMemberDeclaration(className)
@@ -246,7 +231,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     _settings.HintDictionary,
                     _settings.GenerateOverrides,
                     _settings.GenerateCloningCode,
-                    _syntaxInterfaceName,
+                    _nodeInterfaceName,
                     _kindEnumName);
 
                 // Keep track of any hints that the type generator might encounter in the
