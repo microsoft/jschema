@@ -135,16 +135,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             MethodDeclarationSyntax deepCloneMethodDeclaration =
                 SyntaxFactory.MethodDeclaration(
-                    default(SyntaxList<AttributeListSyntax>),
-                    default(SyntaxTokenList), // modifiers
                     SyntaxFactory.ParseTypeName(_nodeInterfaceName),
-                    default(ExplicitInterfaceSpecifierSyntax),
-                    SyntaxFactory.Identifier("DeepClone"),
-                    default(TypeParameterListSyntax),
-                    SyntaxFactory.ParameterList(),
-                    default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                    default(BlockSyntax), // body
-                    SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                    "DeepClone")
+                    .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                     .WithLeadingTrivia(
                         SyntaxHelper.MakeDocComment(Resources.SyntaxInterfaceDeepCloneDescription));
 
