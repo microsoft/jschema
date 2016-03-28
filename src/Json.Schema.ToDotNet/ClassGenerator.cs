@@ -226,20 +226,17 @@ namespace Microsoft.Json.Schema.ToDotNet
         private PropertyDeclarationSyntax GenerateSyntaxKindProperty()
         {
             return SyntaxFactory.PropertyDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
                 SyntaxFactory.ParseTypeName(_kindEnumName),
-                default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier(_kindEnumName),
-                SyntaxFactory.AccessorList(
-                    SyntaxFactory.SingletonList(
+                _kindEnumName)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddAccessorListAccessors(
                         SyntaxHelper.MakeGetAccessor(
                             SyntaxFactory.Block(
                                 SyntaxFactory.ReturnStatement(
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(_kindEnumName),
-                                        SyntaxFactory.IdentifierName(TypeName))))))))
+                                        SyntaxFactory.IdentifierName(TypeName))))))
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(CultureInfo.CurrentCulture, Resources.SyntaxInterfaceKindDescription, _syntaxInterfaceName)));
