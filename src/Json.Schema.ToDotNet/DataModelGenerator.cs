@@ -98,7 +98,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                         rewritingVisitorClassName,
                         _settings.SchemaName,
                         _kindEnumName,
-                        _nodeInterfaceName)
+                        _nodeInterfaceName,
+                        _generatedClassNames)
                         .GenerateRewritingVisitor();
             }
 

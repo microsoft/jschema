@@ -1006,6 +1006,12 @@ namespace N
 
             switch (node.SNodeKind)
             {
+                case SNodeKind.C:
+                    return VisitC((C)node);
+                case SNodeKind.D:
+                    return VisitD((D)node);
+                default:
+                    return node;
             }
         }
     }

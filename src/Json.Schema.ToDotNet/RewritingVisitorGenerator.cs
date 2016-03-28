@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,6 +22,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly string _schemaName;
         private readonly string _kindEnumName;
         private readonly string _nodeInterfaceName;
+        private readonly List<string> _generatedClassNames;
 
         internal RewritingVisitorGenerator(
             string copyrightNotice,
@@ -28,7 +30,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             string className,
             string schemaName,
             string kindEnumName,
-            string nodeInterfaceName)
+            string nodeInterfaceName,
+            IEnumerable<string> generatedClassNames)
         {
             _copyrightNotice = copyrightNotice;
             _namespaceName = namespaceName;
@@ -36,6 +39,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _schemaName = schemaName;
             _kindEnumName = kindEnumName;
             _nodeInterfaceName = nodeInterfaceName;
+            _generatedClassNames = generatedClassNames.OrderBy(gn => gn).ToList();
         }
 
         internal string GenerateRewritingVisitor()
@@ -150,7 +154,41 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private SwitchSectionSyntax[] GenerateVisitActualSwitchSections()
         {
-            return new SwitchSectionSyntax[0];
+            // There is one switch section for each generated class, plus one for the default.
+            var switchSections = new SwitchSectionSyntax[_generatedClassNames.Count + 1];
+
+            int index = 0;
+            foreach (string generatedClassName in _generatedClassNames)
+            {
+                string methodName = VisitMethodName + generatedClassName;
+
+                switchSections[index++] = SyntaxFactory.SwitchSection(
+                    SyntaxFactory.SingletonList<SwitchLabelSyntax>(
+                        SyntaxFactory.CaseSwitchLabel(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(_kindEnumName),
+                                SyntaxFactory.IdentifierName(generatedClassName)))),
+                    SyntaxFactory.SingletonList<StatementSyntax>(
+                        SyntaxFactory.ReturnStatement(
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(methodName),
+                                SyntaxFactory.ArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList(
+                                        SyntaxFactory.Argument(
+                                            SyntaxFactory.CastExpression(
+                                                SyntaxFactory.ParseTypeName(generatedClassName),
+                                                SyntaxFactory.IdentifierName(NodeParameterName)))))))));
+            }
+
+            switchSections[index] = SyntaxFactory.SwitchSection(
+                SyntaxFactory.SingletonList<SwitchLabelSyntax>(
+                    SyntaxFactory.DefaultSwitchLabel()),
+                SyntaxFactory.SingletonList<StatementSyntax>(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.IdentifierName(NodeParameterName))));
+
+            return switchSections;
         }
     }
 }
