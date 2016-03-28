@@ -115,20 +115,11 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
         {
-            var accessorDeclarations = SyntaxFactory.List(
-                new AccessorDeclarationSyntax[]
-                {
-                    SyntaxHelper.MakeGetAccessor()
-                });
-
             PropertyDeclarationSyntax syntaxKindPropertyDeclaration =
                 SyntaxFactory.PropertyDeclaration(
-                    default(SyntaxList<AttributeListSyntax>),
-                    default(SyntaxTokenList), // modifiers
                     SyntaxFactory.ParseTypeName(enumName),
-                    default(ExplicitInterfaceSpecifierSyntax),
-                    SyntaxFactory.Identifier(enumName),
-                    SyntaxFactory.AccessorList(accessorDeclarations))
+                    enumName)
+                    .AddAccessorListAccessors(SyntaxHelper.MakeGetAccessor())
                     .WithLeadingTrivia(
                         SyntaxHelper.MakeDocComment(
                             string.Format(CultureInfo.CurrentCulture, Resources.SyntaxInterfaceKindDescription, syntaxInterfaceName)));
