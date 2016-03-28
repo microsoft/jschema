@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string NodeParameterName = "node";
         private const string VisitMethodName = "Visit";
         private const string VisitActualMethodName = "VisitActual";
+        private const string VisitNullCheckedMethodName = "VisitNullChecked";
+        private const string TypeParameterName = "T";
 
         private readonly string _copyrightNotice;
         private readonly string _namespaceName;
@@ -51,7 +54,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Token(SyntaxKind.AbstractKeyword))
                     .AddMembers(
                         GenerateVisitMethod(),
-                        GenerateVisitActualMethod());
+                        GenerateVisitActualMethod(),
+                        GenerateVisitNullCheckedMethod());
 
             var usings = new List<string> { "System" };
 
@@ -189,6 +193,47 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IdentifierName(NodeParameterName))));
 
             return switchSections;
+        }
+
+        private MethodDeclarationSyntax GenerateVisitNullCheckedMethod()
+        {
+            TypeSyntax typeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
+
+            return SyntaxFactory.MethodDeclaration(
+                typeParameterType,
+                VisitNullCheckedMethodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddTypeParameterListParameters(
+                    SyntaxFactory.TypeParameter(TypeParameterName))
+                .AddConstraintClauses(
+                    SyntaxFactory.TypeParameterConstraintClause(
+                        SyntaxFactory.IdentifierName(TypeParameterName),
+                        SyntaxFactory.SeparatedList(
+                            new TypeParameterConstraintSyntax[]
+                            {
+                                SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint),
+                                SyntaxFactory.TypeConstraint(
+                                    SyntaxFactory.ParseTypeName(_nodeInterfaceName))
+                            })))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(typeParameterType))
+                .AddBodyStatements(
+                    SyntaxFactory.IfStatement(
+                        SyntaxHelper.IsNull(NodeParameterName),
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ReturnStatement(
+                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.CastExpression(
+                            typeParameterType,
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(VisitMethodName),
+                                SyntaxFactory.ArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList(
+                                        SyntaxFactory.Argument(
+                                            SyntaxFactory.IdentifierName(NodeParameterName))))))));
         }
     }
 }

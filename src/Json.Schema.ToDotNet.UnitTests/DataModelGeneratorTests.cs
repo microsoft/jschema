@@ -1014,6 +1014,16 @@ namespace N
                     return node;
             }
         }
+
+        private T VisitNullChecked<T>(T node) where T : class, ISNode
+        {
+            if (node == null)
+            {
+                return null;
+            }
+
+            return (T)Visit(node);
+        }
     }
 }";
             _settings.GenerateCloningCode = true;
