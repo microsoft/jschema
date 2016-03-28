@@ -987,6 +987,27 @@ namespace N
         {
             return this.VisitActual(node);
         }
+
+        /// <summary>
+        /// Visits and rewrites a node in the S object model.
+        /// </summary>
+        /// <param name=""node"">
+        /// The node to rewrite.
+        /// </param>
+        /// <returns>
+        /// A rewritten instance of the node.
+        /// </returns>
+        public virtual object VisitActual(ISNode node)
+        {
+            if (node == null)
+            {
+                throw new ArgumentNullException(""node"");
+            }
+
+            switch (node.SNodeKind)
+            {
+            }
+        }
     }
 }";
             _settings.GenerateCloningCode = true;

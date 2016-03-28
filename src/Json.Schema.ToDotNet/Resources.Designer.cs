@@ -216,6 +216,33 @@ namespace Microsoft.Json.Schema.ToDotNet {
         /// <summary>
         ///   Looks up a localized string similar to The node to rewrite..
         /// </summary>
+        internal static string RewritingVisitorVisitActualMethodNodeParameter {
+            get {
+                return ResourceManager.GetString("RewritingVisitorVisitActualMethodNodeParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A rewritten instance of the node..
+        /// </summary>
+        internal static string RewritingVisitorVisitActualMethodReturns {
+            get {
+                return ResourceManager.GetString("RewritingVisitorVisitActualMethodReturns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visits and rewrites a node in the {0} object model..
+        /// </summary>
+        internal static string RewritingVisitorVisitActualMethodSummary {
+            get {
+                return ResourceManager.GetString("RewritingVisitorVisitActualMethodSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The node to rewrite..
+        /// </summary>
         internal static string RewritingVisitorVisitMethodNodeParameter {
             get {
                 return ResourceManager.GetString("RewritingVisitorVisitMethodNodeParameter", resourceCulture);

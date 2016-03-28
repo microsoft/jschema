@@ -168,6 +168,15 @@
   <data name="RewritingVisitorSummary" xml:space="preserve">
     <value>Rewriting visitor for the {0} object model.</value>
   </data>
+  <data name="RewritingVisitorVisitActualMethodNodeParameter" xml:space="preserve">
+    <value>The node to rewrite.</value>
+  </data>
+  <data name="RewritingVisitorVisitActualMethodReturns" xml:space="preserve">
+    <value>A rewritten instance of the node.</value>
+  </data>
+  <data name="RewritingVisitorVisitActualMethodSummary" xml:space="preserve">
+    <value>Visits and rewrites a node in the {0} object model.</value>
+  </data>
   <data name="RewritingVisitorVisitMethodNodeParameter" xml:space="preserve">
     <value>The node to rewrite.</value>
   </data>

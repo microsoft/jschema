@@ -46,7 +46,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                         SyntaxFactory.Token(SyntaxKind.AbstractKeyword))
                     .AddMembers(
-                        GenerateVisitMethod());
+                        GenerateVisitMethod(),
+                        GenerateVisitActualMethod());
 
             var usings = new List<string> { "System" };
 
@@ -97,6 +98,59 @@ namespace Microsoft.Json.Schema.ToDotNet
                         {
                             [NodeParameterName] = Resources.RewritingVisitorVisitMethodNodeParameter
                         }));
+        }
+
+        private MemberDeclarationSyntax GenerateVisitActualMethod()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                SyntaxFactory.PredefinedType(
+                    SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
+                VisitActualMethodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.VirtualKeyword))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(
+                        SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(
+                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)))
+                .AddBodyStatements(
+                    SyntaxFactory.IfStatement(
+                        SyntaxHelper.IsNull(NodeParameterName),
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ThrowStatement(
+                                SyntaxFactory.ObjectCreationExpression(
+                                    SyntaxFactory.ParseTypeName("ArgumentNullException"),
+                                    SyntaxFactory.ArgumentList(
+                                        SyntaxFactory.SingletonSeparatedList(
+                                            SyntaxFactory.Argument(
+                                                SyntaxFactory.LiteralExpression(
+                                                    SyntaxKind.StringLiteralExpression,
+                                                    SyntaxFactory.Literal(NodeParameterName))))),
+                                    default(InitializerExpressionSyntax))))),
+                        SyntaxFactory.SwitchStatement(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(NodeParameterName),
+                                SyntaxFactory.IdentifierName(_kindEnumName)))
+                                .AddSections(
+                                    GenerateVisitActualSwitchSections()))
+                .WithLeadingTrivia(
+                    SyntaxHelper.MakeDocComment(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            Resources.RewritingVisitorVisitActualMethodSummary,
+                            _schemaName),
+                        Resources.RewritingVisitorVisitActualMethodReturns,
+                        new Dictionary<string, string>
+                        {
+                            [NodeParameterName] = Resources.RewritingVisitorVisitActualMethodNodeParameter
+                        }));
+        }
+
+        private SwitchSectionSyntax[] GenerateVisitActualSwitchSections()
+        {
+            return new SwitchSectionSyntax[0];
         }
     }
 }
