@@ -55,7 +55,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                     .AddMembers(
                         GenerateVisitMethod(),
                         GenerateVisitActualMethod(),
-                        GenerateVisitNullCheckedMethod());
+                        GenerateVisitNullCheckedMethod())
+                    .AddMembers(
+                        GenerateVisitClassMethods());
 
             var usings = new List<string> { "System" };
 
@@ -164,7 +166,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             int index = 0;
             foreach (string generatedClassName in _generatedClassNames)
             {
-                string methodName = VisitMethodName + generatedClassName;
+                string methodName = MakeVisitClassMethodName(generatedClassName);
 
                 switchSections[index++] = SyntaxFactory.SwitchSection(
                     SyntaxFactory.SingletonList<SwitchLabelSyntax>(
@@ -234,6 +236,42 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.SingletonSeparatedList(
                                         SyntaxFactory.Argument(
                                             SyntaxFactory.IdentifierName(NodeParameterName))))))));
+        }
+
+        private MemberDeclarationSyntax[] GenerateVisitClassMethods()
+        {
+            // There is one VisitXxx method for each generated class.
+            var visitClassMethods = new MemberDeclarationSyntax[_generatedClassNames.Count];
+
+            int index = 0;
+            foreach (string generatedClassName in _generatedClassNames)
+            {
+                visitClassMethods[index++] = GenerateVisitClassMethods(generatedClassName);
+            }
+
+            return visitClassMethods;
+        }
+
+        private MethodDeclarationSyntax GenerateVisitClassMethods(string generatedClassName)
+        {
+            string methodName = MakeVisitClassMethodName(generatedClassName);
+            TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(generatedClassName);
+
+            return SyntaxFactory.MethodDeclaration(generatedClassType, methodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.VirtualKeyword))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                    .WithType(generatedClassType))
+                .AddBodyStatements(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.IdentifierName(NodeParameterName)));
+        }
+
+        private string MakeVisitClassMethodName(string className)
+        {
+            return VisitMethodName + className;
         }
     }
 }

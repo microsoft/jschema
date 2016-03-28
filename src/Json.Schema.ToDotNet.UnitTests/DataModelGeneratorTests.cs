@@ -1024,6 +1024,16 @@ namespace N
 
             return (T)Visit(node);
         }
+
+        public virtual C VisitC(C node)
+        {
+            return node;
+        }
+
+        public virtual D VisitD(D node)
+        {
+            return node;
+        }
     }
 }";
             _settings.GenerateCloningCode = true;
