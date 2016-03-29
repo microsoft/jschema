@@ -17,8 +17,8 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </remarks>
     public class InterfaceGenerator : ClassOrInterfaceGenerator
     {
-        public InterfaceGenerator(JsonSchema rootSchema, HintDictionary hintDictionary)
-            : base(rootSchema, hintDictionary)
+        public InterfaceGenerator(HintDictionary hintDictionary)
+            : base(hintDictionary)
         {
         }
 

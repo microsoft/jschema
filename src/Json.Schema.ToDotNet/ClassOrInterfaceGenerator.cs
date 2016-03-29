@@ -15,12 +15,9 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </summary>
     public abstract class ClassOrInterfaceGenerator : TypeGenerator
     {
-        private JsonSchema _rootSchema;
-
-        public ClassOrInterfaceGenerator(JsonSchema rootSchema, HintDictionary hintDictionary)
+        public ClassOrInterfaceGenerator(HintDictionary hintDictionary)
             : base(hintDictionary)
         {
-            _rootSchema = rootSchema;
             PropertyInfoDictionary = new Dictionary<string, PropertyInfo>();
         }
 

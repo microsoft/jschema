@@ -211,7 +211,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (enumHint == null)
             {
                 typeGenerator = new ClassGenerator(
-                    _rootSchema,
                     baseInterfaceName,
                     _settings.HintDictionary,
                     _settings.GenerateOverrides,
@@ -245,7 +244,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (interfaceHint != null)
             {
-                typeGenerator = new InterfaceGenerator(_rootSchema, _settings.HintDictionary);
+                typeGenerator = new InterfaceGenerator(_settings.HintDictionary);
                 string description = interfaceHint.Description ?? schema.Description;
 
                 _pathToFileContentsDictionary[baseInterfaceName] = typeGenerator.Generate(

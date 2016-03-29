@@ -60,14 +60,13 @@ namespace Microsoft.Json.Schema.ToDotNet
         private int _xorVariableCount = 0;
 
         public ClassGenerator(
-            JsonSchema rootSchema,
             string interfaceName,
             HintDictionary hintDictionary,
             bool generateOverrides,
             bool generateCloningCode,
             string syntaxInterfaceName,
             string kindEnumName)
-            : base(rootSchema, hintDictionary)
+            : base(hintDictionary)
         {
             _baseInterfaceName = interfaceName;
             _generateOverrides = generateOverrides;

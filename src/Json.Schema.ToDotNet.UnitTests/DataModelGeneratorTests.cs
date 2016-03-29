@@ -1027,11 +1027,19 @@ namespace N
 
         public virtual C VisitC(C node)
         {
+            if (node != null)
+            {
+            }
+
             return node;
         }
 
         public virtual D VisitD(D node)
         {
+            if (node != null)
+            {
+            }
+
             return node;
         }
     }

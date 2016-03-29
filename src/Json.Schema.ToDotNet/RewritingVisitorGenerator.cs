@@ -245,13 +245,13 @@ namespace Microsoft.Json.Schema.ToDotNet
             int index = 0;
             foreach (string generatedClassName in _generatedClassNames)
             {
-                visitClassMethods[index++] = GenerateVisitClassMethods(generatedClassName);
+                visitClassMethods[index++] = GenerateVisitClassMethod(generatedClassName);
             }
 
             return visitClassMethods;
         }
 
-        private MethodDeclarationSyntax GenerateVisitClassMethods(string generatedClassName)
+        private MethodDeclarationSyntax GenerateVisitClassMethod(string generatedClassName)
         {
             string methodName = MakeVisitClassMethodName(generatedClassName);
             TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(generatedClassName);
@@ -264,6 +264,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
                     .WithType(generatedClassType))
                 .AddBodyStatements(
+                    SyntaxFactory.IfStatement(
+                        SyntaxHelper.IsNotNull(NodeParameterName),
+                        SyntaxFactory.Block()),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.IdentifierName(NodeParameterName)));
         }
