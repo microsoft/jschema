@@ -113,8 +113,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private MemberDeclarationSyntax GenerateVisitActualMethod()
         {
             return SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.PredefinedType(
-                    SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
                 VisitActualMethodName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -138,13 +137,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                     SyntaxKind.StringLiteralExpression,
                                                     SyntaxFactory.Literal(NodeParameterName))))),
                                     default(InitializerExpressionSyntax))))),
-                        SyntaxFactory.SwitchStatement(
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                SyntaxFactory.IdentifierName(NodeParameterName),
-                                SyntaxFactory.IdentifierName(_kindEnumName)))
-                                .AddSections(
-                                    GenerateVisitActualSwitchSections()))
+                    SyntaxFactory.SwitchStatement(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(NodeParameterName),
+                            SyntaxFactory.IdentifierName(_kindEnumName)))
+                            .AddSections(
+                                GenerateVisitActualSwitchSections()))
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(
