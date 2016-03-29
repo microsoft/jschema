@@ -257,10 +257,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
         {
-            // Generate the parameter list for the ctor. It takes the same parameters as
-            // the Init method.
-            SeparatedSyntaxList<ParameterSyntax> parameterList = GenerateInitMethodParameterList();
-
             // Generate the argument list that will be passed from the copy ctor to the
             // Init method.
             ExpressionSyntax[] arguments = GetPropertyNames()
@@ -269,6 +265,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             return SyntaxFactory.ConstructorDeclaration(TypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddParameterListParameters(
+                    // This ctor takes the same parameters as the Init method, so use the
+                    // same helper method to generate the parameter list.
+                    GenerateInitMethodParameterList())
                 .AddBodyStatements(
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
@@ -350,20 +350,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IdentifierName(name)))
                     .ToArray();
 
-            return SyntaxFactory.ConstructorDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
-                SyntaxFactory.Identifier(TypeName),
-                SyntaxFactory.ParameterList(
-                    SyntaxFactory.SingletonSeparatedList(
+            return SyntaxFactory.ConstructorDeclaration(TypeName)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddParameterListParameters(
                         SyntaxFactory.Parameter(
                             default(SyntaxList<AttributeListSyntax>),
                             default(SyntaxTokenList),
                             SyntaxFactory.ParseTypeName(TypeName),
                             SyntaxFactory.Identifier(OtherParameter),
-                            default(EqualsValueClauseSyntax)))),
-                default(ConstructorInitializerSyntax),
-                SyntaxFactory.Block(
+                            default(EqualsValueClauseSyntax)))
+                .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(OtherParameter),
                         SyntaxFactory.Block(
@@ -379,7 +375,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            SyntaxHelper.ArgumentList(initArguments)))))
+                            SyntaxHelper.ArgumentList(initArguments))))
             .WithLeadingTrivia(
                 SyntaxHelper.MakeDocComment(
                     string.Format(
@@ -467,32 +463,21 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             ResetVariableCounts();
 
-            SeparatedSyntaxList<ParameterSyntax> parameterList = GenerateInitMethodParameterList();
-
             return SyntaxFactory.MethodDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)),
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)),
-                default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier(InitMethod),
-                default(TypeParameterListSyntax),
-                SyntaxFactory.ParameterList(parameterList),
-                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                SyntaxFactory.Block(GenerateInitializations()),
-                default(SyntaxToken));
+                InitMethod)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddParameterListParameters(GenerateInitMethodParameterList())
+                .AddBodyStatements(GenerateInitializations());
         }
 
-        private SeparatedSyntaxList<ParameterSyntax> GenerateInitMethodParameterList()
+        private ParameterSyntax[] GenerateInitMethodParameterList()
         {
-            IEnumerable<ParameterSyntax> parameters = GetPropertyNames()
+            return GetPropertyNames()
                 .Select(name => SyntaxFactory.Parameter(
-                    default(SyntaxList<AttributeListSyntax>),
-                    default(SyntaxTokenList), // modifiers
-                    GetParameterListType(name),
-                    SyntaxFactory.Identifier(name.ToCamelCase()),
-                    default(EqualsValueClauseSyntax)));
-
-            return SyntaxFactory.SeparatedList(parameters);
+                    SyntaxFactory.Identifier(name.ToCamelCase()))
+                    .WithType(GetParameterListType(name)))
+                .ToArray();
         }
 
         private StatementSyntax[] GenerateInitializations()
