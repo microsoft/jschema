@@ -244,13 +244,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private ConstructorDeclarationSyntax GenerateDefaultConstructor()
         {
-            return SyntaxFactory.ConstructorDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
-                SyntaxFactory.Identifier(TypeName),
-                SyntaxFactory.ParameterList(),
-                default(ConstructorInitializerSyntax),
-                SyntaxFactory.Block())
+            return SyntaxFactory.ConstructorDeclaration(TypeName)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddBodyStatements()
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(
@@ -271,17 +267,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .Select(name =>  SyntaxFactory.IdentifierName(name.ToCamelCase()))
                 .ToArray();
 
-            return SyntaxFactory.ConstructorDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
-                SyntaxFactory.Identifier(TypeName),
-                SyntaxFactory.ParameterList(parameterList),
-                default(ConstructorInitializerSyntax),
-                SyntaxFactory.Block(
+            return SyntaxFactory.ConstructorDeclaration(TypeName)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddBodyStatements(
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
-                            SyntaxHelper.ArgumentList(arguments)))))
+                            SyntaxHelper.ArgumentList(arguments))))
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(
