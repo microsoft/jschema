@@ -209,18 +209,21 @@ namespace Microsoft.Json.Schema.ToDotNet
             };
         }
 
-        protected override SyntaxTokenList CreatePropertyModifiers()
+        protected override SyntaxToken[] CreatePropertyModifiers()
         {
-            return SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            return new SyntaxToken[]
+                {
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword)
+                };
         }
 
-        protected override IEnumerable<AccessorDeclarationSyntax> CreatePropertyAccessors()
+        protected override AccessorDeclarationSyntax[] CreatePropertyAccessors()
         {
             return new AccessorDeclarationSyntax[]
-                        {
-                            SyntaxHelper.MakeGetAccessor(),
-                            SyntaxHelper.MakeSetAccessor()
-                        };
+                {
+                    SyntaxHelper.MakeGetAccessor(),
+                    SyntaxHelper.MakeSetAccessor()
+                };
         }
 
         private PropertyDeclarationSyntax GenerateSyntaxKindProperty()
@@ -353,25 +356,21 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.ConstructorDeclaration(TypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
-                        SyntaxFactory.Parameter(
-                            default(SyntaxList<AttributeListSyntax>),
-                            default(SyntaxTokenList),
-                            SyntaxFactory.ParseTypeName(TypeName),
-                            SyntaxFactory.Identifier(OtherParameter),
-                            default(EqualsValueClauseSyntax)))
+                        SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameter))
+                            .WithType(SyntaxFactory.ParseTypeName(TypeName)))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(OtherParameter),
                         SyntaxFactory.Block(
                             SyntaxFactory.ThrowStatement(
                                 SyntaxFactory.ObjectCreationExpression(
-                                    SyntaxFactory.ParseTypeName("ArgumentNullException"),
-                                    SyntaxHelper.ArgumentList(
-                                        SyntaxFactory.InvocationExpression(
-                                            SyntaxFactory.IdentifierName("nameof"),
-                                            SyntaxHelper.ArgumentList(
-                                                SyntaxFactory.IdentifierName(OtherParameter)))),
-                                    default(InitializerExpressionSyntax))))),
+                                    SyntaxFactory.ParseTypeName("ArgumentNullException"))
+                                    .AddArgumentListArguments(
+                                        SyntaxFactory.Argument(
+                                            SyntaxFactory.InvocationExpression(
+                                                SyntaxFactory.IdentifierName("nameof"),
+                                                SyntaxHelper.ArgumentList(
+                                                    SyntaxFactory.IdentifierName(OtherParameter)))))))),
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(InitMethod),
@@ -400,63 +399,46 @@ namespace Microsoft.Json.Schema.ToDotNet
         private MethodDeclarationSyntax GenerateISyntaxDeepClone()
         {
             return SyntaxFactory.MethodDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                default(SyntaxTokenList), // modifiers
                 SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
-                SyntaxFactory.ExplicitInterfaceSpecifier(
-                    SyntaxFactory.IdentifierName(_syntaxInterfaceName)),
-                SyntaxFactory.Identifier(DeepCloneMethod),
-                default(TypeParameterListSyntax),
-                SyntaxFactory.ParameterList(),
-                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                SyntaxFactory.Block(
+                DeepCloneMethod)
+                .WithExplicitInterfaceSpecifier(
+                    SyntaxFactory.ExplicitInterfaceSpecifier(
+                        SyntaxFactory.IdentifierName(_syntaxInterfaceName)))
+                .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
-                            SyntaxHelper.ArgumentList()))),
-                default(SyntaxToken));
+                            SyntaxHelper.ArgumentList())));
         }
 
         private MethodDeclarationSyntax GenerateDeepClone()
         {
             return SyntaxFactory.MethodDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword)),
                 SyntaxFactory.ParseTypeName(TypeName),
-                default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier(DeepCloneMethod),
-                default(TypeParameterListSyntax),
-                SyntaxFactory.ParameterList(),
-                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                SyntaxFactory.Block(
+                DeepCloneMethod)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
                             SyntaxFactory.ParseTypeName(TypeName),
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
-                                SyntaxHelper.ArgumentList())))),
-                default(SyntaxToken))
+                                SyntaxHelper.ArgumentList()))))
                 .WithLeadingTrivia(SyntaxHelper.MakeDocComment(Resources.DeepCloneDescription));
         }
 
         private MethodDeclarationSyntax GenerateDeepCloneCore()
         {
             return SyntaxFactory.MethodDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)),
                 SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
-                default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier("DeepCloneCore"),
-                default(TypeParameterListSyntax),
-                SyntaxFactory.ParameterList(),
-                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                SyntaxFactory.Block(
+                DeepCloneCoreMethod)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.ObjectCreationExpression(
                             SyntaxFactory.ParseTypeName(TypeName),
                             SyntaxHelper.ArgumentList(SyntaxFactory.ThisExpression()),
-                            default(InitializerExpressionSyntax)))),
-                default(SyntaxToken));
+                            default(InitializerExpressionSyntax))));
         }
 
         private MethodDeclarationSyntax GenerateInitMethod()
@@ -792,26 +774,20 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.OverrideKeyword))
-                .WithParameterList(
-                    SyntaxFactory.ParameterList(
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.Parameter(
-                                default(SyntaxList<AttributeListSyntax>),
-                                default(SyntaxTokenList), // modifiers
-                                SyntaxFactory.PredefinedType(
-                                    SyntaxFactory.Token(SyntaxKind.ObjectKeyword)),
-                                SyntaxFactory.Identifier(OtherParameter),
-                                default(EqualsValueClauseSyntax)))))
-                .WithBody(
-                    SyntaxFactory.Block(
-                        SyntaxFactory.ReturnStatement(
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(EqualsMethod),
-                                SyntaxHelper.ArgumentList(
-                                    SyntaxFactory.BinaryExpression(
-                                        SyntaxKind.AsExpression,
-                                        SyntaxFactory.IdentifierName(OtherParameter),
-                                        SyntaxFactory.ParseTypeName(TypeName)))))));
+                .AddParameterListParameters(
+                            SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameter))
+                                .WithType(
+                                    SyntaxFactory.PredefinedType(
+                                    SyntaxFactory.Token(SyntaxKind.ObjectKeyword))))
+                .AddBodyStatements(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(EqualsMethod),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.BinaryExpression(
+                                    SyntaxKind.AsExpression,
+                                    SyntaxFactory.IdentifierName(OtherParameter),
+                                    SyntaxFactory.ParseTypeName(TypeName))))));
 
         }
         private MemberDeclarationSyntax OverrideGetHashCode(JsonSchema schema)
@@ -1032,18 +1008,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), EqualsMethod)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .WithParameterList(
-                    SyntaxFactory.ParameterList(
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.Parameter(
-                                default(SyntaxList<AttributeListSyntax>),
-                                default(SyntaxTokenList), // modifiers
-                                SyntaxFactory.ParseTypeName(TypeName),
-                                SyntaxFactory.Identifier(OtherParameter),
-                                default(EqualsValueClauseSyntax))
-                        )))
-                .WithBody(
-                    SyntaxFactory.Block(GenerateEqualityTests(schema)));
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameter))
+                        .WithType(SyntaxFactory.ParseTypeName(TypeName)))
+                .AddBodyStatements(GenerateEqualityTests(schema));
         }
 
         private StatementSyntax[] GenerateEqualityTests(JsonSchema schema)

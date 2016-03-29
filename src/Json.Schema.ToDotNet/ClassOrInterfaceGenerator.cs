@@ -26,9 +26,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected abstract AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired);
 
-        protected abstract SyntaxTokenList CreatePropertyModifiers();
+        protected abstract SyntaxToken[] CreatePropertyModifiers();
 
-        protected abstract IEnumerable<AccessorDeclarationSyntax> CreatePropertyAccessors();
+        protected abstract AccessorDeclarationSyntax[] CreatePropertyAccessors();
 
         /// <summary>
         /// Gets a dictionary that maps the name of each property in the generated class
@@ -114,14 +114,10 @@ namespace Microsoft.Json.Schema.ToDotNet
         private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName, JsonSchema schema, bool isRequired)
         {
             PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
-                default(SyntaxList<AttributeListSyntax>),
-                CreatePropertyModifiers(),
                 MakePropertyType(propertyName, schema),
-                default(ExplicitInterfaceSpecifierSyntax),
-                SyntaxFactory.Identifier(propertyName.ToPascalCase()),
-                SyntaxFactory.AccessorList(
-                    SyntaxFactory.List(
-                        CreatePropertyAccessors())));
+                propertyName.ToPascalCase())
+                .AddModifiers(CreatePropertyModifiers())
+                .AddAccessorListAccessors(CreatePropertyAccessors());
 
             AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName, isRequired);
             if (attributes.Length > 0)

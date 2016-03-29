@@ -39,17 +39,17 @@ namespace Microsoft.Json.Schema.ToDotNet
             return new AttributeSyntax[0];
         }
 
-        protected override SyntaxTokenList CreatePropertyModifiers()
+        protected override SyntaxToken[] CreatePropertyModifiers()
         {
-            return default(SyntaxTokenList);
+            return new SyntaxToken[0];
         }
 
-        protected override IEnumerable<AccessorDeclarationSyntax> CreatePropertyAccessors()
+        protected override AccessorDeclarationSyntax[] CreatePropertyAccessors()
         {
             return new AccessorDeclarationSyntax[]
-                        {
-                            SyntaxHelper.MakeGetAccessor()
-                        };
+                {
+                    SyntaxHelper.MakeGetAccessor()
+                };
         }
 
         protected override string MakeHintDictionaryKey(string propertyName)
