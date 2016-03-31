@@ -52,7 +52,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             var propDecls = new List<MemberDeclarationSyntax>();
 
-            foreach (string propertyName in GetPropertyNames().Select(pn => pn.ToCamelCase()))
+            foreach (string propertyName in GetPropertyNames())
             {
                 propDecls.Add(CreatePropertyDeclaration(propertyName));
             }

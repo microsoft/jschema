@@ -183,7 +183,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.AttributeArgument(
                         SyntaxFactory.NameEquals(DataMemberNamePropertyName),
                         default(NameColonSyntax),
-                        SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(propertyName))),
+                        SyntaxFactory.LiteralExpression(
+                            SyntaxKind.StringLiteralExpression,
+                            SyntaxFactory.Literal(propertyName.ToCamelCase()))),
                     SyntaxFactory.AttributeArgument(
                         SyntaxFactory.NameEquals(DataMemberIsRequiredPropertyName),
                         default(NameColonSyntax),
@@ -299,7 +301,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         private TypeSyntax GetParameterListType(string name)
         {
-            TypeSyntax type = PropInfoDictionary[name.ToCamelCase()].Type;
+            TypeSyntax type = PropInfoDictionary[name].Type;
 
             string typeName = type.ToString().Replace("IList<", "IEnumerable<");
 
@@ -318,7 +320,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         private TypeSyntax GetConcreteListType(string name)
         {
-            TypeSyntax type = PropInfoDictionary[name.ToCamelCase()].Type;
+            TypeSyntax type = PropInfoDictionary[name].Type;
 
             string typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
 
@@ -481,8 +483,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax GenerateInitialization(string propertyName)
         {
-            string propInfoKey = propertyName.ToCamelCase();
-            InitializationKind initializationKind = PropInfoDictionary[propInfoKey].InitializationKind;
+            InitializationKind initializationKind = PropInfoDictionary[propertyName].InitializationKind;
 
             switch (initializationKind)
             {
@@ -493,7 +494,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     return GenerateCloneInitialization(propertyName);
 
                 case InitializationKind.Collection:
-                    return GenerateCollectionInitialization(propertyName, propInfoKey);
+                    return GenerateCollectionInitialization(propertyName);
 
                 case InitializationKind.Uri:
                     return GenerateUriInitialization(propertyName);
@@ -519,13 +520,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             // property it will be used to initialize.
             string argName = propertyName.ToCamelCase();
 
-            // The name of the key into the PropertyInformationDictionary for the property
-            // is also related to the name of the property, but we used a separate
-            // variable for clarity.
-            string propKeyName = argName;
-
             // Get the type of this property, which we will use when we clone it.
-            TypeSyntax type = PropInfoDictionary[propKeyName].Type;
+            TypeSyntax type = PropInfoDictionary[propertyName].Type;
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(argName),
@@ -541,7 +537,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 default(InitializerExpressionSyntax))))));
         }
 
-        private StatementSyntax GenerateCollectionInitialization(string propertyName, string propInfoKey)
+        private StatementSyntax GenerateCollectionInitialization(string propertyName)
         {
             // The name of the argument to the Init method is related to the name of the
             // property it will be used to initialize.
@@ -550,7 +546,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             // Get the type of the concrete collection with which to initialize the property.
             // For example, if the property is of type IList<int>, it will be initialized
             // with an object of type List<int>.
-            TypeSyntax type = GetConcreteListType(propInfoKey);
+            TypeSyntax type = GetConcreteListType(propertyName);
 
             // The name of a temporary variable in which the collection values will be
             // accumulated.
@@ -562,7 +558,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // Find out out kind of code must be generated to initialize the elements of
             // the collection.
-            string elementInfoKey = PropertyInfoDictionary.MakeElementKeyName(propInfoKey);
+            string elementInfoKey = PropertyInfoDictionary.MakeElementKeyName(propertyName);
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
@@ -730,7 +726,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax GenerateUriInitialization(string propertyName)
         {
-            PropertyInfo info = PropInfoDictionary[propertyName.ToCamelCase()];
+            PropertyInfo info = PropInfoDictionary[propertyName];
             TypeSyntax type = info.Type;
 
             string uriArgName = propertyName.ToCamelCase();
@@ -828,10 +824,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                 var uncheckedStatements = new List<StatementSyntax>();
                 foreach (var propertyName in propertyNames)
                 {
-                    string hashKindKey = propertyName.ToCamelCase();
-
                     uncheckedStatements.Add(
-                        MakeHashCodeContribution(hashKindKey, SyntaxFactory.IdentifierName(propertyName)));
+                        MakeHashCodeContribution(propertyName, SyntaxFactory.IdentifierName(propertyName)));
                 }
 
                 statements.Add(SyntaxFactory.CheckedStatement(
@@ -1026,11 +1020,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             foreach (string propertyName in GetPropertyNames())
             {
-                string comparisonKindKey = propertyName.ToCamelCase();
-
                 statements.Add(
                     MakeComparisonTest(
-                        comparisonKindKey,
+                        propertyName,
                         SyntaxFactory.IdentifierName(propertyName),
                         OtherPropName(propertyName)));
             }

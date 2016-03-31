@@ -82,7 +82,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </returns>
         public static string MakeElementKeyName(string propertyName)
         {
-            return propertyName + "[]";
+            return propertyName.ToPascalCase() + "[]";
         }
 
         public static SyntaxKind GetTypeKeywordFromJsonType(JsonType type)
@@ -278,7 +278,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             AddPropertyInfo(
                 entries,
-                propertyName,
+                propertyName.ToPascalCase(),
                 propertySchema.Description,
                 comparisonKind,
                 hashKind,
