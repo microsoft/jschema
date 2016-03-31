@@ -297,7 +297,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         private TypeSyntax GetParameterListType(string name)
         {
-            TypeSyntax type = PropertyInfoDictionary[name.ToCamelCase()].Type;
+            TypeSyntax type = PropInfoDictionary[name.ToCamelCase()].Type;
 
             string typeName = type.ToString().Replace("IList<", "IEnumerable<");
 
@@ -316,7 +316,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         private TypeSyntax GetConcreteListType(string name)
         {
-            TypeSyntax type = PropertyInfoDictionary[name.ToCamelCase()].Type;
+            TypeSyntax type = PropInfoDictionary[name.ToCamelCase()].Type;
 
             string typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
 
@@ -480,7 +480,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private StatementSyntax GenerateInitialization(string propertyName)
         {
             string propInfoKey = propertyName.ToCamelCase();
-            InitializationKind initializationKind = PropertyInfoDictionary[propInfoKey].InitializationKind;
+            InitializationKind initializationKind = PropInfoDictionary[propInfoKey].InitializationKind;
 
             switch (initializationKind)
             {
@@ -523,7 +523,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string propKeyName = argName;
 
             // Get the type of this property, which we will use when we clone it.
-            TypeSyntax type = PropertyInfoDictionary[propKeyName].Type;
+            TypeSyntax type = PropInfoDictionary[propKeyName].Type;
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(argName),
@@ -560,7 +560,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // Find out out kind of code must be generated to initialize the elements of
             // the collection.
-            string elementInfoKey = MakeElementKeyName(propInfoKey);
+            string elementInfoKey = PropertyInfoDictionary.MakeElementKeyName(propInfoKey);
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
@@ -600,7 +600,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string destinationVariableName,
             string sourceVariableName)
         {
-            switch (PropertyInfoDictionary[elementInfoKey].InitializationKind)
+            switch (PropInfoDictionary[elementInfoKey].InitializationKind)
             {
                 case InitializationKind.SimpleAssign:
                     return GenerateSimpleElementInitialization(destinationVariableName, sourceVariableName);
@@ -630,7 +630,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string sourceVariableName,
             string elementInfoKey)
         {
-            TypeSyntax elementType = PropertyInfoDictionary[elementInfoKey].Type;
+            TypeSyntax elementType = PropInfoDictionary[elementInfoKey].Type;
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNull(sourceVariableName),
@@ -675,9 +675,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // Find out out kind of code must be generated to initialize the elements of
             // the collection.
-            string sourceElementInfoKey = MakeElementKeyName(elementInfoKey);
-            InitializationKind elementInitializationKind = PropertyInfoDictionary[sourceElementInfoKey].InitializationKind;
-            TypeSyntax sourceElementType = PropertyInfoDictionary[elementInfoKey].Type;
+            string sourceElementInfoKey = PropertyInfoDictionary.MakeElementKeyName(elementInfoKey);
+            InitializationKind elementInitializationKind = PropInfoDictionary[sourceElementInfoKey].InitializationKind;
+            TypeSyntax sourceElementType = PropInfoDictionary[elementInfoKey].Type;
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNull(SyntaxFactory.IdentifierName(sourceVariableName)),
@@ -728,7 +728,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax GenerateUriInitialization(string propertyName)
         {
-            PropertyInfo info = PropertyInfoDictionary[propertyName.ToCamelCase()];
+            PropertyInfo info = PropInfoDictionary[propertyName.ToCamelCase()];
             TypeSyntax type = info.Type;
 
             string uriArgName = propertyName.ToCamelCase();
@@ -845,7 +845,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax MakeHashCodeContribution(string hashKindKey, ExpressionSyntax expression)
         {
-            HashKind hashKind = PropertyInfoDictionary[hashKindKey].HashKind;
+            HashKind hashKind = PropInfoDictionary[hashKindKey].HashKind;
             switch (hashKind)
             {
                 case HashKind.ScalarValueType:
@@ -902,7 +902,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate hash generation code.
-            string elementHashTypeKey = MakeElementKeyName(hashKindKey);
+            string elementHashTypeKey = PropertyInfoDictionary.MakeElementKeyName(hashKindKey);
 
             StatementSyntax hashCodeContribution =
                 MakeHashCodeContribution(
@@ -1048,7 +1048,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax left,
             ExpressionSyntax right)
        {
-            ComparisonKind comparisonKind = PropertyInfoDictionary[comparisonKindKey].ComparisonKind;
+            ComparisonKind comparisonKind = PropInfoDictionary[comparisonKindKey].ComparisonKind;
             switch (comparisonKind)
             {
                 case ComparisonKind.OperatorEquals:
@@ -1151,7 +1151,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate comparison, for example, "a == b", or "Object.Equals(a, b)".
-            string elmentComparisonTypeKey = MakeElementKeyName(comparisonKindKey);
+            string elmentComparisonTypeKey = PropertyInfoDictionary.MakeElementKeyName(comparisonKindKey);
 
             IfStatementSyntax comparisonStatement = MakeComparisonTest(elmentComparisonTypeKey, leftElement, rightElement);
 

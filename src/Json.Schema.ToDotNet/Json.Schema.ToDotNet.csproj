@@ -97,8 +97,10 @@
     <Compile Include="InitializationKind.cs" />
     <Compile Include="InterfaceGenerator.cs" />
     <Compile Include="InterfaceHint.cs" />
+    <Compile Include="JsonSchemaExtensions.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyInfoDictionary.cs" />
     <Compile Include="PropertyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
