@@ -13,23 +13,25 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </summary>
     public class EnumGenerator : TypeGenerator
     {
-        public EnumGenerator(HintDictionary hintDictionary)
-            : base(hintDictionary)
+        public EnumGenerator(
+            JsonSchema schema,
+            HintDictionary hintDictionary)
+            : base(schema, hintDictionary)
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
             return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 
-        public override void AddMembers(JsonSchema schema)
+        public override void AddMembers()
         {
-            if (schema.Enum != null)
+            if (Schema.Enum != null)
             {
                 var enumMembers =
-                        schema.Enum.Select(
+                        Schema.Enum.Select(
                             enumName => SyntaxFactory.EnumMemberDeclaration(
                                 SyntaxFactory.Identifier(enumName.ToString().ToPascalCase())))
                             .ToArray();

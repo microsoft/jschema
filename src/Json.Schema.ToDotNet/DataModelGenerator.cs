@@ -23,7 +23,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private List<string> _generatedClassNames;
         private string _kindEnumName;
         private string _nodeInterfaceName;
-        private List<AdditionalTypeRequiredEventArgs> _additionalTypesRequiredList;
+        private List<AdditionalTypeRequiredInfo> _additionalTypesRequiredList;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
             : this(settings, new FileSystem())
@@ -39,7 +39,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _fileSystem = fileSystem;
             _pathToFileContentsDictionary = new Dictionary<string, string>();
 
-            _additionalTypesRequiredList = new List<AdditionalTypeRequiredEventArgs>();
+            _additionalTypesRequiredList = new List<AdditionalTypeRequiredInfo>();
             _generatedClassNames = new List<string>();
         }
 
@@ -77,9 +77,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
-            foreach (AdditionalTypeRequiredEventArgs e in _additionalTypesRequiredList)
+            foreach (AdditionalTypeRequiredInfo additionalTypeRequiredInfo in _additionalTypesRequiredList)
             {
-                GenerateAdditionalType(e.Hint, e.Schema);
+                GenerateAdditionalType(additionalTypeRequiredInfo.Hint, additionalTypeRequiredInfo.Schema);
             }
 
             if (_settings.GenerateCloningCode)
@@ -192,6 +192,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             className = className.ToPascalCase();
 
+            var propertyInfoDictionary = new PropertyInfoDictionary(
+                className,
+                schema,
+                _settings.HintDictionary,
+                OnAdditionalTypeRequired);
+
             CodeGenHint[] hints = null;
             EnumHint enumHint = null;
             InterfaceHint interfaceHint = null;
@@ -211,17 +217,14 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (enumHint == null)
             {
                 typeGenerator = new ClassGenerator(
-                    baseInterfaceName,
+                    propertyInfoDictionary,
+                    schema,
                     _settings.HintDictionary,
+                    baseInterfaceName,
                     _settings.GenerateOverrides,
                     _settings.GenerateCloningCode,
                     _nodeInterfaceName,
                     _kindEnumName);
-
-                // Keep track of any hints that the type generator might encounter in the
-                // course of generating the type which require additional types (such as
-                // enumerations) to be generated.
-                typeGenerator.AdditionalTypeRequired += TypeGenerator_AdditionalTypeRequired;
 
                 if (_settings.GenerateCloningCode)
                 {
@@ -232,11 +235,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
             {
-                typeGenerator = new EnumGenerator(_settings.HintDictionary);
+                typeGenerator = new EnumGenerator(schema, _settings.HintDictionary);
             }
         
             _pathToFileContentsDictionary[className] = typeGenerator.Generate(
-                schema,
                 _settings.NamespaceName,
                 className,
                 _settings.CopyrightNotice,
@@ -244,11 +246,13 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (interfaceHint != null)
             {
-                typeGenerator = new InterfaceGenerator(_settings.HintDictionary);
+                typeGenerator = new InterfaceGenerator(
+                    propertyInfoDictionary,
+                    schema,
+                    _settings.HintDictionary);
                 string description = interfaceHint.Description ?? schema.Description;
 
                 _pathToFileContentsDictionary[baseInterfaceName] = typeGenerator.Generate(
-                    schema,
                     _settings.NamespaceName,
                     baseInterfaceName,
                     _settings.CopyrightNotice,
@@ -258,7 +262,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return _pathToFileContentsDictionary[className];
         }
 
-        private void TypeGenerator_AdditionalTypeRequired(object sender, AdditionalTypeRequiredEventArgs e)
+        private void OnAdditionalTypeRequired(AdditionalTypeRequiredInfo e)
         {
             _additionalTypesRequiredList.Add(e);
         }
@@ -317,10 +321,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 Enum = enumValues.ToArray()
             };
 
-            var generator = new EnumGenerator(_settings.HintDictionary);
+            var generator = new EnumGenerator(enumTypeSchema, _settings.HintDictionary);
             _pathToFileContentsDictionary[enumHint.TypeName] =
                 generator.Generate(
-                    enumTypeSchema,
                     _settings.NamespaceName,
                     enumHint.TypeName,
                     _settings.CopyrightNotice,

@@ -15,10 +15,13 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </summary>
     public abstract class ClassOrInterfaceGenerator : TypeGenerator
     {
-        public ClassOrInterfaceGenerator(HintDictionary hintDictionary)
-            : base(hintDictionary)
+        public ClassOrInterfaceGenerator(
+            PropertyInfoDictionary propertyInfoDictionary,
+            JsonSchema schema,
+            HintDictionary hintDictionary)
+            : base(schema, hintDictionary)
         {
-            PropInfoDictionary = new Dictionary<string, PropertyInfo>();
+            PropInfoDictionary = propertyInfoDictionary;
         }
 
         protected abstract AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired);
@@ -31,23 +34,27 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets a dictionary that maps the name of each property in the generated class
         /// to a information about the property derived from the JSON schema.
         /// </summary> 
-        protected Dictionary<string, PropertyInfo> PropInfoDictionary { get; }
+        protected PropertyInfoDictionary PropInfoDictionary { get; private set; }
         
-        protected MemberDeclarationSyntax[] GenerateProperties(JsonSchema schema)
+        protected MemberDeclarationSyntax[] GenerateProperties()
         {
+
+            IEnumerable<string> namespaceNames = PropInfoDictionary
+                .Select(kvp => kvp.Value.NamespaceName)
+                .Where(n => n != null)
+                .Distinct()
+                .OrderBy(n => n);
+
+            foreach (string namespaceName in namespaceNames)
+            {
+                AddUsing(namespaceName);
+            }
+
             var propDecls = new List<MemberDeclarationSyntax>();
 
-            if (schema.Properties != null)
+            foreach (string propertyName in GetPropertyNames().Select(pn => pn.ToCamelCase()))
             {
-                foreach (KeyValuePair<string, JsonSchema> schemaProperty in schema.Properties)
-                {
-                    string propertyName = schemaProperty.Key;
-                    JsonSchema subSchema = schemaProperty.Value;
-                    bool isRequired = schema.Required?.Contains(propertyName) == true;
-
-                    propDecls.Add(
-                        CreatePropertyDeclaration(propertyName, subSchema, isRequired));
-                }
+                propDecls.Add(CreatePropertyDeclaration(propertyName));
             }
 
             return propDecls.ToArray();
@@ -56,21 +63,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         protected virtual string MakeHintDictionaryKey(string propertyName)
         {
             return TypeName + "." + propertyName.ToPascalCase();
-        }
-
-        /// <summary>
-        /// Synthesize a lookup key by which the elements of the specified collection-
-        /// valued property can be looked up in the <see cref="PropInfoDictionary"/>.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The name of a collection-valued property.
-        /// </param>
-        /// <returns>
-        /// A lookup key for the elements of the property specified by <paramref name="propertyName"/>.
-        /// </returns>
-        protected string MakeElementKeyName(string propertyName)
-        {
-            return propertyName + "[]";
         }
 
         /// <summary>
@@ -88,6 +80,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return PropInfoDictionary.Keys
                 .Where(key => key.IndexOf("[]") == -1)
+                .OrderBy(key => PropInfoDictionary[key].DeclarationOrder)
                 .Select(key => key.ToPascalCase())
                 .ToArray();
         }
@@ -98,25 +91,20 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <param name="propertyName">
         /// The name of the property.
         /// </param>
-        /// <param name="schema">
-        /// The schema that defines the type of the property.
-        /// </param>
         /// <returns>
-        /// <param name="isRequired">
-        /// <code>true</code> if this property is required by its parent schema;
-        /// otherwise <code>false</code>.
-        /// </param>
         /// A property declaration built from the specified schema.
         /// </returns>
-        private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName, JsonSchema schema, bool isRequired)
+        private PropertyDeclarationSyntax CreatePropertyDeclaration(string propertyName)
         {
+            PropertyInfo info = PropInfoDictionary[propertyName];
+
             PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
-                MakePropertyType(propertyName, schema),
+                info.Type,
                 propertyName.ToPascalCase())
                 .AddModifiers(CreatePropertyModifiers())
                 .AddAccessorListAccessors(CreatePropertyAccessors());
 
-            AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName, isRequired);
+            AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName, info.IsRequired);
             if (attributes.Length > 0)
             {
                 propDecl = propDecl.AddAttributeLists(
@@ -128,332 +116,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             return propDecl.WithLeadingTrivia(
-                SyntaxHelper.MakeDocComment(schema.Description));
-        }
-
-        /// <summary>
-        /// Generates the appropriate <see cref="TypeSyntax" /> for the specified property.
-        /// At the same time, makes a note of what kind of code will need to be generated
-        /// for this property in the implementations of
-        /// <see cref="IEquatable{T}.Equals" /> and <see cref="object.Equals" />.
-        private TypeSyntax MakePropertyType(string propertyName, JsonSchema schema)
-        {
-            TypeSyntax type;
-
-            if (schema.IsDateTime())
-            {
-                type = MakeNamedType("System.DateTime");
-
-                SetPropertyInfo(
-                    propertyName,
-                    type,
-                    ComparisonKind.OperatorEquals,
-                    HashKind.ScalarValueType,
-                    InitializationKind.SimpleAssign);
-
-                return type;
-            }
-
-            if (schema.IsUri())
-            {
-                type = MakeNamedType("System.Uri");
-
-                SetPropertyInfo(
-                    propertyName,
-                    type,
-                    ComparisonKind.OperatorEquals,
-                    HashKind.ScalarReferenceType,
-                    InitializationKind.Uri);
-
-                return type;
-            }
-
-            if (schema.ShouldBeDictionary(TypeName, propertyName, HintDictionary))
-            {
-                type = MakeNamedType("System.Collections.Generic.Dictionary<string, string>");
-
-                SetPropertyInfo(
-                    propertyName,
-                    type,
-                    ComparisonKind.Dictionary,
-                    HashKind.Dictionary,
-                    InitializationKind.Clone);
-
-                return type;
-            }
-
-            string referencedEnumTypeName = GetReferencedEnumTypeName(schema);
-            if (referencedEnumTypeName != null)
-            {
-                type = MakeNamedType(referencedEnumTypeName);
-
-                SetPropertyInfo(
-                    propertyName,
-                    type,
-                    ComparisonKind.OperatorEquals,
-                    HashKind.ScalarValueType,
-                    InitializationKind.SimpleAssign);
-
-                return type;
-            }
-
-            EnumHint enumHint;
-            if (schema.ShouldBeEnum(TypeName, propertyName, HintDictionary, out enumHint))
-            {
-                type = MakeNamedType(enumHint.TypeName);
-
-                SetPropertyInfo(
-                    propertyName,
-                    type,
-                    ComparisonKind.OperatorEquals,
-                    HashKind.ScalarValueType,
-                    InitializationKind.SimpleAssign);
-
-                OnAdditionalType(new AdditionalTypeRequiredEventArgs(enumHint, schema));
-
-                return type;
-            }
-
-            switch (schema.Type)
-            {
-                case JsonType.Boolean:
-                case JsonType.Integer:
-                case JsonType.Number:
-                    type = MakePrimitiveType(schema.Type);
-
-                    SetPropertyInfo(
-                        propertyName,
-                        type,
-                        ComparisonKind.OperatorEquals,
-                        HashKind.ScalarValueType,
-                        InitializationKind.SimpleAssign);
-
-                    return type;
-
-                case JsonType.String:
-                    type = MakePrimitiveType(schema.Type);
-
-                    SetPropertyInfo(
-                        propertyName,
-                        type,
-                        ComparisonKind.OperatorEquals,
-                        HashKind.ScalarReferenceType,
-                        InitializationKind.SimpleAssign);
-
-                    return type;
-
-                case JsonType.Object:
-                    type = MakeObjectType(schema);
-
-                    // If the schema for this property references a named type,
-                    // the generated Init method will initialize it by cloning an object
-                    // of that type. Otherwise, we treat this property as a System.Object
-                    // and just initialize it by assignment.
-                    InitializationKind initializationKind = schema.Reference != null
-                        ? InitializationKind.Clone
-                        : InitializationKind.SimpleAssign;
-
-                    SetPropertyInfo(
-                        propertyName,
-                        type,
-                        ComparisonKind.ObjectEquals,
-                        HashKind.ScalarReferenceType,
-                        initializationKind);
-
-                    return type;
-
-                case JsonType.Array:
-                    type = MakeArrayType(propertyName, schema);
-
-                    SetPropertyInfo(
-                        propertyName,
-                        type,
-                        ComparisonKind.Collection,
-                        HashKind.Collection,
-                        InitializationKind.Collection);
-
-                    return type;
-
-                case JsonType.None:
-                    JsonType inferredType = InferJsonTypeFromEnumValues(schema.Enum);
-                    if (inferredType == JsonType.None)
-                    {
-                        type = MakePrimitiveType(JsonType.Object);
-
-                        SetPropertyInfo(
-                            propertyName,
-                            type,
-                            ComparisonKind.ObjectEquals,
-                            HashKind.ScalarReferenceType,
-                            InitializationKind.None);
-
-                    }
-                    else if (inferredType == JsonType.String)
-                    {
-                        type = MakePrimitiveType(JsonType.String);
-
-                        SetPropertyInfo(
-                            propertyName,
-                            type,
-                            ComparisonKind.OperatorEquals,
-                            HashKind.ScalarReferenceType,
-                            InitializationKind.SimpleAssign);
-                    }
-                    else
-                    {
-                        type = MakePrimitiveType(inferredType);
-
-                        SetPropertyInfo(
-                            propertyName,
-                            type,
-                            ComparisonKind.OperatorEquals,
-                            HashKind.ScalarValueType,
-                            InitializationKind.SimpleAssign);
-                    }
-
-                    return type;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(schema.Type));
-            }
-        }
-
-        private void SetPropertyInfo(
-            string propertyName,
-            TypeSyntax type,
-            ComparisonKind comparisonKind,
-            HashKind hashKind,
-            InitializationKind initializationKind)
-        {
-            PropInfoDictionary[propertyName] =
-                new PropertyInfo(comparisonKind, hashKind, initializationKind, type);
-        }
-
-        private JsonType InferJsonTypeFromEnumValues(object[] enumValues)
-        {
-            JsonType jsonType = JsonType.None;
-
-            if (enumValues != null && enumValues.Any())
-            {
-                jsonType = GetJsonTypeFromObject(enumValues[0]);
-                for (int i = 1; i < enumValues.Length; ++i)
-                {
-                    if (GetJsonTypeFromObject(enumValues[i]) != jsonType)
-                    {
-                        jsonType = JsonType.None;
-                        break;
-                    }
-                }
-            }
-
-            return jsonType;
-        }
-        private static JsonType GetJsonTypeFromObject(object obj)
-        {
-            if (obj is string)
-            {
-                return JsonType.String;
-            }
-            else if (obj.IsIntegralType())
-            {
-                return JsonType.Integer;
-            }
-            else if (obj.IsFloatingType())
-            {
-                return JsonType.Number;
-            }
-            else if (obj is bool)
-            {
-                return JsonType.Boolean;
-            }
-            else
-            {
-                return JsonType.None;
-            }
-        }
-
-        private string GetReferencedEnumTypeName(JsonSchema schema)
-        {
-            string name = null;
-
-            if (schema.Reference != null)
-            {
-                string definitionName = schema.Reference.GetDefinitionName();
-                if (RefersToEnumType(definitionName))
-                {
-                    name = definitionName;
-                }
-            }
-
-            return name;
-        }
-
-        private bool RefersToEnumType(string definitionName)
-        {
-            // Are there any code generation hints for this definition? And if so are
-            // any of them an enum hint, which means that the definition should produce
-            // an enum type?
-            return HintDictionary != null
-                && HintDictionary.Any(
-                    kvp => kvp.Key.Equals(definitionName)
-                    && kvp.Value.Any(hint => hint is EnumHint));
-        }
-
-        private TypeSyntax MakePrimitiveType(JsonType jsonType)
-        {
-            SyntaxKind typeKeyword = PropertyInfoDictionary.GetTypeKeywordFromJsonType(jsonType);
-            return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
-        }
-
-        private TypeSyntax MakeObjectType(JsonSchema schema)
-        {
-            if (schema.Reference != null)
-            {
-                return MakeNamedType(schema.Reference.GetDefinitionName());
-            }
-            else
-            {
-                return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
-            }
-        }
-
-        private TypeSyntax MakeNamedType(string typeName)
-        {
-            typeName = typeName.ToPascalCase();
-
-            string unqualifiedTypeName;
-            AddUsingDirectiveForTypeName(typeName, out unqualifiedTypeName);
-            return SyntaxFactory.ParseTypeName(unqualifiedTypeName);
-        }
-
-        private TypeSyntax MakeArrayType(string propertyName, JsonSchema schema)
-        {
-            AddUsing("System.Collections.Generic"); // For IList.
-
-            // Create a list of whatever this property is. If the property
-            // is itself an array, this will result in a list of lists, and so on.
-            return SyntaxFactory.GenericName(
-                SyntaxFactory.Identifier("IList"),
-                SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
-                        new TypeSyntax[]
-                        {
-                            MakePropertyType(PropertyInfoDictionary.MakeElementKeyName(propertyName), schema.Items)
-                        })));
-        }
-
-        private void AddUsingDirectiveForTypeName(string className, out string unqualifiedClassName)
-        {
-            int index = className.LastIndexOf('.');
-            if (index != -1)
-            {
-                unqualifiedClassName = className.Substring(index + 1);
-                string namespaceName = className.Substring(0, index);
-                AddUsing(namespaceName);
-            }
-            else
-            {
-                unqualifiedClassName = className;
-            }
+                SyntaxHelper.MakeDocComment(info.Description));
         }
     }
 }

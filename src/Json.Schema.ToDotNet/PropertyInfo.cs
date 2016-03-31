@@ -13,6 +13,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyInfo"/> class.
         /// </summary>
+        /// <param name="description">
+        /// The description of the property, for use in a summary comment.
+        /// </param>
         /// <param name="comparisonKind">
         /// The kind of comparison code required by the property.
         /// </param>
@@ -25,17 +28,41 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <param name="type">
         /// The type of the property.
         /// </param>
+        /// <param name="namespaceName">
+        /// The qualified name of the namespace declaration required by this type,
+        /// or <code>null</code> if no namespace declaration is required.
+        /// </param>
+        /// <param name="isRequired">
+        /// <code>true</code> if this property is required by the schema;
+        /// otherwise <code>false</code>.
+        /// </param>
+        /// <param name="declarationOrder">
+        /// The 0-based order in which the property was declared in the schema.
+        /// </param>
         public PropertyInfo(
+            string description,
             ComparisonKind comparisonKind,
             HashKind hashKind,
             InitializationKind initializationKind,
-            TypeSyntax type)
+            TypeSyntax type,
+            string namespaceName,
+            bool isRequired,
+            int declarationOrder)
         {
+            Description = description;
             ComparisonKind = comparisonKind;
             HashKind = hashKind;
             InitializationKind = initializationKind;
             Type = type;
+            NamespaceName = namespaceName;
+            IsRequired = isRequired;
+            DeclarationOrder = declarationOrder;
         }
+
+        /// <summary>
+        /// Gets a description for the property, for use in a summary comment.
+        /// </summary>
+        public string Description { get; }
 
         /// <summary>
         /// Gets a value that specifies the kind of comparison code that must be
@@ -62,5 +89,21 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets the type of the property.
         /// </summary>
         public TypeSyntax Type { get; }
+
+        /// <summary>
+        /// Gets the qualified name of the namespace declaration required by this type,
+        /// or <code>null</code> if no namespace declaration is required.
+        /// </summary>
+        public string NamespaceName { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this property is required by the schema.
+        /// </summary>
+        public bool IsRequired { get; }
+
+        /// <summary>
+        /// Gets the 0-based order in which the property was declared in the schema.
+        /// </summary>
+        public int DeclarationOrder { get; }
     }
 }

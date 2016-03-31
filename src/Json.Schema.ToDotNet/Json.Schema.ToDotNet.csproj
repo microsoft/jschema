@@ -80,7 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdditionalTypeRequiredEventArgs.cs" />
+    <Compile Include="AdditionalTypeRequiredInfo.cs" />
     <Compile Include="ClassGenerator.cs" />
     <Compile Include="ClassOrInterfaceGenerator.cs" />
     <Compile Include="CodeGenHint.cs" />

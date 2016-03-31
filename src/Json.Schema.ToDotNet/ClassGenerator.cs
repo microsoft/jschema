@@ -60,13 +60,15 @@ namespace Microsoft.Json.Schema.ToDotNet
         private int _xorVariableCount = 0;
 
         public ClassGenerator(
-            string interfaceName,
+            PropertyInfoDictionary propertyInfoDictionary,
+            JsonSchema schema,
             HintDictionary hintDictionary,
+            string interfaceName,
             bool generateOverrides,
             bool generateCloningCode,
             string syntaxInterfaceName,
             string kindEnumName)
-            : base(hintDictionary)
+            : base(propertyInfoDictionary, schema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
             _generateOverrides = generateOverrides;
@@ -75,7 +77,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _kindEnumName = kindEnumName;
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
             var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
                 .AddAttributeLists(new AttributeListSyntax[]
@@ -135,7 +137,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return classDeclaration;
         }
 
-        public override void AddMembers(JsonSchema schema)
+        public override void AddMembers()
         {
             var members = new List<MemberDeclarationSyntax>();
 
@@ -144,15 +146,15 @@ namespace Microsoft.Json.Schema.ToDotNet
               members.Add(GenerateSyntaxKindProperty());
             }
                 
-            members.AddRange(GenerateProperties(schema));
+            members.AddRange(GenerateProperties());
 
             if (_generateOverrides)
             {
                 members.AddRange(new MemberDeclarationSyntax[]
                 {
                     OverrideObjectEquals(),
-                    OverrideGetHashCode(schema),
-                    ImplementIEquatableEquals(schema)
+                    OverrideGetHashCode(),
+                    ImplementIEquatableEquals()
                 });
             }
 
@@ -789,7 +791,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.ParseTypeName(TypeName))))));
 
         }
-        private MemberDeclarationSyntax OverrideGetHashCode(JsonSchema schema)
+        private MemberDeclarationSyntax OverrideGetHashCode()
         {
             ResetVariableCounts();
 
@@ -800,11 +802,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.OverrideKeyword))
                 .WithBody(
-                    SyntaxFactory.Block(MakeHashCodeContributions(schema)));
+                    SyntaxFactory.Block(MakeHashCodeContributions()));
 
         }
 
-        private StatementSyntax[] MakeHashCodeContributions(JsonSchema schema)
+        private StatementSyntax[] MakeHashCodeContributions()
         {
             var statements = new List<StatementSyntax>();
 
@@ -820,16 +822,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                 SyntaxKind.NumericLiteralExpression,
                                                 SyntaxFactory.Literal(GetHashCodeSeedValue))))))));
 
-            if (schema.Properties != null)
+            string[] propertyNames = GetPropertyNames();
+            if (propertyNames.Any())
             {
                 var uncheckedStatements = new List<StatementSyntax>();
-                foreach (var property in schema.Properties)
+                foreach (var propertyName in propertyNames)
                 {
-                    string hashKindKey = property.Key;
-                    string propName = property.Key.ToPascalCase();
+                    string hashKindKey = propertyName.ToCamelCase();
 
                     uncheckedStatements.Add(
-                        MakeHashCodeContribution(hashKindKey, SyntaxFactory.IdentifierName(propName)));
+                        MakeHashCodeContribution(hashKindKey, SyntaxFactory.IdentifierName(propertyName)));
                 }
 
                 statements.Add(SyntaxFactory.CheckedStatement(
@@ -999,7 +1001,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(GetHashCodeMethod)))));
         }
 
-        private MemberDeclarationSyntax ImplementIEquatableEquals(JsonSchema schema)
+        private MemberDeclarationSyntax ImplementIEquatableEquals()
         {
             ResetVariableCounts();
 
@@ -1010,10 +1012,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameter))
                         .WithType(SyntaxFactory.ParseTypeName(TypeName)))
-                .AddBodyStatements(GenerateEqualityTests(schema));
+                .AddBodyStatements(GenerateEqualityTests());
         }
 
-        private StatementSyntax[] GenerateEqualityTests(JsonSchema schema)
+        private StatementSyntax[] GenerateEqualityTests()
         {
             var statements = new List<StatementSyntax>();
 
@@ -1022,19 +1024,15 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxHelper.IsNull(OtherParameter),
                     SyntaxFactory.Block(SyntaxHelper.Return(false))));
 
-            if (schema.Properties != null)
+            foreach (string propertyName in GetPropertyNames())
             {
-                foreach (var property in schema.Properties)
-                {
-                    string comparisonKindKey = property.Key;
-                    string propName = property.Key.ToPascalCase();
+                string comparisonKindKey = propertyName.ToCamelCase();
 
-                    statements.Add(
-                        MakeComparisonTest(
-                            comparisonKindKey,
-                            SyntaxFactory.IdentifierName(propName),
-                            OtherPropName(propName)));
-                }
+                statements.Add(
+                    MakeComparisonTest(
+                        comparisonKindKey,
+                        SyntaxFactory.IdentifierName(propertyName),
+                        OtherPropName(propertyName)));
             }
 
             // All comparisons succeeded.

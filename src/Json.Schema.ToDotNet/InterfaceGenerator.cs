@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -17,21 +16,24 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </remarks>
     public class InterfaceGenerator : ClassOrInterfaceGenerator
     {
-        public InterfaceGenerator(HintDictionary hintDictionary)
-            : base(hintDictionary)
+        public InterfaceGenerator(
+            PropertyInfoDictionary propertyInfoDictionary,
+            JsonSchema schema,
+            HintDictionary hintDictionary)
+            : base(propertyInfoDictionary, schema, hintDictionary)
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema)
+        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
             return SyntaxFactory.InterfaceDeclaration(TypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
         }
 
-        public override void AddMembers(JsonSchema schema)
+        public override void AddMembers()
         {
             TypeDeclaration = (TypeDeclaration as InterfaceDeclarationSyntax)
-                .AddMembers(GenerateProperties(schema));
+                .AddMembers(GenerateProperties());
         }
 
         protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired)

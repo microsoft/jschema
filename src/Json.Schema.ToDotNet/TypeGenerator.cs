@@ -9,14 +9,19 @@ namespace Microsoft.Json.Schema.ToDotNet
 {
     public abstract class TypeGenerator
     {
-        protected TypeGenerator(HintDictionary hintDictionary)
+        protected TypeGenerator(
+            JsonSchema schema,
+            HintDictionary hintDictionary)
         {
+            Schema = schema;
             HintDictionary = hintDictionary;
         }
 
         protected string TypeName { get; private set; }
 
         protected HintDictionary HintDictionary { get; }
+
+        protected JsonSchema Schema { get; }
 
         /// <summary>
         /// Gets or sets the type declaration being generated.
@@ -25,33 +30,16 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected List<string> Usings { get; private set; }
 
-        /// <summary>
-        /// Event raised by a derived class when it discovers that another type must be
-        /// generated, in addition to the one it is already generating.
-        /// </summary>
-        /// <remarks>
-        /// For example, when the ClassGenerator encounters a property for which an
-        /// <see cref="EnumHint"/> is specified, it raises this event to signal that
-        /// an enumerated type must also be generated.
-        /// </remarks>
-        public event EventHandler<AdditionalTypeRequiredEventArgs> AdditionalTypeRequired;
-
-        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration(JsonSchema schema);
+        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration();
 
         /// <summary>
-        /// Adds members to the type as directed by the specified schema.
+        /// Adds members to the type as directed by the schema.
         /// </summary>
-        /// <param name="schema">
-        /// The JSON schema that determines which members to add to the type.
-        /// </param>
-        public abstract void AddMembers(JsonSchema schema);
+        public abstract void AddMembers();
 
         /// <summary>
         /// Generate the text for a type from a JSON schema.
         /// </summary>
-        /// <param name="schema">
-        /// The JSON schema that specifies the type members.
-        /// </param>
         /// <param name="namespaceName">
         /// The name of the namespace in which to generate the type.
         /// </param>
@@ -64,12 +52,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <param name="description">
         /// The text of the summary comment on the type.
         /// </param>
-        public string Generate(JsonSchema schema, string namespaceName, string typeName, string copyrightNotice, string description)
+        public string Generate(string namespaceName, string typeName, string copyrightNotice, string description)
         {
             TypeName = typeName.ToPascalCase();
-            TypeDeclaration = CreateTypeDeclaration(schema);
+            TypeDeclaration = CreateTypeDeclaration();
 
-            AddMembers(schema);
+            AddMembers();
 
             return TypeDeclaration.Format(copyrightNotice, Usings, namespaceName, description);
         }
@@ -82,11 +70,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             Usings.Add(namespaceName);
-        }
-
-        protected void OnAdditionalType(AdditionalTypeRequiredEventArgs e)
-        {
-            AdditionalTypeRequired?.Invoke(this, e);
         }
     }
 }

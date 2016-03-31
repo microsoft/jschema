@@ -4,12 +4,12 @@
 namespace Microsoft.Json.Schema.ToDotNet
 {
     /// <summary>
-    /// Provides data for the AdditionalTypeRequired event.
+    /// Stores information about additional types that must be generated.
     /// </summary>
-    public class AdditionalTypeRequiredEventArgs
+    public class AdditionalTypeRequiredInfo
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AdditionalTypeRequiredEventArgs"/> type;
+        /// Initializes a new instance of the <see cref="AdditionalTypeRequiredInfo"/> type;
         /// </summary>
         /// <param name="hint">
         /// Hint that guides generation of the additional type.
@@ -17,7 +17,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <param name="schema">
         /// Schema to which the hint applies.
         /// </param>
-        public AdditionalTypeRequiredEventArgs(CodeGenHint hint, JsonSchema schema)
+        public AdditionalTypeRequiredInfo(CodeGenHint hint, JsonSchema schema)
         {
             Hint = hint;
             Schema = schema;
