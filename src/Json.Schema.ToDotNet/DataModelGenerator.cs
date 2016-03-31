@@ -24,6 +24,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private string _kindEnumName;
         private string _nodeInterfaceName;
         private List<AdditionalTypeRequiredInfo> _additionalTypesRequiredList;
+        private Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
 
         public DataModelGenerator(DataModelGeneratorSettings settings)
             : this(settings, new FileSystem())
@@ -41,6 +42,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             _additionalTypesRequiredList = new List<AdditionalTypeRequiredInfo>();
             _generatedClassNames = new List<string>();
+
+            _classInfoDictionary = new Dictionary<string, PropertyInfoDictionary>();
         }
 
         public string Generate(JsonSchema rootSchema)
@@ -93,6 +96,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 string rewritingVisitorClassName = _settings.SchemaName + "RewritingVisitor";
                 _pathToFileContentsDictionary[rewritingVisitorClassName] =
                     new RewritingVisitorGenerator(
+                        _classInfoDictionary,
                         _settings.CopyrightNotice,
                         _settings.NamespaceName,                        
                         rewritingVisitorClassName,
@@ -197,6 +201,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                 schema,
                 _settings.HintDictionary,
                 OnAdditionalTypeRequired);
+
+            _classInfoDictionary.Add(className, propertyInfoDictionary);
 
             CodeGenHint[] hints = null;
             EnumHint enumHint = null;

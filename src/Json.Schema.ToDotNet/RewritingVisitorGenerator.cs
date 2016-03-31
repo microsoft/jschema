@@ -19,6 +19,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
         private const string TypeParameterName = "T";
 
+        private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
         private readonly string _namespaceName;
         private readonly string _className;
@@ -28,6 +29,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly List<string> _generatedClassNames;
 
         internal RewritingVisitorGenerator(
+            Dictionary<string, PropertyInfoDictionary> classInfoDictionary,
             string copyrightNotice,
             string namespaceName,
             string className,
@@ -36,6 +38,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string nodeInterfaceName,
             IEnumerable<string> generatedClassNames)
         {
+            _classInfoDictionary = classInfoDictionary;
             _copyrightNotice = copyrightNotice;
             _namespaceName = namespaceName;
             _className = className;
@@ -266,9 +269,15 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNotNull(NodeParameterName),
-                        SyntaxFactory.Block()),
+                        SyntaxFactory.Block(
+                            GenerateVisitClassBodyStatements(generatedClassName))),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.IdentifierName(NodeParameterName)));
+        }
+
+        private StatementSyntax[] GenerateVisitClassBodyStatements(string generatedClassName)
+        {
+            return new StatementSyntax[0];
         }
 
         private string MakeVisitClassMethodName(string className)
