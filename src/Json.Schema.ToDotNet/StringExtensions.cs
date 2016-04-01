@@ -60,7 +60,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             while (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
             {
                 ++arrayRank;
-                propertyName = propertyName.Substring(0, PropertyInfoDictionary.ArrayMarker.Length);
+                propertyName = propertyName.Substring(0, propertyName.Length - PropertyInfoDictionary.ArrayMarker.Length);
             }
 
             return propertyName;

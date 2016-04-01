@@ -1030,6 +1030,19 @@ namespace N
             if (node != null)
             {
                 node.ReferencedTypeProp = VisitNullChecked(node.ReferencedTypeProp);
+                if (node.ArrayOfRefProp != null)
+                {
+                    for (int value_0 = 0; value_0 < node.ArrayOfRefProp.Count; ++value_0)
+                    {
+                    }
+                }
+
+                if (node.ArrayOfArrayProp != null)
+                {
+                    for (int value_1 = 0; value_1 < node.ArrayOfArrayProp.Count; ++value_1)
+                    {
+                    }
+                }
             }
 
             return node;

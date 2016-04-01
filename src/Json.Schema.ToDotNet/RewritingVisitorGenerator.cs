@@ -18,6 +18,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string VisitActualMethodName = "VisitActual";
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
         private const string TypeParameterName = "T";
+        private const string CountPropertyName = "Count";
 
         private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
@@ -27,6 +28,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly string _kindEnumName;
         private readonly string _nodeInterfaceName;
         private readonly List<string> _generatedClassNames;
+
+        private readonly LocalVariableNameGenerator _localVariableNameGenerator;
 
         internal RewritingVisitorGenerator(
             Dictionary<string, PropertyInfoDictionary> classInfoDictionary,
@@ -46,6 +49,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             _kindEnumName = kindEnumName;
             _nodeInterfaceName = nodeInterfaceName;
             _generatedClassNames = generatedClassNames.OrderBy(gn => gn).ToList();
+
+            _localVariableNameGenerator = new LocalVariableNameGenerator();
         }
 
         internal string GenerateRewritingVisitor()
@@ -259,6 +264,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             string methodName = MakeVisitClassMethodName(generatedClassName);
             TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(generatedClassName);
 
+            _localVariableNameGenerator.Reset();
+
             return SyntaxFactory.MethodDeclaration(generatedClassType, methodName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -280,7 +287,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             var statements = new List<StatementSyntax>();
 
             PropertyInfoDictionary propertyInfoDictionary = _classInfoDictionary[generatedClassName];
-            foreach (KeyValuePair<string, PropertyInfo> entry in propertyInfoDictionary)
+            foreach (KeyValuePair<string, PropertyInfo> entry in propertyInfoDictionary.OrderBy(kvp => kvp.Value.DeclarationOrder))
             {
                 string propertyNameWithRank = entry.Key;
                 PropertyInfo propertyInfo = entry.Value;
@@ -314,9 +321,69 @@ namespace Microsoft.Json.Schema.ToDotNet
                                             SyntaxFactory.IdentifierName(NodeParameterName),
                                             SyntaxFactory.IdentifierName(propertyNameWithRank)))))));
                 }
+                else
+                {
+                    statements.Add(
+                        SyntaxFactory.IfStatement(
+                            SyntaxHelper.IsNotNull(
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    SyntaxFactory.IdentifierName(NodeParameterName),
+                                    SyntaxFactory.IdentifierName(propertyName))),
+                            SyntaxFactory.Block(
+                                GenerateArrayElementVisit(arrayRank, 0, propertyName))));
+                }
             }
 
             return statements.ToArray();
+        }
+
+        private StatementSyntax GenerateArrayElementVisit(
+            int arrayRank,
+            int currentNestingLevel,
+            string propertyName)
+        {
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string destinationVariableName = _localVariableNameGenerator.GetNextDestinationVariableName();
+
+            ExpressionSyntax loopLimitExpression;
+            if (currentNestingLevel == 0)
+            {
+                loopLimitExpression = SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName(NodeParameterName),
+                        SyntaxFactory.IdentifierName(propertyName)),
+                    SyntaxFactory.IdentifierName(CountPropertyName));
+            }
+            else
+            {
+                loopLimitExpression = SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName(destinationVariableName),
+                    SyntaxFactory.IdentifierName(CountPropertyName));
+            }
+
+            return SyntaxFactory.ForStatement(
+                SyntaxFactory.VariableDeclaration(
+                    SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.VariableDeclarator(loopVariableName)
+                            .WithInitializer(
+                                SyntaxFactory.EqualsValueClause(SyntaxFactory.LiteralExpression(
+                                    SyntaxKind.NumericLiteralExpression,
+                                    SyntaxFactory.Literal(0)))))),
+                default(SeparatedSyntaxList<ExpressionSyntax>),
+                SyntaxFactory.BinaryExpression(
+                    SyntaxKind.LessThanExpression,
+                    SyntaxFactory.IdentifierName(loopVariableName),
+                    loopLimitExpression),
+                SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
+                    SyntaxFactory.PrefixUnaryExpression(
+                        SyntaxKind.PreIncrementExpression,
+                        SyntaxFactory.IdentifierName(loopVariableName))),
+                SyntaxFactory.Block());
         }
 
         private string MakeVisitClassMethodName(string className)
