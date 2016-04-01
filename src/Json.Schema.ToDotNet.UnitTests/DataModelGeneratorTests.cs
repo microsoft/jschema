@@ -1029,6 +1029,7 @@ namespace N
         {
             if (node != null)
             {
+                node.ReferencedTypeProp = VisitNullChecked(node.ReferencedTypeProp);
             }
 
             return node;

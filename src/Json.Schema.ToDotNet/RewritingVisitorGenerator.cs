@@ -277,7 +277,54 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax[] GenerateVisitClassBodyStatements(string generatedClassName)
         {
-            return new StatementSyntax[0];
+            var statements = new List<StatementSyntax>();
+
+            PropertyInfoDictionary propertyInfoDictionary = _classInfoDictionary[generatedClassName];
+            foreach (KeyValuePair<string, PropertyInfo> entry in propertyInfoDictionary)
+            {
+                string propertyName = entry.Key;
+                PropertyInfo propertyInfo = entry.Value;
+
+                // We only need to visit properties whose type is one of the classes
+                // defined by the schema. We can identify those properties because
+                // they're the ones that need to be cloned when copying one instance
+                // to another.
+                if (!propertyInfo.IsOfSchemaDefinedType)
+                {
+                    continue;
+                }
+
+                string className = propertyInfo.Type.ToString();
+
+                // If the property is an array, we'll need to construct a loop.
+                int arrayDepth = 0;
+                while (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
+                {
+                    ++arrayDepth;
+                    propertyName = propertyName.Substring(0, PropertyInfoDictionary.ArrayMarker.Length);
+                }
+
+                if (arrayDepth == 0)
+                {
+                    statements.Add(
+                        SyntaxFactory.ExpressionStatement(
+                            SyntaxFactory.AssignmentExpression(
+                                SyntaxKind.SimpleAssignmentExpression,
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    SyntaxFactory.IdentifierName(NodeParameterName),
+                                    SyntaxFactory.IdentifierName(propertyName)),
+                                SyntaxFactory.InvocationExpression(
+                                    SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                                    SyntaxHelper.ArgumentList(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.IdentifierName(NodeParameterName),
+                                            SyntaxFactory.IdentifierName(propertyName)))))));
+                }
+            }
+
+            return statements.ToArray();
         }
 
         private string MakeVisitClassMethodName(string className)

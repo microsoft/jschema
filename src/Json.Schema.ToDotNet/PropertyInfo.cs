@@ -36,6 +36,13 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <code>true</code> if this property is required by the schema;
         /// otherwise <code>false</code>.
         /// </param>
+        /// <param name="isOfSchemaDefinedType">
+        /// <code>true</code> if this property is of a type defined by the schema (or an;
+        /// array of a schema-defined type otherwise <code>false</code>.
+        /// </param>
+        /// <param name="arrayRank">
+        /// The array rank of the property type. 0 means the property is not an array.
+        /// </param>
         /// <param name="declarationOrder">
         /// The 0-based order in which the property was declared in the schema.
         /// </param>
@@ -47,6 +54,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeSyntax type,
             string namespaceName,
             bool isRequired,
+            bool isOfSchemaDefinedType,
+            int arrayRank,
             int declarationOrder)
         {
             Description = description;
@@ -56,6 +65,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             Type = type;
             NamespaceName = namespaceName;
             IsRequired = isRequired;
+            IsOfSchemaDefinedType = isOfSchemaDefinedType;
+            ArrayRank = arrayRank;
             DeclarationOrder = declarationOrder;
         }
 
@@ -100,6 +111,16 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets a value indicating whether this property is required by the schema.
         /// </summary>
         public bool IsRequired { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this property is of a type defined by the schema.
+        /// </summary>
+        public bool IsOfSchemaDefinedType { get; }
+
+        /// <summary>
+        /// Gets the array rank of the property type. 0 means the property is not an array.
+        /// </summary>
+        public int ArrayRank { get; }
 
         /// <summary>
         /// Gets the 0-based order in which the property was declared in the schema.

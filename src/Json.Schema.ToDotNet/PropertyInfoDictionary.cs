@@ -31,6 +31,12 @@ namespace Microsoft.Json.Schema.ToDotNet
             [JsonType.String] = SyntaxKind.StringKeyword
         };
 
+        // A string which, when appended to a property name used as a key into the
+        // PropertyInfoDictionary, indicates that the property is an array. For
+        // example, <code>Location[]</code> is an array property, and
+        // <code>Location[][]</code> is a property that is an array of arrays.
+        internal const string ArrayMarker = "[]";
+
         /// <summary>
         /// Callback invoked when the dictionary discovers that another type must be
         /// generated, in addition to the one whose properties it is already generating.
@@ -82,7 +88,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </returns>
         public static string MakeElementKeyName(string propertyName)
         {
-            return propertyName.ToPascalCase() + "[]";
+            return propertyName.ToPascalCase() + ArrayMarker;
         }
 
         public static SyntaxKind GetTypeKeywordFromJsonType(JsonType type)
@@ -159,6 +165,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeSyntax type;
             string namespaceName = null;
             string referencedEnumTypeName;
+            bool isOfSchemaDefinedType = false;
+            int arrayRank = 0;
             EnumHint enumHint;
 
             if (propertySchema.IsDateTime())
@@ -226,9 +234,15 @@ namespace Microsoft.Json.Schema.ToDotNet
                         // the generated Init method will initialize it by cloning an object
                         // of that type. Otherwise, we treat this property as a System.Object
                         // and just initialize it by assignment.
-                        initializationKind = propertySchema.Reference != null
-                            ? InitializationKind.Clone
-                            : InitializationKind.SimpleAssign;
+                        if (propertySchema.Reference != null)
+                        {
+                            initializationKind = InitializationKind.Clone;
+                            isOfSchemaDefinedType = true;
+                        }
+                        else
+                        {
+                            initializationKind = InitializationKind.SimpleAssign;
+                        }
 
                         comparisonKind = ComparisonKind.ObjectEquals;
                         hashKind = HashKind.ScalarReferenceType;
@@ -276,39 +290,18 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
-            AddPropertyInfo(
-                entries,
-                propertyName.ToPascalCase(),
-                propertySchema.Description,
-                comparisonKind,
-                hashKind,
-                initializationKind,
-                type,
-                namespaceName,
-                isRequired);
-        }
-
-        private void AddPropertyInfo(
-            IList<KeyValuePair<string, PropertyInfo>> entries,
-            string key,
-            string description,
-            ComparisonKind comparisonKind,
-            HashKind hashKind,
-            InitializationKind initializationKind,
-            TypeSyntax type,
-            string namespaceName,
-            bool isRequired)
-        {
             entries.Add(new KeyValuePair<string, PropertyInfo>(
-                key,
+                propertyName.ToPascalCase(),
                 new PropertyInfo(
-                    description,
+                    propertySchema.Description,
                     comparisonKind,
                     hashKind,
                     initializationKind,
                     type,
                     namespaceName,
                     isRequired,
+                    isOfSchemaDefinedType,
+                    arrayRank,
                     entries.Count)));
         }
 
