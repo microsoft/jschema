@@ -334,18 +334,22 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 GenerateArrayElementVisit(
                                     arrayRank,
                                     currentNestingLevel: 0,
-                                    propertyName: propertyName))));
+                                    propertyName: propertyName,
+                                    outerLoopVariableName: null))));
                 }
             }
 
             return statements.ToArray();
         }
 
-        private StatementSyntax GenerateArrayElementVisit(
+        private StatementSyntax[] GenerateArrayElementVisit(
             int arrayRank,
             int currentNestingLevel,
+            string outerLoopVariableName,
             string propertyName)
         {
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
+
             ExpressionSyntax loopLimitExpression;
             if (currentNestingLevel == 0)
             {
@@ -370,8 +374,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             StatementSyntax statement;
             if (currentNestingLevel < arrayRank)
             {
-                string loopVariableName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
-
                 statement = SyntaxFactory.ForStatement(
                     SyntaxFactory.VariableDeclaration(
                         SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
@@ -391,14 +393,42 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxKind.PreIncrementExpression,
                             SyntaxFactory.IdentifierName(loopVariableName))),
                     SyntaxFactory.Block(
-                        GenerateArrayElementVisit(arrayRank, ++currentNestingLevel, propertyName)));
+                        GenerateArrayElementVisit(arrayRank, ++currentNestingLevel, propertyName, loopVariableName)));
             }
             else
             {
-                statement = SyntaxFactory.EmptyStatement();
+                // We're in the body of the innermost loop over array elements. This is
+                // where we do the assignment. For arrays of rank 1, the assignment is
+                // to an element of the array itself. For arrays of rank > 1, the
+                // assignment is to an array element of a temporary variable.
+                if (arrayRank == 1)
+                {
+                    ExpressionSyntax elementAccessExpression =
+                        SyntaxFactory.ElementAccessExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(NodeParameterName),
+                                SyntaxFactory.IdentifierName(propertyName)),
+                            SyntaxFactory.BracketedArgumentList(
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.IdentifierName(outerLoopVariableName)))));
+
+                    statement = SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            elementAccessExpression,
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                                SyntaxHelper.ArgumentList(elementAccessExpression))));
+                }
+                else
+                {
+                    statement = SyntaxFactory.EmptyStatement();
+                }
             }
 
-            return statement;
+            return new StatementSyntax[] { statement };
         }
 
         private string MakeVisitClassMethodName(string className)
