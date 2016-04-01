@@ -45,19 +45,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string DeepCloneMethod = "DeepClone";
         private const string DeepCloneCoreMethod = "DeepCloneCore";
 
-        private const string LoopVariableNameBase = "value_";
-        private const string DestinationVariableNameBase = "destination_";
-        private const string XorVariableNameBase = "xor_";
         private const string GetHashCodeResultVariableName = "result";
 
         private const int GetHashCodeSeedValue = 17;
         private const int GetHashCodeCombiningValue = 31;
 
-        // Values used to construct unique names for each of the variables used in the
-        // generated method implementations.
-        private int _loopVariableCount = 0;
-        private int _destinationVariableCount = 0;
-        private int _xorVariableCount = 0;
+        private LocalVariableNameGenerator _localVariableNameGenerator;
 
         public ClassGenerator(
             PropertyInfoDictionary propertyInfoDictionary,
@@ -75,6 +68,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
             _kindEnumName = kindEnumName;
+
+            _localVariableNameGenerator = new LocalVariableNameGenerator();
         }
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
@@ -446,7 +441,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private MethodDeclarationSyntax GenerateInitMethod()
         {
-            ResetVariableCounts();
+            _localVariableNameGenerator.Reset();
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)),
@@ -550,11 +545,11 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // The name of a temporary variable in which the collection values will be
             // accumulated.
-            string destinationVariableName = GetNextDestinationVariableName();
+            string destinationVariableName = _localVariableNameGenerator.GetNextDestinationVariableName();
 
             // The name of a variable used to loop over the elements of the argument
             // to the Init method (the argument whose name is "argName").
-            string loopVariableName = GetNextLoopVariableName();
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
 
             // Find out out kind of code must be generated to initialize the elements of
             // the collection.
@@ -665,11 +660,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             // The name of a variable used to loop over the elements of the collection
             // held in sourceVariableName.
-            string loopVariableName = GetNextLoopVariableName();
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
 
             // The name of the variable that holds a collection that will contain
             // copies of the elements in the source collection.
-            string innerDestinationVariableName = GetNextDestinationVariableName();
+            string innerDestinationVariableName = _localVariableNameGenerator.GetNextDestinationVariableName();
 
             // Find out out kind of code must be generated to initialize the elements of
             // the collection.
@@ -763,7 +758,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private MemberDeclarationSyntax OverrideObjectEquals()
         {
-            ResetVariableCounts();
+            _localVariableNameGenerator.Reset();
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
@@ -789,7 +784,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         }
         private MemberDeclarationSyntax OverrideGetHashCode()
         {
-            ResetVariableCounts();
+            _localVariableNameGenerator.Reset();
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
@@ -894,7 +889,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string hashKindKey,
             ExpressionSyntax expression)
         {
-            string loopVariableName = GetNextLoopVariableName();
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate hash generation code.
@@ -928,8 +923,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
         {
-            string xorValueVariableName = GetNextXorVariableName();
-            string loopVariableName = GetNextLoopVariableName();
+            string xorValueVariableName = _localVariableNameGenerator.GetNextXorVariableName();
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(expression),
@@ -997,7 +992,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private MemberDeclarationSyntax ImplementIEquatableEquals()
         {
-            ResetVariableCounts();
+            _localVariableNameGenerator.Reset();
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), EqualsMethod)
@@ -1124,7 +1119,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax right)
         {
             // The name of the index variable used in the loop over elements.
-            string indexVarName = GetNextLoopVariableName();
+            string indexVarName = _localVariableNameGenerator.GetNextLoopVariableName();
 
             // The two elements that will be compared each time through the loop.
             ExpressionSyntax leftElement =
@@ -1173,8 +1168,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private IfStatementSyntax MakeDictionaryEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
         {
-            string loopVariableName = GetNextLoopVariableName();
-            string otherPropertyVariableName = GetNextLoopVariableName();
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string otherPropertyVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.AreDifferentObjects(left, right),
@@ -1244,29 +1239,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 )))));
         }
 
-        private void ResetVariableCounts()
-        {
-            _loopVariableCount = 0;
-            _destinationVariableCount = 0;
-            _xorVariableCount = 0;
-        }
-
-        private string GetNextLoopVariableName()
-        {
-            return LoopVariableNameBase + _loopVariableCount++;
-        }
-
-        private string GetNextDestinationVariableName()
-        {
-            return DestinationVariableNameBase + _destinationVariableCount++;
-        }
-
-        private string GetNextXorVariableName()
-        {
-            return XorVariableNameBase + _xorVariableCount++;
-        }
-
-#region Syntax helpers
+        #region Syntax helpers
 
         private SimpleNameSyntax CountPropertyName()
         {

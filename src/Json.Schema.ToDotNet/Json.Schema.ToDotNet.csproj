@@ -98,6 +98,7 @@
     <Compile Include="InterfaceGenerator.cs" />
     <Compile Include="InterfaceHint.cs" />
     <Compile Include="JsonSchemaExtensions.cs" />
+    <Compile Include="LocalVariableNameGenerator.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyInfoDictionary.cs" />
