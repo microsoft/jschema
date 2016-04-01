@@ -286,15 +286,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                 PropertyInfo propertyInfo = entry.Value;
 
                 // We only need to visit properties whose type is one of the classes
-                // defined by the schema. We can identify those properties because
-                // they're the ones that need to be cloned when copying one instance
-                // to another.
+                // defined by the schema.
                 if (!propertyInfo.IsOfSchemaDefinedType)
                 {
                     continue;
                 }
-
-                string className = propertyInfo.Type.ToString();
 
                 // If the property is an array, we'll need to construct a loop.
                 int arrayRank = 0;
