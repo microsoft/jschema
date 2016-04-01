@@ -282,7 +282,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyInfoDictionary propertyInfoDictionary = _classInfoDictionary[generatedClassName];
             foreach (KeyValuePair<string, PropertyInfo> entry in propertyInfoDictionary)
             {
-                string propertyName = entry.Key;
+                string propertyNameWithRank = entry.Key;
                 PropertyInfo propertyInfo = entry.Value;
 
                 // We only need to visit properties whose type is one of the classes
@@ -297,14 +297,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 string className = propertyInfo.Type.ToString();
 
                 // If the property is an array, we'll need to construct a loop.
-                int arrayDepth = 0;
-                while (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
-                {
-                    ++arrayDepth;
-                    propertyName = propertyName.Substring(0, PropertyInfoDictionary.ArrayMarker.Length);
-                }
+                int arrayRank = 0;
+                string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank);
 
-                if (arrayDepth == 0)
+                if (arrayRank == 0)
                 {
                     statements.Add(
                         SyntaxFactory.ExpressionStatement(
@@ -313,14 +309,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.IdentifierName(NodeParameterName),
-                                    SyntaxFactory.IdentifierName(propertyName)),
+                                    SyntaxFactory.IdentifierName(propertyNameWithRank)),
                                 SyntaxFactory.InvocationExpression(
                                     SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
                                     SyntaxHelper.ArgumentList(
                                         SyntaxFactory.MemberAccessExpression(
                                             SyntaxKind.SimpleMemberAccessExpression,
                                             SyntaxFactory.IdentifierName(NodeParameterName),
-                                            SyntaxFactory.IdentifierName(propertyName)))))));
+                                            SyntaxFactory.IdentifierName(propertyNameWithRank)))))));
                 }
             }
 

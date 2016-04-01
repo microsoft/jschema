@@ -34,5 +34,36 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return s[0].ToString().ToLowerInvariant() + s.Substring(1);
         }
+
+        /// <summary>
+        /// Extracts the property name from a string which encodes a property name together
+        /// with its array rank.
+        /// </summary>
+        /// <param name="propertyNameWithRank">
+        /// A string that encodes a property name together with its array rank, for example,
+        /// <code>Location[][]</code>.
+        /// </param>
+        /// <param name="arrayRank">
+        /// The rank of the array encoded by <paramref name="propertyNameWithRank"/>.
+        /// </param>
+        /// <returns>
+        /// The property name encoded by the string <paramref name="propertyNameWithRank"/>.
+        /// </returns>
+        /// <example>
+        /// Given <code>Location[][]</code>, this method returns <code>Location</code>, and
+        /// sets the value of the <code>out</code> parameter <code>arrayRank</code> to 2.
+        /// </example>
+        internal static string BasePropertyName(this string propertyNameWithRank, out int arrayRank)
+        {
+            arrayRank = 0;
+            string propertyName = propertyNameWithRank;
+            while (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
+            {
+                ++arrayRank;
+                propertyName = propertyName.Substring(0, PropertyInfoDictionary.ArrayMarker.Length);
+            }
+
+            return propertyName;
+        }
     }
 }
