@@ -345,10 +345,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         private StatementSyntax[] GenerateArrayElementVisit(
             int arrayRank,
             int currentNestingLevel,
-            string outerLoopVariableName,
-            string propertyName)
+            string propertyName,
+            string outerLoopVariableName)
         {
             string loopVariableName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
+            string arrayElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             ExpressionSyntax loopLimitExpression;
             if (currentNestingLevel == 0)
@@ -363,8 +364,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
             {
-                string arrayElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
-
                 loopLimitExpression = SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
                     SyntaxFactory.IdentifierName(arrayElementVariableName),
@@ -399,11 +398,13 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 // We're in the body of the innermost loop over array elements. This is
                 // where we do the assignment. For arrays of rank 1, the assignment is
-                // to an element of the array itself. For arrays of rank > 1, the
-                // assignment is to an array element of a temporary variable.
+                // to an element of the property itself. For arrays of rank > 1, the
+                // assignment is to an array element of a temporary variable representing
+                // one of the elements of the property.
+                ElementAccessExpressionSyntax elementAccessExpression;
                 if (arrayRank == 1)
                 {
-                    ExpressionSyntax elementAccessExpression =
+                    elementAccessExpression =
                         SyntaxFactory.ElementAccessExpression(
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
@@ -413,19 +414,25 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.SingletonSeparatedList(
                                     SyntaxFactory.Argument(
                                         SyntaxFactory.IdentifierName(outerLoopVariableName)))));
-
-                    statement = SyntaxFactory.ExpressionStatement(
-                        SyntaxFactory.AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            elementAccessExpression,
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
-                                SyntaxHelper.ArgumentList(elementAccessExpression))));
                 }
                 else
                 {
-                    statement = SyntaxFactory.EmptyStatement();
+                    elementAccessExpression =
+                        SyntaxFactory.ElementAccessExpression(
+                            SyntaxFactory.IdentifierName(arrayElementVariableName),
+                            SyntaxFactory.BracketedArgumentList(
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.Argument(
+                                        SyntaxFactory.IdentifierName(outerLoopVariableName)))));
                 }
+
+                statement = SyntaxFactory.ExpressionStatement(
+                    SyntaxFactory.AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        elementAccessExpression,
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                            SyntaxHelper.ArgumentList(elementAccessExpression))));
             }
 
             return new StatementSyntax[] { statement };
