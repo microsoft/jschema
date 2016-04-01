@@ -264,8 +264,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             string methodName = MakeVisitClassMethodName(generatedClassName);
             TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(generatedClassName);
 
-            _localVariableNameGenerator.Reset();
-
             return SyntaxFactory.MethodDeclaration(generatedClassType, methodName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
@@ -323,6 +321,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
                 else
                 {
+                    _localVariableNameGenerator.Reset();
+
                     statements.Add(
                         SyntaxFactory.IfStatement(
                             SyntaxHelper.IsNotNull(
@@ -331,7 +331,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.IdentifierName(NodeParameterName),
                                     SyntaxFactory.IdentifierName(propertyName))),
                             SyntaxFactory.Block(
-                                GenerateArrayElementVisit(arrayRank, 0, propertyName))));
+                                GenerateArrayElementVisit(
+                                    arrayRank,
+                                    currentNestingLevel: 0,
+                                    propertyName: propertyName))));
                 }
             }
 
@@ -343,9 +346,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             int currentNestingLevel,
             string propertyName)
         {
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
-            string destinationVariableName = _localVariableNameGenerator.GetNextDestinationVariableName();
-
             ExpressionSyntax loopLimitExpression;
             if (currentNestingLevel == 0)
             {
@@ -359,31 +359,46 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
             {
+                string arrayElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+
                 loopLimitExpression = SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName(destinationVariableName),
+                    SyntaxFactory.IdentifierName(arrayElementVariableName),
                     SyntaxFactory.IdentifierName(CountPropertyName));
             }
 
-            return SyntaxFactory.ForStatement(
-                SyntaxFactory.VariableDeclaration(
-                    SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.SingletonSeparatedList(
-                        SyntaxFactory.VariableDeclarator(loopVariableName)
-                            .WithInitializer(
-                                SyntaxFactory.EqualsValueClause(SyntaxFactory.LiteralExpression(
-                                    SyntaxKind.NumericLiteralExpression,
-                                    SyntaxFactory.Literal(0)))))),
-                default(SeparatedSyntaxList<ExpressionSyntax>),
-                SyntaxFactory.BinaryExpression(
-                    SyntaxKind.LessThanExpression,
-                    SyntaxFactory.IdentifierName(loopVariableName),
-                    loopLimitExpression),
-                SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
-                    SyntaxFactory.PrefixUnaryExpression(
-                        SyntaxKind.PreIncrementExpression,
-                        SyntaxFactory.IdentifierName(loopVariableName))),
-                SyntaxFactory.Block());
+            StatementSyntax statement;
+            if (currentNestingLevel < arrayRank)
+            {
+                string loopVariableName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
+
+                statement = SyntaxFactory.ForStatement(
+                    SyntaxFactory.VariableDeclaration(
+                        SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.VariableDeclarator(loopVariableName)
+                                .WithInitializer(
+                                    SyntaxFactory.EqualsValueClause(SyntaxFactory.LiteralExpression(
+                                        SyntaxKind.NumericLiteralExpression,
+                                        SyntaxFactory.Literal(0)))))),
+                    default(SeparatedSyntaxList<ExpressionSyntax>),
+                    SyntaxFactory.BinaryExpression(
+                        SyntaxKind.LessThanExpression,
+                        SyntaxFactory.IdentifierName(loopVariableName),
+                        loopLimitExpression),
+                    SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
+                        SyntaxFactory.PrefixUnaryExpression(
+                            SyntaxKind.PreIncrementExpression,
+                            SyntaxFactory.IdentifierName(loopVariableName))),
+                    SyntaxFactory.Block(
+                        GenerateArrayElementVisit(arrayRank, ++currentNestingLevel, propertyName)));
+            }
+            else
+            {
+                statement = SyntaxFactory.EmptyStatement();
+            }
+
+            return statement;
         }
 
         private string MakeVisitClassMethodName(string className)

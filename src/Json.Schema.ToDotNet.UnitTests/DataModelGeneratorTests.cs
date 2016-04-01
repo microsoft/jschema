@@ -1034,13 +1034,18 @@ namespace N
                 {
                     for (int index_0 = 0; index_0 < node.ArrayOfRefProp.Count; ++index_0)
                     {
+                        ;
                     }
                 }
 
                 if (node.ArrayOfArrayProp != null)
                 {
-                    for (int index_1 = 0; index_1 < node.ArrayOfArrayProp.Count; ++index_1)
+                    for (int index_0 = 0; index_0 < node.ArrayOfArrayProp.Count; ++index_0)
                     {
+                        for (int index_1 = 0; index_1 < value_0.Count; ++index_1)
+                        {
+                            ;
+                        }
                     }
                 }
             }
