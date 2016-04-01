@@ -1032,14 +1032,14 @@ namespace N
                 node.ReferencedTypeProp = VisitNullChecked(node.ReferencedTypeProp);
                 if (node.ArrayOfRefProp != null)
                 {
-                    for (int value_0 = 0; value_0 < node.ArrayOfRefProp.Count; ++value_0)
+                    for (int index_0 = 0; index_0 < node.ArrayOfRefProp.Count; ++index_0)
                     {
                     }
                 }
 
                 if (node.ArrayOfArrayProp != null)
                 {
-                    for (int value_1 = 0; value_1 < node.ArrayOfArrayProp.Count; ++value_1)
+                    for (int index_1 = 0; index_1 < node.ArrayOfArrayProp.Count; ++index_1)
                     {
                     }
                 }

@@ -549,7 +549,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // The name of a variable used to loop over the elements of the argument
             // to the Init method (the argument whose name is "argName").
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             // Find out out kind of code must be generated to initialize the elements of
             // the collection.
@@ -573,13 +573,13 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
-                        loopVariableName,
+                        collectionElementVariableName,
                         SyntaxFactory.IdentifierName(argName),
                         SyntaxFactory.Block(
                             GenerateElementInitialization(
                                 elementInfoKey,
                                 destinationVariableName,
-                                loopVariableName))),
+                                collectionElementVariableName))),
                     
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -660,7 +660,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             // The name of a variable used to loop over the elements of the collection
             // held in sourceVariableName.
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             // The name of the variable that holds a collection that will contain
             // copies of the elements in the source collection.
@@ -701,13 +701,13 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                         SyntaxFactory.ForEachStatement(
                             SyntaxHelper.Var(),
-                            loopVariableName,
+                            collectionElementVariableName,
                             SyntaxFactory.IdentifierName(sourceVariableName),
                             SyntaxFactory.Block(
                                 GenerateElementInitialization(
                                     sourceElementInfoKey,
                                     innerDestinationVariableName,
-                                    loopVariableName))),
+                                    collectionElementVariableName))),
 
                         SyntaxFactory.ExpressionStatement(
                             SyntaxFactory.InvocationExpression(
@@ -889,7 +889,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string hashKindKey,
             ExpressionSyntax expression)
         {
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             // From the type of the element (primitive, object, list, or dictionary), create
             // the appropriate hash generation code.
@@ -898,14 +898,14 @@ namespace Microsoft.Json.Schema.ToDotNet
             StatementSyntax hashCodeContribution =
                 MakeHashCodeContribution(
                     elementHashTypeKey,
-                    SyntaxFactory.IdentifierName(loopVariableName));
+                    SyntaxFactory.IdentifierName(collectionElementVariableName));
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(expression),
                 SyntaxFactory.Block(
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
-                        loopVariableName,
+                        collectionElementVariableName,
                         expression,
                         SyntaxFactory.Block(
                             SyntaxFactory.ExpressionStatement(
@@ -924,7 +924,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
         {
             string xorValueVariableName = _localVariableNameGenerator.GetNextXorVariableName();
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(expression),
@@ -945,11 +945,11 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
-                        loopVariableName,
+                        collectionElementVariableName,
                         expression,
                         SyntaxFactory.Block(
-                            Xor(xorValueVariableName, loopVariableName, "Key"),
-                            Xor(xorValueVariableName, loopVariableName, "Value"))),
+                            Xor(xorValueVariableName, collectionElementVariableName, "Key"),
+                            Xor(xorValueVariableName, collectionElementVariableName, "Value"))),
 
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -1119,7 +1119,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax right)
         {
             // The name of the index variable used in the loop over elements.
-            string indexVarName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string indexVarName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             // The two elements that will be compared each time through the loop.
             ExpressionSyntax leftElement =
@@ -1168,8 +1168,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private IfStatementSyntax MakeDictionaryEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
         {
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
-            string otherPropertyVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+            string otherPropertyVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.AreDifferentObjects(left, right),
@@ -1194,7 +1194,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Block(SyntaxHelper.Return(false))),
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
-                        loopVariableName,
+                        collectionElementVariableName,
                         left,
                         SyntaxFactory.Block(
                             SyntaxFactory.LocalDeclarationStatement(
@@ -1218,7 +1218,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                     SyntaxFactory.Argument(
                                                         SyntaxFactory.MemberAccessExpression(
                                                             SyntaxKind.SimpleMemberAccessExpression,
-                                                            SyntaxFactory.IdentifierName(loopVariableName),
+                                                            SyntaxFactory.IdentifierName(collectionElementVariableName),
                                                             SyntaxFactory.IdentifierName("Key"))),
                                                     SyntaxFactory.Argument(
                                                         default(NameColonSyntax),
@@ -1232,7 +1232,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxKind.NotEqualsExpression,
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(loopVariableName),
+                                        SyntaxFactory.IdentifierName(collectionElementVariableName),
                                         SyntaxFactory.IdentifierName("Value")),
                                     SyntaxFactory.IdentifierName(otherPropertyVariableName)),
                                 SyntaxFactory.Block(SyntaxHelper.Return(false))

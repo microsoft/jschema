@@ -343,7 +343,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             int currentNestingLevel,
             string propertyName)
         {
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopVariableName();
+            string loopVariableName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
             string destinationVariableName = _localVariableNameGenerator.GetNextDestinationVariableName();
 
             ExpressionSyntax loopLimitExpression;

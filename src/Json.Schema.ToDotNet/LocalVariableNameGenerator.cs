@@ -9,11 +9,13 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </summary>
     internal class LocalVariableNameGenerator
     {
-        private const string LoopVariableNameBase = "value_";
+        private const string CollectionElementVariableNameBase = "value_";
+        private const string LoopIndexVariableNameBase = "index_";
         private const string DestinationVariableNameBase = "destination_";
         private const string XorVariableNameBase = "xor_";
 
-        private int _loopVariableCount;
+        private int _collectionElementVariableCount;
+        private int _loopIndexVariableCount;
         private int _destinationVariableCount;
         private int _xorVariableCount;
 
@@ -24,14 +26,20 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         internal void Reset()
         {
-            _loopVariableCount = 0;
+            _collectionElementVariableCount = 0;
+            _loopIndexVariableCount = 0;
             _destinationVariableCount = 0;
             _xorVariableCount = 0;
         }
 
-        internal string GetNextLoopVariableName()
+        internal string GetNextCollectionElementVariableName()
         {
-            return LoopVariableNameBase + _loopVariableCount++;
+            return CollectionElementVariableNameBase + _collectionElementVariableCount++;
+        }
+
+        internal string GetNextLoopIndexVariableName()
+        {
+            return LoopIndexVariableNameBase + _loopIndexVariableCount++;
         }
 
         internal string GetNextDestinationVariableName()
