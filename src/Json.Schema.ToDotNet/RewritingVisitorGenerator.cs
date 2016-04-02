@@ -259,10 +259,32 @@ namespace Microsoft.Json.Schema.ToDotNet
             return visitClassMethods;
         }
 
-        private MethodDeclarationSyntax GenerateVisitClassMethod(string generatedClassName)
+        /// <summary>
+        /// Generate the visitor method for one of the classes defined by the schema.
+        /// </summary>
+        /// <param name="className">
+        /// The name of the class for which a visitor method is to be generated.
+        /// </param>
+        /// <returns>
+        /// A method declaration for the vistor method.
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// public virtual VisitLocation(Location node)
+        /// {
+        ///     if (node != null)
+        ///     {
+        ///         // GenerateVisitClassBodyStatements()
+        ///     }
+        ///
+        ///     return node;
+        /// }
+        /// </code>
+        /// </example>
+        private MethodDeclarationSyntax GenerateVisitClassMethod(string className)
         {
-            string methodName = MakeVisitClassMethodName(generatedClassName);
-            TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(generatedClassName);
+            string methodName = MakeVisitClassMethodName(className);
+            TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(className);
 
             return SyntaxFactory.MethodDeclaration(generatedClassType, methodName)
                 .AddModifiers(
@@ -275,16 +297,41 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNotNull(NodeParameterName),
                         SyntaxFactory.Block(
-                            GenerateVisitClassBodyStatements(generatedClassName))),
+                            GeneratePropertyVisits(className))),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.IdentifierName(NodeParameterName)));
         }
 
-        private StatementSyntax[] GenerateVisitClassBodyStatements(string generatedClassName)
+        /// <summary>
+        /// Generate the code necessary to visit each property.
+        /// </summary>
+        /// <param name="className">
+        /// The name of the class for which the visitor method is being generated.
+        /// </param>
+        /// <returns>
+        /// The statements necessary to visit each property in the class.
+        /// </returns>
+        /// <remarks>
+        /// It is only necessary to visit those properties which are themselves of a
+        /// schema-defined type. Scalar properties can be visited directly. For properties
+        /// of array type, each element must be visited.
+        /// </remarks>
+        /// <example>
+        /// Visiting a class with one scalar-valued property and one array-valued property:
+        /// <code>
+        /// node.MessageDescriptor = VisitNullChecked(node.MessageDescriptor);
+        /// 
+        /// if (node.Locations != null)
+        /// {
+        ///     // GenerateArrayVisit()
+        /// }
+        /// </code>
+        /// </example>
+        private StatementSyntax[] GeneratePropertyVisits(string className)
         {
             var statements = new List<StatementSyntax>();
 
-            PropertyInfoDictionary propertyInfoDictionary = _classInfoDictionary[generatedClassName];
+            PropertyInfoDictionary propertyInfoDictionary = _classInfoDictionary[className];
             foreach (KeyValuePair<string, PropertyInfo> entry in propertyInfoDictionary.OrderBy(kvp => kvp.Value.DeclarationOrder))
             {
                 string propertyNameWithRank = entry.Key;
@@ -297,7 +344,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                     continue;
                 }
 
-                // If the property is an array, we'll need to construct a loop.
                 int arrayRank = 0;
                 string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank);
 
@@ -310,14 +356,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.IdentifierName(NodeParameterName),
-                                    SyntaxFactory.IdentifierName(propertyNameWithRank)),
+                                    SyntaxFactory.IdentifierName(propertyName)),
                                 SyntaxFactory.InvocationExpression(
                                     SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
                                     SyntaxHelper.ArgumentList(
                                         SyntaxFactory.MemberAccessExpression(
                                             SyntaxKind.SimpleMemberAccessExpression,
                                             SyntaxFactory.IdentifierName(NodeParameterName),
-                                            SyntaxFactory.IdentifierName(propertyNameWithRank)))))));
+                                            SyntaxFactory.IdentifierName(propertyName)))))));
                 }
                 else
                 {
@@ -331,29 +377,31 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.IdentifierName(NodeParameterName),
                                     SyntaxFactory.IdentifierName(propertyName))),
                             SyntaxFactory.Block(
-                                GenerateArrayElementVisit(
+                                GenerateArrayVisit(
                                     arrayRank,
-                                    currentNestingLevel: 0,
-                                    propertyName: propertyName,
-                                    outerLoopVariableName: null))));
+                                    nestingLevel: 0,
+                                    propertyName: propertyName))));
                 }
             }
 
             return statements.ToArray();
         }
 
-        private StatementSyntax[] GenerateArrayElementVisit(
-            int arrayRank,
-            int currentNestingLevel,
-            string propertyName,
-            string outerLoopVariableName)
-        {
-            string loopVariableName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
-            string arrayElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+        //               currentNestingDepth      0                  > 0               
+        //       arrayRank
+        //                        1          limit: property
+        // 
+        //                      > 1          limit: property
 
+        private StatementSyntax[] GenerateArrayVisit(
+            int arrayRank,
+            int nestingLevel,
+            string propertyName)
+        {
             ExpressionSyntax loopLimitExpression;
-            if (currentNestingLevel == 0)
+            if (nestingLevel == 0)
             {
+                // node.Locations.Count
                 loopLimitExpression = SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
                     SyntaxFactory.MemberAccessExpression(
@@ -364,38 +412,91 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
             {
+                // value_0.Count
                 loopLimitExpression = SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName(arrayElementVariableName),
+                    SyntaxFactory.IdentifierName(
+                        LocalVariableNameGenerator.GetCollectionElementVariableName(nestingLevel - 1)),
                     SyntaxFactory.IdentifierName(CountPropertyName));
             }
 
-            StatementSyntax statement;
-            if (currentNestingLevel < arrayRank)
+            var statements = new List<StatementSyntax>();
+            if (nestingLevel < arrayRank)
             {
-                statement = SyntaxFactory.ForStatement(
-                    SyntaxFactory.VariableDeclaration(
-                        SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.VariableDeclarator(loopVariableName)
-                                .WithInitializer(
-                                    SyntaxFactory.EqualsValueClause(SyntaxFactory.LiteralExpression(
-                                        SyntaxKind.NumericLiteralExpression,
-                                        SyntaxFactory.Literal(0)))))),
-                    default(SeparatedSyntaxList<ExpressionSyntax>),
-                    SyntaxFactory.BinaryExpression(
-                        SyntaxKind.LessThanExpression,
-                        SyntaxFactory.IdentifierName(loopVariableName),
-                        loopLimitExpression),
-                    SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
-                        SyntaxFactory.PrefixUnaryExpression(
-                            SyntaxKind.PreIncrementExpression,
-                            SyntaxFactory.IdentifierName(loopVariableName))),
-                    SyntaxFactory.Block(
-                        GenerateArrayElementVisit(arrayRank, ++currentNestingLevel, propertyName, loopVariableName)));
+                // We're not yet at the innermost level, so we need another for loop.
+                string loopVariableName = LocalVariableNameGenerator.GetLoopIndexVariableName(nestingLevel);
+                string outerLoopVariableName = LocalVariableNameGenerator.GetLoopIndexVariableName(nestingLevel - 1);
+                string arrayElementVariableName = LocalVariableNameGenerator.GetCollectionElementVariableName(nestingLevel - 1);
+
+                // For every level except the outermost, we need to get an array element and test whether
+                // it's null.
+                if (nestingLevel > 0)
+                {
+
+                    // var value_0 = node.Locations[index_0];
+                    statements.Add(
+                        SyntaxFactory.LocalDeclarationStatement(
+                            SyntaxFactory.VariableDeclaration(
+                                SyntaxHelper.Var(),
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.VariableDeclarator(
+                                        SyntaxFactory.Identifier(arrayElementVariableName),
+                                        default(BracketedArgumentListSyntax),
+                                        SyntaxFactory.EqualsValueClause(
+                                            SyntaxFactory.ElementAccessExpression(
+                                                SyntaxFactory.MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    SyntaxFactory.IdentifierName(NodeParameterName),
+                                                    SyntaxFactory.IdentifierName(propertyName)),
+                                                SyntaxFactory.BracketedArgumentList(
+                                                    SyntaxFactory.SingletonSeparatedList(
+                                                        SyntaxFactory.Argument(
+                                                            SyntaxFactory.IdentifierName(outerLoopVariableName)))))))))));
+                }
+
+                // for
+                ForStatementSyntax forStatement = SyntaxFactory.ForStatement(
+                        // (index_0 = 0;
+                        SyntaxFactory.VariableDeclaration(
+                            SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.VariableDeclarator(loopVariableName)
+                                    .WithInitializer(
+                                        SyntaxFactory.EqualsValueClause(SyntaxFactory.LiteralExpression(
+                                            SyntaxKind.NumericLiteralExpression,
+                                            SyntaxFactory.Literal(0)))))),
+                        default(SeparatedSyntaxList<ExpressionSyntax>),
+                        // index_0 < value_0.Count;
+                        SyntaxFactory.BinaryExpression(
+                            SyntaxKind.LessThanExpression,
+                            SyntaxFactory.IdentifierName(loopVariableName),
+                            loopLimitExpression),
+                        // ++index_0)
+                        SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
+                            SyntaxFactory.PrefixUnaryExpression(
+                                SyntaxKind.PreIncrementExpression,
+                                SyntaxFactory.IdentifierName(loopVariableName))),
+                        // { ... }
+                        SyntaxFactory.Block(
+                            GenerateArrayVisit(arrayRank, nestingLevel + 1, propertyName)));
+
+                if (nestingLevel > 0)
+                {
+                    statements.Add(
+                        SyntaxFactory.IfStatement(
+                            SyntaxHelper.IsNotNull(arrayElementVariableName),
+                            SyntaxFactory.Block(
+                                forStatement)));
+                }
+                else
+                {
+                    statements.Add(forStatement);
+                }
             }
             else
             {
+                string loopVariableName = LocalVariableNameGenerator.GetLoopIndexVariableName(nestingLevel - 1);
+
                 // We're in the body of the innermost loop over array elements. This is
                 // where we do the assignment. For arrays of rank 1, the assignment is
                 // to an element of the property itself. For arrays of rank > 1, the
@@ -404,6 +505,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 ElementAccessExpressionSyntax elementAccessExpression;
                 if (arrayRank == 1)
                 {
+                    // node.Location[index_0]
                     elementAccessExpression =
                         SyntaxFactory.ElementAccessExpression(
                             SyntaxFactory.MemberAccessExpression(
@@ -413,29 +515,33 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.BracketedArgumentList(
                                 SyntaxFactory.SingletonSeparatedList(
                                     SyntaxFactory.Argument(
-                                        SyntaxFactory.IdentifierName(outerLoopVariableName)))));
+                                        SyntaxFactory.IdentifierName(loopVariableName)))));
                 }
                 else
                 {
+                    string arrayElementVariableName = LocalVariableNameGenerator.GetCollectionElementVariableName(nestingLevel - 2);
+
+                    // value_0[index_1]
                     elementAccessExpression =
                         SyntaxFactory.ElementAccessExpression(
                             SyntaxFactory.IdentifierName(arrayElementVariableName),
                             SyntaxFactory.BracketedArgumentList(
                                 SyntaxFactory.SingletonSeparatedList(
                                     SyntaxFactory.Argument(
-                                        SyntaxFactory.IdentifierName(outerLoopVariableName)))));
+                                        SyntaxFactory.IdentifierName(loopVariableName)))));
                 }
 
-                statement = SyntaxFactory.ExpressionStatement(
-                    SyntaxFactory.AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        elementAccessExpression,
-                        SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
-                            SyntaxHelper.ArgumentList(elementAccessExpression))));
+                statements.Add(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            elementAccessExpression,
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                                SyntaxHelper.ArgumentList(elementAccessExpression)))));
             }
 
-            return new StatementSyntax[] { statement };
+            return statements.ToArray();
         }
 
         private string MakeVisitClassMethodName(string className)

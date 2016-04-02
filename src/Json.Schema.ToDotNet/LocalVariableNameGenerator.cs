@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Globalization;
+
 namespace Microsoft.Json.Schema.ToDotNet
 {
     /// <summary>
@@ -30,6 +32,16 @@ namespace Microsoft.Json.Schema.ToDotNet
             _loopIndexVariableCount = 0;
             _destinationVariableCount = 0;
             _xorVariableCount = 0;
+        }
+
+        internal static string GetLoopIndexVariableName(int n)
+        {
+            return LoopIndexVariableNameBase + n.ToString(CultureInfo.InvariantCulture);
+        }
+
+        internal static string GetCollectionElementVariableName(int n)
+        {
+            return CollectionElementVariableNameBase + n.ToString(CultureInfo.InvariantCulture);
         }
 
         internal string GetNextCollectionElementVariableName()
