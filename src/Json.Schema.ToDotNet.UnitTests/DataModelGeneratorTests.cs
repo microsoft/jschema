@@ -1034,7 +1034,7 @@ namespace N
                 {
                     for (int index_0 = 0; index_0 < node.ArrayOfRefProp.Count; ++index_0)
                     {
-                        ;
+                        node.ArrayOfRefProp[index_0] = VisitNullChecked(node.ArrayOfRefProp[index_0]);
                     }
                 }
 
@@ -1042,9 +1042,13 @@ namespace N
                 {
                     for (int index_0 = 0; index_0 < node.ArrayOfArrayProp.Count; ++index_0)
                     {
-                        for (int index_1 = 0; index_1 < value_0.Count; ++index_1)
+                        var value_0 = node.ArrayOfArrayProp[index_0];
+                        if (value_0 != null)
                         {
-                            ;
+                            for (int index_1 = 0; index_1 < value_0.Count; ++index_1)
+                            {
+                                value_0[index_1] = VisitNullChecked(value_0[index_1]);
+                            }
                         }
                     }
                 }
