@@ -22,14 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSchemaToDotNet", "JsonSchemaToDotNet\JsonSchemaToDotNet.csproj", "{BC2D0831-21D6-4586-B045-CADF22430850}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SARIF", "SARIF", "{E8219BFF-E047-492D-BBC3-36D3624C6934}"
-	ProjectSection(SolutionItems) = preProject
-		SARIF\CodeGenHints.json = SARIF\CodeGenHints.json
-		SARIF\CopyrightNotice.txt = SARIF\CopyrightNotice.txt
-		SARIF\README.md = SARIF\README.md
-		SARIF\Sarif.schema.json = SARIF\Sarif.schema.json
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.ToDotNet", "Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj", "{D9489164-0B7D-4F90-9E3E-339238A86542}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.ToDotNet.UnitTests", "Json.Schema.ToDotNet.UnitTests\Json.Schema.ToDotNet.UnitTests.csproj", "{1B28A331-1C49-41EC-976A-8D3B8F232ED1}"
