@@ -44,6 +44,7 @@ namespace Microsoft.Json.Schema.UnitTests
                         ["c"] = new JsonSchema { Type = JsonType.Integer },
                         ["d"] = new JsonSchema { Type = JsonType.Boolean }
                     },
+                    AdditionalProperties = new AdditionalProperties(true),
                     Reference = new UriOrFragment("http://www.example.com/schema/#"),
                     MinItems = 1,
                     MaxItems = 3,
@@ -70,6 +71,7 @@ namespace Microsoft.Json.Schema.UnitTests
                         ["c"] = new JsonSchema { Type = JsonType.Integer },
                         ["d"] = new JsonSchema { Type = JsonType.Boolean }
                     },
+                    AdditionalProperties = new AdditionalProperties(true),
                     Reference = new UriOrFragment("http://www.example.com/schema/#"),
                     MinItems = 1,
                     MaxItems = 3,
@@ -453,6 +455,61 @@ namespace Microsoft.Json.Schema.UnitTests
                 new JsonSchema
                 {
                     Format = FormatAttributes.DateTime
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Missing and present additional properties",
+                new JsonSchema
+                {
+                },
+                new JsonSchema
+                {
+                    AdditionalProperties = new AdditionalProperties(true)
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Additional properties with Boolean value and schema",
+                new JsonSchema
+                {
+                    AdditionalProperties = new AdditionalProperties(true)
+                },
+                new JsonSchema
+                {
+                    AdditionalProperties = new AdditionalProperties(new JsonSchema())
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Additional properties with different Boolean values",
+                new JsonSchema
+                {
+                    AdditionalProperties = new AdditionalProperties(true)
+                },
+                new JsonSchema
+                {
+                    AdditionalProperties = new AdditionalProperties(false)
+                },
+                false
+            },
+
+            new object[]
+            {
+                "Additional properties with different schemas",
+                new JsonSchema
+                {
+                    AdditionalProperties = new AdditionalProperties(new JsonSchema { Format = "date-time" })
+                },
+                new JsonSchema
+                {
+                    AdditionalProperties = new AdditionalProperties(new JsonSchema())
                 },
                 false
             }

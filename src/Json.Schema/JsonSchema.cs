@@ -76,6 +76,11 @@ namespace Microsoft.Json.Schema
                 }
             }
 
+            if (other.AdditionalProperties != null)
+            {
+                AdditionalProperties = new AdditionalProperties(other.AdditionalProperties);
+            }
+
             MinItems = other.MinItems;
             MaxItems = other.MaxItems;
 
@@ -144,6 +149,12 @@ namespace Microsoft.Json.Schema
         /// referenced by properties defined elsewhere in the current schema.
         /// </summary>
         public Dictionary<string, JsonSchema> Definitions { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value describing any additional properties allowed by the
+        /// schema.
+        /// </summary>
+        public AdditionalProperties AdditionalProperties { get; set; }
 
         /// <summary>
         /// Gets or sets the minimum valid number of elements in an array.
@@ -336,6 +347,9 @@ namespace Microsoft.Json.Schema
                 && (Definitions == null
                         ? other.Definitions == null
                         : Definitions.HasSameElementsAs(other.Definitions))
+                && (AdditionalProperties == null
+                        ? other.AdditionalProperties == null
+                        : AdditionalProperties.Equals(other.AdditionalProperties))
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
