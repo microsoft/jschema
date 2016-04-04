@@ -1133,30 +1133,30 @@ namespace N
                         }
                     }
                 }
-            }
 
-            if (node.dictionaryWithObjectSchemaProp != null)
-            {
-                foreach (var key in node.dictionaryWithObjectSchemaProp.Keys)
+                if (node.DictionaryWithObjectSchemaProp != null)
                 {
-                    var value = node.dictionaryWithObjectSchemaProp[key];
-                    if (value != null)
+                    foreach (var key in node.DictionaryWithObjectSchemaProp.Keys)
                     {
-                        node.dictionaryWithObjectSchemaProp[key] = VisitNullChecked(value);
+                        var value = node.DictionaryWithObjectSchemaProp[key];
+                        if (value != null)
+                        {
+                            node.DictionaryWithObjectSchemaProp[key] = VisitNullChecked(value);
+                        }
                     }
                 }
-            }
 
-            if (node.dictionaryWithObjectArraySchemaProp != null)
-            {
-                foreach (var key in node.dictionaryWithObjectArraySchemaProp.Keys)
+                if (node.DictionaryWithObjectArraySchemaProp != null)
                 {
-                    var value = node.dictionaryWithObjectArraySchemaProp[key];
-                    if (value != null)
+                    foreach (var key in node.DictionaryWithObjectArraySchemaProp.Keys)
                     {
-                        for (int index_0 = 0; index_0 < value.Count; ++i)
+                        var value = node.DictionaryWithObjectArraySchemaProp[key];
+                        if (value != null)
                         {
-                            node.dictionaryWithObjectSchemaProp[key][index_0] = VisitNullChecked(value[index_0]);
+                            for (int index_0 = 0; index_0 < node.DictionaryWithObjectArraySchemaProp[key].Count; ++index_0)
+                            {
+                                node.DictionaryWithObjectArraySchemaProp[key][index_0] = VisitNullChecked(node.DictionaryWithObjectArraySchemaProp[key][index_0]);
+                            }
                         }
                     }
                 }

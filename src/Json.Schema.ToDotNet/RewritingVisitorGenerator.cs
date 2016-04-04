@@ -348,27 +348,27 @@ namespace Microsoft.Json.Schema.ToDotNet
                 bool isDictionary = false;
                 string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank, out isDictionary);
 
-                if (arrayRank == 0)
+                ExpressionSyntax propertyAccessExpression =
+                    SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(NodeParameterName),
+                            SyntaxFactory.IdentifierName(propertyName));
+
+                if (arrayRank == 0 && !isDictionary)
                 {
-                    statements.Add(
-                        SyntaxFactory.ExpressionStatement(
-                            SyntaxFactory.AssignmentExpression(
-                                SyntaxKind.SimpleAssignmentExpression,
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName(NodeParameterName),
-                                    SyntaxFactory.IdentifierName(propertyName)),
-                                SyntaxFactory.InvocationExpression(
-                                    SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
-                                    SyntaxHelper.ArgumentList(
-                                        SyntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.IdentifierName(NodeParameterName),
-                                            SyntaxFactory.IdentifierName(propertyName)))))));
+                    // This is a simple scalar assignment.
+                    statements.Add(GenerateScalarVisit(propertyAccessExpression));
                 }
                 else
                 {
                     _localVariableNameGenerator.Reset();
+
+                    StatementSyntax[] nullTestedStatements = isDictionary
+                        ? GenerateDictionaryVisit(arrayRank, propertyName)
+                        : GenerateArrayVisit(
+                            arrayRank,
+                            nestingLevel: 0,
+                            arrayValuedExpression: propertyAccessExpression);
 
                     statements.Add(
                         SyntaxFactory.IfStatement(
@@ -377,27 +377,110 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.IdentifierName(NodeParameterName),
                                     SyntaxFactory.IdentifierName(propertyName))),
-                            SyntaxFactory.Block(
-                                GenerateArrayVisit(
-                                    arrayRank,
-                                    nestingLevel: 0,
-                                    propertyName: propertyName))));
+                            SyntaxFactory.Block(nullTestedStatements)));
                 }
             }
 
             return statements.ToArray();
         }
 
-        //               currentNestingDepth      0                  > 0               
-        //       arrayRank
-        //                        1          limit: property
-        // 
-        //                      > 1          limit: property
+        private StatementSyntax GenerateScalarVisit(
+            ExpressionSyntax target,
+            ExpressionSyntax source = null)
+        {
+            if (source == null)
+            {
+                source = target;
+            }
+
+            return
+                SyntaxFactory.ExpressionStatement(
+                    SyntaxFactory.AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        target,
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                            SyntaxHelper.ArgumentList(source))));
+        }
+
+        private StatementSyntax[] GenerateDictionaryVisit(int arrayRank, string propertyName)
+        {
+            const string KeyVariableName = "key";
+            const string KeysPropertyName = "Keys";
+            const string ValueVariableName = "value";
+
+            ExpressionSyntax dictionaryValue =
+                SyntaxFactory.ElementAccessExpression(
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName(NodeParameterName),
+                        SyntaxFactory.IdentifierName(propertyName)),
+                    SyntaxFactory.BracketedArgumentList(
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.Argument(
+                                SyntaxFactory.IdentifierName(KeyVariableName)))));
+
+            // The code to visit an individual dictionary element depends on whether the
+            // elements are scalar values or arrays.
+            StatementSyntax[] dictionaryElementVisitStatements;
+
+            if (arrayRank == 0)
+            {
+                dictionaryElementVisitStatements = new StatementSyntax[]
+                {
+                    GenerateScalarVisit(dictionaryValue, SyntaxFactory.IdentifierName(ValueVariableName))
+                };
+            }
+            else
+            {
+                ExpressionSyntax arrayValuedExpression =
+                    SyntaxFactory.ElementAccessExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                                   SyntaxKind.SimpleMemberAccessExpression,
+                                   SyntaxFactory.IdentifierName(NodeParameterName),
+                                   SyntaxFactory.IdentifierName(propertyName)),
+                        SyntaxFactory.BracketedArgumentList(
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.Argument(
+                                    SyntaxFactory.IdentifierName(KeyVariableName)))));
+
+                dictionaryElementVisitStatements = GenerateArrayVisit(
+                    arrayRank,
+                    nestingLevel: 0,
+                    arrayValuedExpression: arrayValuedExpression);
+            }
+
+            return new StatementSyntax[]
+            {
+                SyntaxFactory.ForEachStatement(
+                    SyntaxHelper.Var(),
+                    KeyVariableName,
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(NodeParameterName),
+                            SyntaxFactory.IdentifierName(propertyName)),
+                        SyntaxFactory.IdentifierName(KeysPropertyName)),
+                    SyntaxFactory.Block(
+                        SyntaxFactory.LocalDeclarationStatement(
+                            SyntaxFactory.VariableDeclaration(
+                                SyntaxHelper.Var(),
+                                SyntaxFactory.SingletonSeparatedList(
+                                    SyntaxFactory.VariableDeclarator(
+                                        SyntaxFactory.Identifier(ValueVariableName),
+                                        default(BracketedArgumentListSyntax),
+                                        SyntaxFactory.EqualsValueClause(dictionaryValue))))),
+                        SyntaxFactory.IfStatement(
+                            SyntaxHelper.IsNotNull(ValueVariableName),
+                            SyntaxFactory.Block(dictionaryElementVisitStatements))))
+            };
+        }
 
         private StatementSyntax[] GenerateArrayVisit(
             int arrayRank,
             int nestingLevel,
-            string propertyName)
+            ExpressionSyntax arrayValuedExpression)
         {
             ExpressionSyntax loopLimitExpression;
             if (nestingLevel == 0)
@@ -405,10 +488,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 // node.Locations.Count
                 loopLimitExpression = SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName(NodeParameterName),
-                        SyntaxFactory.IdentifierName(propertyName)),
+                    arrayValuedExpression,
                     SyntaxFactory.IdentifierName(CountPropertyName));
             }
             else
@@ -445,10 +525,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                         default(BracketedArgumentListSyntax),
                                         SyntaxFactory.EqualsValueClause(
                                             SyntaxFactory.ElementAccessExpression(
-                                                SyntaxFactory.MemberAccessExpression(
-                                                    SyntaxKind.SimpleMemberAccessExpression,
-                                                    SyntaxFactory.IdentifierName(NodeParameterName),
-                                                    SyntaxFactory.IdentifierName(propertyName)),
+                                                arrayValuedExpression,
                                                 SyntaxFactory.BracketedArgumentList(
                                                     SyntaxFactory.SingletonSeparatedList(
                                                         SyntaxFactory.Argument(
@@ -479,7 +556,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.IdentifierName(loopVariableName))),
                         // { ... }
                         SyntaxFactory.Block(
-                            GenerateArrayVisit(arrayRank, nestingLevel + 1, propertyName)));
+                            GenerateArrayVisit(arrayRank, nestingLevel + 1, arrayValuedExpression)));
 
                 if (nestingLevel > 0)
                 {
@@ -509,10 +586,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     // node.Location[index_0]
                     elementAccessExpression =
                         SyntaxFactory.ElementAccessExpression(
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                SyntaxFactory.IdentifierName(NodeParameterName),
-                                SyntaxFactory.IdentifierName(propertyName)),
+                            arrayValuedExpression,
                             SyntaxFactory.BracketedArgumentList(
                                 SyntaxFactory.SingletonSeparatedList(
                                     SyntaxFactory.Argument(
