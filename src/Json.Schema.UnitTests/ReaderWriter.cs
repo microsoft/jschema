@@ -224,6 +224,29 @@ namespace Microsoft.Json.Schema.UnitTests
                          }
                     }
                 }
+            },
+
+            new object[]
+            {
+                "AdditionalPropertiesBoolean",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+                    AdditionalProperties = new AdditionalProperties(true)
+                }
+            },
+
+            new object[]
+            {
+                "AdditionalPropertiesSchema",
+                new JsonSchema
+                {
+                    Type = JsonType.Object,
+                    AdditionalProperties = new AdditionalProperties(new JsonSchema
+                    {
+                        Type = JsonType.Number
+                    })
+                }
             }
         };
     }

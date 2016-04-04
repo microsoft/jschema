@@ -16,6 +16,10 @@ namespace Microsoft.Json.Schema
             {
                 contract.Converter = UriOrFragmentConverter.Instance;
             }
+            else if (objectType == typeof(AdditionalProperties))
+            {
+                contract.Converter = AdditionalPropertiesConverter.Instance;
+            }
 
             return contract;
         }

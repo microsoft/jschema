@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdditionalProperties.cs" />
+    <Compile Include="AdditionalPropertiesConverter.cs" />
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Hash.cs" />

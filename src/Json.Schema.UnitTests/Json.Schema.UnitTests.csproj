@@ -75,6 +75,12 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="TestData\AdditionalPropertiesBoolean.schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\AdditionalPropertiesSchema.schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestData\Array.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

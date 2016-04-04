@@ -10,7 +10,7 @@ namespace Microsoft.Json.Schema
     public static class SchemaWriter
     {
         public static void WriteSchema(
-            TextWriter writer,
+            JsonWriter writer,
             JsonSchema schema,
             Formatting formatting = Formatting.Indented)
         {
@@ -29,8 +29,18 @@ namespace Microsoft.Json.Schema
                     CamelCaseText = true
                 });
 
+            serializer.Serialize(writer, schema);
+        }
+
+        public static void WriteSchema(
+            TextWriter writer,
+            JsonSchema schema,
+            Formatting formatting = Formatting.Indented)
+        {
             var stringWriter = new StringWriter();
-            serializer.Serialize(stringWriter, schema);
+            var jsonWriter = new JsonTextWriter(stringWriter);
+
+            WriteSchema(jsonWriter, schema, formatting);
 
             // Change "$$ref" to "$ref" before we ask write it to the output.
             string output = RefProperty.ConvertToOutput(stringWriter.ToString());
