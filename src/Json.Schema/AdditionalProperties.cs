@@ -55,7 +55,9 @@ namespace Microsoft.Json.Schema
         public AdditionalProperties(AdditionalProperties other)
         {
             Allowed = other.Allowed;
-            Schema = new JsonSchema(other.Schema);
+            Schema = other.Schema != null
+                ? new JsonSchema(other.Schema)
+                : null;
         }
 
         /// <summary>
