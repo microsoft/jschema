@@ -298,9 +298,13 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             TypeSyntax type = PropInfoDictionary[name].Type;
 
-            string typeName = type.ToString().Replace("IList<", "IEnumerable<");
+            if (PropInfoDictionary[name].ComparisonKind == ComparisonKind.Collection)
+            {
+                string typeName = type.ToString().Replace("IList<", "IEnumerable<");
+                type = SyntaxFactory.ParseTypeName(typeName);
+            }
 
-            return SyntaxFactory.ParseTypeName(typeName);
+            return type;
         }
 
         /// <summary>

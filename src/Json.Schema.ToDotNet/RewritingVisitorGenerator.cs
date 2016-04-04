@@ -345,7 +345,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
 
                 int arrayRank = 0;
-                string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank);
+                bool isDictionary = false;
+                string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank, out isDictionary);
 
                 if (arrayRank == 0)
                 {

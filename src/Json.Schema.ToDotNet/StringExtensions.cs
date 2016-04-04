@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
+
 namespace Microsoft.Json.Schema.ToDotNet
 {
     internal static class StringExtensions
@@ -37,30 +39,59 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         /// <summary>
         /// Extracts the property name from a string which encodes a property name together
-        /// with its array rank.
+        /// with its array rank and an indication of whether the property is a dictionary.
         /// </summary>
-        /// <param name="propertyNameWithRank">
+        /// <param name="decoratedPropertyName">
         /// A string that encodes a property name together with its array rank, for example,
         /// <code>Location[][]</code>.
         /// </param>
         /// <param name="arrayRank">
-        /// The rank of the array encoded by <paramref name="propertyNameWithRank"/>.
+        /// The rank of the array encoded by <paramref name="decoratedPropertyName"/>.
+        /// </param>
+        /// <param name="isDictionary">
+        /// <code>true</code> if the type encoded by <paramref name="decoratedPropertyName"/>
+        /// is a dictionary; otherwise <code>false</code>.
         /// </param>
         /// <returns>
-        /// The property name encoded by the string <paramref name="propertyNameWithRank"/>.
+        /// The property name encoded by the string <paramref name="decoratedPropertyName"/>.
         /// </returns>
         /// <example>
-        /// Given <code>Location[][]</code>, this method returns <code>Location</code>, and
-        /// sets the value of the <code>out</code> parameter <code>arrayRank</code> to 2.
+        /// <para>
+        /// Given <code>Location[][]</code>, this method returns <code>Location</code>,
+        /// sets the value of the <code>out</code> parameter <code>arrayRank</code> to 2,
+        /// and sets the value of the <code>out</code> parameter <code>isDictionary</code>
+        /// to <code>false</code>.
+        /// </para>
+        /// <para>
+        /// Given <code>Location{}[]</code>, this method returns <code>Location</code>,
+        /// sets the value of the <code>out</code> parameter <code>arrayRank</code> to 1,
+        /// and sets the value of the <code>out</code> parameter <code>isDictionary</code>
+        /// to <code>true</code>.
+        /// </para>
         /// </example>
-        internal static string BasePropertyName(this string propertyNameWithRank, out int arrayRank)
+        internal static string BasePropertyName(this string decoratedPropertyName, out int arrayRank, out bool isDictionary)
         {
             arrayRank = 0;
-            string propertyName = propertyNameWithRank;
+            isDictionary = false;
+
+            string propertyName = decoratedPropertyName;
             while (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
             {
                 ++arrayRank;
                 propertyName = propertyName.Substring(0, propertyName.Length - PropertyInfoDictionary.ArrayMarker.Length);
+            }
+
+            if (propertyName.EndsWith(PropertyInfoDictionary.DictionaryMarker))
+            {
+                isDictionary = true;
+                propertyName = propertyName.Substring(0, propertyName.Length - PropertyInfoDictionary.DictionaryMarker.Length);
+            }
+
+            if (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker) ||
+                propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
+            {
+                throw new ArgumentException(
+                    $"Cannot generate code for property {decoratedPropertyName} because it is not an array, a dictionary of scalars, or a dictionary of arrays.");
             }
 
             return propertyName;

@@ -235,6 +235,12 @@ namespace Microsoft.Json.Schema
                 }
             }
 
+            if (schema.AdditionalProperties?.Schema != null)
+            {
+                collapsedSchema.AdditionalProperties = new AdditionalProperties(
+                    Collapse(schema.AdditionalProperties?.Schema, rootSchema));
+            }
+
             if (schema.Reference != null)
             {
                 if (!schema.Reference.IsFragment)

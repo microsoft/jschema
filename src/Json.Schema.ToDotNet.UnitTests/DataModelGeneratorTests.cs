@@ -670,6 +670,23 @@ namespace N
       ""additionalProperties"": {
         ""type"": ""number""
       }
+    },
+    ""dictionaryWithObjectSchemaProp"": {
+      ""description"": ""A dictionary property whose values are defined by an object-valued additionalProperties schema."",
+      ""type"": ""object"",
+      ""additionalProperties"": {
+        ""$ref"": ""#/definitions/d""
+      }
+    },
+    ""dictionaryWithObjectArraySchemaProp"": {
+      ""description"": ""A dictionary property whose values are defined by an array-of-object-valued additionalProperties schema."",
+      ""type"": ""object"",
+      ""additionalProperties"": {
+        ""type"": ""array"",
+        ""items"": {
+          ""$ref"": ""#/definitions/d""
+        }
+      }
     }
   },
   ""definitions"": {
@@ -687,6 +704,16 @@ namespace N
     }
   ],
   ""C.DictionaryWithPrimitiveSchemaProp"": [
+    {
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+    }
+  ],
+  ""C.DictionaryWithObjectSchemaProp"": [
+    {
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+    }
+  ],
+  ""C.DictionaryWithObjectArraySchemaProp"": [
     {
       ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
@@ -773,6 +800,18 @@ namespace N
         public IDictionary<string, double> DictionaryWithPrimitiveSchemaProp { get; set; }
 
         /// <summary>
+        /// A dictionary property whose values are defined by an object-valued additionalProperties schema.
+        /// </summary>
+        [DataMember(Name = ""dictionaryWithObjectSchemaProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<string, D> DictionaryWithObjectSchemaProp { get; set; }
+
+        /// <summary>
+        /// A dictionary property whose values are defined by an array-of-object-valued additionalProperties schema.
+        /// </summary>
+        [DataMember(Name = ""dictionaryWithObjectArraySchemaProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<string, IList<D>> DictionaryWithObjectArraySchemaProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -812,9 +851,15 @@ namespace N
         /// <param name=""dictionaryWithPrimitiveSchemaProp"">
         /// An initialization value for the <see cref=""P: DictionaryWithPrimitiveSchemaProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp)
+        /// <param name=""dictionaryWithObjectSchemaProp"">
+        /// An initialization value for the <see cref=""P: DictionaryWithObjectSchemaProp"" /> property.
+        /// </param>
+        /// <param name=""dictionaryWithObjectArraySchemaProp"">
+        /// An initialization value for the <see cref=""P: DictionaryWithObjectArraySchemaProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp);
         }
 
         /// <summary>
@@ -833,7 +878,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -854,7 +899,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -937,6 +982,16 @@ namespace N
             if (dictionaryWithPrimitiveSchemaProp != null)
             {
                 DictionaryWithPrimitiveSchemaProp = new Dictionary<string, double>(dictionaryWithPrimitiveSchemaProp);
+            }
+
+            if (dictionaryWithObjectSchemaProp != null)
+            {
+                DictionaryWithObjectSchemaProp = new Dictionary<string, D>(dictionaryWithObjectSchemaProp);
+            }
+
+            if (dictionaryWithObjectArraySchemaProp != null)
+            {
+                DictionaryWithObjectArraySchemaProp = new Dictionary<string, IList<D>>(dictionaryWithObjectArraySchemaProp);
             }
         }
     }
@@ -1075,6 +1130,33 @@ namespace N
                             {
                                 value_0[index_1] = VisitNullChecked(value_0[index_1]);
                             }
+                        }
+                    }
+                }
+            }
+
+            if (node.dictionaryWithObjectSchemaProp != null)
+            {
+                foreach (var key in node.dictionaryWithObjectSchemaProp.Keys)
+                {
+                    var value = node.dictionaryWithObjectSchemaProp[key];
+                    if (value != null)
+                    {
+                        node.dictionaryWithObjectSchemaProp[key] = VisitNullChecked(value);
+                    }
+                }
+            }
+
+            if (node.dictionaryWithObjectArraySchemaProp != null)
+            {
+                foreach (var key in node.dictionaryWithObjectArraySchemaProp.Keys)
+                {
+                    var value = node.dictionaryWithObjectArraySchemaProp[key];
+                    if (value != null)
+                    {
+                        for (int index_0 = 0; index_0 < value.Count; ++i)
+                        {
+                            node.dictionaryWithObjectSchemaProp[key][index_0] = VisitNullChecked(value[index_0]);
                         }
                     }
                 }
