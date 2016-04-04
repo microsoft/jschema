@@ -79,7 +79,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         protected string[] GetPropertyNames()
         {
             return PropInfoDictionary.Keys
-                .Where(key => key.IndexOf(PropertyInfoDictionary.ArrayMarker) == -1)
+                .Where(key => key.IndexOf(PropertyInfoDictionary.ArrayMarker) == -1
+                                && key.IndexOf(PropertyInfoDictionary.DictionaryMarker) == -1)
                 .OrderBy(key => PropInfoDictionary[key].DeclarationOrder)
                 .Select(key => key.ToPascalCase())
                 .ToArray();

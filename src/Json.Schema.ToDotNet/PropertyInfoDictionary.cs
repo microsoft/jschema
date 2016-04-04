@@ -38,6 +38,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         // <code>Location[][]</code> is a property that is an array of arrays.
         internal const string ArrayMarker = "[]";
 
+        // A string which, when appended to a property name used as a key into the
+        // PropertyInfoDictionary, indicates that the property is an dictionary. For
+        // example, <code>Location{}</code> is an dictionary property, and
+        // <code>Location{}[]</code> is a dictionary property whose elements are arrays.
+        internal const string DictionaryMarker = "{}";
+
         /// <summary>
         /// Callback invoked when the dictionary discovers that another type must be
         /// generated, in addition to the one whose properties it is already generating.
@@ -90,6 +96,22 @@ namespace Microsoft.Json.Schema.ToDotNet
         public static string MakeElementKeyName(string propertyName)
         {
             return propertyName.ToPascalCase() + ArrayMarker;
+        }
+
+
+        /// <summary>
+        /// Synthesize a lookup key by which the items of the specified dictionary-
+        /// valued property can be looked up in the <see cref="PropertyInfoDictionary"/>.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The name of a dictionary-valued property.
+        /// </param>
+        /// <returns>
+        /// A lookup key for the items of the property specified by <paramref name="propertyName"/>.
+        /// </returns>
+        public static string MakeDictionaryItemKeyName(string propertyName)
+        {
+            return propertyName.ToPascalCase() + DictionaryMarker;
         }
 
         public static SyntaxKind GetTypeKeywordFromJTokenType(JTokenType type)
@@ -198,6 +220,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 if (propertySchema.AdditionalProperties?.Schema != null)
                 {
                     type = MakeDictionaryType(entries, propertyName, propertySchema);
+                    namespaceName = "System.Collections.Generic";   // For Dictionary.
                 }
                 else
                 {
@@ -368,7 +391,23 @@ namespace Microsoft.Json.Schema.ToDotNet
             string propertyName,
             JsonSchema schema)
         {
-            return null;
+            string key = MakeDictionaryItemKeyName(propertyName);
+            AddPropertyInfoFromPropertySchema(entries, key, schema.AdditionalProperties.Schema, false);
+            PropertyInfo info = entries.Single(kvp => kvp.Key == key).Value;
+
+
+            // Create a dictionary of whatever this property is. If the property
+            // is an array, this will result in a dictionary of lists, and so on.
+            return SyntaxFactory.GenericName(
+                SyntaxFactory.Identifier("IDictionary"),
+                SyntaxFactory.TypeArgumentList(
+                    SyntaxFactory.SeparatedList(
+                        new TypeSyntax[]
+                        {
+                            SyntaxFactory.PredefinedType(
+                                SyntaxFactory.Token(SyntaxKind.StringKeyword)),
+                            info.Type
+                        })));
         }
 
         private string GetReferencedEnumTypeName(JsonSchema schema)

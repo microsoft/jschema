@@ -304,8 +304,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         }
 
         /// <summary>
-        /// Synthesize the concrete type that should be used to initialize the property
-        /// in the implementation of the generated class's <code>Init</code> method.
+        /// Synthesize the concrete type that should be used to initialize a collection-
+        /// valued property in the implementation of the generated class's <code>Init</code>
+        /// method.
         /// </summary>
         /// <remarks>
         /// For array-valued properties, the property type stored in the
@@ -313,11 +314,30 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// of the <code>Init</code> method, the concrete type used to initialize the
         /// property is <see cref="List{T}" />.
         /// </remarks>
-        private TypeSyntax GetConcreteListType(string name)
+        private TypeSyntax GetConcreteListType(string propertyName)
         {
-            TypeSyntax type = PropInfoDictionary[name].Type;
+            TypeSyntax type = PropInfoDictionary[propertyName].Type;
 
             string typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
+
+            return SyntaxFactory.ParseTypeName(typeName);
+        }
+
+        /// <summary>
+        /// Synthesize the concrete type that should be used to initialize a dictionary-
+        /// valued property in the implementation of the generated class's <code>Init</code>
+        /// method.
+        /// <remarks>
+        /// For dictionary-valued properties, the property type stored in the
+        /// PropertyInfoDictionary is <see cref="IDictionary{K,V}" />. But in the
+        /// implementation of the <code>Init</code> method, the concrete type used to
+        /// initialize the property is <see cref="Dictionary{K,V}" />.
+        /// </remarks>
+        private TypeSyntax GetConcreteDictionaryType(string propertyName)
+        {
+            TypeSyntax type = PropInfoDictionary[propertyName].Type;
+
+            string typeName = Regex.Replace(type.ToString(), "^IDictionary<", "Dictionary<");
 
             return SyntaxFactory.ParseTypeName(typeName);
         }
@@ -515,8 +535,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             // property it will be used to initialize.
             string argName = propertyName.ToCamelCase();
 
-            // Get the type of this property, which we will use when we clone it.
-            TypeSyntax type = PropInfoDictionary[propertyName].Type;
+            // Get the type of the concrete dictionary with which to initialize the
+            // property. For example, if the property is of type IDictionary<string, double>,
+            // it will be initialized with an object of type Dictionary<string, double>.
+            TypeSyntax type = GetConcreteDictionaryType(propertyName);
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(argName),

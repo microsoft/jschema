@@ -663,6 +663,13 @@ namespace N
     ""dictionaryProp"": {
       ""description"": ""A dictionary property."",
       ""type"": ""object""
+    },
+    ""dictionaryWithPrimitiveSchemaProp"": {
+      ""description"": ""A dictionary property whose values are defined by a primitive additionalProperties schema."",
+      ""type"": ""object"",
+      ""additionalProperties"": {
+        ""type"": ""number""
+      }
     }
   },
   ""definitions"": {
@@ -675,6 +682,11 @@ namespace N
             const string HintsText =
 @"{
   ""C.DictionaryProp"": [
+    {
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+    }
+  ],
+  ""C.DictionaryWithPrimitiveSchemaProp"": [
     {
       ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
@@ -755,6 +767,12 @@ namespace N
         public Dictionary<string, string> DictionaryProp { get; set; }
 
         /// <summary>
+        /// A dictionary property whose values are defined by a primitive additionalProperties schema.
+        /// </summary>
+        [DataMember(Name = ""dictionaryWithPrimitiveSchemaProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<string, double> DictionaryWithPrimitiveSchemaProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -791,9 +809,12 @@ namespace N
         /// <param name=""dictionaryProp"">
         /// An initialization value for the <see cref=""P: DictionaryProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp)
+        /// <param name=""dictionaryWithPrimitiveSchemaProp"">
+        /// An initialization value for the <see cref=""P: DictionaryWithPrimitiveSchemaProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp);
         }
 
         /// <summary>
@@ -812,7 +833,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -833,7 +854,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, Dictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -911,6 +932,11 @@ namespace N
             if (dictionaryProp != null)
             {
                 DictionaryProp = new Dictionary<string, string>(dictionaryProp);
+            }
+
+            if (dictionaryWithPrimitiveSchemaProp != null)
+            {
+                DictionaryWithPrimitiveSchemaProp = new Dictionary<string, double>(dictionaryWithPrimitiveSchemaProp);
             }
         }
     }
