@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
@@ -109,7 +110,7 @@ namespace Microsoft.Json.Schema
 
         public string Description { get; set; }
 
-        public JsonType Type { get; set; }
+        public JTokenType Type { get; set; }
 
         /// <summary>
         /// Gets or sets an array containing the values that are valid for an object
@@ -122,7 +123,7 @@ namespace Microsoft.Json.Schema
         /// schema is of array type.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Array"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
         /// </remarks>
         public JsonSchema Items { get; set; }
 
@@ -131,7 +132,7 @@ namespace Microsoft.Json.Schema
         /// conform.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Object"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
         /// </remarks>
         public Dictionary<string, JsonSchema> Properties { get; set; }
 
@@ -140,7 +141,7 @@ namespace Microsoft.Json.Schema
         /// required to be present.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Object"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
         /// </remarks>
         public string[] Required { get; set; }
 
@@ -160,7 +161,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the minimum valid number of elements in an array.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Array"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
         /// If this property is not specified, it is considered present with a value of 0.
         /// The type of this property is <code>int?</code>, rather than <code>int</code>
         /// with a default value of 0, is so that a schema that does not specify this
@@ -172,7 +173,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the maximum valid number of elements in an array.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.Array"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
         /// If this property is not specified, any number of items is valid.
         /// The type of this property is <code>int?</code>, rather than <code>int</code>
         /// with a default value of <code>Int32.MaxValue</code>, is so that a schema that
@@ -193,7 +194,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets a string specifying the required format of a string-valued property.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JsonType.String"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.String"/>.
         /// </remarks>
         public string Format { get; set; }
 
@@ -253,7 +254,7 @@ namespace Microsoft.Json.Schema
                         definitionName);
                 }
 
-                if (collapsedSchema.Type == JsonType.None)
+                if (collapsedSchema.Type == JTokenType.None)
                 {
                     collapsedSchema.Type = referencedSchema.Type;
                 }

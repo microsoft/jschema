@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -9,12 +10,12 @@ namespace Microsoft.Json.Schema.ToDotNet
     {
         internal static bool IsDateTime(this JsonSchema schema)
         {
-            return schema.Type == JsonType.String && schema.Format == FormatAttributes.DateTime;
+            return schema.Type == JTokenType.String && schema.Format == FormatAttributes.DateTime;
         }
 
         internal static bool IsUri(this JsonSchema schema)
         {
-            return schema.Type == JsonType.String && schema.Format == FormatAttributes.Uri;
+            return schema.Type == JTokenType.String && schema.Format == FormatAttributes.Uri;
         }
 
         internal static bool ShouldBeDictionary(
@@ -25,7 +26,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             // Ignore any DictionaryHint that might apply to this property
             // if the property is not an object.
-            if (schema.Type != JsonType.Object)
+            if (schema.Type != JTokenType.Object)
             {
                 return false;
             }

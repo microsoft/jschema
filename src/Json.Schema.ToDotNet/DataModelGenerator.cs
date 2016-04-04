@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -65,9 +66,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             _fileSystem.CreateDirectory(_settings.OutputDirectory);
 
-            if (_rootSchema.Type != JsonType.Object)
+            if (_rootSchema.Type != JTokenType.Object)
             {
-                throw JSchemaException.Create(Resources.ErrorNotAnObject, _rootSchema.Type);
+                throw JSchemaException.Create(Resources.ErrorNotAnObject, _rootSchema.Type.ToJsonSchemaName());
             }
 
             string rootFileText = CreateFile(_settings.RootClassName, _rootSchema);

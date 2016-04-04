@@ -31,7 +31,7 @@ namespace Microsoft.Json.Schema
             }
             else if (t.Type == JTokenType.Object)
             {
-                JsonSchema schema = t.ToObject<JsonSchema>();
+                JsonSchema schema = t.ToObject<JsonSchema>(serializer);
                 return new AdditionalProperties(schema);
             }
             else

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.UnitTests
 {
@@ -24,7 +25,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     SchemaVersion = JsonSchema.V4Draft,
                     Title = "The title",
                     Description = "The description",
-                    Type = JsonType.Object
+                    Type = JTokenType.Object
                 }
             },
 
@@ -33,28 +34,28 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Properties",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["stringProp"] = new JsonSchema
                         {
-                            Type = JsonType.String
+                            Type = JTokenType.String
                         },
 
                         ["numberProp"] = new JsonSchema
                         {
-                            Type = JsonType.Number
+                            Type = JTokenType.Float
                         },
 
                         ["booleanProp"] = new JsonSchema
                         {
-                            Type = JsonType.Boolean
+                            Type = JTokenType.Boolean
                         },
 
                         ["integerProp"] = new JsonSchema
                         {
-                            Type = JsonType.Integer
+                            Type = JTokenType.Integer
                         },
                     }
                 }
@@ -65,23 +66,23 @@ namespace Microsoft.Json.Schema.UnitTests
                 "RequiredProperties",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["prop1"] = new JsonSchema
                         {
-                            Type = JsonType.String
+                            Type = JTokenType.String
                         },
 
                         ["prop2"] = new JsonSchema
                         {
-                            Type = JsonType.Integer
+                            Type = JTokenType.Integer
                         },
 
                         ["prop3"] = new JsonSchema
                         {
-                            Type = JsonType.Boolean
+                            Type = JTokenType.Boolean
                         }
                     },
 
@@ -94,15 +95,15 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Array",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["arrayProp"] = new JsonSchema
                         {
-                            Type = JsonType.Array,
+                            Type = JTokenType.Array,
                             Items = new JsonSchema
                             {
-                                Type = JsonType.Object
+                                Type = JTokenType.Object
                             }
                         }
                     },
@@ -116,15 +117,15 @@ namespace Microsoft.Json.Schema.UnitTests
                 "IntegerArray",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["integerArrayProp"] = new JsonSchema
                         {
-                            Type = JsonType.Array,
+                            Type = JTokenType.Array,
                             Items = new JsonSchema
                             {
-                                Type = JsonType.Integer
+                                Type = JTokenType.Integer
                             }
                         }
                     }
@@ -136,13 +137,13 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Definitions",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["rootProp"] = new JsonSchema
                         {
-                            Type = JsonType.Boolean
+                            Type = JTokenType.Boolean
                         }
                     },
 
@@ -150,25 +151,25 @@ namespace Microsoft.Json.Schema.UnitTests
                     {
                         ["def1"] = new JsonSchema
                         {
-                            Type = JsonType.Object,
+                            Type = JTokenType.Object,
 
                             Properties = new Dictionary<string, JsonSchema>
                             {
                                 ["prop1"] = new JsonSchema
                                 {
-                                    Type = JsonType.String
+                                    Type = JTokenType.String
                                 }
                             }
                         },
                         ["def2"] = new JsonSchema
                         {
-                            Type = JsonType.Object,
+                            Type = JTokenType.Object,
 
                             Properties = new Dictionary<string, JsonSchema>
                             {
                                 ["prop2"] = new JsonSchema
                                 {
-                                    Type = JsonType.Integer
+                                    Type = JTokenType.Integer
                                 }
                             }
                         }
@@ -181,7 +182,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Reference",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
@@ -200,7 +201,7 @@ namespace Microsoft.Json.Schema.UnitTests
                             {
                                 ["prop1"] = new JsonSchema
                                 {
-                                    Type = JsonType.String
+                                    Type = JTokenType.String
                                 }
                             }
                         }
@@ -213,13 +214,13 @@ namespace Microsoft.Json.Schema.UnitTests
                 "DateTime",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
                          ["startTime"] = new JsonSchema
                          {
-                             Type = JsonType.String,
+                             Type = JTokenType.String,
                              Format = FormatAttributes.DateTime
                          }
                     }
@@ -231,7 +232,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "AdditionalPropertiesBoolean",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
                     AdditionalProperties = new AdditionalProperties(true)
                 }
             },
@@ -241,10 +242,10 @@ namespace Microsoft.Json.Schema.UnitTests
                 "AdditionalPropertiesSchema",
                 new JsonSchema
                 {
-                    Type = JsonType.Object,
+                    Type = JTokenType.Object,
                     AdditionalProperties = new AdditionalProperties(new JsonSchema
                     {
-                        Type = JsonType.Number
+                        Type = JTokenType.Float
                     })
                 }
             }

@@ -8,6 +8,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -23,12 +24,12 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private readonly ImmutableDictionary<string, PropertyInfo> _dictionary;
 
-        private static readonly Dictionary<JsonType, SyntaxKind> s_jsonTypeToSyntaxKindDictionary = new Dictionary<JsonType, SyntaxKind>
+        private static readonly Dictionary<JTokenType, SyntaxKind> s_JTokenTypeToSyntaxKindDictionary = new Dictionary<JTokenType, SyntaxKind>
         {
-            [JsonType.Boolean] = SyntaxKind.BoolKeyword,
-            [JsonType.Integer] = SyntaxKind.IntKeyword,
-            [JsonType.Number] = SyntaxKind.DoubleKeyword,
-            [JsonType.String] = SyntaxKind.StringKeyword
+            [JTokenType.Boolean] = SyntaxKind.BoolKeyword,
+            [JTokenType.Integer] = SyntaxKind.IntKeyword,
+            [JTokenType.Float] = SyntaxKind.DoubleKeyword,
+            [JTokenType.String] = SyntaxKind.StringKeyword
         };
 
         // A string which, when appended to a property name used as a key into the
@@ -91,10 +92,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             return propertyName.ToPascalCase() + ArrayMarker;
         }
 
-        public static SyntaxKind GetTypeKeywordFromJsonType(JsonType type)
+        public static SyntaxKind GetTypeKeywordFromJTokenType(JTokenType type)
         {
             SyntaxKind typeKeyword;
-            if (!s_jsonTypeToSyntaxKindDictionary.TryGetValue(type, out typeKeyword))
+            if (!s_JTokenTypeToSyntaxKindDictionary.TryGetValue(type, out typeKeyword))
             {
                 typeKeyword = SyntaxKind.ObjectKeyword;
             }
@@ -213,23 +214,23 @@ namespace Microsoft.Json.Schema.ToDotNet
         	{
                 switch (propertySchema.Type)
                 {
-                    case JsonType.Boolean:
-                    case JsonType.Integer:
-                    case JsonType.Number:
+                    case JTokenType.Boolean:
+                    case JTokenType.Integer:
+                    case JTokenType.Float:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarValueType;
                         initializationKind = InitializationKind.SimpleAssign;
                         type = MakePrimitiveType(propertySchema.Type);
                         break;
 
-                    case JsonType.String:
+                    case JTokenType.String:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarReferenceType;
                         initializationKind = InitializationKind.SimpleAssign;
                         type = MakePrimitiveType(propertySchema.Type);
                         break;
 
-                    case JsonType.Object:
+                    case JTokenType.Object:
                         // If the schema for this property references a named type,
                         // the generated Init method will initialize it by cloning an object
                         // of that type. Otherwise, we treat this property as a System.Object
@@ -249,7 +250,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         type = MakeObjectType(propertySchema, out namespaceName);
                         break;
 
-                    case JsonType.Array:
+                    case JTokenType.Array:
                         comparisonKind = ComparisonKind.Collection;
                         hashKind = HashKind.Collection;
                         initializationKind = InitializationKind.Collection;
@@ -257,23 +258,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                         type = MakeArrayType(entries, propertyName, propertySchema);
                         break;
 
-                    case JsonType.None:
-                        JsonType inferredType = InferJsonTypeFromEnumValues(propertySchema.Enum);
-                        if (inferredType == JsonType.None)
+                    case JTokenType.None:
+                        JTokenType inferredType = InferJTokenTypeFromEnumValues(propertySchema.Enum);
+                        if (inferredType == JTokenType.None)
                         {
                             comparisonKind = ComparisonKind.ObjectEquals;
                             hashKind = HashKind.ScalarReferenceType;
                             initializationKind = InitializationKind.None;
-                            type = MakePrimitiveType(JsonType.Object);
+                            type = MakePrimitiveType(JTokenType.Object);
                             break;
 
                         }
-                        else if (inferredType == JsonType.String)
+                        else if (inferredType == JTokenType.String)
                         {
                             comparisonKind = ComparisonKind.OperatorEquals;
                             hashKind = HashKind.ScalarReferenceType;
                             initializationKind = InitializationKind.SimpleAssign;
-                            type = MakePrimitiveType(JsonType.String);
+                            type = MakePrimitiveType(JTokenType.String);
                             break;
                         }
                         else
@@ -305,9 +306,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                     entries.Count)));
         }
 
-        private TypeSyntax MakePrimitiveType(JsonType jsonType)
+        private TypeSyntax MakePrimitiveType(JTokenType JTokenType)
         {
-            SyntaxKind typeKeyword = GetTypeKeywordFromJsonType(jsonType);
+            SyntaxKind typeKeyword = GetTypeKeywordFromJTokenType(JTokenType);
             return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
         }
 
@@ -376,47 +377,47 @@ namespace Microsoft.Json.Schema.ToDotNet
                     && kvp.Value.Any(hint => hint is EnumHint));
         }
 
-        private JsonType InferJsonTypeFromEnumValues(object[] enumValues)
+        private JTokenType InferJTokenTypeFromEnumValues(object[] enumValues)
         {
-            JsonType jsonType = JsonType.None;
+            JTokenType JTokenType = JTokenType.None;
 
             if (enumValues != null && enumValues.Any())
             {
-                jsonType = GetJsonTypeFromObject(enumValues[0]);
+                JTokenType = GetJTokenTypeFromObject(enumValues[0]);
                 for (int i = 1; i < enumValues.Length; ++i)
                 {
-                    if (GetJsonTypeFromObject(enumValues[i]) != jsonType)
+                    if (GetJTokenTypeFromObject(enumValues[i]) != JTokenType)
                     {
-                        jsonType = JsonType.None;
+                        JTokenType = JTokenType.None;
                         break;
                     }
                 }
             }
 
-            return jsonType;
+            return JTokenType;
         }
 
-        private static JsonType GetJsonTypeFromObject(object obj)
+        private static JTokenType GetJTokenTypeFromObject(object obj)
         {
             if (obj is string)
             {
-                return JsonType.String;
+                return JTokenType.String;
             }
             else if (obj.IsIntegralType())
             {
-                return JsonType.Integer;
+                return JTokenType.Integer;
             }
             else if (obj.IsFloatingType())
             {
-                return JsonType.Number;
+                return JTokenType.Float;
             }
             else if (obj is bool)
             {
-                return JsonType.Boolean;
+                return JTokenType.Boolean;
             }
             else
             {
-                return JsonType.None;
+                return JTokenType.None;
             }
         }
 
