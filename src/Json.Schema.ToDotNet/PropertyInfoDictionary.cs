@@ -217,15 +217,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 // then we will represent this property as a dictionary from string to
                 // whatever kind of object the schema represents. Otherwise, treat it as
                 // a dictionary from string to string.
-                if (propertySchema.AdditionalProperties?.Schema != null)
-                {
-                    type = MakeDictionaryType(entries, propertyName, propertySchema);
-                    namespaceName = "System.Collections.Generic";   // For Dictionary.
-                }
-                else
-                {
-                    type = MakeNamedType("System.Collections.Generic.Dictionary<string, string>", out namespaceName);
-                }
+                JsonSchema dictionaryElementSchema = propertySchema.AdditionalProperties?.Schema != null
+                    ? propertySchema.AdditionalProperties.Schema
+                    : new JsonSchema { Type = JTokenType.String };
+
+                type = MakeDictionaryType(entries, propertyName, dictionaryElementSchema);
+                namespaceName = "System.Collections.Generic";   // For IDictionary.
             }
             else if ((referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
             {
@@ -389,10 +386,10 @@ namespace Microsoft.Json.Schema.ToDotNet
         private TypeSyntax MakeDictionaryType(
             IList<KeyValuePair<string, PropertyInfo>> entries,
             string propertyName,
-            JsonSchema schema)
+            JsonSchema dictionaryElementSchema)
         {
             string key = MakeDictionaryItemKeyName(propertyName);
-            AddPropertyInfoFromPropertySchema(entries, key, schema.AdditionalProperties.Schema, false);
+            AddPropertyInfoFromPropertySchema(entries, key, dictionaryElementSchema, false);
             PropertyInfo info = entries.Single(kvp => kvp.Key == key).Value;
 
 
