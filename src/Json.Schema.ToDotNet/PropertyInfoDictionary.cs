@@ -189,7 +189,20 @@ namespace Microsoft.Json.Schema.ToDotNet
                 comparisonKind = ComparisonKind.Dictionary;
                 hashKind = HashKind.Dictionary;
                 initializationKind = InitializationKind.Clone;
-                type = MakeNamedType("System.Collections.Generic.Dictionary<string, string>", out namespaceName);
+
+                // If the schema for this property specifies additionalProperties, and if
+                // the value of additionalProperties is a schema as opposed to a Boolean,
+                // then we will represent this property as a dictionary from string to
+                // whatever kind of object the schema represents. Otherwise, treat it as
+                // a dictionary from string to string.
+                if (propertySchema.AdditionalProperties?.Schema != null)
+                {
+                    type = MakeDictionaryType(entries, propertyName, propertySchema);
+                }
+                else
+                {
+                    type = MakeNamedType("System.Collections.Generic.Dictionary<string, string>", out namespaceName);
+                }
             }
             else if ((referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
             {
@@ -348,6 +361,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.Identifier("IList"),
                 SyntaxFactory.TypeArgumentList(
                     SyntaxFactory.SingletonSeparatedList(info.Type)));
+        }
+
+        private TypeSyntax MakeDictionaryType(
+            IList<KeyValuePair<string, PropertyInfo>> entries,
+            string propertyName,
+            JsonSchema schema)
+        {
+            return null;
         }
 
         private string GetReferencedEnumTypeName(JsonSchema schema)
