@@ -209,7 +209,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 comparisonKind = ComparisonKind.Dictionary;
                 hashKind = HashKind.Dictionary;
-                initializationKind = InitializationKind.Clone;
+                initializationKind = InitializationKind.Dictionary;
 
                 // If the schema for this property specifies additionalProperties, and if
                 // the value of additionalProperties is a schema as opposed to a Boolean,

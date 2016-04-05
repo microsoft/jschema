@@ -986,12 +986,33 @@ namespace N
 
             if (dictionaryWithObjectSchemaProp != null)
             {
-                DictionaryWithObjectSchemaProp = new Dictionary<string, D>(dictionaryWithObjectSchemaProp);
+                DictionaryWithObjectSchemaProp = new Dictionary<string, D>();
+                foreach (var value_4 in dictionaryWithObjectSchemaProp)
+                {
+                    DictionaryWithObjectSchemaProp.Add(value_4.Key, new D(value_4.Value));
+                }
             }
 
             if (dictionaryWithObjectArraySchemaProp != null)
             {
-                DictionaryWithObjectArraySchemaProp = new Dictionary<string, IList<D>>(dictionaryWithObjectArraySchemaProp);
+                DictionaryWithObjectArraySchemaProp = new Dictionary<string, IList<D>>();
+                foreach (var value_5 in dictionaryWithObjectArraySchemaProp)
+                {
+                    var destination_4 = new List<D>();
+                    foreach (var value_6 in value_5.Value)
+                    {
+                        if (value_6 == null)
+                        {
+                            destination_4.Add(null);
+                        }
+                        else
+                        {
+                            destination_4.Add(new D(value_6));
+                        }
+                    }
+
+                    DictionaryWithObjectArraySchemaProp.Add(value_5.Key, destination_4);
+                }
             }
         }
     }

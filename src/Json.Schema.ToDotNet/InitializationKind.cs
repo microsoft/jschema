@@ -32,6 +32,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <summary>
         /// Initialize this property with special code to handle Uris.
         /// </summary>
-        Uri
+        Uri,
+
+        /// <summary>
+        /// Initialize this property by assigning dictionary entries.
+        /// </summary>
+        Dictionary
     }
 }

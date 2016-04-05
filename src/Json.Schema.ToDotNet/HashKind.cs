@@ -58,7 +58,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// if (ArrayProp != null)
         /// {
         ///     result = *= 31;
-        ///     for (int value_0; value_0 < ArrayProp.Count; ++value_0)
+        ///     for (int value_0; value_0 &lt; ArrayProp.Count; ++value_0)
         ///     {
         ///         var value_1 = ArrayProp[value_0];
         ///         if (value_1 != null)

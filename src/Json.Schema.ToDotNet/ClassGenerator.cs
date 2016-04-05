@@ -45,6 +45,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string DeepCloneMethod = "DeepClone";
         private const string DeepCloneCoreMethod = "DeepCloneCore";
 
+        private const string KeyProperty = "Key";
+        private const string ValueProperty = "Value";
+
         private const string GetHashCodeResultVariableName = "result";
 
         private const int GetHashCodeSeedValue = 17;
@@ -518,6 +521,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 case InitializationKind.Uri:
                     return GenerateUriInitialization(propertyName);
 
+                case InitializationKind.Dictionary:
+                    return GenerateDictionaryInitialization(propertyName);
+
                 default:
                     // Do not generate initialization code for this property.
                     return null;
@@ -584,29 +590,17 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(SyntaxFactory.IdentifierName(argName)),
                 SyntaxFactory.Block(
-                    SyntaxFactory.LocalDeclarationStatement(
-                        SyntaxFactory.VariableDeclaration(
-                            SyntaxHelper.Var(),
-                            SyntaxFactory.SingletonSeparatedList(
-                                SyntaxFactory.VariableDeclarator(
-                                    SyntaxFactory.Identifier(destinationVariableName),
-                                    default(BracketedArgumentListSyntax),
-                                    SyntaxFactory.EqualsValueClause(
-                                        SyntaxFactory.ObjectCreationExpression(
-                                            type,
-                                            SyntaxHelper.ArgumentList(),
-                                            default(InitializerExpressionSyntax))))))),
+                    // var destination_0 = new List<D>();
+                    DeclareCollection(type, destinationVariableName),
 
-                    SyntaxFactory.ForEachStatement(
-                        SyntaxHelper.Var(),
+                    // foreach (var value_0 in foo)
+                    GenerateElementInitializationLoop(
                         collectionElementVariableName,
                         SyntaxFactory.IdentifierName(argName),
-                        SyntaxFactory.Block(
-                            GenerateElementInitialization(
-                                elementInfoKey,
-                                destinationVariableName,
-                                collectionElementVariableName))),
-                    
+                        elementInfoKey,
+                        destinationVariableName),
+
+                    // Foo = foo;
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
@@ -614,7 +608,172 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(destinationVariableName)))));
         }
 
-        private StatementSyntax GenerateElementInitialization(
+        private LocalDeclarationStatementSyntax DeclareCollection(
+            TypeSyntax collectionType,
+            string collectionVariableName)
+        {
+            return SyntaxFactory.LocalDeclarationStatement(
+                SyntaxFactory.VariableDeclaration(
+                    SyntaxHelper.Var(),
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.VariableDeclarator(
+                            SyntaxFactory.Identifier(collectionVariableName),
+                            default(BracketedArgumentListSyntax),
+                            SyntaxFactory.EqualsValueClause(
+                                SyntaxFactory.ObjectCreationExpression(
+                                    collectionType,
+                                    SyntaxHelper.ArgumentList(),
+                                    default(InitializerExpressionSyntax)))))));
+        }
+
+        private ForEachStatementSyntax GenerateElementInitializationLoop(
+            string collectionElementVariableName,
+            ExpressionSyntax collection,
+            string elementInfoKey,
+            string destinationVariableName)
+        {
+            return SyntaxFactory.ForEachStatement(
+                SyntaxHelper.Var(),
+                collectionElementVariableName,
+                collection,
+                SyntaxFactory.Block(
+                    GenerateElementInitialization(
+                        elementInfoKey,
+                        destinationVariableName,
+                        collectionElementVariableName)));
+        }
+
+        private StatementSyntax GenerateDictionaryInitialization(string propertyName)
+        {
+            string elementPropertyInfoKey = PropertyInfoDictionary.MakeDictionaryItemKeyName(propertyName);
+            PropertyInfo elementInfo = PropInfoDictionary[elementPropertyInfoKey];
+
+            switch (elementInfo.InitializationKind)
+            {
+                // If the elements can be copied, the dictionary itself can be cloned
+                // (copy-constructed).
+                case InitializationKind.SimpleAssign:
+                    return GenerateCloneInitialization(propertyName);
+
+                case InitializationKind.Clone:
+                    return GenerateDictionaryInitializationWithClonedElements(propertyName, elementInfo.Type);
+
+                case InitializationKind.Collection:
+                    return GenerateDictionaryInitializationWithCollectionElements(propertyName);
+
+                default:
+                    return SyntaxFactory.EmptyStatement();
+                    //throw new ArgumentException(
+                    //    $"Cannot generate code for dictionary-valued property {propertyName} because dictionaries with elements of type {elementInfo.Type} are not supported.");
+            }
+        }
+
+        private StatementSyntax GenerateDictionaryInitializationWithCollectionElements(string propertyName)
+        {
+            string argName = propertyName.ToCamelCase();
+            string dictionaryElementInfoKey = PropertyInfoDictionary.MakeDictionaryItemKeyName(propertyName);
+            string listElementInfoKey = PropertyInfoDictionary.MakeElementKeyName(dictionaryElementInfoKey);
+
+            TypeSyntax dictionaryType = GetConcreteDictionaryType(propertyName);
+            string dictionaryElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+            ExpressionSyntax dictionaryElement = SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(dictionaryElementVariableName),
+                SyntaxFactory.IdentifierName(ValueProperty));
+
+            string listElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+            string collectionVariableName = _localVariableNameGenerator.GetNextDestinationVariableName();
+
+            return SyntaxFactory.IfStatement(
+                // if (foo != null)
+                SyntaxHelper.IsNotNull(argName),
+                SyntaxFactory.Block(
+                    // Foo = new Dictionary<string, IList<D>>();
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            SyntaxFactory.IdentifierName(propertyName),
+                            SyntaxFactory.ObjectCreationExpression(
+                                dictionaryType,
+                                SyntaxFactory.ArgumentList(),
+                                default(InitializerExpressionSyntax)))),
+                    // foreach (var value_0 in foo)
+                    SyntaxFactory.ForEachStatement(
+                        SyntaxHelper.Var(),
+                        dictionaryElementVariableName,
+                        SyntaxFactory.IdentifierName(argName),
+                        SyntaxFactory.Block(
+                            DeclareCollection(
+                                GetConcreteListType(dictionaryElementInfoKey), collectionVariableName),
+                            GenerateElementInitializationLoop(
+                                listElementVariableName,
+                                dictionaryElement,
+                                listElementInfoKey,
+                                collectionVariableName),
+                            SyntaxFactory.ExpressionStatement(
+                                SyntaxFactory.InvocationExpression(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(propertyName),
+                                        SyntaxFactory.IdentifierName(AddMethod)),
+                                    SyntaxHelper.ArgumentList(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.IdentifierName(dictionaryElementVariableName),
+                                            SyntaxFactory.IdentifierName(KeyProperty)),
+                                        SyntaxFactory.IdentifierName(collectionVariableName))))))));
+        }
+
+        private StatementSyntax GenerateDictionaryInitializationWithClonedElements(
+            string propertyName,
+            TypeSyntax elementType)
+        {
+            string argName = propertyName.ToCamelCase();
+            string valueVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+            TypeSyntax dictionaryType = GetConcreteDictionaryType(propertyName);
+
+            return SyntaxFactory.IfStatement(
+                // if (foo != null)
+                SyntaxHelper.IsNotNull(argName),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        // Foo = new Dictionary<string, D>();
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            SyntaxFactory.IdentifierName(propertyName),
+                            SyntaxFactory.ObjectCreationExpression(
+                                dictionaryType,
+                                SyntaxFactory.ArgumentList(),
+                                default(InitializerExpressionSyntax)))),
+                    
+                    // foreach (var value_0 in foo)
+                    SyntaxFactory.ForEachStatement(
+                        SyntaxHelper.Var(),
+                        valueVariableName,
+                        SyntaxFactory.IdentifierName(argName),
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ExpressionStatement(
+                                SyntaxFactory.InvocationExpression(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(propertyName),
+                                        SyntaxFactory.IdentifierName(AddMethod)),
+                                    SyntaxHelper.ArgumentList(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.IdentifierName(valueVariableName),
+                                            SyntaxFactory.IdentifierName(KeyProperty)),
+                                        SyntaxFactory.ObjectCreationExpression(
+                                            elementType,
+                                            SyntaxHelper.ArgumentList(
+                                                SyntaxFactory.MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    SyntaxFactory.IdentifierName(valueVariableName),
+                                                    SyntaxFactory.IdentifierName(ValueProperty))),
+                                            default(InitializerExpressionSyntax)))))))));
+        }
+
+        private StatementSyntax GenerateElementInitialization( // TODO pass in initializationKind. instead of infokey.
             string elementInfoKey,
             string destinationVariableName,
             string sourceVariableName)
@@ -976,15 +1135,15 @@ namespace Microsoft.Json.Schema.ToDotNet
                         expression,
                         SyntaxFactory.Block(
                             // xor_0 ^= value_0.Key.GetHashCode();
-                            Xor(xorValueVariableName, collectionElementVariableName, "Key"),
+                            Xor(xorValueVariableName, collectionElementVariableName, KeyProperty),
                             SyntaxFactory.IfStatement(
                                 SyntaxHelper.IsNotNull(
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(collectionElementVariableName),
-                                        SyntaxFactory.IdentifierName("Value"))),
+                                        SyntaxFactory.IdentifierName(ValueProperty))),
                                 SyntaxFactory.Block(
-                                    Xor(xorValueVariableName, collectionElementVariableName, "Value"))))),
+                                    Xor(xorValueVariableName, collectionElementVariableName, ValueProperty))))),
 
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -1260,7 +1419,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                         SyntaxFactory.MemberAccessExpression(
                                                             SyntaxKind.SimpleMemberAccessExpression,
                                                             SyntaxFactory.IdentifierName(collectionElementVariableName),
-                                                            SyntaxFactory.IdentifierName("Key"))),
+                                                            SyntaxFactory.IdentifierName(KeyProperty))),
                                                     SyntaxFactory.Argument(
                                                         default(NameColonSyntax),
                                                         SyntaxFactory.Token(SyntaxKind.OutKeyword),
@@ -1275,7 +1434,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(collectionElementVariableName),
-                                        SyntaxFactory.IdentifierName("Value")),
+                                        SyntaxFactory.IdentifierName(ValueProperty)),
                                     SyntaxFactory.IdentifierName(otherPropertyVariableName))))));
         }
 
