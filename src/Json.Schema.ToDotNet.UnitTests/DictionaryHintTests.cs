@@ -77,8 +77,11 @@ namespace N
                     int xor_0 = 0;
                     foreach (var value_0 in Properties)
                     {
-                        xor_0 ^= (value_0.Key ?? string.Empty).GetHashCode();
-                        xor_0 ^= (value_0.Value ?? string.Empty).GetHashCode();
+                        xor_0 ^= value_0.Key.GetHashCode();
+                        if (value_0.Value != null)
+                        {
+                            xor_0 ^= value_0.Value.GetHashCode();
+                        }
                     }
 
                     result = (result * 31) + xor_0;
@@ -106,6 +109,112 @@ namespace N
                 {
                     string value_1;
                     if (!other.Properties.TryGetValue(value_0.Key, out value_1))
+                    {
+                        return false;
+                    }
+
+                    if (value_0.Value != value_1)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+}"
+            },
+
+            new object[]
+            {
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""dictionaryOfD"": {
+      ""type"": ""object"",
+      ""additionalProperties"": {
+        ""$ref"": ""#/definitions/d""
+      }
+    }
+  },
+  ""definitions"": {
+    ""d"": {
+      ""type"": ""object""
+    }
+  }
+}",
+
+@"{
+  ""C.DictionaryOfD"": [
+    {
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    public sealed class C : IEquatable<C>
+    {
+        [DataMember(Name = ""dictionaryOfD"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<string, D> DictionaryOfD { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (DictionaryOfD != null)
+                {
+                    // Use xor for dictionaries to be order-independent.
+                    int xor_0 = 0;
+                    foreach (var value_0 in DictionaryOfD)
+                    {
+                        xor_0 ^= value_0.Key.GetHashCode();
+                        if (value_0.Value != null)
+                        {
+                            xor_0 ^= value_0.Value.GetHashCode();
+                        }
+                    }
+
+                    result = (result * 31) + xor_0;
+                }
+            }
+
+            return result;
+        }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(DictionaryOfD, other.DictionaryOfD))
+            {
+                if (DictionaryOfD == null || other.DictionaryOfD == null || DictionaryOfD.Count != other.DictionaryOfD.Count)
+                {
+                    return false;
+                }
+
+                foreach (var value_0 in DictionaryOfD)
+                {
+                    string value_1;
+                    if (!other.DictionaryOfD.TryGetValue(value_0.Key, out value_1))
                     {
                         return false;
                     }

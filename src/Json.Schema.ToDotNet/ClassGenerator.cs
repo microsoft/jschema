@@ -875,7 +875,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     return MakeCollectionHashCodeContribution(hashKindKey, expression);
 
                 case HashKind.Dictionary:
-                    return MakeDictionaryHashCodeContribution(expression); // TODO: Dictionary as array element; array element as dictionary.
+                    return MakeDictionaryHashCodeContribution(expression);
 
                 default:
                     throw new ArgumentException($"Property {hashKindKey} has unknown comparison type {hashKind}.");
@@ -955,6 +955,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(expression),
                 SyntaxFactory.Block(
+                    // int xor_0 = 0;
                     SyntaxFactory.LocalDeclarationStatement(
                         SyntaxFactory.VariableDeclaration(
                             SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
@@ -974,8 +975,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                         collectionElementVariableName,
                         expression,
                         SyntaxFactory.Block(
+                            // xor_0 ^= value_0.Key.GetHashCode();
                             Xor(xorValueVariableName, collectionElementVariableName, "Key"),
-                            Xor(xorValueVariableName, collectionElementVariableName, "Value"))),
+                            SyntaxFactory.IfStatement(
+                                SyntaxHelper.IsNotNull(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(collectionElementVariableName),
+                                        SyntaxFactory.IdentifierName("Value"))),
+                                SyntaxFactory.Block(
+                                    Xor(xorValueVariableName, collectionElementVariableName, "Value"))))),
 
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.AssignmentExpression(
@@ -1002,18 +1011,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.InvocationExpression(
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.ParenthesizedExpression(
-                                SyntaxFactory.BinaryExpression(
-                                    SyntaxKind.CoalesceExpression,
-                                    SyntaxFactory.MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(loopVariableName),
-                                        SyntaxFactory.IdentifierName(keyValuePairMemberName)),
-                                    SyntaxFactory.MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("string"),
-                                        SyntaxFactory.IdentifierName("Empty")))),
-                            SyntaxFactory.IdentifierName(GetHashCodeMethod)))));
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(loopVariableName),
+                                SyntaxFactory.IdentifierName(keyValuePairMemberName)),
+                        SyntaxFactory.IdentifierName(GetHashCodeMethod)))));
         }
 
         private MemberDeclarationSyntax ImplementIEquatableEquals()
