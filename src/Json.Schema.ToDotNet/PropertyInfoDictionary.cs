@@ -98,7 +98,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             return propertyName.ToPascalCase() + ArrayMarker;
         }
 
-
         /// <summary>
         /// Synthesize a lookup key by which the items of the specified dictionary-
         /// valued property can be looked up in the <see cref="PropertyInfoDictionary"/>.

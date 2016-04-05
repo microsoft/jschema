@@ -219,7 +219,7 @@ namespace N
                         return false;
                     }
 
-                    if (value_0.Value != value_1)
+                    if (!Object.Equals(value_0.Value, value_1))
                     {
                         return false;
                     }

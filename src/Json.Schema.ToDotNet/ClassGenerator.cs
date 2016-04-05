@@ -1074,7 +1074,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     return MakeCollectionEqualsTest(comparisonKindKey, left, right);
 
                 case ComparisonKind.Dictionary:
-                    return MakeDictionaryEqualsTest(left, right); // TODO: Dictionary as array element; array element as dictionary.
+                    return MakeDictionaryEqualsTest(comparisonKindKey, left, right);
 
                 default:
                     throw new ArgumentException($"Property {comparisonKindKey} has unknown comparison type {comparisonKind}.");
@@ -1194,14 +1194,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.Block(comparisonStatement));
         }
 
-        private IfStatementSyntax MakeDictionaryEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
+        private IfStatementSyntax MakeDictionaryEqualsTest(
+            string propertyInfoKey,
+            ExpressionSyntax left,
+            ExpressionSyntax right)
         {
             string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
             string otherPropertyVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
+            // Construct the key into the PropertyInfoDictionary so we can look up how
+            // dictionary elements are to be compared.
+            string valuePropertyInfoKey = PropertyInfoDictionary.MakeDictionaryItemKeyName(propertyInfoKey);
+
             return SyntaxFactory.IfStatement(
+                // if (!Object.ReferenceEquals(left, right))
                 SyntaxHelper.AreDifferentObjects(left, right),
                 SyntaxFactory.Block(
+                    // if (left == null || right == null || left.Count != right.Count)
                     SyntaxFactory.IfStatement(
                         SyntaxFactory.BinaryExpression(
                             SyntaxKind.LogicalOrExpression,
@@ -1219,18 +1228,22 @@ namespace Microsoft.Json.Schema.ToDotNet
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         right,
                                         CountPropertyName())))),
+                        // return false;
                         SyntaxFactory.Block(SyntaxHelper.Return(false))),
+                    // foreach (var value_0 in left)
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
                         collectionElementVariableName,
                         left,
                         SyntaxFactory.Block(
+                            // var value_1;
                             SyntaxFactory.LocalDeclarationStatement(
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.VariableDeclaration(
                                     SyntaxHelper.Var(),
                                     SyntaxFactory.SingletonSeparatedList(
                                         SyntaxFactory.VariableDeclarator(otherPropertyVariableName)))),
+                            // if (!right.TryGetValue(value_0.Key, out value_1))
                             SyntaxFactory.IfStatement(
                                 SyntaxFactory.PrefixUnaryExpression(
                                     SyntaxKind.LogicalNotExpression,
@@ -1254,17 +1267,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                         SyntaxFactory.IdentifierName(otherPropertyVariableName))
 
                                                 })))),
+                                // return false;
                                 SyntaxFactory.Block(SyntaxHelper.Return(false))),
-                            SyntaxFactory.IfStatement(
-                                SyntaxFactory.BinaryExpression(
-                                    SyntaxKind.NotEqualsExpression,
+
+                            MakeComparisonTest(
+                                    valuePropertyInfoKey,
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(collectionElementVariableName),
                                         SyntaxFactory.IdentifierName("Value")),
-                                    SyntaxFactory.IdentifierName(otherPropertyVariableName)),
-                                SyntaxFactory.Block(SyntaxHelper.Return(false))
-                                )))));
+                                    SyntaxFactory.IdentifierName(otherPropertyVariableName))))));
         }
 
         #region Syntax helpers
