@@ -1228,7 +1228,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.LocalDeclarationStatement(
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.VariableDeclaration(
-                                    SyntaxFactory.ParseTypeName("string"), // TODO: How to get the real type of the dictionary value?
+                                    SyntaxHelper.Var(),
                                     SyntaxFactory.SingletonSeparatedList(
                                         SyntaxFactory.VariableDeclarator(otherPropertyVariableName)))),
                             SyntaxFactory.IfStatement(

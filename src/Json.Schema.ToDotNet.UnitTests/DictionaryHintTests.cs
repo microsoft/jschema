@@ -107,7 +107,7 @@ namespace N
 
                 foreach (var value_0 in Properties)
                 {
-                    string value_1;
+                    var value_1;
                     if (!other.Properties.TryGetValue(value_0.Key, out value_1))
                     {
                         return false;
@@ -213,7 +213,7 @@ namespace N
 
                 foreach (var value_0 in DictionaryOfD)
                 {
-                    string value_1;
+                    var value_1;
                     if (!other.DictionaryOfD.TryGetValue(value_0.Key, out value_1))
                     {
                         return false;
