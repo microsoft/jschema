@@ -62,7 +62,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>
@@ -112,7 +112,7 @@ namespace N
     /// <summary>
     /// Some pretty colors.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public enum Color
     {
         Red,
@@ -186,7 +186,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>
@@ -236,7 +236,7 @@ namespace N
     /// <summary>
     /// Some pretty colors.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public enum Color
     {
         Red,
@@ -280,7 +280,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>
@@ -330,7 +330,7 @@ namespace N
     /// <summary>
     /// The color of the background.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public enum Color
     {
         Red,
@@ -376,7 +376,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>
@@ -426,7 +426,7 @@ namespace N
     /// <summary>
     /// Some pretty colors.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public enum Color
     {
         Crimson,
@@ -503,7 +503,7 @@ namespace N
     /// My class with an enum.
     /// </summary>
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public sealed class C : IEquatable<C>
     {
         /// <summary>
@@ -553,7 +553,7 @@ namespace N
     /// <summary>
     /// Some pretty colors.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public enum Color
     {
         Colorless,

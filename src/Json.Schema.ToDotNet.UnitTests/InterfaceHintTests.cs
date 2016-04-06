@@ -55,7 +55,7 @@ namespace N
     /// My class with an interface.
     /// </summary>
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public sealed class C : IC, IEquatable<C>
     {
         /// <summary>
@@ -104,7 +104,7 @@ namespace N
     /// <summary>
     /// My interface.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.6.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
     public interface IC
     {
         /// <summary>
