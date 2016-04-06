@@ -335,9 +335,9 @@ namespace N
                             return false;
                         }
 
-                        for (int value_2 = 0; value_2 < value_0.Value.Count; ++value_2)
+                        for (int index_0 = 0; index_0 < value_0.Value.Count; ++index_0)
                         {
-                            if (!Object.Equals(value_0.Value[value_2], value_1[value_2]))
+                            if (!Object.Equals(value_0.Value[index_0], value_1[index_0]))
                             {
                                 return false;
                             }
@@ -464,23 +464,23 @@ namespace N
                             return false;
                         }
 
-                        for (int value_2 = 0; value_2 < value_0.Value.Count; ++value_2)
+                        for (int index_0 = 0; index_0 < value_0.Value.Count; ++index_0)
                         {
-                            if (!Object.ReferenceEquals(value_0.Value[value_2], value_1[value_2]))
+                            if (!Object.ReferenceEquals(value_0.Value[index_0], value_1[index_0]))
                             {
-                                if (value_0.Value[value_2] == null || value_1[value_2] == null)
+                                if (value_0.Value[index_0] == null || value_1[index_0] == null)
                                 {
                                     return false;
                                 }
 
-                                if (value_0.Value[value_2].Count != value_1[value_2].Count)
+                                if (value_0.Value[index_0].Count != value_1[index_0].Count)
                                 {
                                     return false;
                                 }
 
-                                for (int value_3 = 0; value_3 < value_0.Value[value_2].Count; ++value_3)
+                                for (int index_1 = 0; index_1 < value_0.Value[index_0].Count; ++index_1)
                                 {
-                                    if (!Object.Equals(value_0.Value[value_2][value_3], value_1[value_2][value_3]))
+                                    if (!Object.Equals(value_0.Value[index_0][index_1], value_1[index_0][index_1]))
                                     {
                                         return false;
                                     }

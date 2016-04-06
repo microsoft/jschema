@@ -1306,7 +1306,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax right)
         {
             // The name of the index variable used in the loop over elements.
-            string indexVarName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+            string indexVarName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
 
             // The two elements that will be compared each time through the loop.
             ExpressionSyntax leftElement =
