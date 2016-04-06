@@ -100,7 +100,7 @@ namespace N
 
                 foreach (var value_0 in DictProp)
                 {
-                    var value_1;
+                    string value_1;
                     if (!other.DictProp.TryGetValue(value_0.Key, out value_1))
                     {
                         return false;
@@ -207,7 +207,7 @@ namespace N
 
                 foreach (var value_0 in DictProp)
                 {
-                    var value_1;
+                    D value_1;
                     if (!other.DictProp.TryGetValue(value_0.Key, out value_1))
                     {
                         return false;
@@ -317,7 +317,7 @@ namespace N
 
                 foreach (var value_0 in DictProp)
                 {
-                    var value_1;
+                    IList<D> value_1;
                     if (!other.DictProp.TryGetValue(value_0.Key, out value_1))
                     {
                         return false;
@@ -446,7 +446,7 @@ namespace N
 
                 foreach (var value_0 in DictProp)
                 {
-                    var value_1;
+                    IList<IList<D>> value_1;
                     if (!other.DictProp.TryGetValue(value_0.Key, out value_1))
                     {
                         return false;

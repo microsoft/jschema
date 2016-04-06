@@ -1358,12 +1358,13 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax left,
             ExpressionSyntax right)
         {
-            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
+            string dictionaryElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
             string otherPropertyVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
 
             // Construct the key into the PropertyInfoDictionary so we can look up how
             // dictionary elements are to be compared.
             string valuePropertyInfoKey = PropertyInfoDictionary.MakeDictionaryItemKeyName(propertyInfoKey);
+            TypeSyntax dictionaryValueType = PropInfoDictionary[valuePropertyInfoKey].Type;
 
             return SyntaxFactory.IfStatement(
                 // if (!Object.ReferenceEquals(left, right))
@@ -1392,14 +1393,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                     // foreach (var value_0 in left)
                     SyntaxFactory.ForEachStatement(
                         SyntaxHelper.Var(),
-                        collectionElementVariableName,
+                        dictionaryElementVariableName,
                         left,
                         SyntaxFactory.Block(
                             // var value_1;
                             SyntaxFactory.LocalDeclarationStatement(
                                 default(SyntaxTokenList), // modifiers
                                 SyntaxFactory.VariableDeclaration(
-                                    SyntaxHelper.Var(),
+                                    dictionaryValueType,
                                     SyntaxFactory.SingletonSeparatedList(
                                         SyntaxFactory.VariableDeclarator(otherPropertyVariableName)))),
                             // if (!right.TryGetValue(value_0.Key, out value_1))
@@ -1418,7 +1419,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                     SyntaxFactory.Argument(
                                                         SyntaxFactory.MemberAccessExpression(
                                                             SyntaxKind.SimpleMemberAccessExpression,
-                                                            SyntaxFactory.IdentifierName(collectionElementVariableName),
+                                                            SyntaxFactory.IdentifierName(dictionaryElementVariableName),
                                                             SyntaxFactory.IdentifierName(KeyProperty))),
                                                     SyntaxFactory.Argument(
                                                         default(NameColonSyntax),
@@ -1433,7 +1434,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     valuePropertyInfoKey,
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(collectionElementVariableName),
+                                        SyntaxFactory.IdentifierName(dictionaryElementVariableName),
                                         SyntaxFactory.IdentifierName(ValueProperty)),
                                     SyntaxFactory.IdentifierName(otherPropertyVariableName))))));
         }
