@@ -48,7 +48,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -155,7 +155,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -265,7 +265,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -394,7 +394,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.7.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
