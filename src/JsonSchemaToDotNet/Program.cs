@@ -73,7 +73,8 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     CopyrightNotice = copyrightNotice,
                     HintDictionary = hintDictionary,
                     GenerateOverrides = options.GenerateOverrides,
-                    GenerateCloningCode = options.GenerateCloningCode
+                    GenerateCloningCode = options.GenerateCloningCode,
+                    SealClasses = options.SealClasses
                 };
 
                 new DataModelGenerator(settings).Generate(schema);

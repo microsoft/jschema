@@ -71,13 +71,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                 throw JSchemaException.Create(Resources.ErrorNotAnObject, _rootSchema.Type.ToJsonSchemaName());
             }
 
-            string rootFileText = CreateFile(_settings.RootClassName, _rootSchema);
+            string rootFileText = CreateFile(_settings.RootClassName, _rootSchema, _settings.SealClasses);
 
             if (_rootSchema.Definitions != null)
             {
                 foreach (KeyValuePair<string, JsonSchema> definition in _rootSchema.Definitions)
                 {
-                    CreateFile(definition.Key, definition.Value);
+                    CreateFile(definition.Key, definition.Value, _settings.SealClasses);
                 }
             }
 
@@ -193,7 +193,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxHelper.MakeDocComment(description));
         }
 
-        internal string CreateFile(string className, JsonSchema schema)
+        internal string CreateFile(
+            string className,
+            JsonSchema schema,
+            bool sealClasses)
         {
             className = className.ToPascalCase();
 
@@ -230,6 +233,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     baseInterfaceName,
                     _settings.GenerateOverrides,
                     _settings.GenerateCloningCode,
+                    _settings.SealClasses,
                     _nodeInterfaceName,
                     _kindEnumName);
 

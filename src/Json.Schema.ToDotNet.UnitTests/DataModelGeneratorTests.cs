@@ -2189,5 +2189,34 @@ namespace N
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
         }
+
+        [Fact(DisplayName = "DataModelGenerator generates sealed classes when option is set")]
+        public void GeneratesSealedClassesWhenOptionIsSet()
+        {
+            _settings.SealClasses = true;
+
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+}");
+
+            const string Expected =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class C : IEquatable<C>
+    {
+    }
+}";
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
     }
 }

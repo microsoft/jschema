@@ -20,6 +20,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly string _baseInterfaceName;
         private readonly bool _generateOverrides;
         private readonly bool _generateCloningCode;
+        private readonly bool _sealClasses;
         private readonly string _syntaxInterfaceName;
         private readonly string _kindEnumName;
 
@@ -62,6 +63,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string interfaceName,
             bool generateOverrides,
             bool generateCloningCode,
+            bool sealClasses,
             string syntaxInterfaceName,
             string kindEnumName)
             : base(propertyInfoDictionary, schema, hintDictionary)
@@ -70,6 +72,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _generateOverrides = generateOverrides;
             _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
+            _sealClasses = sealClasses;
             _kindEnumName = kindEnumName;
 
             _localVariableNameGenerator = new LocalVariableNameGenerator();
@@ -77,7 +80,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
-            SyntaxKind sealedOrPartial = SyntaxKind.PartialKeyword;
+            SyntaxKind sealedOrPartial = _sealClasses
+                ? SyntaxKind.SealedKeyword
+                : SyntaxKind.PartialKeyword;
 
             var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
                 .AddAttributeLists(new AttributeListSyntax[]

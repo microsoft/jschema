@@ -64,6 +64,13 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </summary>
         public bool GenerateCloningCode { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the generated classes should
+        /// be declared <code>sealed</code>. If <code>false</code>, the generated
+        /// classes are declared <code>partial</code>.
+        /// </summary>
+        public bool SealClasses { get; set; }
+
         internal void Validate()
         {
             var sb = new StringBuilder();
