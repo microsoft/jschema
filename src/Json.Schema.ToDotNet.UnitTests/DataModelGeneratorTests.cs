@@ -100,7 +100,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
     }
 }";
@@ -131,7 +131,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProp { get; set; }
@@ -216,7 +216,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ObjectProp { get; set; }
@@ -349,7 +349,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
@@ -435,7 +435,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// An example property.
@@ -503,7 +503,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class ConsoleWindow : IEquatable<ConsoleWindow>
+    public partial class ConsoleWindow : IEquatable<ConsoleWindow>
     {
         /// <summary>
         /// The color of the text on the screen.
@@ -531,7 +531,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class Color : IEquatable<Color>
+    public partial class Color : IEquatable<Color>
     {
         /// <summary>
         /// The value of the R component.
@@ -595,7 +595,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// An example property.
@@ -743,7 +743,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : ISNode, IEquatable<C>
+    public partial class C : ISNode, IEquatable<C>
     {
         /// <summary>
         /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
@@ -1287,7 +1287,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool RootProp { get; set; }
@@ -1334,7 +1334,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class Def1 : IEquatable<Def1>
+    public partial class Def1 : IEquatable<Def1>
     {
         [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
         public string Prop1 { get; set; }
@@ -1384,7 +1384,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class Def2 : IEquatable<Def2>
+    public partial class Def2 : IEquatable<Def2>
     {
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
         public int Prop2 { get; set; }
@@ -1465,7 +1465,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
@@ -1532,7 +1532,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
@@ -1605,7 +1605,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntDefProp { get; set; }
@@ -1650,7 +1650,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
         public IList<int> ArrayOfIntByRef { get; set; }
@@ -1754,7 +1754,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
@@ -1881,7 +1881,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
@@ -2015,7 +2015,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
@@ -2135,7 +2135,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""version"", IsRequired = false, EmitDefaultValue = false)]
         public string Version { get; set; }
@@ -2176,7 +2176,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""requiredProp1"", IsRequired = true)]
         public string RequiredProp1 { get; set; }

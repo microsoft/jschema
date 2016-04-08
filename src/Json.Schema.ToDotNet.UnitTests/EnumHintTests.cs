@@ -63,7 +63,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -187,7 +187,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -281,7 +281,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -377,7 +377,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.
@@ -504,7 +504,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         /// <summary>
         /// The color of the background.

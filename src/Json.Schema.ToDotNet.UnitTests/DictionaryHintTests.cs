@@ -49,7 +49,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, string> DictProp { get; set; }
@@ -156,7 +156,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, D> DictProp { get; set; }
@@ -266,7 +266,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<D>> DictProp { get; set; }
@@ -393,7 +393,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<Uri, IList<D>> DictProp { get; set; }
@@ -522,7 +522,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public partial class C : IEquatable<C>
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<IList<D>>> DictProp { get; set; }

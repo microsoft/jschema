@@ -77,6 +77,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
+            SyntaxKind sealedOrPartial = SyntaxKind.PartialKeyword;
+
             var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
                 .AddAttributeLists(new AttributeListSyntax[]
                     {
@@ -87,7 +89,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     })
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                    SyntaxFactory.Token(SyntaxKind.SealedKeyword));
+                    SyntaxFactory.Token(sealedOrPartial));
 
             var baseTypes = new List<BaseTypeSyntax>();
 
