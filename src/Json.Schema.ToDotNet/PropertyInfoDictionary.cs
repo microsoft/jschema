@@ -190,6 +190,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             bool isOfSchemaDefinedType = false;
             int arrayRank = 0;
             EnumHint enumHint;
+            string dictionaryKeyTypeName;
 
             if (propertySchema.IsDateTime())
             {
@@ -205,7 +206,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.Uri;
                 type = MakeNamedType("System.Uri", out namespaceName);
             }
-            else if (propertySchema.ShouldBeDictionary(_typeName, propertyName, _hintDictionary))
+            else if (propertySchema.ShouldBeDictionary(_typeName, propertyName, _hintDictionary, out dictionaryKeyTypeName))
             {
                 comparisonKind = ComparisonKind.Dictionary;
                 hashKind = HashKind.Dictionary;
@@ -220,7 +221,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     ? propertySchema.AdditionalProperties.Schema
                     : new JsonSchema { Type = JTokenType.String };
 
-                type = MakeDictionaryType(entries, propertyName, dictionaryElementSchema);
+                type = MakeDictionaryType(entries, propertyName, dictionaryKeyTypeName, dictionaryElementSchema);
                 namespaceName = "System.Collections.Generic";   // For IDictionary.
             }
             else if ((referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
@@ -230,7 +231,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(referencedEnumTypeName, out namespaceName);
             }
-            else if (propertySchema.ShouldBeEnum(_typeName, propertyName, _hintDictionary, out enumHint))
+            else if (propertySchema.ShouldBeEnum(_typeName, propertyName,  _hintDictionary, out enumHint))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
@@ -385,6 +386,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private TypeSyntax MakeDictionaryType(
             IList<KeyValuePair<string, PropertyInfo>> entries,
             string propertyName,
+            string keyTypeName,
             JsonSchema dictionaryElementSchema)
         {
             string key = MakeDictionaryItemKeyName(propertyName);
@@ -400,8 +402,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.SeparatedList(
                         new TypeSyntax[]
                         {
-                            SyntaxFactory.PredefinedType(
-                                SyntaxFactory.Token(SyntaxKind.StringKeyword)),
+                            SyntaxFactory.ParseTypeName(keyTypeName),
                             info.Type
                         })));
         }
