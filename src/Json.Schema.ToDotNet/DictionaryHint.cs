@@ -8,7 +8,8 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// a property whose type is <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/>
     /// rather than <see cref="System.Object"/>.
     /// </summary>
-    public class DictionaryHint: CodeGenHint
+    public class DictionaryHint : CodeGenHint
     {
+        public string KeyTypeName { get; set; }
     }
 }

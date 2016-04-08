@@ -687,6 +687,13 @@ namespace N
           ""$ref"": ""#/definitions/d""
         }
       }
+    },
+    ""dictionaryWithUriKeyProp"": {
+      ""description"": ""A dictionary property whose keys are Uris."",
+      ""type"": ""object"",
+      ""additionalProperties"": {
+        ""$ref"": ""#/definitions/d""
+      }
     }
   },
   ""definitions"": {
@@ -716,6 +723,12 @@ namespace N
   ""C.DictionaryWithObjectArraySchemaProp"": [
     {
       ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+    }
+  ],
+  ""C.DictionaryWithUriKeyProp"": [
+    {
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet"",
+      ""KeyTypeName"": ""Uri""
     }
   ]
 }";
@@ -812,6 +825,12 @@ namespace N
         public IDictionary<string, IList<D>> DictionaryWithObjectArraySchemaProp { get; set; }
 
         /// <summary>
+        /// A dictionary property whose keys are Uris.
+        /// </summary>
+        [DataMember(Name = ""dictionaryWithUriKeyProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<Uri, D> DictionaryWithUriKeyProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -857,9 +876,12 @@ namespace N
         /// <param name=""dictionaryWithObjectArraySchemaProp"">
         /// An initialization value for the <see cref=""P: DictionaryWithObjectArraySchemaProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp)
+        /// <param name=""dictionaryWithUriKeyProp"">
+        /// An initialization value for the <see cref=""P: DictionaryWithUriKeyProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp);
         }
 
         /// <summary>
@@ -878,7 +900,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -899,7 +921,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -1012,6 +1034,15 @@ namespace N
                     }
 
                     DictionaryWithObjectArraySchemaProp.Add(value_5.Key, destination_4);
+                }
+            }
+
+            if (dictionaryWithUriKeyProp != null)
+            {
+                DictionaryWithUriKeyProp = new Dictionary<Uri, D>();
+                foreach (var value_7 in dictionaryWithUriKeyProp)
+                {
+                    DictionaryWithUriKeyProp.Add(value_7.Key, new D(value_7.Value));
                 }
             }
         }
@@ -1178,6 +1209,18 @@ namespace N
                             {
                                 node.DictionaryWithObjectArraySchemaProp[key][index_0] = VisitNullChecked(node.DictionaryWithObjectArraySchemaProp[key][index_0]);
                             }
+                        }
+                    }
+                }
+
+                if (node.DictionaryWithUriKeyProp != null)
+                {
+                    foreach (var key in node.DictionaryWithUriKeyProp.Keys)
+                    {
+                        var value = node.DictionaryWithUriKeyProp[key];
+                        if (value != null)
+                        {
+                            node.DictionaryWithUriKeyProp[key] = VisitNullChecked(value);
                         }
                     }
                 }

@@ -354,6 +354,133 @@ namespace N
 
             new object[]
             {
+                "Dictionary<Uri, IList<D>>",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""dictProp"": {
+      ""type"": ""object"",
+      ""additionalProperties"": {
+        ""type"": ""array"",
+        ""items"": {
+          ""$ref"": ""#/definitions/d""
+        }
+      }
+    }
+  },
+  ""definitions"": {
+    ""d"": {
+      ""type"": ""object""
+    }
+  }
+}",
+
+@"{
+  ""C.DictProp"": [
+    {
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet"",
+      ""KeyTypeName"": ""Uri""
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class C : IEquatable<C>
+    {
+        [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<Uri, IList<D>> DictProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (DictProp != null)
+                {
+                    // Use xor for dictionaries to be order-independent.
+                    int xor_0 = 0;
+                    foreach (var value_0 in DictProp)
+                    {
+                        xor_0 ^= value_0.Key.GetHashCode();
+                        if (value_0.Value != null)
+                        {
+                            xor_0 ^= value_0.Value.GetHashCode();
+                        }
+                    }
+
+                    result = (result * 31) + xor_0;
+                }
+            }
+
+            return result;
+        }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(DictProp, other.DictProp))
+            {
+                if (DictProp == null || other.DictProp == null || DictProp.Count != other.DictProp.Count)
+                {
+                    return false;
+                }
+
+                foreach (var value_0 in DictProp)
+                {
+                    IList<D> value_1;
+                    if (!other.DictProp.TryGetValue(value_0.Key, out value_1))
+                    {
+                        return false;
+                    }
+
+                    if (!Object.ReferenceEquals(value_0.Value, value_1))
+                    {
+                        if (value_0.Value == null || value_1 == null)
+                        {
+                            return false;
+                        }
+
+                        if (value_0.Value.Count != value_1.Count)
+                        {
+                            return false;
+                        }
+
+                        for (int index_0 = 0; index_0 < value_0.Value.Count; ++index_0)
+                        {
+                            if (!Object.Equals(value_0.Value[index_0], value_1[index_0]))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+}"
+            },
+
+            new object[]
+            {
                 "Dictionary<string, IList<IList<D>>>",
 @"{
   ""type"": ""object"",

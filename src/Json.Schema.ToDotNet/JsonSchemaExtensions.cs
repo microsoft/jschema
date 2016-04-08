@@ -22,8 +22,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             this JsonSchema schema,
             string typeName,
             string propertyName,
-            HintDictionary hintDictionary)
+            HintDictionary hintDictionary,
+            out string keyTypeName)
         {
+            keyTypeName = null;
+
             // Ignore any DictionaryHint that might apply to this property
             // if the property is not an object.
             if (schema.Type != JTokenType.Object)
@@ -39,12 +42,27 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             // Is there a DictionaryHint that targets this property?
+            if (hintDictionary == null)
+            {
+                return false;
+            }
+
             string key = MakeHintDictionaryKey(typeName, propertyName);
 
-            return hintDictionary != null
-                && hintDictionary.Any(
-                    kvp => kvp.Key.Equals(key)
-                    && kvp.Value.Any(hint => hint is DictionaryHint));
+            CodeGenHint[] hints;
+            if (!hintDictionary.TryGetValue(key, out hints))
+            {
+                return false;
+            }
+
+            var dictionaryHint = hints.SingleOrDefault(h => h is DictionaryHint) as DictionaryHint;
+            if (dictionaryHint == null)
+            {
+                return false;
+            }
+
+            keyTypeName = dictionaryHint.KeyTypeName ?? "string";
+            return true;
         }
 
         internal static bool ShouldBeEnum(
