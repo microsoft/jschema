@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Json.Schema.UnitTests
@@ -26,7 +27,33 @@ namespace Microsoft.Json.Schema.UnitTests
             actual.Should().Be(expected);
         }
 
-        public static object[] InvalidSchemaTestCases => new[]
+        public static object[] SyntacticallyInvalidSchemaTestCases => new[]
+        {
+            new object[]
+            {
+@"{
+  ""foo"": wrong
+}"
+            }
+        };
+
+        [Theory(DisplayName = "SchemaReader throws exception on syntactically invalid schemas")]
+        [MemberData(nameof(SyntacticallyInvalidSchemaTestCases))]
+        public void DetectsInvalidSchema(string jsonText)
+        {
+            Action action = () =>
+            {
+                using (var reader = new StringReader(jsonText))
+                {
+                    SchemaReader.ReadSchema(reader);
+                }
+            };
+
+            action.ShouldThrow<JsonReaderException>()
+                .Where(ex => ex.LineNumber == 2 && ex.LinePosition == 10);
+        }
+
+        public static object[] LogicallyInvalidSchemaTestCases => new[]
         {
             new object[]
             {
@@ -47,9 +74,9 @@ namespace Microsoft.Json.Schema.UnitTests
             }
         };
 
-        [Theory(DisplayName = "SchemaReader throws exception on invalid schemas")]
-        [MemberData(nameof(InvalidSchemaTestCases))]
-        public void DetectsInvalidSchema(string testCaseName, string jsonText)
+        [Theory(DisplayName = "SchemaReader throws exception on logically invalid schemas")]
+        [MemberData(nameof(LogicallyInvalidSchemaTestCases))]
+        public void DetectsLogicallyInvalidSchema(string testCaseName, string jsonText)
         {
             Action action = () =>
             {
