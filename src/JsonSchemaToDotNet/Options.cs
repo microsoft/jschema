@@ -82,7 +82,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 
         [Option(
             's',
-            "--seal-classes",
+            "seal-classes",
             HelpText = "Seal generated classes.",
             Default = false,
             Required = false)]
