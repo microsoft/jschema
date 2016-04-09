@@ -77,5 +77,23 @@ namespace Microsoft.Json.Schema {
                 return ResourceManager.GetString("ErrorOnlyDefinitionFragmentsSupported", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to error ({0},{1}): {2}.
+        /// </summary>
+        internal static string ErrorWithLocation {
+            get {
+                return ResourceManager.GetString("ErrorWithLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The schema requires a token of type {0}, but the token is of type {1}..
+        /// </summary>
+        internal static string ErrorWrongTokenType {
+            get {
+                return ResourceManager.GetString("ErrorWrongTokenType", resourceCulture);
+            }
+        }
     }
 }

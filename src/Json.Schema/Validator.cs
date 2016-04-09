@@ -38,34 +38,12 @@ namespace Microsoft.Json.Schema
 
             using (var reader = new StringReader(instanceText))
             {
-                JObject o = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                Validate(o, _schema);
+                JToken token = JToken.ReadFrom(new JsonTextReader(reader));
+                var validator = new ValidatingJsonWalker(_schema, _messages);
+                validator.Walk(token);
             }
 
             return _messages.ToArray();
-        }
-
-        private void Validate(JObject o, JsonSchema _schema)
-        {
-            ValidateRequiredProperties(o, _schema);
-        }
-
-        private void ValidateRequiredProperties(JObject o, JsonSchema _schema)
-        {
-            if (_schema.Required == null)
-            {
-                return;
-            }
-
-            string[] propertyNames = o.Properties().Select(p => p.Name).ToArray();
-
-            foreach (string requiredPropertyName in _schema.Required)
-            {
-                if (!propertyNames.Contains(requiredPropertyName))
-                {
-                    _messages.Add($"The object at path \"{o.Path}\" does not contain the required property \"{requiredPropertyName}\".");
-                }
-            }
         }
     }
 }

@@ -96,9 +96,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SchemaReader.cs" />
+    <Compile Include="JsonWalker.cs" />
     <Compile Include="SchemaWriter.cs" />
     <Compile Include="UriOrFragmentConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
+    <Compile Include="ValidatingJsonWalker.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>

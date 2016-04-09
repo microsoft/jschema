@@ -1,8 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
+using System.Globalization;
 using FluentAssertions;
-using System.Linq;
+using Microsoft.Json.Schema;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Json.Schema.UnitTests
@@ -14,34 +17,10 @@ namespace Microsoft.Json.Schema.UnitTests
             new object[]
             {
 @"{
+    ""type"": ""integer""
 }",
 
-@"{
-}",
-                new string[0]
-            },
-
-            new object[]
-            {
-@"{
-  ""properties"": {
-    ""a"": {
-        ""type"": ""integer""
-    },
-    ""b"": {
-        ""type"": ""integer""
-    },
-    ""c"": {
-        ""type"": ""integer""
-    }
-  },
-  ""required"": [""a"", ""c""]
-}",
-
-@"{
-  ""a"": 1,
-  ""c"": 2
-}",
+                "2",
 
                 new string[0]
             },
@@ -49,30 +28,52 @@ namespace Microsoft.Json.Schema.UnitTests
             new object[]
             {
 @"{
-  ""properties"": {
-    ""a"": {
-        ""type"": ""integer""
-    },
-    ""b"": {
-        ""type"": ""integer""
-    },
-    ""c"": {
-        ""type"": ""integer""
-    }
-  },
-  ""required"": [""a"", ""c""]
+    ""type"": ""integer""
 }",
 
-@"{
-  ""b"": 2
-}",
+                "\"s\"",
 
                 new string[]
                 {
-                    "The object at path \"\" does not contain the required property \"a\".",
-                    "The object at path \"\" does not contain the required property \"c\"."
+                    ValidatingJsonWalker.FormatMessage(1, 3, Resources.ErrorWrongTokenType, JTokenType.Integer, JTokenType.String)
                 }
-            }
+            },
+
+            new object[]
+            {
+@"{
+    ""type"": ""array""
+}",
+
+                "[]",
+
+                new string[0]
+            },
+
+            new object[]
+            {
+@"{
+    ""type"": ""array""
+}",
+
+                "true",
+
+                new string[]
+                {
+                    ValidatingJsonWalker.FormatMessage(1, 4, Resources.ErrorWrongTokenType, JTokenType.Array, JTokenType.Boolean)
+                }
+            },
+
+            new object[]
+            {
+@"{
+    ""type"": ""number""
+}",
+
+                "2",
+
+                new string[0]
+            },
         };
 
         [Theory(DisplayName = "Validator tests")]
