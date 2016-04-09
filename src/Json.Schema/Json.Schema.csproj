@@ -99,6 +99,7 @@
     <Compile Include="SchemaWriter.cs" />
     <Compile Include="UriOrFragmentConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
+    <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Json.Schema.nuspec" />
