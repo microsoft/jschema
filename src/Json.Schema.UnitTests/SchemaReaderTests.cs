@@ -7,6 +7,7 @@ using System.IO;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Microsoft.Json.Schema.UnitTests
 {
@@ -53,34 +54,68 @@ namespace Microsoft.Json.Schema.UnitTests
                 .Where(ex => ex.LineNumber == 2 && ex.LinePosition == 10);
         }
 
-        public static object[] LogicallyInvalidSchemaTestCases => new[]
+        public class LogicallyInvalidSchemaTestCase : IXunitSerializable
         {
-            new object[]
+            public LogicallyInvalidSchemaTestCase(
+                string name,
+                string schemaText)
             {
+                Name = name;
+                SchemaText = schemaText;
+            }
+
+            public LogicallyInvalidSchemaTestCase()
+            {
+                // Needed for serialization.
+            }
+
+            public string Name;
+            public string SchemaText;
+
+            public void Deserialize(IXunitSerializationInfo info)
+            {
+                Name = info.GetValue<string>(nameof(Name));
+                SchemaText = info.GetValue<string>(nameof(SchemaText));
+            }
+
+            public void Serialize(IXunitSerializationInfo info)
+            {
+                info.AddValue(nameof(Name), Name);
+                info.AddValue(nameof(SchemaText), SchemaText);
+            }
+
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
+        public static TheoryData<LogicallyInvalidSchemaTestCase> LogicallyInvalidSchemaTestCases => new TheoryData<LogicallyInvalidSchemaTestCase>
+        {
+            new LogicallyInvalidSchemaTestCase(
                 "additionalProperties is a non-Boolean primitive type",
                 @"
 {
   ""additionalProperties"": 2
 }"
-            },
+            ),
 
-            new object[]
-            {
+            new LogicallyInvalidSchemaTestCase(
                 "additionalProperties is an array",
                 @"
 {
   ""additionalProperties"": []
 }"
-            }
+            )
         };
 
-        [Theory(DisplayName = "SchemaReader throws exception on logically invalid schemas")]
+        [Theory(DisplayName = "SchemaReader throws on logically invalid schema")]
         [MemberData(nameof(LogicallyInvalidSchemaTestCases))]
-        public void DetectsLogicallyInvalidSchema(string testCaseName, string jsonText)
+        public void ThrowsOnLogicallyInvalidSchema(LogicallyInvalidSchemaTestCase test)
         {
             Action action = () =>
             {
-                using (var reader = new StringReader(jsonText))
+                using (var reader = new StringReader(test.SchemaText))
                 {
                     SchemaReader.ReadSchema(reader);
                 }

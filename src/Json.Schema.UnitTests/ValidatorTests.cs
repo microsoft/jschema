@@ -63,45 +63,45 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Empty schema matches integer",
                 "{}",
                 "2"
-            ),
+                ),
 
             new TestCase(
                 "Empty schema matches object",
                 "{}",
                 "{}"
-            ),
+                ),
 
             new TestCase(
                 "Integer instance matches integer schema",
                 @"{ ""type"": ""integer"" }",
                 "2"
-            ),
+                ),
 
             new TestCase(
                 "Non-integer instance does not match integer schema",
                 @"{ ""type"": ""integer"" }",
                 "\"s\"",
                 Validator.FormatMessage(1, 3, ValidationErrorNumber.WrongTokenType, JTokenType.Integer, JTokenType.String)
-            ),
+                ),
 
             new TestCase(
                 "Array instance matches array schema",
                 @"{ ""type"": ""array"" }",
                 "[]"
-            ),
+                ),
 
             new TestCase(
                 "Non-array instance matches array schema",
                  @"{ ""type"": ""array"" }",
                 "true",
                 Validator.FormatMessage(1, 4, ValidationErrorNumber.WrongTokenType, JTokenType.Array, JTokenType.Boolean)
-            ),
+                ),
 
             new TestCase(
                 "Integer instance matches number schema",
                 @"{ ""type"": ""number"" }",
                 "2"
-            ),
+                ),
 
             new TestCase(
                 "Array has valid minimum number of items",
@@ -111,7 +111,7 @@ namespace Microsoft.Json.Schema.UnitTests
                   ""maxItems"": 4
                 }",
                 "[ 1, 2 ]"
-            ),
+                ),
 
             new TestCase(
                 "Array has valid maximum number of items",
@@ -121,7 +121,7 @@ namespace Microsoft.Json.Schema.UnitTests
                   ""maxItems"": 4
                 }",
                 "[ 1, 2, 3, 4 ]"
-            ),
+                ),
 
             new TestCase(
                 "Array has too few items",
@@ -132,7 +132,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 "[ 1 ]",
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.TooFewArrayItems, 2, 1)
-            ),
+                ),
 
             new TestCase(
                 "Array has too many items",
@@ -143,7 +143,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 "[ 1, 2, 3, 4, 5 ]",
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.TooManyArrayItems, 4, 5)
-            ),
+                ),
 
             new TestCase(
                 "Array without length constraint",
@@ -151,7 +151,7 @@ namespace Microsoft.Json.Schema.UnitTests
                   ""type"": ""array"",
                 }",
                 "[ 1, 2, 3 ]"
-            ),
+                ),
 
             new TestCase(
                 "Required property missing",
@@ -165,7 +165,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "a"),
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "c")
-            ),
+                ),
 
             new TestCase(
                 "Object property matches its schema",
@@ -180,7 +180,7 @@ namespace Microsoft.Json.Schema.UnitTests
 @"{
   ""a"": true
 }"
-            ),
+                ),
 
             new TestCase(
                 "Object property does not match its schema",
@@ -196,7 +196,7 @@ namespace Microsoft.Json.Schema.UnitTests
   ""a"": ""true""
 }",
                 Validator.FormatMessage(2, 14, ValidationErrorNumber.WrongTokenType, JTokenType.Boolean, JTokenType.String)
-            ),
+                ),
 
             new TestCase(
                 "Object property missing required property",

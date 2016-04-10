@@ -306,7 +306,7 @@ namespace N
                 .WithMessage("*#/notDefinitions/p*");
         }
 
-        [Fact(DisplayName = "Throws if referenced definition does not exist")]
+        [Fact(DisplayName = "DataModelGenerator throws if referenced definition does not exist")]
         public void ThrowsIfReferencedDefinitionDoesNotExist()
         {
             const string SchemaText = @"
