@@ -118,7 +118,7 @@ namespace Microsoft.Json.Schema.UnitTests
             )
         };
 
-        [Theory(DisplayName = "Validator tests")]
+        [Theory(DisplayName = "Validation")]
         [MemberData(nameof(TestCases))]
         public void ReportsMissingRequiredProperty(TestCase testCase)
         {

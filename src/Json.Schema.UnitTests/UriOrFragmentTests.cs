@@ -185,7 +185,7 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
         };
 
-        [Theory(DisplayName = "UriOrFragment equality tests")]
+        [Theory(DisplayName = "UriOrFragment equality")]
         [MemberData(nameof(EqualityTestCases))]
         public void EqualityTests(EqualityTestCase testCase)
         {
