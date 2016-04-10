@@ -124,7 +124,7 @@
     <value>This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the "definitions" property, for example "#/definitions/def1". The URI reference "{0}" is not supported.</value>
   </data>
   <data name="ErrorWithLocation" xml:space="preserve">
-    <value>error ({0},{1}): {2}</value>
+    <value>({0},{1}): error {2}: {3}</value>
   </data>
   <data name="ErrorWrongTokenType" xml:space="preserve">
     <value>The schema requires a token of type {0}, but the token is of type {1}.</value>

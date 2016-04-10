@@ -13,6 +13,13 @@ namespace Microsoft.Json.Schema
     /// </summary>
     public class ValidatingJsonWalker : JsonWalker
     {
+        const string ErrorCodeFormat = "JSV{0:D4}";
+
+        private static readonly IDictionary<ValidationErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<ValidationErrorNumber, string>
+        {
+            [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType
+        };
+
         private readonly Stack<JsonSchema> _schemas;
         private readonly IList<string> _messages;
 
@@ -49,7 +56,7 @@ namespace Microsoft.Json.Schema
             if (token.Type != schema.Type
                 && !(token.Type == JTokenType.Integer && schema.Type == JTokenType.Float))
             {
-                AddMessage(token, Resources.ErrorWrongTokenType, schema.Type, token.Type);
+                AddMessage(token, ValidationErrorNumber.WrongTokenType, schema.Type, token.Type);
                 return;
             }
 
@@ -63,19 +70,36 @@ namespace Microsoft.Json.Schema
             }
         }
 
-        private void AddMessage(JToken token, string format, params object[] args)
+        private void AddMessage(JToken token, ValidationErrorNumber errorCode, params object[] args)
         {
             IJsonLineInfo lineInfo = token;
 
-            _messages.Add(FormatMessage(lineInfo.LineNumber, lineInfo.LinePosition, format, args));
+            _messages.Add(
+                FormatMessage(lineInfo.LineNumber, lineInfo.LinePosition, errorCode, args));
         }
 
         // We factor out this method and make it internal to allow unit tests to easily
         // compare the messages produced by the validator with the expected messages.
-        internal static string FormatMessage(int lineNumber, int linePosition, string format, params object[] args)
+        internal static string FormatMessage(
+            int lineNumber,
+            int linePosition,
+            ValidationErrorNumber errorNumber,
+            params object[] args)
         {
-            string message = string.Format(CultureInfo.CurrentCulture, format, args);
-            return string.Format(CultureInfo.CurrentCulture, Resources.ErrorWithLocation, lineNumber, linePosition, message);
+            string messageFormat = s_errorCodeToMessageDictionary[errorNumber];
+            string message = string.Format(CultureInfo.CurrentCulture, messageFormat, args);
+
+            string errorCode = string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
+
+            string fullMessage = string.Format(
+                CultureInfo.CurrentCulture,
+                Resources.ErrorWithLocation,
+                lineNumber,
+                linePosition,
+                errorCode,
+                message);
+
+            return fullMessage;
         }
     }
 }

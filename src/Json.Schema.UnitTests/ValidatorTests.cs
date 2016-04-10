@@ -35,7 +35,8 @@ namespace Microsoft.Json.Schema.UnitTests
 
                 new string[]
                 {
-                    ValidatingJsonWalker.FormatMessage(1, 3, Resources.ErrorWrongTokenType, JTokenType.Integer, JTokenType.String)
+                    ValidatingJsonWalker.FormatMessage(
+                        1, 3, ValidationErrorNumber.WrongTokenType, JTokenType.Integer, JTokenType.String)
                 }
             },
 
@@ -60,7 +61,8 @@ namespace Microsoft.Json.Schema.UnitTests
 
                 new string[]
                 {
-                    ValidatingJsonWalker.FormatMessage(1, 4, Resources.ErrorWrongTokenType, JTokenType.Array, JTokenType.Boolean)
+                    ValidatingJsonWalker.FormatMessage(
+                        1, 4, ValidationErrorNumber.WrongTokenType, JTokenType.Array, JTokenType.Boolean)
                 }
             },
 

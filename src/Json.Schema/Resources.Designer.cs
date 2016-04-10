@@ -79,7 +79,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to error ({0},{1}): {2}.
+        ///   Looks up a localized string similar to ({0},{1}): error {2}: {3}.
         /// </summary>
         internal static string ErrorWithLocation {
             get {

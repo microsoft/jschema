@@ -101,6 +101,7 @@
     <Compile Include="UriOrFragmentConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
     <Compile Include="ValidatingJsonWalker.cs" />
+    <Compile Include="ValidationErrorNumber.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>
