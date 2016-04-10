@@ -434,7 +434,7 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
         };
 
-        [Theory(DisplayName = "JsonSchema equality tests")]
+        [Theory(DisplayName = "JsonSchema equality")]
         [MemberData(nameof(EqualityTestCases))]
         public void EqualityTests(EqualityTestCase testCase)
         {

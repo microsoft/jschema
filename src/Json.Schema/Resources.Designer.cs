@@ -95,5 +95,14 @@ namespace Microsoft.Json.Schema {
                 return ResourceManager.GetString("ErrorWrongTokenType", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The required property &quot;{0}&quot; is missing..
+        /// </summary>
+        internal static string RequiredPropertyMissing {
+            get {
+                return ResourceManager.GetString("RequiredPropertyMissing", resourceCulture);
+            }
+        }
     }
 }

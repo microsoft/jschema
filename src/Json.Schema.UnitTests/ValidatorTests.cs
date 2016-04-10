@@ -60,6 +60,18 @@ namespace Microsoft.Json.Schema.UnitTests
         public static TheoryData<TestCase> TestCases = new TheoryData<TestCase>
         {
             new TestCase(
+                "Empty schema matches integer",
+                "{}",
+                "2"
+            ),
+
+            new TestCase(
+                "Empty schema matches object",
+                "{}",
+                "{}"
+            ),
+
+            new TestCase(
                 "Integer instance matches integer schema",
                 @"{ ""type"": ""integer"" }",
                 "2"
@@ -69,8 +81,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Non-integer instance does not match integer schema",
                 @"{ ""type"": ""integer"" }",
                 "\"s\"",
-                Validator.FormatMessage(
-                    1, 3, ValidationErrorNumber.WrongTokenType, JTokenType.Integer, JTokenType.String)
+                Validator.FormatMessage(1, 3, ValidationErrorNumber.WrongTokenType, JTokenType.Integer, JTokenType.String)
             ),
 
             new TestCase(
@@ -83,8 +94,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Non-array instance matches array schema",
                  @"{ ""type"": ""array"" }",
                 "true",
-                Validator.FormatMessage(
-                    1, 4, ValidationErrorNumber.WrongTokenType, JTokenType.Array, JTokenType.Boolean)
+                Validator.FormatMessage(1, 4, ValidationErrorNumber.WrongTokenType, JTokenType.Array, JTokenType.Boolean)
             ),
 
             new TestCase(
@@ -92,6 +102,20 @@ namespace Microsoft.Json.Schema.UnitTests
                 @"{ ""type"": ""number"" }",
                 "2"
             ),
+
+            new TestCase(
+                "Required property missing",
+                @"{
+                  ""type"": ""object"",
+                  ""required"": [ ""a"", ""b"", ""c"" ]
+                }",
+                @"{
+                  ""b"": true,
+                  ""d"": true
+                }",
+                Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "a"),
+                Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "c")
+            )
         };
 
         [Theory(DisplayName = "Validator tests")]

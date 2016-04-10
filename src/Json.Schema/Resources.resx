@@ -129,4 +129,7 @@
   <data name="ErrorWrongTokenType" xml:space="preserve">
     <value>The schema requires a token of type {0}, but the token is of type {1}.</value>
   </data>
+  <data name="RequiredPropertyMissing" xml:space="preserve">
+    <value>The required property "{0}" is missing.</value>
+  </data>
 </root>

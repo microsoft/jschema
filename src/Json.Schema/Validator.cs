@@ -20,7 +20,8 @@ namespace Microsoft.Json.Schema
 
         private static readonly IDictionary<ValidationErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<ValidationErrorNumber, string>
         {
-            [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType
+            [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType,
+            [ValidationErrorNumber.RequiredPropertyMissing] = Resources.RequiredPropertyMissing
         };
 
         private readonly Stack<JsonSchema> _schemas;
@@ -57,20 +58,27 @@ namespace Microsoft.Json.Schema
 
             return _messages.ToArray();
         }
-        private void ValidateToken(JToken token, JsonSchema schema)
+        private void ValidateToken(JToken jToken, JsonSchema schema)
         {
+            // If the schema doesn't specify a type, anything goes.
+            if (schema.Type == JTokenType.None)
+            {
+                return;
+            }
+
             // Check that the token is of the correct type, but allow an integer where a
             // "number" was specified.
-            if (token.Type != schema.Type
-                && !(token.Type == JTokenType.Integer && schema.Type == JTokenType.Float))
+            if (jToken.Type != schema.Type
+                && !(jToken.Type == JTokenType.Integer && schema.Type == JTokenType.Float))
             {
-                AddMessage(token, ValidationErrorNumber.WrongTokenType, schema.Type, token.Type);
+                AddMessage(jToken, ValidationErrorNumber.WrongTokenType, schema.Type, jToken.Type);
                 return;
             }
 
             switch (schema.Type)
             {
-                case JTokenType.Boolean:
+                case JTokenType.Object:
+                    ValidateObject((JObject)jToken, schema);
                     break;
 
                 default:
@@ -78,9 +86,22 @@ namespace Microsoft.Json.Schema
             }
         }
 
-        private void AddMessage(JToken token, ValidationErrorNumber errorCode, params object[] args)
+        private void ValidateObject(JObject jObject, JsonSchema schema)
         {
-            IJsonLineInfo lineInfo = token;
+            if (schema.Required != null)
+            {
+                IEnumerable<string> propertySet = jObject.Properties().Select(p => p.Name);
+                IEnumerable<string> missingProperties = schema.Required.Except(propertySet);
+                foreach (string propertyName in missingProperties)
+                {
+                    AddMessage(jObject, ValidationErrorNumber.RequiredPropertyMissing, propertyName);
+                }
+            }
+        }
+
+        private void AddMessage(JToken jToken, ValidationErrorNumber errorCode, params object[] args)
+        {
+            IJsonLineInfo lineInfo = jToken;
 
             _messages.Add(
                 FormatMessage(lineInfo.LineNumber, lineInfo.LinePosition, errorCode, args));
