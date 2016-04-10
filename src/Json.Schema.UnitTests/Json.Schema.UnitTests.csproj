@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EqualityTestCase.cs" />
     <Compile Include="JsonSchemaTests.cs" />
     <Compile Include="ReaderWriter.cs" />
     <Compile Include="SchemaReaderTests.cs" />

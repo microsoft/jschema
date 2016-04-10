@@ -1,528 +1,449 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
 using FluentAssertions;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Microsoft.Json.Schema.UnitTests
 {
     public class JsonSchemaTests
     {
-        public static readonly object[] EqualityTestCases =
+        public static readonly TheoryData<EqualityTestCase> EqualityTestCases = new TheoryData<EqualityTestCase>
         {
-            new object[]
-            {
+            new EqualityTestCase(
                 "Empty schemas",
-                new JsonSchema(),
-                new JsonSchema(),
+                @"{}",
+                @"{}",
                 true
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "All properties equal",
-                new JsonSchema
-                {
-                    Id = new UriOrFragment("http://x/y#"),
-                    SchemaVersion = new Uri("http://z"),
-                    Title = "x",
-                    Enum = new object[] { "a", "b" },
-                    Items = new JsonSchema { Type = JTokenType.Integer },
-                    Properties = new Dictionary<string, JsonSchema>
-                    {
-                        ["a"] = new JsonSchema { Type = JTokenType.Object },
-                        ["b"] = new JsonSchema { Type = JTokenType.String }
+                @"{
+                    ""id"": ""http://x/y#"",
+                    ""$schema"": ""http://z"",
+                    ""title"": ""x"",
+                    ""enum"": [ ""a"", ""b"" ],
+                    ""items"": {
+                      ""type"": ""integer""
                     },
-                    Required = new string[]
-                    {
-                        "a"
+                    ""properties"": {
+                      ""a"": {
+                        ""type"": ""object""
+                      },
+                      ""b"": {
+                        ""type"": ""string""
+                      }
                     },
-                    Definitions = new Dictionary<string, JsonSchema>
-                    {
-                        ["c"] = new JsonSchema { Type = JTokenType.Integer },
-                        ["d"] = new JsonSchema { Type = JTokenType.Boolean }
+                    ""required"": [ ""a"" ],
+                    ""definitions"": {
+                      ""c"": {
+                        ""type"": ""integer""
+                      },
+                      ""d"": {
+                        ""type"": ""boolean""
+                      }
                     },
-                    AdditionalProperties = new AdditionalProperties(true),
-                    Reference = new UriOrFragment("http://www.example.com/schema/#"),
-                    MinItems = 1,
-                    MaxItems = 3,
-                    Format = FormatAttributes.DateTime
-                },
-                new JsonSchema
-                {
-                    Id = new UriOrFragment("http://x/y#"),
-                    SchemaVersion = new Uri("http://z"),
-                    Title = "x",
-                    Enum = new object[] { "a", "b" },
-                    Items = new JsonSchema { Type = JTokenType.Integer },
-                    Properties = new Dictionary<string, JsonSchema>
-                    {
-                        ["a"] = new JsonSchema { Type = JTokenType.Object },
-                        ["b"] = new JsonSchema { Type = JTokenType.String }
+                    ""additionalProperties"": true,
+                    ""$ref"": ""http://www.example.com/schema/#"",
+                    ""minItems"": 1,
+                    ""maxItems"": 3,
+                    ""format"": ""date-time""
+                }",
+                @"{
+                    ""id"": ""http://x/y#"",
+                    ""$schema"": ""http://z"",
+                    ""title"": ""x"",
+                    ""enum"": [ ""a"", ""b"" ],
+                    ""items"": {
+                      ""type"": ""integer""
                     },
-                    Required = new string[]
-                    {
-                        "a"
+                    ""properties"": {
+                      ""a"": {
+                        ""type"": ""object""
+                      },
+                      ""b"": {
+                        ""type"": ""string""
+                      }
                     },
-                    Definitions = new Dictionary<string, JsonSchema>
-                    {
-                        ["c"] = new JsonSchema { Type = JTokenType.Integer },
-                        ["d"] = new JsonSchema { Type = JTokenType.Boolean }
+                    ""required"": [ ""a"" ],
+                    ""definitions"": {
+                      ""c"": {
+                        ""type"": ""integer""
+                      },
+                      ""d"": {
+                        ""type"": ""boolean""
+                      }
                     },
-                    AdditionalProperties = new AdditionalProperties(true),
-                    Reference = new UriOrFragment("http://www.example.com/schema/#"),
-                    MinItems = 1,
-                    MaxItems = 3,
-                    Format = FormatAttributes.DateTime
-                },
+                    ""additionalProperties"": true,
+                    ""$ref"": ""http://www.example.com/schema/#"",
+                    ""minItems"": 1,
+                    ""maxItems"": 3,
+                    ""format"": ""date-time""
+                }",
                 true
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different Ids",
-                new JsonSchema
-                {
-                    Id = new UriOrFragment("http://x/y#"),
-                },
-                new JsonSchema
-                {
-                    Id = new UriOrFragment("http://x/y#a"),
-                },
+                @"{
+                  ""id"": ""http://x/y#"",
+                }",
+                @"{
+                  ""id"": ""http://x/y#a"",
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null Ids",
-                new JsonSchema
-                {
-                    Id = null,
-                },
-                new JsonSchema
-                {
-                    Id = new UriOrFragment("http://x/y#"),
-                },
+                @"{}",
+                @"{
+                  ""id"": ""http://x/y#"",
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different schema versions",
-                new JsonSchema
-                {
-                    SchemaVersion = new Uri("http://z")
-                },
-                new JsonSchema
-                {
-                    SchemaVersion = new Uri("http://q")
-                },
+                @"{
+                  ""$schema"": ""http://z""
+                }",
+                @"{
+                  ""$schema"": ""http://q""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null schema versions",
-                new JsonSchema
-                {
-                    SchemaVersion = null
-                },
-                new JsonSchema
-                {
-                    SchemaVersion = new Uri("http://z")
-                },
+                @"{}",
+                @"{
+                  ""$schema"": ""http://z""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different titles",
-                new JsonSchema
-                {
-                    Title = "x"
-                },
-                new JsonSchema
-                {
-                    Title = "y"
-                },
+                @"{
+                  ""title"": ""x""
+                }",
+                @"{
+                  ""title"": ""y""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null titles",
-                new JsonSchema
-                {
-                    Title = null
-                },
-                new JsonSchema
-                {
-                    Title = "y"
-                },
+                @"{}",
+                @"{
+                  ""title"": ""y""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different enum lists",
-                new JsonSchema
-                {
-                    Enum = new object[] { "a", "b" }
-                },
-                new JsonSchema
-                {
-                    Enum = new object[] { "a", "c" }
-                },
+                @"{
+                  ""enum"": [ ""a"", ""b"" ]
+                }",
+                @"{
+                  ""enum"": [ ""a"", ""c"" ]
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Same enum lists in different orders",
-                new JsonSchema
-                {
-                    Enum = new object[] { "a", "b" }
-                },
-                new JsonSchema
-                {
-                    Enum = new object[] { "b", "a" }
-                },
+                @"{
+                  ""enum"": [ ""a"", ""b"" ]
+                }",
+                @"{
+                  ""enum"": [ ""b"", ""a"" ]
+                }",
                 true
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null enum lists",
-                new JsonSchema
-                {
-                    Enum = null
-                },
-                new JsonSchema
-                {
-                    Enum = new object[] { "a", "b" }
-                },
+                @"{}",
+                @"{
+                  ""enum"": [ ""a"", ""b"" ]
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different item schemas",
-                new JsonSchema
-                {
-                    Items = new JsonSchema { Type = JTokenType.Integer }
-                },
-                new JsonSchema
-                {
-                    Items = new JsonSchema { Type = JTokenType.Boolean }
-                },
+                @"{
+                  ""items"": {
+                    ""type"": ""integer""
+                  }
+                }",
+                @"{
+                  ""items"": {
+                    ""type"": ""boolean""
+                  }
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null item schemas",
-                new JsonSchema
-                {
-                    Items = null
-                },
-                new JsonSchema
-                {
-                    Items = new JsonSchema { Type = JTokenType.Boolean }
-                },
+                @"{}",
+                @"{
+                  ""items"": {
+                    ""type"": ""boolean""
+                  }
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
-                "Different property sets",
-                new JsonSchema
-                {
-                    Properties = new Dictionary<string, JsonSchema>
-                    {
-                        ["a"] = new JsonSchema { Type = JTokenType.Object },
-                        ["b"] = new JsonSchema { Type = JTokenType.String }
+            new EqualityTestCase(
+                "Different property schemas",
+                @"{
+                  ""properties"": {
+                    ""a"": {
+                      ""type"": ""object""
+                    },
+                    ""b"": {
+                      ""type"": ""string""
                     }
-                },
-                new JsonSchema
-                {
-                    Properties = new Dictionary<string, JsonSchema>
-                    {
-                        ["a"] = new JsonSchema { Type = JTokenType.Object },
-                        ["b"] = new JsonSchema { Type = JTokenType.Float }
+                  }
+                }",
+                @"{
+                  ""properties"": {
+                    ""a"": {
+                      ""type"": ""object""
+                    },
+                    ""b"": {
+                      ""type"": ""float""
                     }
-                },
+                  }
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null property sets",
-                new JsonSchema
-                {
-                    Properties = null
-                },
-                new JsonSchema
-                {
-                    Properties = new Dictionary<string, JsonSchema>
-                    {
-                        ["a"] = new JsonSchema { Type = JTokenType.Object },
-                        ["b"] = new JsonSchema { Type = JTokenType.Float }
+                @"{}",
+                @"{
+                  ""properties"": {
+                    ""a"": {
+                      ""type"": ""object""
+                    },
+                    ""b"": {
+                      ""type"": ""float""
                     }
-                },
+                  }
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different required properties",
-                new JsonSchema
-                {
-                    Required = new string[] { "a", "b" }
-                },
-                new JsonSchema
-                {
-                    Required = new string[] { "a" }
-                },
+                @"{
+                  ""required"": [ ""a"", ""b"" ]
+                }",
+                @"{
+                  ""required"": [ ""a"" ]
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null required properties",
-                new JsonSchema
-                {
-                    Required = null
-                },
-                new JsonSchema
-                {
-                    Required = new string[] { "a" }
-                },
+                @"{}",
+                @"{
+                  ""required"": [ ""a"" ]
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different definitions dictionaries",
-                new JsonSchema
-                {
-                    Definitions = new Dictionary<string, JsonSchema>
-                    {
-                        ["c"] = new JsonSchema { Type = JTokenType.Integer },
-                        ["d"] = new JsonSchema { Type = JTokenType.Boolean }
+                @"{
+                  ""definitions"": {
+                    ""c"": {
+                      ""type"": ""integer""
+                    },
+                    ""d"": {
+                      ""type"": ""boolean""
                     }
-                },
-                new JsonSchema
-                {
-                    Definitions = new Dictionary<string, JsonSchema>
-                    {
-                        ["e"] = new JsonSchema { Type = JTokenType.Integer },
-                        ["f"] = new JsonSchema { Type = JTokenType.Boolean }
+                  }
+                }",
+                @"{
+                  ""definitions"": {
+                    ""e"": {
+                      ""type"": ""integer""
+                    },
+                    ""f"": {
+                      ""type"": ""boolean""
                     }
-                },
+                  }
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null definitions dictionaries",
-                new JsonSchema
-                {
-                    Definitions = null
-                },
-                new JsonSchema
-                {
-                    Definitions = new Dictionary<string, JsonSchema>
-                    {
-                        ["e"] = new JsonSchema { Type = JTokenType.Integer },
-                        ["f"] = new JsonSchema { Type = JTokenType.Boolean }
+                @"{}",
+                @"{
+                  ""definitions"": {
+                    ""e"": {
+                      ""type"": ""integer""
+                    },
+                    ""f"": {
+                      ""type"": ""boolean""
                     }
-                },
+                  }
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different references",
-                new JsonSchema
-                {
-                    Reference = new UriOrFragment("schema/#")
-                },
-                new JsonSchema
-                {
-                    Reference = new UriOrFragment("schema/#x")
-                },
+                @"{
+                  ""$ref"": ""schema/#""
+                }",
+                @"{
+                  ""$ref"": ""schema/#x""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null references",
-                new JsonSchema
-                {
-                    Reference = null
-                },
-                new JsonSchema
-                {
-                    Reference = new UriOrFragment("schema/#x")
-                },
+                @"{}",
+                @"{
+                  ""$ref"": ""schema/#x""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different minimum array lengths",
-                new JsonSchema
-                {
-                    MinItems = 1
-                },
-                new JsonSchema
-                {
-                    MinItems = 2
-                },
+                @"{
+                  ""minItems"": 1
+                }",
+                @"{
+                  ""minItems"": 2
+                }",
                 false
-            },
+            ),
 
             // These two schemas would validate the same set of instances, but
             // we consider them unequal because they serialize to different
-            // JSON schema strings (the first one does not specify a MaxItems
-            // property; the second one does).
-            new object[]
-            {
+            // JSON schema strings.
+            new EqualityTestCase(
                 "Missing and zero minimum array lengths",
-                new JsonSchema
-                {
-                },
-                new JsonSchema
-                {
-                    MinItems = 0
-                },
+                @"{}",
+                @"{
+                  ""minItems"": 0
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different maximum array lengths",
-                new JsonSchema
-                {
-                    MaxItems = 1
-                },
-                new JsonSchema
-                {
-                    MaxItems = 2
-                },
+                @"{
+                  ""maxItems"": 1
+                }",
+                @"{
+                  ""maxItems"": 2
+                }",
                 false
-            },
+            ),
 
             // These two schemas would validate the same set of instances, but
             // we consider them unequal because they serialize to different
-            // JSON schema strings (the first one does not specify a MaxItems
-            // property; the second one does).
-            new object[]
-            {
+            // JSON schema strings.
+            new EqualityTestCase(
                 "Missing and zero maximum array lengths",
-                new JsonSchema
-                {
-                },
-                new JsonSchema
-                {
-                    MaxItems = 0
-                },
+                @"{}",
+                @"{
+                  ""maxItems"": 0
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Different formats",
-                new JsonSchema
-                {
-                    Format = FormatAttributes.DateTime
-                },
-                new JsonSchema
-                {
-                    Format = "email"
-                },
+                @"{
+                  ""format"": ""data-time""
+                }",
+                @"{
+                  ""format"": ""email""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Null and non-null formats",
-                new JsonSchema
-                {
-                },
-                new JsonSchema
-                {
-                    Format = FormatAttributes.DateTime
-                },
+                @"{}",
+                @"{
+                  ""format"": ""data-time""
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
-                "Missing and present additional properties",
-                new JsonSchema
-                {
-                },
-                new JsonSchema
-                {
-                    AdditionalProperties = new AdditionalProperties(true)
-                },
+            new EqualityTestCase(
+                "Null and non-null additional properties",
+                @"{}",
+                @"{
+                  ""additionalProperties"": true
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Additional properties with Boolean value and schema",
-                new JsonSchema
-                {
-                    AdditionalProperties = new AdditionalProperties(true)
-                },
-                new JsonSchema
-                {
-                    AdditionalProperties = new AdditionalProperties(new JsonSchema())
-                },
+                @"{
+                  ""additionalProperties"": true
+                }",
+                @"{
+                  ""additionalProperties"": {}
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Additional properties with different Boolean values",
-                new JsonSchema
-                {
-                    AdditionalProperties = new AdditionalProperties(true)
-                },
-                new JsonSchema
-                {
-                    AdditionalProperties = new AdditionalProperties(false)
-                },
+                @"{
+                  ""additionalProperties"": true
+                }",
+                @"{
+                  ""additionalProperties"": false
+                }",
                 false
-            },
+            ),
 
-            new object[]
-            {
+            new EqualityTestCase(
                 "Additional properties with different schemas",
-                new JsonSchema
-                {
-                    AdditionalProperties = new AdditionalProperties(new JsonSchema { Format = "date-time" })
-                },
-                new JsonSchema
-                {
-                    AdditionalProperties = new AdditionalProperties(new JsonSchema())
-                },
+                @"{
+                  ""additionalProperties"": {
+                    ""format"": ""date-time""
+                  }
+                }",
+                @"{
+                  ""additionalProperties"": {}
+                }",
                 false
-            }
+            ),
         };
 
         [Theory(DisplayName = "JsonSchema equality tests")]
         [MemberData(nameof(EqualityTestCases))]
-        public void EqualityTests(string testName, JsonSchema left, JsonSchema right, bool shouldBeEqual)
+        public void EqualityTests(EqualityTestCase testCase)
         {
-            left.Equals(right).Should().Be(shouldBeEqual);
-            (left == right).Should().Be(shouldBeEqual);
-            (left != right).Should().Be(!shouldBeEqual);
+            JsonSchema left = SchemaReader.ReadSchema(testCase.Left);
+            JsonSchema right = SchemaReader.ReadSchema(testCase.Right);
+
+            left.Equals(right).Should().Be(testCase.ShouldBeEqual);
+            (left == right).Should().Be(testCase.ShouldBeEqual);
+            (left != right).Should().Be(!testCase.ShouldBeEqual);
         }
     }
 }
