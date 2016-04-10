@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 {
@@ -21,10 +22,70 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             _settings = TestSettings.MakeSettings();
         }
 
-        public static readonly object[] TestCases = new object[]
+        public class TestCase : IXunitSerializable
         {
-            new object[]
+            public TestCase(
+                string name,
+                bool shouldThrow,
+                string schemaText,
+                string hintsText,
+                string classText,
+                string enumFileNameStem,
+                string enumText)
             {
+                Name = name;
+                ShouldThrow = shouldThrow;
+                SchemaText = schemaText;
+                HintsText = hintsText;
+                ClassText = classText;
+                EnumFileNameStem = enumFileNameStem;
+                EnumText = enumText;
+            }
+
+            public TestCase()
+            {
+                // Needed for deserialization.
+            }
+
+            public string Name;
+            public bool ShouldThrow;
+            public string SchemaText;
+            public string HintsText;
+            public string ClassText;
+            public string EnumFileNameStem;
+            public string EnumText;
+
+            public void Deserialize(IXunitSerializationInfo info)
+            {
+                Name = info.GetValue<string>(nameof(Name));
+                ShouldThrow = info.GetValue<bool>(nameof(ShouldThrow));
+                SchemaText = info.GetValue<string>(nameof(SchemaText));
+                HintsText = info.GetValue<string>(nameof(HintsText));
+                ClassText = info.GetValue<string>(nameof(ClassText));
+                EnumFileNameStem = info.GetValue<string>(nameof(EnumFileNameStem));
+                EnumText = info.GetValue<string>(nameof(EnumText));
+            }
+
+            public void Serialize(IXunitSerializationInfo info)
+            {
+                info.AddValue(nameof(Name), Name);
+                info.AddValue(nameof(ShouldThrow), ShouldThrow);
+                info.AddValue(nameof(SchemaText), SchemaText);
+                info.AddValue(nameof(HintsText), HintsText);
+                info.AddValue(nameof(ClassText), ClassText);
+                info.AddValue(nameof(EnumFileNameStem), EnumFileNameStem);
+                info.AddValue(nameof(EnumText), EnumText);
+            }
+
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
+        public static readonly TheoryData<TestCase> TestCases = new TheoryData<TestCase>
+        {
+            new TestCase(
                 "From reference",
                 false,
 @"{
@@ -120,11 +181,10 @@ namespace N
         Green
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
-                "throws when EnumHint does not specify a type name",
+            new TestCase(
+                "Throws when EnumHint does not specify a type name",
                 true,
 @"{
   ""type"": ""object"",
@@ -149,10 +209,9 @@ namespace N
                 null,
                 null,
                 null
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "From inline definition",
                 false,
 @"{
@@ -244,10 +303,9 @@ namespace N
         Green
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "Using description from inline definition",
                 false,
 @"{
@@ -338,10 +396,9 @@ namespace N
         Green
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "Using enumeration constants from hint",
                 false,
 @"{
@@ -434,11 +491,10 @@ namespace N
         Avocado
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
-                "throws when enum count in hint differs from schema",
+            new TestCase(
+                "Throws when enum count in hint differs from schema",
                 true,
 @"{
   ""type"": ""object"",
@@ -464,10 +520,9 @@ namespace N
                 null,
                 null,
                 null
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "Specify a 0 value",
                 false,
 @"{
@@ -562,29 +617,22 @@ namespace N
         Avocado
     }
 }"
-            }
+            )
         };
 
-        [Theory(DisplayName = "EnumHint generates enumerations")]
+        [Theory(DisplayName = nameof(EnumHint))]
         [MemberData(nameof(TestCases))]
-        public void GeneratesEnumFromProperty(
-            string testName,
-            bool shouldThrow,
-            string schemaText,
-            string hintsText,
-            string classText,
-            string enumFileNameStem,
-            string enumText)
+        public void EnumHint(TestCase test)
         {
             _settings.GenerateOverrides = true;
-            _settings.HintDictionary = HintDictionary.Deserialize(hintsText);
+            _settings.HintDictionary = HintDictionary.Deserialize(test.HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
 
             Action action = () => generator.Generate(schema);
 
-            if (shouldThrow)
+            if (test.ShouldThrow)
             {
                 action.ShouldThrow<Exception>();
             }
@@ -592,7 +640,7 @@ namespace N
             {
                 action();
 
-                string enumFilePath = TestFileSystem.MakeOutputFilePath(enumFileNameStem);
+                string enumFilePath = TestFileSystem.MakeOutputFilePath(test.EnumFileNameStem);
 
                 var expectedOutputFiles = new List<string>
                 {
@@ -603,8 +651,8 @@ namespace N
                 _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
                 _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
-                _testFileSystem[PrimaryOutputFilePath].Should().Be(classText);
-                _testFileSystem[enumFilePath].Should().Be(enumText);
+                _testFileSystem[PrimaryOutputFilePath].Should().Be(test.ClassText);
+                _testFileSystem[enumFilePath].Should().Be(test.EnumText);
             }
         }
     }
