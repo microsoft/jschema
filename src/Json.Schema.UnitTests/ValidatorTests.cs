@@ -146,6 +146,14 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
 
             new TestCase(
+                "Array without length constraint",
+                @"{
+                  ""type"": ""array"",
+                }",
+                "[ 1, 2, 3 ]"
+            ),
+
+            new TestCase(
                 "Required property missing",
                 @"{
                   ""type"": ""object"",
