@@ -70,5 +70,24 @@ namespace Microsoft.Json.Schema
         /// </code>
         /// </example>
         TooFewArrayItems,
+
+        /// <summary>
+        /// An array has too many items.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "array",
+        ///   "minItems": 3
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// [ 1, 2, 3, 4 ]
+        /// </code>
+        /// </example>
+        TooManyArrayItems,
     }
 }

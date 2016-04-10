@@ -22,7 +22,8 @@ namespace Microsoft.Json.Schema
         {
             [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType,
             [ValidationErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
-            [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems
+            [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
+            [ValidationErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems
         };
 
         private readonly Stack<JsonSchema> _schemas;
@@ -97,6 +98,11 @@ namespace Microsoft.Json.Schema
             if (numItems < schema.MinItems)
             {
                 AddMessage(jArray, ValidationErrorNumber.TooFewArrayItems, schema.MinItems, numItems);
+            }
+
+            if (numItems > schema.MaxItems)
+            {
+                AddMessage(jArray, ValidationErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
             }
         }
 

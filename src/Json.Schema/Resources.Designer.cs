@@ -97,6 +97,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The schema requires at most {0} array items, but there are {1}..
+        /// </summary>
+        internal static string ErrorTooManyArrayItems {
+            get {
+                return ResourceManager.GetString("ErrorTooManyArrayItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ({0},{1}): error {2}: {3}.
         /// </summary>
         internal static string ErrorWithLocation {

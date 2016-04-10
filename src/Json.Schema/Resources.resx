@@ -129,6 +129,9 @@
   <data name="ErrorTooFewArrayItems" xml:space="preserve">
     <value>The schema requires at least {0} array items, but there are only {1}.</value>
   </data>
+  <data name="ErrorTooManyArrayItems" xml:space="preserve">
+    <value>The schema requires at most {0} array items, but there are {1}.</value>
+  </data>
   <data name="ErrorWithLocation" xml:space="preserve">
     <value>({0},{1}): error {2}: {3}</value>
   </data>

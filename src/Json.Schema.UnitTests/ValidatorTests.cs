@@ -104,13 +104,23 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
 
             new TestCase(
-                "Array has valid number of items",
+                "Array has valid minimum number of items",
                 @"{
                   ""type"": ""array"",
                   ""minItems"": 2,
                   ""maxItems"": 4
                 }",
-                "[ 1, 2, 3]"
+                "[ 1, 2 ]"
+            ),
+
+            new TestCase(
+                "Array has valid maximum number of items",
+                @"{
+                  ""type"": ""array"",
+                  ""minItems"": 2,
+                  ""maxItems"": 4
+                }",
+                "[ 1, 2, 3, 4 ]"
             ),
 
             new TestCase(
@@ -122,6 +132,17 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 "[ 1 ]",
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.TooFewArrayItems, 2, 1)
+            ),
+
+            new TestCase(
+                "Array has too many items",
+                @"{
+                  ""type"": ""array"",
+                  ""minItems"": 2,
+                  ""maxItems"": 4
+                }",
+                "[ 1, 2, 3, 4, 5 ]",
+                Validator.FormatMessage(1, 1, ValidationErrorNumber.TooManyArrayItems, 4, 5)
             ),
 
             new TestCase(
