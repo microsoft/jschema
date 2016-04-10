@@ -147,6 +147,37 @@ namespace Microsoft.Json.Schema.UnitTests
 }",
                 Validator.FormatMessage(2, 14, ValidationErrorNumber.WrongTokenType, JTokenType.Boolean, JTokenType.String)
             ),
+
+            new TestCase(
+                "Object property missing required property",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""x"": {
+          ""type"": ""integer""
+        },
+        ""y"": {
+          ""type"": ""integer""
+        },
+        ""z"": {
+          ""type"": ""integer""
+        }
+      },
+      ""required"": [ ""x"", ""y"", ""z"" ]
+    }
+  }
+}",
+@"{
+  ""a"": {
+    ""y"": 2
+  }
+}",
+                Validator.FormatMessage(2, 9, ValidationErrorNumber.RequiredPropertyMissing, "x"),
+                Validator.FormatMessage(2, 9, ValidationErrorNumber.RequiredPropertyMissing, "z")
+            ),
         };
 
         [Theory(DisplayName = "Validation")]
