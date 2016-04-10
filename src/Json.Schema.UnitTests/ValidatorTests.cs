@@ -104,6 +104,27 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
 
             new TestCase(
+                "Array has valid number of items",
+                @"{
+                  ""type"": ""array"",
+                  ""minItems"": 2,
+                  ""maxItems"": 4
+                }",
+                "[ 1, 2, 3]"
+            ),
+
+            new TestCase(
+                "Array has too few items",
+                @"{
+                  ""type"": ""array"",
+                  ""minItems"": 2,
+                  ""maxItems"": 4
+                }",
+                "[ 1 ]",
+                Validator.FormatMessage(1, 1, ValidationErrorNumber.TooFewArrayItems, 2, 1)
+            ),
+
+            new TestCase(
                 "Required property missing",
                 @"{
                   ""type"": ""object"",
@@ -119,14 +140,14 @@ namespace Microsoft.Json.Schema.UnitTests
 
             new TestCase(
                 "Object property matches its schema",
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-  ""a"": {
-    ""type"": ""boolean""
-  }
-  }
-}",
+                @"{
+                  ""type"": ""object"",
+                  ""properties"": {
+                    ""a"": {
+                      ""type"": ""boolean""
+                    }
+                  }
+                }",
 @"{
   ""a"": true
 }"

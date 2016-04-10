@@ -51,5 +51,24 @@ namespace Microsoft.Json.Schema
         /// </code>
         /// </example>
         RequiredPropertyMissing = 2,
+
+        /// <summary>
+        /// An array has too few items.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "array",
+        ///   "minItems": 3
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// [ 1, 2 ]
+        /// </code>
+        /// </example>
+        TooFewArrayItems,
     }
 }

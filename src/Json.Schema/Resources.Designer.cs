@@ -79,6 +79,24 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The required property &quot;{0}&quot; is missing..
+        /// </summary>
+        internal static string ErrorRequiredPropertyMissing {
+            get {
+                return ResourceManager.GetString("ErrorRequiredPropertyMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The schema requires at least {0} array items, but there are only {1}..
+        /// </summary>
+        internal static string ErrorTooFewArrayItems {
+            get {
+                return ResourceManager.GetString("ErrorTooFewArrayItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ({0},{1}): error {2}: {3}.
         /// </summary>
         internal static string ErrorWithLocation {
@@ -93,15 +111,6 @@ namespace Microsoft.Json.Schema {
         internal static string ErrorWrongTokenType {
             get {
                 return ResourceManager.GetString("ErrorWrongTokenType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The required property &quot;{0}&quot; is missing..
-        /// </summary>
-        internal static string RequiredPropertyMissing {
-            get {
-                return ResourceManager.GetString("RequiredPropertyMissing", resourceCulture);
             }
         }
     }

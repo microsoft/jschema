@@ -21,7 +21,8 @@ namespace Microsoft.Json.Schema
         private static readonly IDictionary<ValidationErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<ValidationErrorNumber, string>
         {
             [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType,
-            [ValidationErrorNumber.RequiredPropertyMissing] = Resources.RequiredPropertyMissing
+            [ValidationErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
+            [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems
         };
 
         private readonly Stack<JsonSchema> _schemas;
@@ -81,8 +82,21 @@ namespace Microsoft.Json.Schema
                     ValidateObject((JObject)jToken, schema);
                     break;
 
+                case JTokenType.Array:
+                    ValidateArray((JArray)jToken, schema);
+                    break;
+
                 default:
                     break;
+            }
+        }
+
+        private void ValidateArray(JArray jArray, JsonSchema schema)
+        {
+            int numItems = jArray.Count;
+            if (numItems < schema.MinItems)
+            {
+                AddMessage(jArray, ValidationErrorNumber.TooFewArrayItems, schema.MinItems, numItems);
             }
         }
 
