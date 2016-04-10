@@ -2,92 +2,108 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Globalization;
 using FluentAssertions;
-using Microsoft.Json.Schema;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Microsoft.Json.Schema.UnitTests
 {
     public class ValidatorTests
     {
-        public static object[] TestCases = new object[]
+        public class TestCase : IXunitSerializable
         {
-            new object[]
+            public TestCase(
+                string name,
+                string schemaText,
+                string instanceText,
+                params string[] expectedMessages)
             {
-@"{
-    ""type"": ""integer""
-}",
+                Name = name;
+                SchemaText = schemaText;
+                InstanceText = instanceText;
+                ExpectedMessages = expectedMessages;
+            }
 
-                "2",
-
-                new string[0]
-            },
-
-            new object[]
+            public TestCase()
             {
-@"{
-    ""type"": ""integer""
-}",
+                // Needer for deserializer.
+            }
 
+            public string Name;
+            public string SchemaText;
+            public string InstanceText;
+            public string[] ExpectedMessages;
+
+            public override string ToString()
+            {
+                return Name;
+            }
+
+            public void Deserialize(IXunitSerializationInfo info)
+            {
+                Name = info.GetValue<string>(nameof(Name));
+                SchemaText = info.GetValue<string>(nameof(SchemaText));
+                InstanceText = info.GetValue<string>(nameof(InstanceText));
+                ExpectedMessages = info.GetValue<string[]>(nameof(ExpectedMessages));
+            }
+
+            public void Serialize(IXunitSerializationInfo info)
+            {
+                info.AddValue(nameof(Name), Name);
+                info.AddValue(nameof(SchemaText), SchemaText);
+                info.AddValue(nameof(InstanceText), InstanceText);
+                info.AddValue(nameof(ExpectedMessages), ExpectedMessages);
+            }
+        }
+
+        public static TheoryData<TestCase> TestCases = new TheoryData<TestCase>
+        {
+            new TestCase(
+                "Integer instance matches integer schema",
+                @"{ ""type"": ""integer"" }",
+                "2"
+            ),
+
+            new TestCase(
+                "Non-integer instance does not match integer schema",
+                @"{ ""type"": ""integer"" }",
                 "\"s\"",
+                Validator.FormatMessage(
+                    1, 3, ValidationErrorNumber.WrongTokenType, JTokenType.Integer, JTokenType.String)
+            ),
 
-                new string[]
-                {
-                    Validator.FormatMessage(
-                        1, 3, ValidationErrorNumber.WrongTokenType, JTokenType.Integer, JTokenType.String)
-                }
-            },
+            new TestCase(
+                "Array instance matches array schema",
+                @"{ ""type"": ""array"" }",
+                "[]"
+            ),
 
-            new object[]
-            {
-@"{
-    ""type"": ""array""
-}",
-
-                "[]",
-
-                new string[0]
-            },
-
-            new object[]
-            {
-@"{
-    ""type"": ""array""
-}",
-
+            new TestCase(
+                "Non-array instance matches array schema",
+                 @"{ ""type"": ""array"" }",
                 "true",
+                Validator.FormatMessage(
+                    1, 4, ValidationErrorNumber.WrongTokenType, JTokenType.Array, JTokenType.Boolean)
+            ),
 
-                new string[]
-                {
-                    Validator.FormatMessage(
-                        1, 4, ValidationErrorNumber.WrongTokenType, JTokenType.Array, JTokenType.Boolean)
-                }
-            },
-
-            new object[]
-            {
-@"{
-    ""type"": ""number""
-}",
-
-                "2",
-
-                new string[0]
-            },
+            new TestCase(
+                "Integer instance matches number schema",
+                @"{ ""type"": ""number"" }",
+                "2"
+            ),
         };
 
         [Theory(DisplayName = "Validator tests")]
         [MemberData(nameof(TestCases))]
-        public void ReportsMissingRequiredProperty(string schemaText, string instanceText, string[] expectedMessages)
+        public void ReportsMissingRequiredProperty(TestCase testCase)
         {
-            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText);
             var target = new Validator(schema);
-            string[] actualMessages = target.Validate(instanceText);
+            string[] actualMessages = target.Validate(testCase.InstanceText);
 
-            actualMessages.Length.Should().Be(expectedMessages.Length);
-            actualMessages.Should().ContainInOrder(expectedMessages);
+            actualMessages.Length.Should().Be(testCase.ExpectedMessages.Length);
+            actualMessages.Should().ContainInOrder(testCase.ExpectedMessages);
         }
     }
 }
