@@ -4,6 +4,7 @@
 using System;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Microsoft.Json.Schema.UnitTests
 {
@@ -91,120 +92,161 @@ namespace Microsoft.Json.Schema.UnitTests
             action.ShouldThrow<UriFormatException>();
         }
 
-        public static readonly object[] EqualityTestCases = new object[]
+        public class EqualityTestCase : IXunitSerializable
         {
-            new object[]
+            public EqualityTestCase(
+                string name,
+                string left,
+                string right,
+                bool shouldBeEqual)
             {
-                "Compare fragment to same fragment",
-                new UriOrFragment("#f"),
-                new UriOrFragment("#f"),
-                true
-            },
-
-            new object[]
-            {
-                "Compare fragment to different fragment",
-                new UriOrFragment("#f"),
-                new UriOrFragment("#g"),
-                false
-            },
-
-            new object[]
-            {
-                "Compare fragment to null",
-                new UriOrFragment("#fragment"),
-                null,
-                false
-            },
-
-            new object[]
-            {
-                "Compare fragment to URI",
-                new UriOrFragment("#f"),
-                new UriOrFragment("f"),
-                false
-            },
-
-            new object[]
-            {
-                "Compare relative URI to same relative URI",
-                new UriOrFragment("u"),
-                new UriOrFragment("u"),
-                true
-            },
-
-            new object[]
-            {
-                "Compare relative URI to different relative URI",
-                new UriOrFragment("u"),
-                new UriOrFragment("v"),
-                false
-            },
-
-            new object[]
-            {
-                "Compare relative URIs with same fragments",
-                new UriOrFragment("u#f"),
-                new UriOrFragment("u#f"),
-                true
-            },
-
-            new object[]
-            {
-                "Compare relative URIs with different fragments",
-                new UriOrFragment("u#f"),
-                new UriOrFragment("u#g"),
-                false
-            },
-
-            new object[]
-            {
-                "Compare absolute URI to same absolute URI",
-                new UriOrFragment("http://u"),
-                new UriOrFragment("http://u"),
-                true
-            },
-
-            new object[]
-            {
-                "Compare absolute URI to different absolute URI",
-                new UriOrFragment("http://u"),
-                new UriOrFragment("http://v"),
-                false
-            },
-
-            new object[]
-            {
-                "Compare absolute URIs with same fragments",
-                new UriOrFragment("http://u#f"),
-                new UriOrFragment("http://u#f"),
-                true
-            },
-
-            new object[]
-            {
-                "Compare absolute URIs with different fragments",
-                new UriOrFragment("http://u#f"),
-                new UriOrFragment("http://u#g"),
-                false
-            },
-
-            new object[]
-            {
-                "Compare URI to null",
-                new UriOrFragment("uri"),
-                null,
-                false
+                Name = name;
+                Left = left;
+                Right = right;
+                ShouldBeEqual = shouldBeEqual;
             }
+
+            public EqualityTestCase()
+            {
+                // Needed for deserialization.
+            }
+
+            public string Name;
+            public string Left;
+            public string Right;
+            public bool ShouldBeEqual;
+
+            public void Deserialize(IXunitSerializationInfo info)
+            {
+                Name = info.GetValue<string>(nameof(Name));
+                Left = info.GetValue<string>(nameof(Left));
+                Right = info.GetValue<string>(nameof(Right));
+                ShouldBeEqual = info.GetValue<bool>(nameof(ShouldBeEqual));
+            }
+
+            public void Serialize(IXunitSerializationInfo info)
+            {
+                info.AddValue(nameof(Name), Name);
+                info.AddValue(nameof(Left), Left);
+                info.AddValue(nameof(Right), Right);
+                info.AddValue(nameof(ShouldBeEqual), ShouldBeEqual);
+            }
+
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
+        public static readonly TheoryData<EqualityTestCase> EqualityTestCases = new TheoryData<EqualityTestCase>
+        {
+            new EqualityTestCase(
+                "Compare fragment to same fragment",
+                "#f",
+                "#f",
+                true
+            ),
+
+            new EqualityTestCase(
+                "Compare fragment to different fragment",
+                "#f",
+                "#g",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Compare fragment to null",
+                "#fragment",
+                null,
+                false
+            ),
+
+            new EqualityTestCase(
+                "Compare fragment to URI",
+                "#f",
+                "f",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Compare relative URI to same relative URI",
+                "u",
+                "u",
+                true
+            ),
+
+            new EqualityTestCase(
+                "Compare relative URI to different relative URI",
+                "u",
+                "v",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Compare relative URIs with same fragments",
+                "u#f",
+                "u#f",
+                true
+            ),
+
+            new EqualityTestCase(
+                "Compare relative URIs with different fragments",
+                "u#f",
+                "u#g",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Compare absolute URI to same absolute URI",
+                "http://u",
+                "http://u",
+                true
+            ),
+
+            new EqualityTestCase(
+                "Compare absolute URI to different absolute URI",
+                "http://u",
+                "http://v",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Compare absolute URIs with same fragments",
+                "http://u#f",
+                "http://u#f",
+                true
+            ),
+
+            new EqualityTestCase(
+                "Compare absolute URIs with different fragments",
+                "http://u#f",
+                "http://u#g",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Compare URI to null",
+                "uri",
+                null,
+                false
+            ),
         };
 
         [Theory(DisplayName = "UriOrFragment equality tests")]
         [MemberData(nameof(EqualityTestCases))]
-        public void EqualityTests(string testName, UriOrFragment left, UriOrFragment right, bool shouldBeEqual)
+        public void EqualityTests(EqualityTestCase testCase)
         {
-            left.Equals(right).Should().Be(shouldBeEqual);
-            (left == right).Should().Be(shouldBeEqual);
-            (left != right).Should().Be(!shouldBeEqual);
+            UriOrFragment left = testCase.Left == null
+                ? null
+                : new UriOrFragment(testCase.Left);
+
+            UriOrFragment right = testCase.Right == null
+                ? null
+                : new UriOrFragment(testCase.Right);
+
+            left.Equals(right).Should().Be(testCase.ShouldBeEqual);
+            (left == right).Should().Be(testCase.ShouldBeEqual);
+            (left != right).Should().Be(!testCase.ShouldBeEqual);
         }
     }
 }
