@@ -187,19 +187,19 @@ namespace Microsoft.Json.Schema.UnitTests
 
         [Theory(DisplayName = "UriOrFragment equality")]
         [MemberData(nameof(EqualityTestCases))]
-        public void EqualityTests(EqualityTestCase testCase)
+        public void EqualityTests(EqualityTestCase test)
         {
-            UriOrFragment left = testCase.Left == null
+            UriOrFragment left = test.Left == null
                 ? null
-                : new UriOrFragment(testCase.Left);
+                : new UriOrFragment(test.Left);
 
-            UriOrFragment right = testCase.Right == null
+            UriOrFragment right = test.Right == null
                 ? null
-                : new UriOrFragment(testCase.Right);
+                : new UriOrFragment(test.Right);
 
-            left.Equals(right).Should().Be(testCase.ShouldBeEqual);
-            (left == right).Should().Be(testCase.ShouldBeEqual);
-            (left != right).Should().Be(!testCase.ShouldBeEqual);
+            left.Equals(right).Should().Be(test.ShouldBeEqual);
+            (left == right).Should().Be(test.ShouldBeEqual);
+            (left != right).Should().Be(!test.ShouldBeEqual);
         }
     }
 }

@@ -232,14 +232,14 @@ namespace Microsoft.Json.Schema.UnitTests
 
         [Theory(DisplayName = "Validation")]
         [MemberData(nameof(TestCases))]
-        public void ReportsMissingRequiredProperty(TestCase testCase)
+        public void ReportsMissingRequiredProperty(TestCase test)
         {
-            JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
             var target = new Validator(schema);
-            string[] actualMessages = target.Validate(testCase.InstanceText);
+            string[] actualMessages = target.Validate(test.InstanceText);
 
-            actualMessages.Length.Should().Be(testCase.ExpectedMessages.Length);
-            actualMessages.Should().ContainInOrder(testCase.ExpectedMessages);
+            actualMessages.Length.Should().Be(test.ExpectedMessages.Length);
+            actualMessages.Should().ContainInOrder(test.ExpectedMessages);
         }
     }
 }

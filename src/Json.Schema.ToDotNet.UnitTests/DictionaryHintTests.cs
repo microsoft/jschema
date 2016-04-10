@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using FluentAssertions;
 using Microsoft.Json.Schema.UnitTests;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 {
@@ -12,16 +14,61 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         private readonly TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
 
+        public class TestCase : IXunitSerializable
+        {
+            public TestCase(
+                string name,
+                string schemaText,
+                string hintsText,
+                string expectedOutput)
+            {
+                Name = name;
+                SchemaText = schemaText;
+                HintsText = hintsText;
+                ExpectedOutput = expectedOutput;
+            }
+
+            public TestCase()
+            {
+                // Required for deserialization.
+            }
+
+            public string Name;
+            public string SchemaText;
+            public string HintsText;
+            public string ExpectedOutput;
+
+            public void Deserialize(IXunitSerializationInfo info)
+            {
+                Name = info.GetValue<string>(nameof(Name));
+                SchemaText = info.GetValue<string>(nameof(SchemaText));
+                HintsText = info.GetValue<string>(nameof(HintsText));
+                ExpectedOutput = info.GetValue<string>(nameof(ExpectedOutput));
+            }
+
+            public void Serialize(IXunitSerializationInfo info)
+            {
+                info.AddValue(nameof(Name), Name);
+                info.AddValue(nameof(SchemaText), SchemaText);
+                info.AddValue(nameof(HintsText), HintsText);
+                info.AddValue(nameof(ExpectedOutput), ExpectedOutput);
+            }
+
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
         public DictionaryHintTests()
         {
             _testFileSystem = new TestFileSystem();
             _settings = TestSettings.MakeSettings();
         }
 
-        public static readonly object[] TestCases = new object[]
+        public static readonly TheoryData<TestCase> TestCases = new TheoryData<TestCase>
         {
-            new object[]
-            {
+            new TestCase(
                 "Dictionary<string, string> (property bag)",
 @"{
   ""type"": ""object"",
@@ -117,10 +164,9 @@ namespace N
         }
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "Dictionary<string, D>",
 @"{
   ""type"": ""object"",
@@ -224,10 +270,9 @@ namespace N
         }
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "Dictionary<string, IList<D>>",
 @"{
   ""type"": ""object"",
@@ -350,10 +395,9 @@ namespace N
         }
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "Dictionary<Uri, IList<D>>",
 @"{
   ""type"": ""object"",
@@ -477,10 +521,9 @@ namespace N
         }
     }
 }"
-            },
+            ),
 
-            new object[]
-            {
+            new TestCase(
                 "Dictionary<string, IList<IList<D>>>",
 @"{
   ""type"": ""object"",
@@ -622,28 +665,24 @@ namespace N
         }
     }
 }"
-            }
+            )
         };
 
-        [Theory(DisplayName = "DictionaryHint generates dictionary")]
+        [Theory(DisplayName = nameof(DictionaryHint))]
         [MemberData(nameof(TestCases))]
-        public void GeneratesDictionary(
-            string testCaseName,
-            string schemaText,
-            string hintsText,
-            string expected)
+        public void DictionaryHint(TestCase test)
         {
-            _settings.HintDictionary = HintDictionary.Deserialize(hintsText);
+            _settings.HintDictionary = HintDictionary.Deserialize(test.HintsText);
             _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
 
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(expected, actual, nameof(GeneratesDictionary));
+            TestUtil.WriteTestResultFiles(test.ExpectedOutput, actual, nameof(DictionaryHint));
 
-            actual.Should().Be(expected);
+            actual.Should().Be(test.ExpectedOutput);
         }
     }
 }

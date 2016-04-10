@@ -436,14 +436,14 @@ namespace Microsoft.Json.Schema.UnitTests
 
         [Theory(DisplayName = "JsonSchema equality")]
         [MemberData(nameof(EqualityTestCases))]
-        public void EqualityTests(EqualityTestCase testCase)
+        public void EqualityTests(EqualityTestCase test)
         {
-            JsonSchema left = SchemaReader.ReadSchema(testCase.Left);
-            JsonSchema right = SchemaReader.ReadSchema(testCase.Right);
+            JsonSchema left = SchemaReader.ReadSchema(test.Left);
+            JsonSchema right = SchemaReader.ReadSchema(test.Right);
 
-            left.Equals(right).Should().Be(testCase.ShouldBeEqual);
-            (left == right).Should().Be(testCase.ShouldBeEqual);
-            (left != right).Should().Be(!testCase.ShouldBeEqual);
+            left.Equals(right).Should().Be(test.ShouldBeEqual);
+            (left == right).Should().Be(test.ShouldBeEqual);
+            (left != right).Should().Be(!test.ShouldBeEqual);
         }
     }
 }
