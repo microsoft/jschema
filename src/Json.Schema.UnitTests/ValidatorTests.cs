@@ -115,7 +115,38 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "a"),
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "c")
-            )
+            ),
+
+            new TestCase(
+                "Object property matches its schema",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+  ""a"": {
+    ""type"": ""boolean""
+  }
+  }
+}",
+@"{
+  ""a"": true
+}"
+            ),
+
+            new TestCase(
+                "Object property does not match its schema",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""boolean""
+    }
+  }
+}",
+@"{
+  ""a"": ""true""
+}",
+                Validator.FormatMessage(2, 14, ValidationErrorNumber.WrongTokenType, JTokenType.Boolean, JTokenType.String)
+            ),
         };
 
         [Theory(DisplayName = "Validation")]

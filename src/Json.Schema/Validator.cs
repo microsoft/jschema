@@ -88,13 +88,28 @@ namespace Microsoft.Json.Schema
 
         private void ValidateObject(JObject jObject, JsonSchema schema)
         {
+            List<string> propertySet = jObject.Properties().Select(p => p.Name).ToList();
+
+            // Ensure required properties are present.
             if (schema.Required != null)
             {
-                IEnumerable<string> propertySet = jObject.Properties().Select(p => p.Name);
                 IEnumerable<string> missingProperties = schema.Required.Except(propertySet);
                 foreach (string propertyName in missingProperties)
                 {
                     AddMessage(jObject, ValidationErrorNumber.RequiredPropertyMissing, propertyName);
+                }
+            }
+
+            // Ensure each property matches its schema.
+            if (schema.Properties != null)
+            {
+                foreach (string propertyName in propertySet)
+                {
+                    JsonSchema propertySchema;
+                    if (schema.Properties.TryGetValue(propertyName, out propertySchema))
+                    {
+                        ValidateToken(jObject.Property(propertyName).Value, propertySchema);
+                    }
                 }
             }
         }
