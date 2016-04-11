@@ -123,6 +123,29 @@ namespace Microsoft.Json.Schema.UnitTests
     }
   }
 }"
+                ),
+
+            new LogicallyInvalidSchemaTestCase(
+                "description is not a string",
+@"{
+  ""description"": false
+}"
+                ),
+
+            new LogicallyInvalidSchemaTestCase(
+                "description in nested schema is not a string",
+@"{
+  ""properties"": {
+    ""a"": {
+      $ref: ""#/definitions/d""
+    }
+  },
+  ""definitions"": {
+    ""d"": {
+      ""description"": {}
+    }
+  }
+}"
                 )
         };
 
