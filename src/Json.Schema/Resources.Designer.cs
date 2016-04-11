@@ -79,7 +79,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSON schema requires the value of this property to be a string..
+        ///   Looks up a localized string similar to JSON schema requires the value of the property &quot;{0}&quot; to be a string, but the token is of type {1}..
         /// </summary>
         internal static string ErrorNotAString {
             get {
@@ -129,15 +129,6 @@ namespace Microsoft.Json.Schema {
         internal static string ErrorWithLineInfo {
             get {
                 return ResourceManager.GetString("ErrorWithLineInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ({0}): error {1}: {2}.
-        /// </summary>
-        internal static string ErrorWithPath {
-            get {
-                return ResourceManager.GetString("ErrorWithPath", resourceCulture);
             }
         }
         

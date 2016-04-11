@@ -22,25 +22,28 @@ namespace Microsoft.Json.Schema
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JToken t = JToken.Load(reader);
+            JToken jToken = JToken.Load(reader);
 
-            if (t.Type == JTokenType.Boolean)
+            if (jToken.Type == JTokenType.Boolean)
             {
-                bool val = t.ToObject<bool>();
+                bool val = jToken.ToObject<bool>();
                 return new AdditionalProperties(val);
             }
-            else if (t.Type == JTokenType.Object)
+            else if (jToken.Type == JTokenType.Object)
             {
-                JsonSchema schema = t.ToObject<JsonSchema>(serializer);
+                JsonSchema schema = jToken.ToObject<JsonSchema>(serializer);
                 return new AdditionalProperties(schema);
             }
             else
             {
+                IJsonLineInfo lineInfo = jToken;
+
                 throw JSchemaException.Create(
                     JsonSchema.FormatMessage(
-                        reader.Path,
+                        lineInfo.LineNumber,
+                        lineInfo.LinePosition,
                         JsonSchemaErrorNumber.InvalidAdditionalPropertiesType,
-                        t.Type));
+                        jToken.Type));
             }
         }
 

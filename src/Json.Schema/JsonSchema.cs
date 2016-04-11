@@ -421,7 +421,8 @@ namespace Microsoft.Json.Schema
         };
 
         internal static string FormatMessage(
-            string path,
+            int lineNumber,
+            int linePosition,
             JsonSchemaErrorNumber errorNumber,
             params object[] args)
         {
@@ -432,8 +433,9 @@ namespace Microsoft.Json.Schema
 
             string fullMessage = string.Format(
                 CultureInfo.CurrentCulture,
-                Resources.ErrorWithPath,
-                path,
+                Resources.ErrorWithLineInfo,
+                lineNumber,
+                linePosition,
                 errorCode,
                 message);
 

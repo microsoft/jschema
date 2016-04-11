@@ -2,7 +2,9 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
@@ -29,13 +31,25 @@ namespace Microsoft.Json.Schema
             }
         }
 
+        private static readonly char[] s_pathSplitChars = new[] { '.' };
+
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType != JsonToken.String)
             {
+                JToken jToken = JToken.Load(reader);
+                IJsonLineInfo lineInfo = jToken;
+
+                string propertyName = reader.Path?.Split(s_pathSplitChars).LastOrDefault()
+                    ?? string.Empty;
+
                 throw JSchemaException.Create(
                     JsonSchema.FormatMessage(
-                        reader.Path, JsonSchemaErrorNumber.NotAString));
+                        lineInfo.LineNumber,
+                        lineInfo.LinePosition,
+                        JsonSchemaErrorNumber.NotAString,
+                        propertyName,
+                        reader.TokenType));
             }
 
             return reader.Value;
