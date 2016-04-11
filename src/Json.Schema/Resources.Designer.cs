@@ -70,6 +70,24 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JSON schema requires the value of &quot;additionalProperties&quot; to be either a Boolean or a schema, but a token of type {0} was seen..
+        /// </summary>
+        internal static string ErrorInvalidAdditionalProperties {
+            get {
+                return ResourceManager.GetString("ErrorInvalidAdditionalProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JSON schema requires the value of this property to be a string..
+        /// </summary>
+        internal static string ErrorNotAString {
+            get {
+                return ResourceManager.GetString("ErrorNotAString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the &quot;definitions&quot; property, for example &quot;#/definitions/def1&quot;. The URI reference &quot;{0}&quot; is not supported..
         /// </summary>
         internal static string ErrorOnlyDefinitionFragmentsSupported {
@@ -108,9 +126,18 @@ namespace Microsoft.Json.Schema {
         /// <summary>
         ///   Looks up a localized string similar to ({0},{1}): error {2}: {3}.
         /// </summary>
-        internal static string ErrorWithLocation {
+        internal static string ErrorWithLineInfo {
             get {
-                return ResourceManager.GetString("ErrorWithLocation", resourceCulture);
+                return ResourceManager.GetString("ErrorWithLineInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ({0}): error {1}: {2}.
+        /// </summary>
+        internal static string ErrorWithPath {
+            get {
+                return ResourceManager.GetString("ErrorWithPath", resourceCulture);
             }
         }
         

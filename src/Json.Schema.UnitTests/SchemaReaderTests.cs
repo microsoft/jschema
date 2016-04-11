@@ -94,19 +94,36 @@ namespace Microsoft.Json.Schema.UnitTests
         {
             new LogicallyInvalidSchemaTestCase(
                 "additionalProperties is a non-Boolean primitive type",
-                @"
-{
+@"{
   ""additionalProperties"": 2
 }"
-            ),
+                ),
 
             new LogicallyInvalidSchemaTestCase(
                 "additionalProperties is an array",
-                @"
-{
+@"{
   ""additionalProperties"": []
 }"
-            )
+                ),
+
+            new LogicallyInvalidSchemaTestCase(
+                "title is not a string",
+@"{
+  ""title"": 2
+}"
+                ),
+
+            new LogicallyInvalidSchemaTestCase(
+                "title in nested schema is not a string",
+@"{
+  ""title"": ""Outer title"",
+  ""properties"": {
+    ""a"": {
+      ""title"": []
+    }
+  }
+}"
+                )
         };
 
         [Theory(DisplayName = "SchemaReader throws on logically invalid schema")]

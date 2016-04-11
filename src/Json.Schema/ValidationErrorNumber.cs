@@ -4,8 +4,12 @@
 namespace Microsoft.Json.Schema
 {
     /// <summary>
-    /// Error numbers from JSON schema validation.
+    /// Error numbers from validating a JSON instance against a JSON schema.
     /// </summary>
+    /// <remarks>
+    /// Do not alter or reuse the integer values used in the enum initializers.
+    /// They must remain stable because the error codes will be documented.
+    /// </remarks>
     internal enum ValidationErrorNumber
     {
         /// <summary>

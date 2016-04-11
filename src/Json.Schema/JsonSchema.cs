@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -106,8 +107,26 @@ namespace Microsoft.Json.Schema
         [JsonProperty("$schema")]
         public Uri SchemaVersion { get; set; }
 
+        /// <summary>
+        /// Gets or sets a short string describing this schema. See Sec. 6.1
+        /// </summary>
+        /// <remarks>
+        /// The JSON schema spec requires <code>title<code> to be a string. Don't let
+        /// Json.NET just serialize anything it finds into a string.
+        /// </remarks>
+        [JsonConverter(typeof(MustBeStringConverter))]
         public string Title { get; set; }
 
+
+        /// <summary>
+        /// Gets or sets a string describing this schema, including the purpose of
+        /// instances described by this schema. See Sec. 6.1.
+        /// </summary>
+        /// <remarks>
+        /// The JSON schema spec requires <code>title<code> to be a string. Don't let
+        /// Json.NET just serialize anything it finds into a string.
+        /// </remarks>
+        [JsonConverter(typeof(MustBeStringConverter))]
         public string Description { get; set; }
 
         public JTokenType Type { get; set; }
@@ -391,6 +410,34 @@ namespace Microsoft.Json.Schema
         public static bool operator !=(JsonSchema left, JsonSchema right)
         {
             return !(left == right);
+        }
+
+        private const string ErrorCodeFormat = "JS{0:D4}";
+
+        private static readonly IDictionary<JsonSchemaErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<JsonSchemaErrorNumber, string>
+        {
+            [JsonSchemaErrorNumber.NotAString] = Resources.ErrorNotAString,
+            [JsonSchemaErrorNumber.InvalidAdditionalPropertiesType] = Resources.ErrorInvalidAdditionalProperties
+        };
+
+        internal static string FormatMessage(
+            string path,
+            JsonSchemaErrorNumber errorNumber,
+            params object[] args)
+        {
+            string messageFormat = s_errorCodeToMessageDictionary[errorNumber];
+            string message = string.Format(CultureInfo.CurrentCulture, messageFormat, args);
+
+            string errorCode = string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
+
+            string fullMessage = string.Format(
+                CultureInfo.CurrentCulture,
+                Resources.ErrorWithPath,
+                path,
+                errorCode,
+                message);
+
+            return fullMessage;
         }
     }
 }

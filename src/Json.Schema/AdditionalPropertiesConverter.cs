@@ -36,7 +36,11 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                throw new JSchemaException($"Unexpected JSON token type {t.Type} found while deserializing additionalProperties.");
+                throw JSchemaException.Create(
+                    JsonSchema.FormatMessage(
+                        reader.Path,
+                        JsonSchemaErrorNumber.InvalidAdditionalPropertiesType,
+                        t.Type));
             }
         }
 

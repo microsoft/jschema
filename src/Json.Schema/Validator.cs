@@ -16,16 +16,6 @@ namespace Microsoft.Json.Schema
     /// </summary>
     public class Validator
     {
-        const string ErrorCodeFormat = "JSV{0:D4}";
-
-        private static readonly IDictionary<ValidationErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<ValidationErrorNumber, string>
-        {
-            [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType,
-            [ValidationErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
-            [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
-            [ValidationErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems
-        };
-
         private readonly Stack<JsonSchema> _schemas;
         private IList<string> _messages;
 
@@ -144,6 +134,16 @@ namespace Microsoft.Json.Schema
 
         // We factor out this method and make it internal to allow unit tests to easily
         // compare the messages produced by the validator with the expected messages.
+        private const string ErrorCodeFormat = "JSV{0:D4}";
+
+        private static readonly IDictionary<ValidationErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<ValidationErrorNumber, string>
+        {
+            [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType,
+            [ValidationErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
+            [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
+            [ValidationErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems
+        };
+
         internal static string FormatMessage(
             int lineNumber,
             int linePosition,
@@ -157,7 +157,7 @@ namespace Microsoft.Json.Schema
 
             string fullMessage = string.Format(
                 CultureInfo.CurrentCulture,
-                Resources.ErrorWithLocation,
+                Resources.ErrorWithLineInfo,
                 lineNumber,
                 linePosition,
                 errorCode,
