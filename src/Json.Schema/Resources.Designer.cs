@@ -61,6 +61,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The schema does not permit a property named &quot;{0}&quot;..
+        /// </summary>
+        internal static string ErrorAdditionalPropertyProhibited {
+            get {
+                return ResourceManager.GetString("ErrorAdditionalPropertyProhibited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This schema does not contain the sub-schema definition referred to by the $ref value &quot;{0}&quot;..
         /// </summary>
         internal static string ErrorDefinitionDoesNotExist {

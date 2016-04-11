@@ -93,5 +93,30 @@ namespace Microsoft.Json.Schema
         /// </code>
         /// </example>
         TooManyArrayItems,
+
+        /// <summary>
+        /// An object has a property not permitted by the schema.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "properties": {
+        ///     "a": {
+        ///       "type": "integer"
+        ///     }
+        ///   }
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// {
+        ///   "a": 2,
+        ///   "b": 3
+        /// }
+        /// </code>
+        /// </example>
+        AdditionalPropertyProhibited,
     }
 }

@@ -122,6 +122,20 @@ namespace Microsoft.Json.Schema
                     }
                 }
             }
+
+            // If additional properties are not allowed, ensure there are none.
+            if (!(schema.AdditionalProperties?.Allowed  == true))
+            {
+                IEnumerable<string> extraProperties = schema.Properties == null
+                    ? propertySet
+                    : propertySet.Except(schema.Properties.Keys);
+
+                foreach (string propertyName in extraProperties)
+                {
+                    JProperty property = jObject.Property(propertyName);
+                    AddMessage(property, ValidationErrorNumber.AdditionalPropertyProhibited, propertyName);
+                }
+            }
         }
 
         private void AddMessage(JToken jToken, ValidationErrorNumber errorCode, params object[] args)
@@ -141,7 +155,8 @@ namespace Microsoft.Json.Schema
             [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType,
             [ValidationErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
             [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
-            [ValidationErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems
+            [ValidationErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems,
+            [ValidationErrorNumber.AdditionalPropertyProhibited] = Resources.ErrorAdditionalPropertyProhibited
         };
 
         internal static string FormatMessage(

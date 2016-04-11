@@ -155,28 +155,39 @@ namespace Microsoft.Json.Schema.UnitTests
 
             new TestCase(
                 "Required property missing",
-                @"{
-                  ""type"": ""object"",
-                  ""required"": [ ""a"", ""b"", ""c"" ]
-                }",
-                @"{
-                  ""b"": true,
-                  ""d"": true
-                }",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""boolean""
+    },
+    ""b"": {
+      ""type"": ""boolean""
+    }
+  },
+  ""required"": [ ""a"", ""b"", ""c"" ]
+}",
+
+@"{
+    ""b"": true
+}",
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "a"),
                 Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "c")
                 ),
 
             new TestCase(
                 "Object property matches its schema",
-                @"{
-                  ""type"": ""object"",
-                  ""properties"": {
-                    ""a"": {
-                      ""type"": ""boolean""
-                    }
-                  }
-                }",
+
+@"{
+    ""type"": ""object"",
+    ""properties"": {
+    ""a"": {
+        ""type"": ""boolean""
+    }
+  }
+}",
+
 @"{
   ""a"": true
 }"
@@ -184,6 +195,7 @@ namespace Microsoft.Json.Schema.UnitTests
 
             new TestCase(
                 "Object property does not match its schema",
+
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -192,6 +204,7 @@ namespace Microsoft.Json.Schema.UnitTests
     }
   }
 }",
+
 @"{
   ""a"": ""true""
 }",
@@ -200,6 +213,7 @@ namespace Microsoft.Json.Schema.UnitTests
 
             new TestCase(
                 "Object property missing required property",
+
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -220,6 +234,7 @@ namespace Microsoft.Json.Schema.UnitTests
     }
   }
 }",
+
 @"{
   ""a"": {
     ""y"": 2
@@ -227,7 +242,65 @@ namespace Microsoft.Json.Schema.UnitTests
 }",
                 Validator.FormatMessage(2, 9, ValidationErrorNumber.RequiredPropertyMissing, "x"),
                 Validator.FormatMessage(2, 9, ValidationErrorNumber.RequiredPropertyMissing, "z")
-            ),
+                ),
+
+            new TestCase(
+                "Object has additional property allowed by Boolean",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": true
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": {}
+}"
+                ),
+
+            new TestCase(
+                "Object has additional property disallowed by Boolean",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": false
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": {}
+}",
+                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertyProhibited, "b")
+                ),
+
+            new TestCase(
+                "Object has additional property disallowed by default",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": {}
+}",
+                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertyProhibited, "b")
+                )
         };
 
         [Theory(DisplayName = "Validation")]
