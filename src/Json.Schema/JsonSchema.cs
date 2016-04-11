@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -410,36 +409,6 @@ namespace Microsoft.Json.Schema
         public static bool operator !=(JsonSchema left, JsonSchema right)
         {
             return !(left == right);
-        }
-
-        private const string ErrorCodeFormat = "JS{0:D4}";
-
-        private static readonly IDictionary<JsonSchemaErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<JsonSchemaErrorNumber, string>
-        {
-            [JsonSchemaErrorNumber.NotAString] = Resources.ErrorNotAString,
-            [JsonSchemaErrorNumber.InvalidAdditionalPropertiesType] = Resources.ErrorInvalidAdditionalProperties
-        };
-
-        internal static string FormatMessage(
-            int lineNumber,
-            int linePosition,
-            JsonSchemaErrorNumber errorNumber,
-            params object[] args)
-        {
-            string messageFormat = s_errorCodeToMessageDictionary[errorNumber];
-            string message = string.Format(CultureInfo.CurrentCulture, messageFormat, args);
-
-            string errorCode = string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
-
-            string fullMessage = string.Format(
-                CultureInfo.CurrentCulture,
-                Resources.ErrorWithLineInfo,
-                lineNumber,
-                linePosition,
-                errorCode,
-                message);
-
-            return fullMessage;
         }
     }
 }

@@ -39,10 +39,10 @@ namespace Microsoft.Json.Schema
                 IJsonLineInfo lineInfo = jToken;
 
                 throw JSchemaException.Create(
-                    JsonSchema.FormatMessage(
+                    ErrorMessage.Format(
                         lineInfo.LineNumber,
                         lineInfo.LinePosition,
-                        JsonSchemaErrorNumber.InvalidAdditionalPropertiesType,
+                        ErrorNumber.InvalidAdditionalPropertiesType,
                         jToken.Type));
             }
         }

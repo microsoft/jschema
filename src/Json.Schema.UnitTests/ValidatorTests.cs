@@ -81,7 +81,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Non-integer instance does not match integer schema",
                 @"{ ""type"": ""integer"" }",
                 "\"s\"",
-                Validator.FormatMessage(1, 3, ValidationErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Integer, JTokenType.String)
+                ErrorMessage.Format(1, 3, ErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -94,7 +94,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Non-array instance matches array schema",
                  @"{ ""type"": ""array"" }",
                 "true",
-                Validator.FormatMessage(1, 4, ValidationErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Array, JTokenType.Boolean)
+                ErrorMessage.Format(1, 4, ErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Array, JTokenType.Boolean)
                 ),
 
             new TestCase(
@@ -131,7 +131,7 @@ namespace Microsoft.Json.Schema.UnitTests
                   ""maxItems"": 4
                 }",
                 "[ 1 ]",
-                Validator.FormatMessage(1, 1, ValidationErrorNumber.TooFewArrayItems, 2, 1)
+                ErrorMessage.Format(1, 1, ErrorNumber.TooFewArrayItems, 2, 1)
                 ),
 
             new TestCase(
@@ -142,7 +142,7 @@ namespace Microsoft.Json.Schema.UnitTests
                   ""maxItems"": 4
                 }",
                 "[ 1, 2, 3, 4, 5 ]",
-                Validator.FormatMessage(1, 1, ValidationErrorNumber.TooManyArrayItems, 4, 5)
+                ErrorMessage.Format(1, 1, ErrorNumber.TooManyArrayItems, 4, 5)
                 ),
 
             new TestCase(
@@ -172,8 +172,8 @@ namespace Microsoft.Json.Schema.UnitTests
 @"{
     ""b"": true
 }",
-                Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "a"),
-                Validator.FormatMessage(1, 1, ValidationErrorNumber.RequiredPropertyMissing, "c")
+                ErrorMessage.Format(1, 1, ErrorNumber.RequiredPropertyMissing, "a"),
+                ErrorMessage.Format(1, 1, ErrorNumber.RequiredPropertyMissing, "c")
                 ),
 
             new TestCase(
@@ -208,7 +208,7 @@ namespace Microsoft.Json.Schema.UnitTests
 @"{
   ""a"": ""true""
 }",
-                Validator.FormatMessage(2, 14, ValidationErrorNumber.WrongType, "a", JTokenType.Boolean, JTokenType.String)
+                ErrorMessage.Format(2, 14, ErrorNumber.WrongType, "a", JTokenType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -240,8 +240,8 @@ namespace Microsoft.Json.Schema.UnitTests
     ""y"": 2
   }
 }",
-                Validator.FormatMessage(2, 9, ValidationErrorNumber.RequiredPropertyMissing, "x"),
-                Validator.FormatMessage(2, 9, ValidationErrorNumber.RequiredPropertyMissing, "z")
+                ErrorMessage.Format(2, 9, ErrorNumber.RequiredPropertyMissing, "x"),
+                ErrorMessage.Format(2, 9, ErrorNumber.RequiredPropertyMissing, "z")
                 ),
 
             new TestCase(
@@ -280,7 +280,7 @@ namespace Microsoft.Json.Schema.UnitTests
   ""a"": 2,
   ""b"": {}
 }",
-                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertiesProhibited, "b")
+                ErrorMessage.Format(3, 7, ErrorNumber.AdditionalPropertiesProhibited, "b")
                 ),
 
             new TestCase(
@@ -299,7 +299,7 @@ namespace Microsoft.Json.Schema.UnitTests
   ""a"": 2,
   ""b"": {}
 }",
-                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertiesProhibited, "b")
+                ErrorMessage.Format(3, 7, ErrorNumber.AdditionalPropertiesProhibited, "b")
                 ),
 
             new TestCase(
@@ -342,7 +342,7 @@ namespace Microsoft.Json.Schema.UnitTests
   ""a"": 2,
   ""b"": ""false""
 }",
-                Validator.FormatMessage(3, 15, ValidationErrorNumber.WrongType, "b", JTokenType.Boolean, JTokenType.String)
+                ErrorMessage.Format(3, 15, ErrorNumber.WrongType, "b", JTokenType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -366,7 +366,7 @@ namespace Microsoft.Json.Schema.UnitTests
     ""x"": 3
   }
 }",
-                Validator.FormatMessage(3, 11, ValidationErrorNumber.WrongType, "a.x", JTokenType.Boolean, JTokenType.Integer)
+                ErrorMessage.Format(3, 11, ErrorNumber.WrongType, "a.x", JTokenType.Boolean, JTokenType.Integer)
                 ),
         };
 

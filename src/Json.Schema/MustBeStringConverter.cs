@@ -44,10 +44,10 @@ namespace Microsoft.Json.Schema
                     ?? string.Empty;
 
                 throw JSchemaException.Create(
-                    JsonSchema.FormatMessage(
+                    ErrorMessage.Format(
                         lineInfo.LineNumber,
                         lineInfo.LinePosition,
-                        JsonSchemaErrorNumber.NotAString,
+                        ErrorNumber.NotAString,
                         propertyName,
                         reader.TokenType));
             }

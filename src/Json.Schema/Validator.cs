@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -65,7 +64,7 @@ namespace Microsoft.Json.Schema
             if (jToken.Type != schema.Type
                 && !(jToken.Type == JTokenType.Integer && schema.Type == JTokenType.Float))
             {
-                AddMessage(jToken, ValidationErrorNumber.WrongType, name, schema.Type, jToken.Type);
+                AddMessage(jToken, ErrorNumber.WrongType, name, schema.Type, jToken.Type);
                 return;
             }
 
@@ -89,12 +88,12 @@ namespace Microsoft.Json.Schema
             int numItems = jArray.Count;
             if (numItems < schema.MinItems)
             {
-                AddMessage(jArray, ValidationErrorNumber.TooFewArrayItems, schema.MinItems, numItems);
+                AddMessage(jArray, ErrorNumber.TooFewArrayItems, schema.MinItems, numItems);
             }
 
             if (numItems > schema.MaxItems)
             {
-                AddMessage(jArray, ValidationErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
+                AddMessage(jArray, ErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
             }
         }
 
@@ -108,7 +107,7 @@ namespace Microsoft.Json.Schema
                 IEnumerable<string> missingProperties = schema.Required.Except(propertySet);
                 foreach (string propertyName in missingProperties)
                 {
-                    AddMessage(jObject, ValidationErrorNumber.RequiredPropertyMissing, propertyName);
+                    AddMessage(jObject, ErrorNumber.RequiredPropertyMissing, propertyName);
                 }
             }
 
@@ -137,7 +136,7 @@ namespace Microsoft.Json.Schema
                 foreach (string propertyName in extraProperties)
                 {
                     JProperty property = jObject.Property(propertyName);
-                    AddMessage(property, ValidationErrorNumber.AdditionalPropertiesProhibited, propertyName);
+                    AddMessage(property, ErrorNumber.AdditionalPropertiesProhibited, propertyName);
                 }
             }
             else
@@ -155,47 +154,12 @@ namespace Microsoft.Json.Schema
             }
         }
 
-        private void AddMessage(JToken jToken, ValidationErrorNumber errorCode, params object[] args)
+        private void AddMessage(JToken jToken, ErrorNumber errorCode, params object[] args)
         {
             IJsonLineInfo lineInfo = jToken;
 
             _messages.Add(
-                FormatMessage(lineInfo.LineNumber, lineInfo.LinePosition, errorCode, args));
-        }
-
-        // We factor out this method and make it internal to allow unit tests to easily
-        // compare the messages produced by the validator with the expected messages.
-        private const string ErrorCodeFormat = "JSV{0:D4}";
-
-        private static readonly IDictionary<ValidationErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<ValidationErrorNumber, string>
-        {
-            [ValidationErrorNumber.WrongType] = Resources.ErrorWrongType,
-            [ValidationErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
-            [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
-            [ValidationErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems,
-            [ValidationErrorNumber.AdditionalPropertiesProhibited] = Resources.ErrorAdditionalPropertiesProhibited,
-        };
-
-        internal static string FormatMessage(
-            int lineNumber,
-            int linePosition,
-            ValidationErrorNumber errorNumber,
-            params object[] args)
-        {
-            string messageFormat = s_errorCodeToMessageDictionary[errorNumber];
-            string message = string.Format(CultureInfo.CurrentCulture, messageFormat, args);
-
-            string errorCode = string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
-
-            string fullMessage = string.Format(
-                CultureInfo.CurrentCulture,
-                Resources.ErrorWithLineInfo,
-                lineNumber,
-                linePosition,
-                errorCode,
-                message);
-
-            return fullMessage;
+                ErrorMessage.Format(lineInfo.LineNumber, lineInfo.LinePosition, errorCode, args));
         }
     }
 }

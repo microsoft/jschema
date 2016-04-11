@@ -4,18 +4,43 @@
 namespace Microsoft.Json.Schema
 {
     /// <summary>
-    /// Error numbers from validating a JSON instance against a JSON schema.
+    /// Error numbers from reading a JSON schema.
     /// </summary>
     /// <remarks>
     /// Do not alter or reuse the integer values used in the enum initializers.
     /// They must remain stable because the error codes will be documented.
     /// </remarks>
-    internal enum ValidationErrorNumber
+    internal enum ErrorNumber
     {
         /// <summary>
         /// No error.
         /// </summary>
         None = 0,
+
+        /// <summary>
+        /// In the schema, a property that is required to be a string is not a string.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "title": 2
+        /// }
+        /// </code>
+        /// </example>
+        NotAString = 1,
+
+        /// <summary>
+        /// In the schema, <code>additionalProperties</code> property is neither a Boolean
+        /// nor an object.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "additionalProperties": 2
+        /// }
+        /// </code>
+        /// </example>
+        InvalidAdditionalPropertiesType = 2,
 
         /// <summary>
         /// A token has the wrong type.
@@ -33,7 +58,7 @@ namespace Microsoft.Json.Schema
         /// "x"
         /// </code>
         /// </example>
-        WrongType = 1,
+        WrongType = 3,
 
         /// <summary>
         /// A required property is missing.
@@ -54,7 +79,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        RequiredPropertyMissing = 2,
+        RequiredPropertyMissing = 4,
 
         /// <summary>
         /// An array has too few items.
@@ -73,7 +98,7 @@ namespace Microsoft.Json.Schema
         /// [ 1, 2 ]
         /// </code>
         /// </example>
-        TooFewArrayItems,
+        TooFewArrayItems = 5,
 
         /// <summary>
         /// An array has too many items.
@@ -92,7 +117,7 @@ namespace Microsoft.Json.Schema
         /// [ 1, 2, 3, 4 ]
         /// </code>
         /// </example>
-        TooManyArrayItems,
+        TooManyArrayItems = 6,
 
         /// <summary>
         /// An object has a property not permitted by the schema.
@@ -111,6 +136,6 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        AdditionalPropertiesProhibited,
+        AdditionalPropertiesProhibited = 7,
     }
 }

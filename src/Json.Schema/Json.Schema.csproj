@@ -80,13 +80,14 @@
   <ItemGroup>
     <Compile Include="AdditionalProperties.cs" />
     <Compile Include="AdditionalPropertiesConverter.cs" />
+    <Compile Include="ErrorMessage.cs" />
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="JSchemaException.cs" />
     <Compile Include="JsonSchema.cs" />
     <Compile Include="JsonSchemaContractResolver.cs" />
-    <Compile Include="JsonSchemaErrorNumber.cs" />
+    <Compile Include="ErrorNumber.cs" />
     <Compile Include="JTokenTypeConverter.cs" />
     <Compile Include="JTokenTypeExtensions.cs" />
     <Compile Include="MustBeStringConverter.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="SchemaWriter.cs" />
     <Compile Include="UriOrFragmentConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
-    <Compile Include="ValidationErrorNumber.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>
