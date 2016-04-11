@@ -33,7 +33,7 @@ namespace Microsoft.Json.Schema
         /// "x"
         /// </code>
         /// </example>
-        WrongTokenType = 1,
+        WrongType = 1,
 
         /// <summary>
         /// A required property is missing.
@@ -101,22 +101,16 @@ namespace Microsoft.Json.Schema
         /// Schema:
         /// <code>
         /// {
-        ///   "properties": {
-        ///     "a": {
-        ///       "type": "integer"
-        ///     }
-        ///   }
         /// }
         /// </code>
         /// 
         /// Instance:
         /// <code>
         /// {
-        ///   "a": 2,
-        ///   "b": 3
+        ///   "a": 3
         /// }
         /// </code>
         /// </example>
-        AdditionalPropertyProhibited,
+        AdditionalPropertiesProhibited,
     }
 }

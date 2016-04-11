@@ -16,6 +16,8 @@ namespace Microsoft.Json.Schema
     /// </summary>
     public class Validator
     {
+        internal const string RootObjectName = "root object";
+
         private readonly Stack<JsonSchema> _schemas;
         private IList<string> _messages;
 
@@ -45,12 +47,12 @@ namespace Microsoft.Json.Schema
                 JToken token = JToken.ReadFrom(new JsonTextReader(reader));
                 JsonSchema schema = _schemas.Peek();
 
-                ValidateToken(token, schema);
+                ValidateToken(token, RootObjectName, schema);
             }
 
             return _messages.ToArray();
         }
-        private void ValidateToken(JToken jToken, JsonSchema schema)
+        private void ValidateToken(JToken jToken, string name, JsonSchema schema)
         {
             // If the schema doesn't specify a type, anything goes.
             if (schema.Type == JTokenType.None)
@@ -63,7 +65,7 @@ namespace Microsoft.Json.Schema
             if (jToken.Type != schema.Type
                 && !(jToken.Type == JTokenType.Integer && schema.Type == JTokenType.Float))
             {
-                AddMessage(jToken, ValidationErrorNumber.WrongTokenType, schema.Type, jToken.Type);
+                AddMessage(jToken, ValidationErrorNumber.WrongType, name, schema.Type, jToken.Type);
                 return;
             }
 
@@ -118,22 +120,37 @@ namespace Microsoft.Json.Schema
                     JsonSchema propertySchema;
                     if (schema.Properties.TryGetValue(propertyName, out propertySchema))
                     {
-                        ValidateToken(jObject.Property(propertyName).Value, propertySchema);
+                        JProperty property = jObject.Property(propertyName);
+                        ValidateToken(property.Value, property.Path, propertySchema);
                     }
                 }
             }
 
+            // Does the object contain any properties not specified by the schema?
+            IEnumerable<string> extraProperties = schema.Properties == null
+                ? propertySet
+                : propertySet.Except(schema.Properties.Keys);
+
             // If additional properties are not allowed, ensure there are none.
             if (!(schema.AdditionalProperties?.Allowed  == true))
             {
-                IEnumerable<string> extraProperties = schema.Properties == null
-                    ? propertySet
-                    : propertySet.Except(schema.Properties.Keys);
-
                 foreach (string propertyName in extraProperties)
                 {
                     JProperty property = jObject.Property(propertyName);
-                    AddMessage(property, ValidationErrorNumber.AdditionalPropertyProhibited, propertyName);
+                    AddMessage(property, ValidationErrorNumber.AdditionalPropertiesProhibited, propertyName);
+                }
+            }
+            else
+            {
+                // Additional properties are allowed. If there is a schema to which they
+                // must conform, ensure that they do.
+                if (schema.AdditionalProperties.Schema != null)
+                {
+                    foreach (string propertyName in extraProperties)
+                    {
+                        JProperty property = jObject.Property(propertyName);
+                        ValidateToken(property.Value, property.Path, schema.AdditionalProperties.Schema);
+                    }
                 }
             }
         }
@@ -152,11 +169,11 @@ namespace Microsoft.Json.Schema
 
         private static readonly IDictionary<ValidationErrorNumber, string> s_errorCodeToMessageDictionary = new Dictionary<ValidationErrorNumber, string>
         {
-            [ValidationErrorNumber.WrongTokenType] = Resources.ErrorWrongTokenType,
+            [ValidationErrorNumber.WrongType] = Resources.ErrorWrongType,
             [ValidationErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
             [ValidationErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
             [ValidationErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems,
-            [ValidationErrorNumber.AdditionalPropertyProhibited] = Resources.ErrorAdditionalPropertyProhibited
+            [ValidationErrorNumber.AdditionalPropertiesProhibited] = Resources.ErrorAdditionalPropertiesProhibited,
         };
 
         internal static string FormatMessage(

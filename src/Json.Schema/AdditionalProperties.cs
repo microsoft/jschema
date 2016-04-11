@@ -43,6 +43,7 @@ namespace Microsoft.Json.Schema
             }
 
             Schema = schema;
+            Allowed = true;
         }
 
         /// <summary>

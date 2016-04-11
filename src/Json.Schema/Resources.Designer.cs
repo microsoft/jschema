@@ -61,11 +61,11 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema does not permit a property named &quot;{0}&quot;..
+        ///   Looks up a localized string similar to The schema does not define a property named &quot;{0}&quot;, and the schema does not permit additional properties..
         /// </summary>
-        internal static string ErrorAdditionalPropertyProhibited {
+        internal static string ErrorAdditionalPropertiesProhibited {
             get {
-                return ResourceManager.GetString("ErrorAdditionalPropertyProhibited", resourceCulture);
+                return ResourceManager.GetString("ErrorAdditionalPropertiesProhibited", resourceCulture);
             }
         }
         
@@ -142,11 +142,11 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires a token of type {0}, but the token is of type {1}..
+        ///   Looks up a localized string similar to The schema requires &quot;{0}&quot; to be of type &quot;{1}&quot;, but the schema validator found a token of type &quot;{2}&quot;..
         /// </summary>
-        internal static string ErrorWrongTokenType {
+        internal static string ErrorWrongType {
             get {
-                return ResourceManager.GetString("ErrorWrongTokenType", resourceCulture);
+                return ResourceManager.GetString("ErrorWrongType", resourceCulture);
             }
         }
     }

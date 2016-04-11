@@ -81,7 +81,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Non-integer instance does not match integer schema",
                 @"{ ""type"": ""integer"" }",
                 "\"s\"",
-                Validator.FormatMessage(1, 3, ValidationErrorNumber.WrongTokenType, JTokenType.Integer, JTokenType.String)
+                Validator.FormatMessage(1, 3, ValidationErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -94,7 +94,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Non-array instance matches array schema",
                  @"{ ""type"": ""array"" }",
                 "true",
-                Validator.FormatMessage(1, 4, ValidationErrorNumber.WrongTokenType, JTokenType.Array, JTokenType.Boolean)
+                Validator.FormatMessage(1, 4, ValidationErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Array, JTokenType.Boolean)
                 ),
 
             new TestCase(
@@ -208,7 +208,7 @@ namespace Microsoft.Json.Schema.UnitTests
 @"{
   ""a"": ""true""
 }",
-                Validator.FormatMessage(2, 14, ValidationErrorNumber.WrongTokenType, JTokenType.Boolean, JTokenType.String)
+                Validator.FormatMessage(2, 14, ValidationErrorNumber.WrongType, "a", JTokenType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -280,7 +280,7 @@ namespace Microsoft.Json.Schema.UnitTests
   ""a"": 2,
   ""b"": {}
 }",
-                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertyProhibited, "b")
+                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertiesProhibited, "b")
                 ),
 
             new TestCase(
@@ -299,8 +299,75 @@ namespace Microsoft.Json.Schema.UnitTests
   ""a"": 2,
   ""b"": {}
 }",
-                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertyProhibited, "b")
-                )
+                Validator.FormatMessage(3, 7, ValidationErrorNumber.AdditionalPropertiesProhibited, "b")
+                ),
+
+            new TestCase(
+                "Object has additional property allowed by schema",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": {
+    ""type"": ""boolean""
+  }
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": false
+}"
+                ),
+
+            new TestCase(
+                "Object has additional property disallowed by schema",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": {
+    ""type"": ""boolean""
+  }
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": ""false""
+}",
+                Validator.FormatMessage(3, 15, ValidationErrorNumber.WrongType, "b", JTokenType.Boolean, JTokenType.String)
+                ),
+
+            new TestCase(
+                "Nested object has additional property disallowed by schema",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""object"",
+        ""additionalProperties"": {
+          ""type"": ""boolean""
+        }
+      }
+    }
+  },
+}",
+
+@"{
+  ""a"": {
+    ""x"": 3
+  }
+}",
+                Validator.FormatMessage(3, 11, ValidationErrorNumber.WrongType, "a.x", JTokenType.Boolean, JTokenType.Integer)
+                ),
         };
 
         [Theory(DisplayName = "Validation")]

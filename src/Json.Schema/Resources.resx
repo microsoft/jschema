@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorAdditionalPropertyProhibited" xml:space="preserve">
-    <value>The schema does not permit a property named "{0}".</value>
+  <data name="ErrorAdditionalPropertiesProhibited" xml:space="preserve">
+    <value>The schema does not define a property named "{0}", and the schema does not permit additional properties.</value>
   </data>
   <data name="ErrorDefinitionDoesNotExist" xml:space="preserve">
     <value>This schema does not contain the sub-schema definition referred to by the $ref value "{0}".</value>
@@ -144,7 +144,7 @@
   <data name="ErrorWithLineInfo" xml:space="preserve">
     <value>({0},{1}): error {2}: {3}</value>
   </data>
-  <data name="ErrorWrongTokenType" xml:space="preserve">
-    <value>The schema requires a token of type {0}, but the token is of type {1}.</value>
+  <data name="ErrorWrongType" xml:space="preserve">
+    <value>The schema requires "{0}" to be of type "{1}", but the schema validator found a token of type "{2}".</value>
   </data>
 </root>
