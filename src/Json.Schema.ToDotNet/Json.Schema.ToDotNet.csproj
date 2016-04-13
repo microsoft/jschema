@@ -90,6 +90,7 @@
     <Compile Include="DictionaryHint.cs" />
     <Compile Include="EnumGenerator.cs" />
     <Compile Include="EnumHint.cs" />
+    <Compile Include="Error.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="HashKind.cs" />
     <Compile Include="HintDictionary.cs" />

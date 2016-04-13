@@ -263,7 +263,7 @@ namespace Microsoft.Json.Schema
             {
                 if (!schema.Reference.IsFragment)
                 {
-                    throw JSchemaException.Create(
+                    throw Error.CreateException(
                         Resources.ErrorOnlyDefinitionFragmentsSupported,
                         schema.Reference);
                 }
@@ -273,7 +273,7 @@ namespace Microsoft.Json.Schema
                 JsonSchema referencedSchema;
                 if (rootSchema.Definitions == null || !rootSchema.Definitions.TryGetValue(definitionName, out referencedSchema))
                 {
-                    throw JSchemaException.Create(
+                    throw Error.CreateException(
                         Resources.ErrorDefinitionDoesNotExist,
                         definitionName);
                 }

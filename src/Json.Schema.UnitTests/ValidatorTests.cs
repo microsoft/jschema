@@ -72,81 +72,46 @@ namespace Microsoft.Json.Schema.UnitTests
                 ),
 
             new TestCase(
-                "Integer instance matches integer schema",
-                @"{ ""type"": ""integer"" }",
-                "2"
-                ),
-
-            new TestCase(
-                "Non-integer instance does not match integer schema",
-                @"{ ""type"": ""integer"" }",
-                "\"s\"",
-                ErrorMessage.Format(1, 3, ErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Integer, JTokenType.String)
-                ),
-
-            new TestCase(
-                "Array instance matches array schema",
-                @"{ ""type"": ""array"" }",
-                "[]"
-                ),
-
-            new TestCase(
-                "Non-array instance matches array schema",
-                 @"{ ""type"": ""array"" }",
-                "true",
-                ErrorMessage.Format(1, 4, ErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Array, JTokenType.Boolean)
-                ),
-
-            new TestCase(
-                "Integer instance matches number schema",
-                @"{ ""type"": ""number"" }",
-                "2"
-                ),
-
-            new TestCase(
-                "Array has valid minimum number of items",
+                "Array: maxItems: valid",
                 @"{
                   ""type"": ""array"",
-                  ""minItems"": 2,
-                  ""maxItems"": 4
-                }",
-                "[ 1, 2 ]"
-                ),
-
-            new TestCase(
-                "Array has valid maximum number of items",
-                @"{
-                  ""type"": ""array"",
-                  ""minItems"": 2,
                   ""maxItems"": 4
                 }",
                 "[ 1, 2, 3, 4 ]"
                 ),
 
             new TestCase(
-                "Array has too few items",
-                @"{
-                  ""type"": ""array"",
-                  ""minItems"": 2,
-                  ""maxItems"": 4
-                }",
-                "[ 1 ]",
-                ErrorMessage.Format(1, 1, ErrorNumber.TooFewArrayItems, 2, 1)
-                ),
-
-            new TestCase(
-                "Array has too many items",
+                "Array: maxItems: invalid",
                 @"{
                   ""type"": ""array"",
                   ""minItems"": 2,
                   ""maxItems"": 4
                 }",
                 "[ 1, 2, 3, 4, 5 ]",
-                ErrorMessage.Format(1, 1, ErrorNumber.TooManyArrayItems, 4, 5)
+                Error.Format(1, 1, ErrorNumber.TooManyArrayItems, 4, 5)
                 ),
 
             new TestCase(
-                "Array without length constraint",
+                "Array: minItems: valid",
+                @"{
+                  ""type"": ""array"",
+                  ""minItems"": 2
+                }",
+                "[ 1, 2 ]"
+                ),
+
+            new TestCase(
+                "Array: minItems: invalid",
+                @"{
+                  ""type"": ""array"",
+                  ""minItems"": 2
+                }",
+                "[ 1 ]",
+                Error.Format(1, 1, ErrorNumber.TooFewArrayItems, 2, 1)
+                ),
+
+            new TestCase(
+                "Array: minItems, maxItems: valid without constraint",
                 @"{
                   ""type"": ""array"",
                 }",
@@ -154,7 +119,142 @@ namespace Microsoft.Json.Schema.UnitTests
                 ),
 
             new TestCase(
-                "Required property missing",
+                "Array: minItems, maxItems: valid with both constraints",
+                @"{
+                  ""type"": ""array"",
+                  ""minItems"": 2,
+                  ""maxItems"": 3,
+                }",
+                "[ 1, 2, 3 ]"
+                ),
+
+            new TestCase(
+                "Object: additionalProperties: valid: allowed by Boolean",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": true
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": {}
+}"
+                ),
+
+            new TestCase(
+                "Object: additionalProperties: invalid: disallowed by Boolean",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": false
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": {}
+}",
+                Error.Format(3, 7, ErrorNumber.AdditionalPropertiesProhibited, "b")
+                ),
+
+            new TestCase(
+                "Object: additionalProperties: invalid: disallowed by default",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": {}
+}",
+                Error.Format(3, 7, ErrorNumber.AdditionalPropertiesProhibited, "b")
+                ),
+
+            new TestCase(
+                "Object: additionalProperties: valid: allowed by schema",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": {
+    ""type"": ""boolean""
+  }
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": false
+}"
+                ),
+
+            new TestCase(
+                "Object: additionalProperties: invalid: disallowed by schema",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": {
+    ""type"": ""boolean""
+  }
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": ""false""
+}",
+                Error.Format(3, 15, ErrorNumber.WrongType, "b", JTokenType.Boolean, JTokenType.String)
+                ),
+
+            new TestCase(
+                "Object: additionalProperties: invalid: disallowed by schema on member object",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""object"",
+        ""additionalProperties"": {
+          ""type"": ""boolean""
+        }
+      }
+    }
+  },
+}",
+
+@"{
+  ""a"": {
+    ""x"": 3
+  }
+}",
+                Error.Format(3, 11, ErrorNumber.WrongType, "a.x", JTokenType.Boolean, JTokenType.Integer)
+                ),
+
+            new TestCase(
+                "Object: required: invalid: missing property on root instance",
 
 @"{
   ""type"": ""object"",
@@ -172,8 +272,73 @@ namespace Microsoft.Json.Schema.UnitTests
 @"{
     ""b"": true
 }",
-                ErrorMessage.Format(1, 1, ErrorNumber.RequiredPropertyMissing, "a"),
-                ErrorMessage.Format(1, 1, ErrorNumber.RequiredPropertyMissing, "c")
+                Error.Format(1, 1, ErrorNumber.RequiredPropertyMissing, "a"),
+                Error.Format(1, 1, ErrorNumber.RequiredPropertyMissing, "c")
+                ),
+
+            new TestCase(
+                "Object: required: invalid: missing property on member property",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""x"": {
+          ""type"": ""integer""
+        },
+        ""y"": {
+          ""type"": ""integer""
+        },
+        ""z"": {
+          ""type"": ""integer""
+        }
+      },
+      ""required"": [ ""x"", ""y"", ""z"" ]
+    }
+  }
+}",
+
+@"{
+  ""a"": {
+    ""y"": 2
+  }
+}",
+                Error.Format(2, 9, ErrorNumber.RequiredPropertyMissing, "x"),
+                Error.Format(2, 9, ErrorNumber.RequiredPropertyMissing, "z")
+                ),
+
+            new TestCase(
+                "type: Integer instance matches integer schema",
+                @"{ ""type"": ""integer"" }",
+                "2"
+                ),
+
+            new TestCase(
+                "type: Non-integer instance does not match integer schema",
+                @"{ ""type"": ""integer"" }",
+                "\"s\"",
+                Error.Format(1, 3, ErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Integer, JTokenType.String)
+                ),
+
+            new TestCase(
+                "type: Array instance matches array schema",
+                @"{ ""type"": ""array"" }",
+                "[]"
+                ),
+
+            new TestCase(
+                "type: Non-array instance does not match array schema",
+                 @"{ ""type"": ""array"" }",
+                "true",
+                Error.Format(1, 4, ErrorNumber.WrongType, Validator.RootObjectName, JTokenType.Array, JTokenType.Boolean)
+                ),
+
+            new TestCase(
+                "type: Integer instance matches number schema",
+                @"{ ""type"": ""number"" }",
+                "2"
                 ),
 
             new TestCase(
@@ -208,165 +373,7 @@ namespace Microsoft.Json.Schema.UnitTests
 @"{
   ""a"": ""true""
 }",
-                ErrorMessage.Format(2, 14, ErrorNumber.WrongType, "a", JTokenType.Boolean, JTokenType.String)
-                ),
-
-            new TestCase(
-                "Object property missing required property",
-
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""a"": {
-      ""type"": ""object"",
-      ""properties"": {
-        ""x"": {
-          ""type"": ""integer""
-        },
-        ""y"": {
-          ""type"": ""integer""
-        },
-        ""z"": {
-          ""type"": ""integer""
-        }
-      },
-      ""required"": [ ""x"", ""y"", ""z"" ]
-    }
-  }
-}",
-
-@"{
-  ""a"": {
-    ""y"": 2
-  }
-}",
-                ErrorMessage.Format(2, 9, ErrorNumber.RequiredPropertyMissing, "x"),
-                ErrorMessage.Format(2, 9, ErrorNumber.RequiredPropertyMissing, "z")
-                ),
-
-            new TestCase(
-                "Object has additional property allowed by Boolean",
-
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""a"": {
-      ""type"": ""integer""
-    }
-  },
-  ""additionalProperties"": true
-}",
-
-@"{
-  ""a"": 2,
-  ""b"": {}
-}"
-                ),
-
-            new TestCase(
-                "Object has additional property disallowed by Boolean",
-
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""a"": {
-      ""type"": ""integer""
-    }
-  },
-  ""additionalProperties"": false
-}",
-
-@"{
-  ""a"": 2,
-  ""b"": {}
-}",
-                ErrorMessage.Format(3, 7, ErrorNumber.AdditionalPropertiesProhibited, "b")
-                ),
-
-            new TestCase(
-                "Object has additional property disallowed by default",
-
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""a"": {
-      ""type"": ""integer""
-    }
-  }
-}",
-
-@"{
-  ""a"": 2,
-  ""b"": {}
-}",
-                ErrorMessage.Format(3, 7, ErrorNumber.AdditionalPropertiesProhibited, "b")
-                ),
-
-            new TestCase(
-                "Object has additional property allowed by schema",
-
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""a"": {
-      ""type"": ""integer""
-    }
-  },
-  ""additionalProperties"": {
-    ""type"": ""boolean""
-  }
-}",
-
-@"{
-  ""a"": 2,
-  ""b"": false
-}"
-                ),
-
-            new TestCase(
-                "Object has additional property disallowed by schema",
-
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""a"": {
-      ""type"": ""integer""
-    }
-  },
-  ""additionalProperties"": {
-    ""type"": ""boolean""
-  }
-}",
-
-@"{
-  ""a"": 2,
-  ""b"": ""false""
-}",
-                ErrorMessage.Format(3, 15, ErrorNumber.WrongType, "b", JTokenType.Boolean, JTokenType.String)
-                ),
-
-            new TestCase(
-                "Nested object has additional property disallowed by schema",
-
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""a"": {
-      ""type"": ""object"",
-        ""additionalProperties"": {
-          ""type"": ""boolean""
-        }
-      }
-    }
-  },
-}",
-
-@"{
-  ""a"": {
-    ""x"": 3
-  }
-}",
-                ErrorMessage.Format(3, 11, ErrorNumber.WrongType, "a.x", JTokenType.Boolean, JTokenType.Integer)
+                Error.Format(2, 14, ErrorNumber.WrongType, "a", JTokenType.Boolean, JTokenType.String)
                 ),
         };
 

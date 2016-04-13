@@ -61,14 +61,14 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_fileSystem.DirectoryExists(_settings.OutputDirectory) && !_settings.ForceOverwrite)
             {
-                throw JSchemaException.Create(Resources.ErrorOutputDirectoryExists, _settings.OutputDirectory);
+                throw Error.CreateException(Resources.ErrorOutputDirectoryExists, _settings.OutputDirectory);
             }
 
             _fileSystem.CreateDirectory(_settings.OutputDirectory);
 
             if (_rootSchema.Type != JTokenType.Object)
             {
-                throw JSchemaException.Create(Resources.ErrorNotAnObject, _rootSchema.Type.ToJsonSchemaName());
+                throw Error.CreateException(Resources.ErrorNotAnObject, _rootSchema.Type.ToJsonSchemaName());
             }
 
             string rootFileText = CreateFile(_settings.RootClassName, _rootSchema, _settings.SealClasses);
@@ -290,10 +290,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
             {
-                throw JSchemaException.Create(
-                    Resources.ErrorCannotGenerateAdditionalTypeFromHintType,
-                    nameof(CodeGenHint),
-                    hint.GetType().Name);
+                throw Error.CreateException(
+                                Resources.ErrorCannotGenerateAdditionalTypeFromHintType,
+                                nameof(CodeGenHint),
+                                hint.GetType().Name);
             }
         }
 
@@ -303,12 +303,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 && schema.Enum != null
                 && enumHint.Enum.Length > schema.Enum.Length)
             {
-                throw JSchemaException.Create(
-                    Resources.ErrorMismatchedEnumCount,
-                    nameof(EnumHint),
-                    enumHint.TypeName,
-                    enumHint.Enum.Length,
-                    schema.Enum.Length);
+                throw Error.CreateException(
+                                Resources.ErrorMismatchedEnumCount,
+                                nameof(EnumHint),
+                                enumHint.TypeName,
+                                enumHint.Enum.Length,
+                                schema.Enum.Length);
             }
 
             var enumValues = new List<string>();

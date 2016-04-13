@@ -43,13 +43,12 @@ namespace Microsoft.Json.Schema
                 string propertyName = reader.Path?.Split(s_pathSplitChars).LastOrDefault()
                     ?? string.Empty;
 
-                throw JSchemaException.Create(
-                    ErrorMessage.Format(
-                        lineInfo.LineNumber,
-                        lineInfo.LinePosition,
-                        ErrorNumber.NotAString,
-                        propertyName,
-                        reader.TokenType));
+                throw Error.CreateException(
+                                lineInfo.LineNumber,
+                                lineInfo.LinePosition,
+                                ErrorNumber.NotAString,
+                                propertyName,
+                                reader.TokenType);
             }
 
             return reader.Value;

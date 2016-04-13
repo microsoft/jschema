@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace Microsoft.Json.Schema
 {
-    internal static class ErrorMessage
+    internal static class Error
     {
         private const string ErrorCodeFormat = "JS{0:D4}";
 
@@ -20,6 +21,25 @@ namespace Microsoft.Json.Schema
             [ErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems,
             [ErrorNumber.AdditionalPropertiesProhibited] = Resources.ErrorAdditionalPropertiesProhibited,
         };
+
+        internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)
+        {
+            return new ApplicationException(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    messageFormat,
+                    messageArgs));
+        }
+
+        internal static ApplicationException CreateException(
+            int lineNumber,
+            int linePosition,
+            ErrorNumber errorNumber,
+            params object[] args)
+        {
+            return new ApplicationException(
+                Format(lineNumber, linePosition, errorNumber, args));
+        }
 
         internal static string Format(
             int lineNumber,

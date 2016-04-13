@@ -161,7 +161,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 }
             };
 
-            action.ShouldThrow<JSchemaException>();
+            action.ShouldThrow<ApplicationException>();
         }
     }
 }

@@ -38,12 +38,11 @@ namespace Microsoft.Json.Schema
             {
                 IJsonLineInfo lineInfo = jToken;
 
-                throw JSchemaException.Create(
-                    ErrorMessage.Format(
-                        lineInfo.LineNumber,
-                        lineInfo.LinePosition,
-                        ErrorNumber.InvalidAdditionalPropertiesType,
-                        jToken.Type));
+                throw Error.CreateException(
+                                lineInfo.LineNumber,
+                                lineInfo.LinePosition,
+                                ErrorNumber.InvalidAdditionalPropertiesType,
+                                jToken.Type);
             }
         }
 

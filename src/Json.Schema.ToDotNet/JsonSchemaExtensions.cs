@@ -86,9 +86,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                     {
                         if (string.IsNullOrWhiteSpace(enumHint.TypeName))
                         {
-                            throw JSchemaException.Create(
-                                Resources.ErrorEnumHintRequiresTypeName,
-                                propertyKey);
+                            throw Error.CreateException(
+                                            Resources.ErrorEnumHintRequiresTypeName,
+                                            propertyKey);
                         }
 
                         shouldBeEnum = true;

@@ -159,7 +159,7 @@ namespace Microsoft.Json.Schema
             IJsonLineInfo lineInfo = jToken;
 
             _messages.Add(
-                ErrorMessage.Format(lineInfo.LineNumber, lineInfo.LinePosition, errorCode, args));
+                Error.Format(lineInfo.LineNumber, lineInfo.LinePosition, errorCode, args));
         }
     }
 }

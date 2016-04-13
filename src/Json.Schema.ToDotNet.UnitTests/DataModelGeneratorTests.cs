@@ -32,7 +32,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             Action action = () => generator.Generate(new JsonSchema());
 
             // ... and the message should mention the output directory.
-            action.ShouldThrow<JSchemaException>().WithMessage($"*{TestFileSystem.OutputDirectory}*");
+            action.ShouldThrow<ApplicationException>().WithMessage($"*{TestFileSystem.OutputDirectory}*");
         }
 
         [Fact(DisplayName = "DataModelGenerator does not throw if output directory does not exist")]
@@ -76,7 +76,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             Action action = () => generator.Generate(schema);
 
             // ... and the message should mention what the root type actually was.
-            action.ShouldThrow<JSchemaException>().WithMessage("*number*");
+            action.ShouldThrow<ApplicationException>().WithMessage("*number*");
         }
 
         [Fact(DisplayName = "DataModelGenerator generates class description")]
@@ -277,7 +277,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldThrow<JSchemaException>()
+            action.ShouldThrow<ApplicationException>()
                 .WithMessage("*https://example.com/pschema.schema.json/#*");
         }
 
@@ -302,7 +302,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldThrow<JSchemaException>()
+            action.ShouldThrow<ApplicationException>()
                 .WithMessage("*#/notDefinitions/p*");
         }
 
@@ -327,7 +327,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldThrow<JSchemaException>()
+            action.ShouldThrow<ApplicationException>()
                 .WithMessage("*nonExistentDefinition*");
         }
 

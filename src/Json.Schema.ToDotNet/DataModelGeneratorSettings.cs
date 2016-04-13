@@ -92,7 +92,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (sb.Length > 0)
             {
-                throw JSchemaException.Create(sb.ToString());
+                throw Error.CreateException(sb.ToString());
             }
         }
 

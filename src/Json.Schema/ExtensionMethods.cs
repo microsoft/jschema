@@ -90,13 +90,12 @@ namespace Microsoft.Json.Schema
             Match match = s_definitionRegex.Match(reference.Fragment);
             if (!match.Success)
             {
-                throw JSchemaException.Create(
+                throw Error.CreateException(
                     Resources.ErrorOnlyDefinitionFragmentsSupported,
                     reference.Fragment);
             }
 
             return match.Groups["definitionName"].Captures[0].Value;
         }
-
     }
 }
