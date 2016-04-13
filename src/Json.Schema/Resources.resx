@@ -141,6 +141,12 @@
   <data name="ErrorTooManyArrayItems" xml:space="preserve">
     <value>The schema requires at most {0} array items, but there are {1}.</value>
   </data>
+  <data name="ErrorValueTooLarge" xml:space="preserve">
+    <value>The value {0} is greater than the maximum value of {1} permitted by the schema.</value>
+  </data>
+  <data name="ErrorValueTooLargeExclusive" xml:space="preserve">
+    <value>The value {0} is greater than or equal to the exclusive maximum value of {1} permitted by the schema.</value>
+  </data>
   <data name="ErrorWithLineInfo" xml:space="preserve">
     <value>({0},{1}): error {2}: {3}</value>
   </data>

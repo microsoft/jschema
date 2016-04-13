@@ -137,5 +137,46 @@ namespace Microsoft.Json.Schema
         /// </code>
         /// </example>
         AdditionalPropertiesProhibited = 7,
+
+        /// <summary>
+        /// A numeric instance has a value greater than the maximum value permitted by the
+        /// schema.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "integer",
+        ///   "maximum": 2
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "3"
+        /// </code>
+        /// </example>
+        ValueTooLarge = 8,
+
+        /// <summary>
+        /// A numeric instance has a value greater than or equal to the exclusive maximum
+        /// value permitted by the schema.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "integer",
+        ///   "maximum": 2,
+        ///   "exclusiveMaximum": true
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "2"
+        /// </code>
+        /// </example>
+        ValueTooLargeExclusive = 9,
     }
 }

@@ -133,6 +133,24 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value {0} is greater than the maximum value of {1} permitted by the schema..
+        /// </summary>
+        internal static string ErrorValueTooLarge {
+            get {
+                return ResourceManager.GetString("ErrorValueTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value {0} is greater than or equal to the exclusive maximum value of {1} permitted by the schema..
+        /// </summary>
+        internal static string ErrorValueTooLargeExclusive {
+            get {
+                return ResourceManager.GetString("ErrorValueTooLargeExclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ({0},{1}): error {2}: {3}.
         /// </summary>
         internal static string ErrorWithLineInfo {

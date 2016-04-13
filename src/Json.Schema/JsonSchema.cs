@@ -164,6 +164,26 @@ namespace Microsoft.Json.Schema
         public string[] Required { get; set; }
 
         /// <summary>
+        /// Gets or sets the maximum valid value.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
+        /// or <see cref="JTokenType.Float"/>.
+        /// </remarks>
+        public double? Maximum { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the value specified by <see cref="Maximum"/>
+        /// is an exclusive maximum.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
+        /// or <see cref="JTokenType.Float"/>. If not specified in the schema, the default
+        /// value is <code>false</code>.
+        /// </remarks>
+        public bool? ExclusiveMaximum { get; set; }
+
+        /// <summary>
         /// Gets or sets a dictionary mapping schema names to sub-schemas which can be
         /// referenced by properties defined elsewhere in the current schema.
         /// </summary>
@@ -278,35 +298,21 @@ namespace Microsoft.Json.Schema
                         definitionName);
                 }
 
-                if (collapsedSchema.Type == JTokenType.None)
-                {
-                    collapsedSchema.Type = referencedSchema.Type;
-                }
+                collapsedSchema.Type = referencedSchema.Type;
 
-                if (collapsedSchema.Enum == null && referencedSchema.Enum != null)
-                {
-                    collapsedSchema.Enum = referencedSchema.Enum.Clone() as object[];
-                }
+                collapsedSchema.Enum = referencedSchema.Enum != null
+                    ? referencedSchema.Enum.Clone() as object[]
+                    : null;
 
-                if (collapsedSchema.Items == null && referencedSchema.Items != null)
-                {
-                    collapsedSchema.Items = Collapse(referencedSchema.Items, rootSchema);
-                }
+                collapsedSchema.Items = referencedSchema.Items != null
+                    ? Collapse(referencedSchema.Items, rootSchema)
+                    : null;
 
-                if (collapsedSchema.MinItems == null)
-                {
-                    collapsedSchema.MinItems = referencedSchema.MinItems;
-                }
-
-                if (collapsedSchema.MaxItems == null)
-                {
-                    collapsedSchema.MaxItems = referencedSchema.MaxItems;
-                }
-
-                if (collapsedSchema.Format == null)
-                {
-                    collapsedSchema.Format = referencedSchema.Format;
-                }
+                collapsedSchema.Maximum = referencedSchema.Maximum;
+                collapsedSchema.ExclusiveMaximum = referencedSchema.ExclusiveMaximum;
+                collapsedSchema.MinItems = referencedSchema.MinItems;
+                collapsedSchema.MaxItems = referencedSchema.MaxItems;
+                collapsedSchema.Format = referencedSchema.Format;
             }
 
             return collapsedSchema;
@@ -333,6 +339,8 @@ namespace Microsoft.Json.Schema
                 Required,
                 Definitions,
                 Reference,
+                Maximum,
+                ExclusiveMaximum,
                 MinItems,
                 MaxItems,
                 Format
@@ -378,15 +386,11 @@ namespace Microsoft.Json.Schema
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
-                && (MinItems == null
-                        ? other.MinItems == null
-                        : MinItems.Equals(other.MinItems))
-                && (MaxItems == null
-                        ? other.MaxItems == null
-                        : MaxItems.Equals(other.MaxItems))
-                && (Format == null
-                        ? other.Format == null
-                        : Format.Equals(other.Format));
+                && Maximum == other.Maximum
+                && ExclusiveMaximum == other.ExclusiveMaximum
+                && MinItems ==  other.MinItems
+                && MaxItems == other.MaxItems
+                && string.Equals(Format, other.Format, StringComparison.Ordinal);
         }
 
         #endregion

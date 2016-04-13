@@ -129,6 +129,82 @@ namespace Microsoft.Json.Schema.UnitTests
                 ),
 
             new TestCase(
+                "Numeric: maximum: valid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""maximum"": 2
+                }",
+                "2"),
+
+            new TestCase(
+                "Numeric: maximum: invalid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""maximum"": 1
+                }",
+                "2",
+                Error.Format(1, 1, ErrorNumber.ValueTooLarge, 2, 1)
+                ),
+
+            new TestCase(
+                "Numeric: maximum: valid number",
+                @"{
+                  ""type"": ""number"",
+                  ""maximum"": 3.14
+                }",
+                "3"),
+
+            new TestCase(
+                "Numeric: maximum: invalid number",
+                @"{
+                  ""type"": ""number"",
+                  ""maximum"": 3.14
+                }",
+                "3.2",
+                Error.Format(1, 3, ErrorNumber.ValueTooLarge, 3.2, 3.14)
+                ),
+
+            new TestCase(
+                "Numeric: maximum and exclusiveMaximum: valid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""maximum"": 2,
+                  ""exclusiveMaximum"": true
+                }",
+                "1"),
+
+            new TestCase(
+                "Numeric: maximum and exclusiveMaximum: invalid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""maximum"": 1,
+                  ""exclusiveMaximum"": true
+                }",
+                "1",
+                Error.Format(1, 1, ErrorNumber.ValueTooLargeExclusive, 1, 1)
+                ),
+
+            new TestCase(
+                "Numeric: maximum and exclusiveMaximum: valid number",
+                @"{
+                  ""type"": ""number"",
+                  ""maximum"": 3.14,
+                  ""exclusiveMaximum"": true
+                }",
+                "3.13"),
+
+            new TestCase(
+                "Numeric: maximum and exclusiveMaximum: invalid number",
+                @"{
+                  ""type"": ""number"",
+                  ""maximum"": 3.14,
+                  ""exclusiveMaximum"": true
+                }",
+                "3.14",
+                Error.Format(1, 4, ErrorNumber.ValueTooLargeExclusive, 3.14, 3.14)
+                ),
+
+            new TestCase(
                 "Object: additionalProperties: valid: allowed by Boolean",
 
 @"{

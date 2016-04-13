@@ -70,6 +70,11 @@ namespace Microsoft.Json.Schema
 
             switch (schema.Type)
             {
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                    ValidateNumber((JValue)jToken, schema);
+                    break;
+
                 case JTokenType.Object:
                     ValidateObject((JObject)jToken, schema);
                     break;
@@ -80,6 +85,26 @@ namespace Microsoft.Json.Schema
 
                 default:
                     break;
+            }
+        }
+
+        private void ValidateNumber(JValue jValue, JsonSchema schema)
+        {
+            if (schema.Maximum != null)
+            {
+                double maximum = schema.Maximum.Value;
+                double value = jValue.Type == JTokenType.Float
+                    ? (double)jValue.Value
+                    : (long)jValue.Value;
+
+                if (schema.ExclusiveMaximum == true && value >= maximum)
+                {
+                    AddMessage(jValue, ErrorNumber.ValueTooLargeExclusive, value, maximum);
+                }
+                else if (value > maximum)
+                {
+                    AddMessage(jValue, ErrorNumber.ValueTooLarge, value, maximum);
+                }
             }
         }
 

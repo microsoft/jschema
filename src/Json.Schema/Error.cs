@@ -20,6 +20,8 @@ namespace Microsoft.Json.Schema
             [ErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
             [ErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems,
             [ErrorNumber.AdditionalPropertiesProhibited] = Resources.ErrorAdditionalPropertiesProhibited,
+            [ErrorNumber.ValueTooLarge] = Resources.ErrorValueTooLarge,
+            [ErrorNumber.ValueTooLargeExclusive] = Resources.ErrorValueTooLargeExclusive
         };
 
         internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)

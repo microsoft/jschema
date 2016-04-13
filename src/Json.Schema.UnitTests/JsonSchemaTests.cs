@@ -48,7 +48,9 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""minItems"": 1,
                     ""maxItems"": 3,
-                    ""format"": ""date-time""
+                    ""format"": ""date-time"",
+                    ""maximimum"": 2,
+                    ""exclusiveMaximum"": false
                 }",
                 @"{
                     ""id"": ""http://x/y#"",
@@ -79,7 +81,9 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""minItems"": 1,
                     ""maxItems"": 3,
-                    ""format"": ""date-time""
+                    ""format"": ""date-time"",
+                    ""maximimum"": 2,
+                    ""exclusiveMaximum"": false
                 }",
                 true
             ),
@@ -357,9 +361,6 @@ namespace Microsoft.Json.Schema.UnitTests
                 false
             ),
 
-            // These two schemas would validate the same set of instances, but
-            // we consider them unequal because they serialize to different
-            // JSON schema strings.
             new EqualityTestCase(
                 "Missing and zero maximum array lengths",
                 @"{}",
@@ -432,6 +433,59 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 false
             ),
+
+            new EqualityTestCase(
+                "Different maximums",
+                @"{
+                  ""maximum"": 1
+                }",
+                @"{
+                  ""maximum"": 2
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Null and non-null maximums",
+                @"{
+                  ""maximum"": 1
+                }",
+                @"{
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Different exclusiveMaximums",
+                @"{
+                  ""maximum"": 1,
+                  ""exclusiveMaximum"": true
+                }",
+                @"{
+                  ""maximum"": 1,
+                  ""exclusiveMaximum"": false
+                }",
+                false),
+
+            new EqualityTestCase(
+                "True and missing exclusiveMaximums",
+                @"{
+                  ""maximum"": 1,
+                  ""exclusiveMaximum"": true
+                }",
+                @"{
+                  ""maximum"": 1,
+                }",
+                false),
+
+            new EqualityTestCase(
+                "False and missing exclusiveMaximums",
+                @"{
+                  ""maximum"": 1,
+                  ""exclusiveMaximum"": false
+                }",
+                @"{
+                  ""maximum"": 1,
+                }",
+                false)
         };
 
         [Theory(DisplayName = "JsonSchema equality")]
