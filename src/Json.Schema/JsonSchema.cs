@@ -146,13 +146,20 @@ namespace Microsoft.Json.Schema
         public JsonSchema Items { get; set; }
 
         /// <summary>
-        /// Dictionary mapping valid property names to the sub-schemas to which they must
-        /// conform.
+        /// Gets or sets the maximum valid number of properties.
         /// </summary>
         /// <remarks>
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
         /// </remarks>
-        public Dictionary<string, JsonSchema> Properties { get; set; }
+        public int? MaxProperties { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum valid number of properties.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
+        /// </remarks>
+        public int? MinProperties { get; set; }
 
         /// <summary>
         /// Gets or sets an array containing the names of the property names that are
@@ -162,6 +169,21 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
         /// </remarks>
         public string[] Required { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value describing any additional properties allowed by the
+        /// schema.
+        /// </summary>
+        public AdditionalProperties AdditionalProperties { get; set; }
+
+        /// <summary>
+        /// Dictionary mapping valid property names to the sub-schemas to which they must
+        /// conform.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
+        /// </remarks>
+        public Dictionary<string, JsonSchema> Properties { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum valid value.
@@ -208,12 +230,6 @@ namespace Microsoft.Json.Schema
         /// referenced by properties defined elsewhere in the current schema.
         /// </summary>
         public Dictionary<string, JsonSchema> Definitions { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value describing any additional properties allowed by the
-        /// schema.
-        /// </summary>
-        public AdditionalProperties AdditionalProperties { get; set; }
 
         /// <summary>
         /// Gets or sets the minimum valid number of elements in an array.

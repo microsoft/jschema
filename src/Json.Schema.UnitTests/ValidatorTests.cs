@@ -281,6 +281,60 @@ namespace Microsoft.Json.Schema.UnitTests
                 ),
 
             new TestCase(
+                "Object: maxProperties: valid",
+@"{
+  ""type"": ""object"",
+  ""maxProperties"": 1,
+  ""additionalProperties"": true
+}",
+
+@"{
+  ""a"": 1
+}"),
+
+            new TestCase(
+                "Object: maxProperties: invalid",
+@"{
+  ""type"": ""object"",
+  ""maxProperties"": 1,
+  ""additionalProperties"": true
+}",
+
+@"{
+  ""a"": 1,
+  ""b"": 2
+}",
+                Error.Format(1, 1, ErrorNumber.TooManyProperties, 1, 2)
+                ),
+
+            new TestCase(
+                "Object: minProperties: valid",
+@"{
+  ""type"": ""object"",
+  ""minProperties"": 2,
+  ""additionalProperties"": true
+}",
+
+@"{
+  ""a"": 1,
+  ""b"": 2
+}"),
+
+            new TestCase(
+                "Object: minProperties: invalid",
+@"{
+  ""type"": ""object"",
+  ""minProperties"": 2,
+  ""additionalProperties"": true
+}",
+
+@"{
+  ""a"": 1
+}",
+                Error.Format(1, 1, ErrorNumber.TooFewProperties, 2, 1)
+                ),
+
+            new TestCase(
                 "Object: additionalProperties: valid: allowed by Boolean",
 
 @"{

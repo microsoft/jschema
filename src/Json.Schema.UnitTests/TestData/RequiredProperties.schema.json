@@ -1,5 +1,9 @@
 ﻿{
   "type": "object",
+  "required": [
+    "prop1",
+    "prop3"
+  ],
   "properties": {
     "prop1": {
       "type": "string"
@@ -10,9 +14,5 @@
     "prop3": {
       "type": "boolean"
     }
-  },
-  "required": [
-    "prop1",
-    "prop3"
-  ]
+  }
 }

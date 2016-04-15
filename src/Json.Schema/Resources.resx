@@ -138,8 +138,14 @@
   <data name="ErrorTooFewArrayItems" xml:space="preserve">
     <value>The schema requires at least {0} array items, but there are only {1}.</value>
   </data>
+  <data name="ErrorTooFewProperties" xml:space="preserve">
+    <value>The schema requires at least {0} object properties, but there are only {1}.</value>
+  </data>
   <data name="ErrorTooManyArrayItems" xml:space="preserve">
-    <value>The schema requires at most {0} array items, but there are {1}.</value>
+    <value>The schema permits at most {0} array items, but there are {1}.</value>
+  </data>
+  <data name="ErrorTooManyProperties" xml:space="preserve">
+    <value>The schema permits at most {0} object properties, but there are {1}.</value>
   </data>
   <data name="ErrorValueTooLarge" xml:space="preserve">
     <value>The value {0} is greater than the maximum value of {1} permitted by the schema.</value>

@@ -226,6 +226,52 @@ namespace Microsoft.Json.Schema
         /// </example>
         ValueTooSmallExclusive = 1009,
 
+        /// <summary>
+        /// An object instance has more properties than the schema permits.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "object",
+        ///   "maxProperties": 2,
+        ///   "additionalProperties": true
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// {
+        ///   "a": 1,
+        ///   "b": 2,
+        ///   "c": 3
+        /// }
+        /// </code>
+        /// </example>
+        TooManyProperties = 1010,
+
+        /// <summary>
+        /// An object instance has fewer properties than the schema permits.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "object",
+        ///   "minProperties": 2,
+        ///   "additionalProperties": true
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// {
+        ///   "a": 1
+        /// }
+        /// </code>
+        /// </example>
+        TooFewProperties = 1011,
+
         #endregion Errors in instance document
     }
 }

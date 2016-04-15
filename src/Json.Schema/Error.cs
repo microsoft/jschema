@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 
 namespace Microsoft.Json.Schema
@@ -11,20 +12,23 @@ namespace Microsoft.Json.Schema
     {
         private const string ErrorCodeFormat = "JS{0:D4}";
 
-        private static readonly IDictionary<ErrorNumber, string> s_errorNumberToMessageDictionary = new Dictionary<ErrorNumber, string>
-        {
-            [ErrorNumber.NotAString] = Resources.ErrorNotAString,
-            [ErrorNumber.InvalidAdditionalPropertiesType] = Resources.ErrorInvalidAdditionalProperties,
-            [ErrorNumber.WrongType] = Resources.ErrorWrongType,
-            [ErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
-            [ErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
-            [ErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems,
-            [ErrorNumber.AdditionalPropertiesProhibited] = Resources.ErrorAdditionalPropertiesProhibited,
-            [ErrorNumber.ValueTooLarge] = Resources.ErrorValueTooLarge,
-            [ErrorNumber.ValueTooLargeExclusive] = Resources.ErrorValueTooLargeExclusive,
-            [ErrorNumber.ValueTooSmall] = Resources.ErrorValueTooSmall,
-            [ErrorNumber.ValueTooSmallExclusive] = Resources.ErrorValueTooSmallExclusive,
-        };
+        private static readonly ImmutableDictionary<ErrorNumber, string> s_errorNumberToMessageDictionary = ImmutableDictionary.CreateRange(
+            new Dictionary<ErrorNumber, string>
+            {
+                [ErrorNumber.NotAString] = Resources.ErrorNotAString,
+                [ErrorNumber.InvalidAdditionalPropertiesType] = Resources.ErrorInvalidAdditionalProperties,
+                [ErrorNumber.WrongType] = Resources.ErrorWrongType,
+                [ErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
+                [ErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
+                [ErrorNumber.TooManyArrayItems] = Resources.ErrorTooManyArrayItems,
+                [ErrorNumber.AdditionalPropertiesProhibited] = Resources.ErrorAdditionalPropertiesProhibited,
+                [ErrorNumber.ValueTooLarge] = Resources.ErrorValueTooLarge,
+                [ErrorNumber.ValueTooLargeExclusive] = Resources.ErrorValueTooLargeExclusive,
+                [ErrorNumber.ValueTooSmall] = Resources.ErrorValueTooSmall,
+                [ErrorNumber.ValueTooSmallExclusive] = Resources.ErrorValueTooSmallExclusive,
+                [ErrorNumber.TooManyProperties] = Resources.ErrorTooManyProperties,
+                [ErrorNumber.TooFewProperties] = Resources.ErrorTooFewProperties,
+            });
 
         internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)
         {

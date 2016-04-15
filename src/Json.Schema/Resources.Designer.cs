@@ -124,11 +124,29 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires at most {0} array items, but there are {1}..
+        ///   Looks up a localized string similar to The schema requires at least {0} object properties, but there are only {1}..
+        /// </summary>
+        internal static string ErrorTooFewProperties {
+            get {
+                return ResourceManager.GetString("ErrorTooFewProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The schema permits at most {0} array items, but there are {1}..
         /// </summary>
         internal static string ErrorTooManyArrayItems {
             get {
                 return ResourceManager.GetString("ErrorTooManyArrayItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The schema permits at most {0} object properties, but there are {1}..
+        /// </summary>
+        internal static string ErrorTooManyProperties {
+            get {
+                return ResourceManager.GetString("ErrorTooManyProperties", resourceCulture);
             }
         }
         

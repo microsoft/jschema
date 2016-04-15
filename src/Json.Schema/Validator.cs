@@ -143,6 +143,18 @@ namespace Microsoft.Json.Schema
         {
             List<string> propertySet = jObject.Properties().Select(p => p.Name).ToList();
 
+            if (schema.MaxProperties.HasValue &&
+                propertySet.Count > schema.MaxProperties.Value)
+            {
+                AddMessage(jObject, ErrorNumber.TooManyProperties, schema.MaxProperties.Value, propertySet.Count);
+            }
+
+            if (schema.MinProperties.HasValue &&
+                propertySet.Count < schema.MinProperties.Value)
+            {
+                AddMessage(jObject, ErrorNumber.TooFewProperties, schema.MinProperties.Value, propertySet.Count);
+            }
+
             // Ensure required properties are present.
             if (schema.Required != null)
             {
