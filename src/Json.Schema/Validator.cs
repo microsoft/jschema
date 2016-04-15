@@ -106,6 +106,23 @@ namespace Microsoft.Json.Schema
                     AddMessage(jValue, ErrorNumber.ValueTooLarge, value, maximum);
                 }
             }
+
+            if (schema.Minimum != null)
+            {
+                double minimum = schema.Minimum.Value;
+                double value = jValue.Type == JTokenType.Float
+                    ? (double)jValue.Value
+                    : (long)jValue.Value;
+
+                if (schema.ExclusiveMinimum == true && value <= minimum)
+                {
+                    AddMessage(jValue, ErrorNumber.ValueTooSmallExclusive, value, minimum);
+                }
+                else if (value < minimum)
+                {
+                    AddMessage(jValue, ErrorNumber.ValueTooSmall, value, minimum);
+                }
+            }
         }
 
         private void ValidateArray(JArray jArray, JsonSchema schema)

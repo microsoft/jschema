@@ -151,6 +151,24 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value {0} is less than the minimum value of {1} permitted by the schema..
+        /// </summary>
+        internal static string ErrorValueTooSmall {
+            get {
+                return ResourceManager.GetString("ErrorValueTooSmall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value {0} is less than or equal to the exclusive minimum value of {1} permitted by the schema..
+        /// </summary>
+        internal static string ErrorValueTooSmallExclusive {
+            get {
+                return ResourceManager.GetString("ErrorValueTooSmallExclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ({0},{1}): error {2}: {3}.
         /// </summary>
         internal static string ErrorWithLineInfo {

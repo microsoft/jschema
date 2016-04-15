@@ -184,6 +184,26 @@ namespace Microsoft.Json.Schema
         public bool? ExclusiveMaximum { get; set; }
 
         /// <summary>
+        /// Gets or sets the minimum valid value.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
+        /// or <see cref="JTokenType.Float"/>.
+        /// </remarks>
+        public double? Minimum { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the value specified by <see cref="Minimum"/>
+        /// is an exclusive minimum.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
+        /// or <see cref="JTokenType.Float"/>. If not specified in the schema, the default
+        /// value is <code>false</code>.
+        /// </remarks>
+        public bool? ExclusiveMinimum { get; set; }
+
+        /// <summary>
         /// Gets or sets a dictionary mapping schema names to sub-schemas which can be
         /// referenced by properties defined elsewhere in the current schema.
         /// </summary>

@@ -205,6 +205,82 @@ namespace Microsoft.Json.Schema.UnitTests
                 ),
 
             new TestCase(
+                "Numeric: minimum: valid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""minimum"": 2
+                }",
+                "2"),
+
+            new TestCase(
+                "Numeric: minimum: invalid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""minimum"": 1
+                }",
+                "0",
+                Error.Format(1, 1, ErrorNumber.ValueTooSmall, 0, 1)
+                ),
+
+            new TestCase(
+                "Numeric: minimum: valid number",
+                @"{
+                  ""type"": ""number"",
+                  ""minimum"": 3.14
+                }",
+                "4"),
+
+            new TestCase(
+                "Numeric: minimum: invalid number",
+                @"{
+                  ""type"": ""number"",
+                  ""minimum"": 3.14
+                }",
+                "3.13",
+                Error.Format(1, 4, ErrorNumber.ValueTooSmall, 3.13, 3.14)
+                ),
+
+            new TestCase(
+                "Numeric: minimum and exclusiveMinimum: valid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""minimum"": 2,
+                  ""exclusiveMinimum"": true
+                }",
+                "3"),
+
+            new TestCase(
+                "Numeric: minimum and exclusiveMinimum: invalid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""minimum"": 1,
+                  ""exclusiveMinimum"": true
+                }",
+                "1",
+                Error.Format(1, 1, ErrorNumber.ValueTooSmallExclusive, 1, 1)
+                ),
+
+            new TestCase(
+                "Numeric: maximum and exclusiveMaximum: valid number",
+                @"{
+                  ""type"": ""number"",
+                  ""maximum"": 3.14,
+                  ""exclusiveMaximum"": true
+                }",
+                "3.13"),
+
+            new TestCase(
+                "Numeric: minimum and exclusiveMinimum: invalid number",
+                @"{
+                  ""type"": ""number"",
+                  ""minimum"": 3.14,
+                  ""exclusiveMinimum"": true
+                }",
+                "3.14",
+                Error.Format(1, 4, ErrorNumber.ValueTooSmallExclusive, 3.14, 3.14)
+                ),
+
+            new TestCase(
                 "Object: additionalProperties: valid: allowed by Boolean",
 
 @"{

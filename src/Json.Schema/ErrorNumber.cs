@@ -185,6 +185,47 @@ namespace Microsoft.Json.Schema
         /// </example>
         ValueTooLargeExclusive = 1007,
 
+        /// <summary>
+        /// A numeric instance has a value less than the minimum value permitted by the
+        /// schema.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "integer",
+        ///   "minimum": 2
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "1"
+        /// </code>
+        /// </example>
+        ValueTooSmall = 1008,
+
+        /// <summary>
+        /// A numeric instance has a value less than or equal to the exclusive minimum
+        /// value permitted by the schema.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "integer",
+        ///   "minimum": 2,
+        ///   "exclusiveMinimum": true
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "2"
+        /// </code>
+        /// </example>
+        ValueTooSmallExclusive = 1009,
+
         #endregion Errors in instance document
     }
 }
