@@ -17,6 +17,8 @@ namespace Microsoft.Json.Schema
         /// </summary>
         None = 0,
 
+        #region Errors in schema document
+
         /// <summary>
         /// In the schema, a property that is required to be a string is not a string.
         /// </summary>
@@ -42,6 +44,10 @@ namespace Microsoft.Json.Schema
         /// </example>
         InvalidAdditionalPropertiesType = 2,
 
+        #endregion Errors in schema document
+
+        #region Errors in instance document
+
         /// <summary>
         /// A token has the wrong type.
         /// </summary>
@@ -58,7 +64,7 @@ namespace Microsoft.Json.Schema
         /// "x"
         /// </code>
         /// </example>
-        WrongType = 3,
+        WrongType = 1001,
 
         /// <summary>
         /// A required property is missing.
@@ -79,7 +85,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        RequiredPropertyMissing = 4,
+        RequiredPropertyMissing = 1002,
 
         /// <summary>
         /// An array has too few items.
@@ -98,7 +104,7 @@ namespace Microsoft.Json.Schema
         /// [ 1, 2 ]
         /// </code>
         /// </example>
-        TooFewArrayItems = 5,
+        TooFewArrayItems = 1003,
 
         /// <summary>
         /// An array has too many items.
@@ -117,7 +123,7 @@ namespace Microsoft.Json.Schema
         /// [ 1, 2, 3, 4 ]
         /// </code>
         /// </example>
-        TooManyArrayItems = 6,
+        TooManyArrayItems = 1004,
 
         /// <summary>
         /// An object has a property not permitted by the schema.
@@ -136,7 +142,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        AdditionalPropertiesProhibited = 7,
+        AdditionalPropertiesProhibited = 1005,
 
         /// <summary>
         /// A numeric instance has a value greater than the maximum value permitted by the
@@ -156,7 +162,7 @@ namespace Microsoft.Json.Schema
         /// "3"
         /// </code>
         /// </example>
-        ValueTooLarge = 8,
+        ValueTooLarge = 1006,
 
         /// <summary>
         /// A numeric instance has a value greater than or equal to the exclusive maximum
@@ -177,6 +183,8 @@ namespace Microsoft.Json.Schema
         /// "2"
         /// </code>
         /// </example>
-        ValueTooLargeExclusive = 9,
+        ValueTooLargeExclusive = 1007,
+
+        #endregion Errors in instance document
     }
 }
