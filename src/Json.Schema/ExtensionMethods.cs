@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
@@ -96,6 +97,16 @@ namespace Microsoft.Json.Schema
             }
 
             return match.Groups["definitionName"].Captures[0].Value;
+        }
+    }
+
+    public static class JsonSchemaExtensions
+    {
+        public static JTokenType SafeGetType(this JsonSchema schema)
+        {
+            return (schema.Type != null && schema.Type.Length > 0)
+                ? schema.Type[0]
+                : JTokenType.None;
         }
     }
 }

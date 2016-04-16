@@ -245,9 +245,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
         	{
-                JTokenType propertyType = propertySchema.Type == null || propertySchema.Type.Length == 0
-                    ? JTokenType.None
-                    : propertySchema.Type[0];
+                JTokenType propertyType = propertySchema.SafeGetType();
 
                 switch (propertyType)
                 {

@@ -54,21 +54,22 @@ namespace Microsoft.Json.Schema
         private void ValidateToken(JToken jToken, string name, JsonSchema schema)
         {
             // If the schema doesn't specify a type, anything goes.
-            if (schema.Type == null || schema.Type.Length == 0)
+            JTokenType schemaType = schema.SafeGetType();
+            if (schemaType == JTokenType.None)
             {
                 return;
             }
 
             // Check that the token is of the correct type, but allow an integer where a
             // "number" was specified.
-            if (jToken.Type != schema.Type[0]
-                && !(jToken.Type == JTokenType.Integer && schema.Type[0] == JTokenType.Float))
+            if (jToken.Type != schemaType
+                && !(jToken.Type == JTokenType.Integer && schemaType == JTokenType.Float))
             {
-                AddMessage(jToken, ErrorNumber.WrongType, name, schema.Type[0], jToken.Type);
+                AddMessage(jToken, ErrorNumber.WrongType, name, schemaType, jToken.Type);
                 return;
             }
 
-            switch (schema.Type[0])
+            switch (schemaType)
             {
                 case JTokenType.Integer:
                 case JTokenType.Float:

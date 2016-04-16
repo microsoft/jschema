@@ -66,9 +66,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             _fileSystem.CreateDirectory(_settings.OutputDirectory);
 
-            if (_rootSchema.Type[0] != JTokenType.Object)
+            JTokenType rootSchemaType = _rootSchema.SafeGetType();
+            if (rootSchemaType != JTokenType.Object)
             {
-                throw Error.CreateException(Resources.ErrorNotAnObject, _rootSchema.Type[0].ToJsonSchemaName());
+                throw Error.CreateException(Resources.ErrorNotAnObject, rootSchemaType.ToJsonSchemaName());
             }
 
             string rootFileText = CreateFile(_settings.RootClassName, _rootSchema, _settings.SealClasses);
