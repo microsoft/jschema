@@ -8,7 +8,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Json.Schema
+namespace Microsoft.Json.Schema.Validation
 {
     /// <summary>
     /// Validates a JSON instance against a schema.
