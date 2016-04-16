@@ -58,10 +58,12 @@ namespace Microsoft.Json.Schema.UnitTests
         {
             public LogicallyInvalidSchemaTestCase(
                 string name,
-                string schemaText)
+                string schemaText,
+                int numErrors = 1)
             {
                 Name = name;
                 SchemaText = schemaText;
+                NumErrors = numErrors;
             }
 
             public LogicallyInvalidSchemaTestCase()
@@ -71,17 +73,20 @@ namespace Microsoft.Json.Schema.UnitTests
 
             public string Name;
             public string SchemaText;
+            public int NumErrors;
 
             public void Deserialize(IXunitSerializationInfo info)
             {
                 Name = info.GetValue<string>(nameof(Name));
                 SchemaText = info.GetValue<string>(nameof(SchemaText));
+                NumErrors = info.GetValue<int>(nameof(NumErrors));
             }
 
             public void Serialize(IXunitSerializationInfo info)
             {
                 info.AddValue(nameof(Name), Name);
                 info.AddValue(nameof(SchemaText), SchemaText);
+                info.AddValue(nameof(NumErrors), NumErrors);
             }
 
             public override string ToString()
@@ -146,7 +151,15 @@ namespace Microsoft.Json.Schema.UnitTests
     }
   }
 }"
-                )
+                ),
+
+                new LogicallyInvalidSchemaTestCase(
+                    "multiple errors",
+@"{
+  ""title"": 1,
+  ""additionalProperties"": 2
+}",
+                    2)
         };
 
         [Theory(DisplayName = "SchemaReader throws on logically invalid schema")]
@@ -161,7 +174,8 @@ namespace Microsoft.Json.Schema.UnitTests
                 }
             };
 
-            action.ShouldThrow<ApplicationException>();
+            action.ShouldThrow<InvalidSchemaException>()
+                .Where(ex => ex.Errors.Count == test.NumErrors);
         }
     }
 }

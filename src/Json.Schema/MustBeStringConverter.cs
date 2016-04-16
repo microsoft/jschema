@@ -38,17 +38,12 @@ namespace Microsoft.Json.Schema
             if (reader.TokenType != JsonToken.String)
             {
                 JToken jToken = JToken.Load(reader);
-                IJsonLineInfo lineInfo = jToken;
 
                 string propertyName = reader.Path?.Split(s_pathSplitChars).LastOrDefault()
                     ?? string.Empty;
 
-                throw Error.CreateException(
-                                lineInfo.LineNumber,
-                                lineInfo.LinePosition,
-                                ErrorNumber.NotAString,
-                                propertyName,
-                                reader.TokenType);
+                serializer.CaptureError(jToken, ErrorNumber.NotAString, propertyName, reader.TokenType);
+                return string.Empty;
             }
 
             return reader.Value;

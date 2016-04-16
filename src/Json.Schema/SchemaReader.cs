@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Microsoft.Json.Schema
@@ -19,15 +20,25 @@ namespace Microsoft.Json.Schema
             // because Json.NET treats "$ref" specially.
             jsonText = RefProperty.ConvertFromInput(jsonText);
 
+            var traceWriter = new ErrorCapturingTraceWriter(); 
             var serializer = new JsonSerializer
             {
-                ContractResolver = new JsonSchemaContractResolver()
+                ContractResolver = new JsonSchemaContractResolver(),
+                TraceWriter = traceWriter
             };
 
+            JsonSchema schema;
             using (var jsonReader = new JsonTextReader(new StringReader(jsonText)))
             {
-                return serializer.Deserialize<JsonSchema>(jsonReader);
+                schema = serializer.Deserialize<JsonSchema>(jsonReader);
             }
+
+            if (traceWriter.Errors.Any())
+            {
+                throw new InvalidSchemaException(traceWriter.Errors);
+            }
+
+            return schema;
         }
     }
 }

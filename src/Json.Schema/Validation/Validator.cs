@@ -51,6 +51,7 @@ namespace Microsoft.Json.Schema.Validation
 
             return _messages.ToArray();
         }
+
         private void ValidateToken(JToken jToken, string name, JsonSchema schema)
         {
             // If the schema doesn't specify a type, anything goes.

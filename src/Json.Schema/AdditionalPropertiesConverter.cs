@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -36,13 +37,8 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                IJsonLineInfo lineInfo = jToken;
-
-                throw Error.CreateException(
-                                lineInfo.LineNumber,
-                                lineInfo.LinePosition,
-                                ErrorNumber.InvalidAdditionalPropertiesType,
-                                jToken.Type);
+                serializer.CaptureError(jToken, ErrorNumber.InvalidAdditionalPropertiesType, jToken.Type);
+                return null;
             }
         }
 

@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
@@ -107,6 +109,19 @@ namespace Microsoft.Json.Schema
             return (schema.Type != null && schema.Type.Length > 0)
                 ? schema.Type[0]
                 : JTokenType.None;
+        }
+    }
+
+    public static class JsonSerializerExtension
+    {
+        public static void CaptureError(
+            this JsonSerializer serializer,
+            JToken jToken,
+            ErrorNumber errorNumber,
+            params object[] args)
+        {
+            var exception = new InvalidSchemaException(jToken, errorNumber, args);
+            serializer.TraceWriter.Trace(TraceLevel.Error, exception.Message, exception);
         }
     }
 }
