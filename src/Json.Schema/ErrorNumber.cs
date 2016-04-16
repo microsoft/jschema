@@ -10,7 +10,7 @@ namespace Microsoft.Json.Schema
     /// Do not alter or reuse the integer values used in the enum initializers.
     /// They must remain stable because the error codes will be documented.
     /// </remarks>
-    internal enum ErrorNumber
+    public enum ErrorNumber
     {
         /// <summary>
         /// No error.

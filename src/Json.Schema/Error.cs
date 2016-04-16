@@ -5,11 +5,35 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
-    internal static class Error
+    public class Error
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Error"/> class.
+        /// </summary>
+        /// <param name="jToken">
+        /// The <see cref="JToken"/> on which the error was encountered.
+        /// </param>
+        /// <param name="errorNumber">
+        /// The error number.
+        /// </param>
+        /// <param name="args">
+        /// Arguments used in combination with the error number to produce a
+        /// formatted error message.
+        /// </param>
+        public Error(JToken jToken, ErrorNumber errorNumber, params object[] args)
+        {
+            IJsonLineInfo lineInfo = jToken;
+
+            Message = Format(lineInfo.LineNumber, lineInfo.LinePosition, errorNumber, args);
+        }
+
+        public string Message { get; }
+
         private const string ErrorCodeFormat = "JS{0:D4}";
 
         private static readonly ImmutableDictionary<ErrorNumber, string> s_errorNumberToMessageDictionary = ImmutableDictionary.CreateRange(

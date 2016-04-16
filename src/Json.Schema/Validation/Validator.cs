@@ -209,12 +209,10 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private void AddMessage(JToken jToken, ErrorNumber errorCode, params object[] args)
+        private void AddMessage(JToken jToken, ErrorNumber errorNumber, params object[] args)
         {
-            IJsonLineInfo lineInfo = jToken;
-
-            _messages.Add(
-                Error.Format(lineInfo.LineNumber, lineInfo.LinePosition, errorCode, args));
+            var error = new Error(jToken, errorNumber, args);
+            _messages.Add(error.Message);
         }
     }
 }
