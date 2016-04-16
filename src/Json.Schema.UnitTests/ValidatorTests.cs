@@ -585,7 +585,7 @@ namespace Microsoft.Json.Schema.UnitTests
 
         [Theory(DisplayName = "Validation")]
         [MemberData(nameof(TestCases))]
-        public void ReportsMissingRequiredProperty(TestCase test)
+        public void Tests(TestCase test)
         {
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
             var target = new Validator(schema);

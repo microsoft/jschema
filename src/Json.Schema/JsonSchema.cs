@@ -40,7 +40,16 @@ namespace Microsoft.Json.Schema
 
             Title = other.Title;
             Description = other.Description;
-            Type = other.Type;
+
+            if (other.Type != null)
+            {
+                Type = new JTokenType[other.Type.Length];
+                Array.Copy(other.Type, Type, other.Type.Length);
+            }
+            else
+            {
+                Type = null;
+            }
 
             if (other.Enum != null)
             {
@@ -128,7 +137,8 @@ namespace Microsoft.Json.Schema
         [JsonConverter(typeof(MustBeStringConverter))]
         public string Description { get; set; }
 
-        public JTokenType Type { get; set; }
+        [JsonConverter(typeof(SchemaTypeConverter))]
+        public JTokenType[] Type { get; set; }
 
         /// <summary>
         /// Gets or sets an array containing the values that are valid for an object
@@ -334,7 +344,15 @@ namespace Microsoft.Json.Schema
                         definitionName);
                 }
 
-                collapsedSchema.Type = referencedSchema.Type;
+                if (referencedSchema.Type != null)
+                {
+                    collapsedSchema.Type = new JTokenType[referencedSchema.Type.Length];
+                    Array.Copy(referencedSchema.Type, collapsedSchema.Type, referencedSchema.Type.Length);
+                }
+                else
+                {
+                    collapsedSchema.Type = null;
+                }
 
                 collapsedSchema.Enum = referencedSchema.Enum != null
                     ? referencedSchema.Enum.Clone() as object[]
@@ -400,22 +418,16 @@ namespace Microsoft.Json.Schema
                         : SchemaVersion.EqualsWithFragments(other.SchemaVersion))
                 && string.Equals(Title, other.Title, StringComparison.Ordinal)
                 && string.Equals(Description, other.Description, StringComparison.Ordinal)
-                && Type == other.Type
-                && (Enum == null
-                        ? other.Enum == null
-                        : Enum.HasSameElementsAs(other.Enum))
+                && Type.HasSameElementsAs(other.Type)
+                && Enum.HasSameElementsAs(other.Enum)
                 && (Items == null
                         ? other.Items == null
                         : Items.Equals(other.Items))
                 && (Properties == null
                         ? other.Properties == null
                         : Properties.HasSameElementsAs(other.Properties))
-                && (Required == null
-                        ? other.Required == null
-                        : Required.HasSameElementsAs(other.Required))
-                && (Definitions == null
-                        ? other.Definitions == null
-                        : Definitions.HasSameElementsAs(other.Definitions))
+                && Required.HasSameElementsAs(other.Required)
+                && Definitions.HasSameElementsAs(other.Definitions)
                 && (AdditionalProperties == null
                         ? other.AdditionalProperties == null
                         : AdditionalProperties.Equals(other.AdditionalProperties))

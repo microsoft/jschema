@@ -87,7 +87,7 @@
     <Compile Include="JsonSchema.cs" />
     <Compile Include="JsonSchemaContractResolver.cs" />
     <Compile Include="ErrorNumber.cs" />
-    <Compile Include="JTokenTypeConverter.cs" />
+    <Compile Include="SchemaTypeConverter.cs" />
     <Compile Include="JTokenTypeExtensions.cs" />
     <Compile Include="MustBeStringConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

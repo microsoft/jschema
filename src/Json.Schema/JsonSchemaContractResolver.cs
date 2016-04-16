@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Json.Schema
@@ -16,7 +15,6 @@ namespace Microsoft.Json.Schema
             {
                 [typeof(UriOrFragment)] = UriOrFragmentConverter.Instance,
                 [typeof(AdditionalProperties)] = AdditionalPropertiesConverter.Instance,
-                [typeof(JTokenType)] = JTokenTypeConverter.Instance
             };
 
         public override JsonContract ResolveContract(Type objectType)

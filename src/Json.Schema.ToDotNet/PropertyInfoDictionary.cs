@@ -219,7 +219,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 // a dictionary from string to string.
                 JsonSchema dictionaryElementSchema = propertySchema.AdditionalProperties?.Schema != null
                     ? propertySchema.AdditionalProperties.Schema
-                    : new JsonSchema { Type = JTokenType.String };
+                    : new JsonSchema { Type = new JTokenType[] { JTokenType.String } };
 
                 type = MakeDictionaryType(entries, propertyName, dictionaryKeyTypeName, dictionaryElementSchema);
                 namespaceName = "System.Collections.Generic";   // For IDictionary.
@@ -245,7 +245,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
         	{
-                switch (propertySchema.Type)
+                JTokenType propertyType = propertySchema.Type == null || propertySchema.Type.Length == 0
+                    ? JTokenType.None
+                    : propertySchema.Type[0];
+
+                switch (propertyType)
                 {
                     case JTokenType.Boolean:
                     case JTokenType.Integer:
@@ -253,14 +257,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarValueType;
                         initializationKind = InitializationKind.SimpleAssign;
-                        type = MakePrimitiveType(propertySchema.Type);
+                        type = MakePrimitiveType(propertyType);
                         break;
 
                     case JTokenType.String:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarReferenceType;
                         initializationKind = InitializationKind.SimpleAssign;
-                        type = MakePrimitiveType(propertySchema.Type);
+                        type = MakePrimitiveType(propertyType);
                         break;
 
                     case JTokenType.Object:

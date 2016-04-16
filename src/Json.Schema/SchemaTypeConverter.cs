@@ -2,14 +2,15 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
-    internal class JTokenTypeConverter : JsonConverter
+    internal class SchemaTypeConverter : JsonConverter
     {
-        public static JTokenTypeConverter Instance = new JTokenTypeConverter();
+        public static SchemaTypeConverter Instance = new SchemaTypeConverter();
 
         public override bool CanConvert(Type objectType)
         {
@@ -31,24 +32,21 @@ namespace Microsoft.Json.Schema
                 jTokenType = (JTokenType)Enum.Parse(typeof(JTokenType), s);
             }
 
-            return jTokenType;
+            return new JTokenType[] { jTokenType };
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            string s;
+            string[] types = (value as JTokenType[]).Select(jtt => jtt.ToJsonSchemaName()).ToArray();
 
-            var jTokenType = (JTokenType)value;
-            if (jTokenType == JTokenType.Float)
+            if (types.Length == 1)
             {
-                s = "number";
+                writer.WriteRawValue("\"" + types[0] + "\"");
             }
             else
             {
-                s = jTokenType.ToString().ToLowerInvariant();
+                // TODO
             }
-
-            writer.WriteRawValue("\"" + s + "\"");
         }
     }
 }

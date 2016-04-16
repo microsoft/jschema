@@ -10,12 +10,21 @@ namespace Microsoft.Json.Schema.ToDotNet
     {
         internal static bool IsDateTime(this JsonSchema schema)
         {
-            return schema.Type == JTokenType.String && schema.Format == FormatAttributes.DateTime;
+            return schema.IsStringWithFormat(FormatAttributes.DateTime);
         }
 
         internal static bool IsUri(this JsonSchema schema)
         {
-            return schema.Type == JTokenType.String && schema.Format == FormatAttributes.Uri;
+            return schema.IsStringWithFormat(FormatAttributes.Uri);
+        }
+
+        private static bool IsStringWithFormat(this JsonSchema schema, string format)
+        {
+            return
+                schema.Type != null
+                && schema.Type.Length > 0
+                && schema.Type[0] == JTokenType.String
+                && schema.Format == format;
         }
 
         internal static bool ShouldBeDictionary(
@@ -29,7 +38,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // Ignore any DictionaryHint that might apply to this property
             // if the property is not an object.
-            if (schema.Type != JTokenType.Object)
+            if (schema.Type == null || schema.Type.Length == 0 || schema.Type[0] != JTokenType.Object)
             {
                 return false;
             }
