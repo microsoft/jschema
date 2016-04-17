@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -74,12 +75,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             string rootFileText = CreateFile(_settings.RootClassName, _rootSchema, _settings.SealClasses);
 
+
             if (_rootSchema.Definitions != null)
             {
-                foreach (KeyValuePair<string, JsonSchema> definition in _rootSchema.Definitions)
-                {
-                    CreateFile(definition.Key, definition.Value, _settings.SealClasses);
-                }
+                CreateFilesForDefinitions(_rootSchema.Definitions);
             }
 
             foreach (AdditionalTypeRequiredInfo additionalTypeRequiredInfo in _additionalTypesRequiredList)
@@ -117,6 +116,24 @@ namespace Microsoft.Json.Schema.ToDotNet
             // Returning the text of the file generated from the root schema allows this method
             // to be more easily unit tested.
             return rootFileText;
+        }
+
+        private void CreateFilesForDefinitions(IDictionary<string, JsonSchema> definitions)
+        {
+            foreach (KeyValuePair<string, JsonSchema> definition in definitions)
+            {
+                CreateFileForDefinition(definition);
+            }
+        }
+
+        private void CreateFileForDefinition(KeyValuePair<string, JsonSchema> definition)
+        {
+            ClassNameHint classNameHint = _settings.HintDictionary?.GetHint<ClassNameHint>(definition.Key);
+            string className = classNameHint != null
+                ? classNameHint.ClassName
+                : definition.Key;
+
+            CreateFile(className, definition.Value, _settings.SealClasses);
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
@@ -209,13 +226,13 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             _classInfoDictionary.Add(className, propertyInfoDictionary);
 
-            CodeGenHint[] hints = null;
             EnumHint enumHint = null;
             InterfaceHint interfaceHint = null;
-            if (_settings.HintDictionary != null && _settings.HintDictionary.TryGetValue(className.ToCamelCase(), out hints))
+            if (_settings.HintDictionary != null)
             {
-                enumHint = hints.FirstOrDefault(h => h is EnumHint) as EnumHint;
-                interfaceHint = hints.FirstOrDefault(h => h is InterfaceHint) as InterfaceHint;
+                string key = className.ToCamelCase();
+                enumHint = _settings.HintDictionary.GetHint<EnumHint>(key);
+                interfaceHint = _settings.HintDictionary.GetHint<InterfaceHint>(key);
             }
 
             string baseInterfaceName = null;

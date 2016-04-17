@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -44,6 +45,19 @@ namespace Microsoft.Json.Schema.ToDotNet
         protected HintDictionary(SerializationInfo info, StreamingContext context):
             base(info, context)
         {
+        }
+
+        public T GetHint<T>(string key) where T : CodeGenHint
+        {
+            T hint = null;
+
+            CodeGenHint[] hints;
+            if (TryGetValue(key, out hints))
+            {
+                hint = hints.FirstOrDefault(h => h is T) as T;
+            }
+
+            return hint;
         }
     }
 }

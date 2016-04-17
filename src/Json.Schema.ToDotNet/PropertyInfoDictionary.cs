@@ -353,12 +353,24 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (schema.Reference != null)
             {
-                return MakeNamedType(schema.Reference.GetDefinitionName(), out namespaceName);
+                return MakeObjectTypeFromReference(schema.Reference, out namespaceName);
             }
             else
             {
                 return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.ObjectKeyword));
             }
+        }
+
+        private TypeSyntax MakeObjectTypeFromReference(UriOrFragment reference, out string namespaceName)
+        {
+            string className = reference.GetDefinitionName();
+            ClassNameHint classNameHint = _hintDictionary?.GetHint<ClassNameHint>(className.ToCamelCase());
+            if (classNameHint != null)
+            {
+                className = classNameHint.ClassName;
+            }
+
+            return MakeNamedType(className, out namespaceName);
         }
 
         private TypeSyntax MakeNamedType(string typeName, out string namespaceName)

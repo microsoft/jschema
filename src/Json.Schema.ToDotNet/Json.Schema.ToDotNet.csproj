@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="AdditionalTypeRequiredInfo.cs" />
     <Compile Include="ClassGenerator.cs" />
+    <Compile Include="ClassNameHint.cs" />
     <Compile Include="ClassOrInterfaceGenerator.cs" />
     <Compile Include="CodeGenHint.cs" />
     <Compile Include="ComparisonKind.cs" />

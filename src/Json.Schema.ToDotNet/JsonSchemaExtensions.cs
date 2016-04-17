@@ -55,14 +55,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             string key = MakeHintDictionaryKey(typeName, propertyName);
-
-            CodeGenHint[] hints;
-            if (!hintDictionary.TryGetValue(key, out hints))
-            {
-                return false;
-            }
-
-            var dictionaryHint = hints.SingleOrDefault(h => h is DictionaryHint) as DictionaryHint;
+            DictionaryHint dictionaryHint = hintDictionary.GetHint<DictionaryHint>(key);
             if (dictionaryHint == null)
             {
                 return false;
@@ -79,31 +72,28 @@ namespace Microsoft.Json.Schema.ToDotNet
             HintDictionary hintDictionary,
             out EnumHint enumHint)
         {
-            bool shouldBeEnum = false;
             enumHint = null;
 
-            string propertyKey = MakeHintDictionaryKey(typeName, propertyName);
-            if (hintDictionary != null)
+            if (hintDictionary == null)
             {
-                CodeGenHint[] hints;
-                if (hintDictionary.TryGetValue(propertyKey, out hints))
-                {
-                    enumHint = hints.FirstOrDefault(hint => hint is EnumHint) as EnumHint;
-                    if (enumHint != null)
-                    {
-                        if (string.IsNullOrWhiteSpace(enumHint.TypeName))
-                        {
-                            throw Error.CreateException(
-                                            Resources.ErrorEnumHintRequiresTypeName,
-                                            propertyKey);
-                        }
-
-                        shouldBeEnum = true;
-                    }
-                }
+                return false;
             }
 
-            return shouldBeEnum;
+            string key = MakeHintDictionaryKey(typeName, propertyName);
+            enumHint = hintDictionary.GetHint<EnumHint>(key);
+            if (enumHint != null)
+            {
+                if (string.IsNullOrWhiteSpace(enumHint.TypeName))
+                {
+                    throw Error.CreateException(
+                                    Resources.ErrorEnumHintRequiresTypeName,
+                                    key);
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private static string MakeHintDictionaryKey(string typeName, string propertyName)
