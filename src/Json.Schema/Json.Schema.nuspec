@@ -8,7 +8,7 @@
     <owners>Larry Golding, Michael C. Fanning</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Classes for working with JSON Schema.</description>
-    <releaseNotes>Pre-release version</releaseNotes>
+    <releaseNotes>Implements ClassNameHint.</releaseNotes>
     <copyright>Copyright (C) Microsoft 2016</copyright>
     <licenseUrl>https://github.com/lgolding/jschema/blob/master/License.txt</licenseUrl>
     <projectUrl>https://github.com/lgolding/jschema</projectUrl>
