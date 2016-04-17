@@ -694,6 +694,14 @@ namespace N
       ""additionalProperties"": {
         ""$ref"": ""#/definitions/d""
       }
+    },
+    ""arrayWithUniqueItems"": {
+      ""description"": ""An array property with unique items."",
+      ""type"": ""array"",
+      ""uniqueItems"": true,
+      ""items"": {
+        ""type"": ""integer""
+      }
     }
   },
   ""definitions"": {
@@ -831,6 +839,12 @@ namespace N
         public IDictionary<Uri, D> DictionaryWithUriKeyProp { get; set; }
 
         /// <summary>
+        /// An array property with unique items.
+        /// </summary>
+        [DataMember(Name = ""arrayWithUniqueItems"", IsRequired = false, EmitDefaultValue = false)]
+        public ISet<int> ArrayWithUniqueItems { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -879,9 +893,12 @@ namespace N
         /// <param name=""dictionaryWithUriKeyProp"">
         /// An initialization value for the <see cref=""P: DictionaryWithUriKeyProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp)
+        /// <param name=""arrayWithUniqueItems"">
+        /// An initialization value for the <see cref=""P: ArrayWithUniqueItems"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, ISet<int> arrayWithUniqueItems)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, arrayWithUniqueItems);
         }
 
         /// <summary>
@@ -900,7 +917,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.ArrayWithUniqueItems);
         }
 
         ISNode ISNode.DeepClone()
@@ -921,7 +938,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, ISet<int> arrayWithUniqueItems)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -1044,6 +1061,17 @@ namespace N
                 {
                     DictionaryWithUriKeyProp.Add(value_7.Key, new D(value_7.Value));
                 }
+            }
+
+            if (arrayWithUniqueItems != null)
+            {
+                var destination_5 = new HashSet<int>();
+                foreach (var value_8 in arrayWithUniqueItems)
+                {
+                    destination_5.Add(value_8);
+                }
+
+                ArrayWithUniqueItems = destination_5;
             }
         }
     }
@@ -2213,6 +2241,84 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class C : IEquatable<C>
     {
+    }
+}";
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates hash set for arrays with uniqueItems true")]
+        public void GeneratesHashSetForArraysWithUniqueItemsTrue()
+        {
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""uniqueArrayProp"": {
+      ""type"": ""array"",
+      ""uniqueItems"": ""true"",
+      ""items"": {
+        ""type"": ""integer""
+      }
+    }
+  }
+}");
+
+            const string Expected =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C : IEquatable<C>
+    {
+        [DataMember(Name = ""uniqueArrayProp"", IsRequired = false, EmitDefaultValue = false)]
+        public ISet<int> UniqueArrayProp { get; set; }
+    }
+}";
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates list for arrays with uniqueItems false")]
+        public void GeneratesHashSetForArraysWithUniqueItemsFalse()
+        {
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""nonUniqueArrayProp"": {
+      ""type"": ""array"",
+      ""uniqueItems"": ""false"",
+      ""items"": {
+        ""type"": ""integer""
+      }
+    }
+  }
+}");
+
+            const string Expected =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C : IEquatable<C>
+    {
+        [DataMember(Name = ""nonUniqueArrayProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IList<int> NonUniqueArrayProp { get; set; }
     }
 }";
             string actual = generator.Generate(schema);

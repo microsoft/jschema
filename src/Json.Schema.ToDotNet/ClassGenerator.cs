@@ -332,7 +332,15 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             TypeSyntax type = PropInfoDictionary[propertyName].Type;
 
-            string typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
+            string typeName = type.ToString();
+            if (typeName.StartsWith("IList"))
+            {
+                typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
+            }
+            else if (typeName.StartsWith("ISet"))
+            {
+                typeName = Regex.Replace(type.ToString(), "^ISet<", "HashSet<");
+            }
 
             return SyntaxFactory.ParseTypeName(typeName);
         }

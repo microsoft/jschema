@@ -165,10 +165,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 foreach (KeyValuePair<string, JsonSchema> schemaProperty in _schema.Properties)
                 {
                     string propertyName = schemaProperty.Key;
-                    JsonSchema subSchema = schemaProperty.Value;
+                    JsonSchema propertySchema = schemaProperty.Value;
                     bool isRequired = _schema.Required?.Contains(propertyName) == true;
 
-                    AddPropertyInfoFromPropertySchema(entries, propertyName, subSchema, isRequired);
+                    AddPropertyInfoFromPropertySchema(entries, propertyName, propertySchema, isRequired);
                 }
             }
 
@@ -391,8 +391,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // Create a list of whatever this property is. If the property
             // is itself an array, this will result in a list of lists, and so on.
+            string abstractCollectionTypeName = schema.UniqueItems == true ? "ISet" : "IList";
+
             return SyntaxFactory.GenericName(
-                SyntaxFactory.Identifier("IList"),
+                SyntaxFactory.Identifier(abstractCollectionTypeName),
                 SyntaxFactory.TypeArgumentList(
                     SyntaxFactory.SingletonSeparatedList(info.Type)));
         }

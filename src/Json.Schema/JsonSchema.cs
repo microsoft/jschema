@@ -93,6 +93,7 @@ namespace Microsoft.Json.Schema
 
             MinItems = other.MinItems;
             MaxItems = other.MaxItems;
+            UniqueItems = other.UniqueItems;
 
             if (other.Reference != null)
             {
@@ -248,7 +249,7 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
         /// If this property is not specified, it is considered present with a value of 0.
         /// The type of this property is <code>int?</code>, rather than <code>int</code>
-        /// with a default value of 0, is so that a schema that does not specify this
+        /// with a default value of 0, so that a schema that does not specify this
         /// property can be successfully round-tripped to and from the object model.
         /// </remarks>
         public int? MinItems { get; set; }
@@ -260,10 +261,22 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
         /// If this property is not specified, any number of items is valid.
         /// The type of this property is <code>int?</code>, rather than <code>int</code>
-        /// with a default value of <code>Int32.MaxValue</code>, is so that a schema that
+        /// with a default value of <code>Int32.MaxValue</code>, so that a schema that
         /// does not specify this property can be successfully round-tripped to and from
         /// the object model.
         public int? MaxItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value that specifies whether array elements must be unique.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
+        /// If this property is not specified, the default value is <code>false</code>.
+        /// The type of this property is <code>bool?</code>, rather than <code>bool</code>
+        /// with a default value of <code>false</code>, so that a schema that does not specify
+        /// this property can be successfully round-tripped to and from the object model.
+        /// </remarks>
+        public bool? UniqueItems { get; set; }
 
         /// <summary>
         /// Gets or sets the URI of a schema that is incorporated by reference into
@@ -366,6 +379,7 @@ namespace Microsoft.Json.Schema
                 collapsedSchema.ExclusiveMaximum = referencedSchema.ExclusiveMaximum;
                 collapsedSchema.MinItems = referencedSchema.MinItems;
                 collapsedSchema.MaxItems = referencedSchema.MaxItems;
+                collapsedSchema.UniqueItems = referencedSchema.UniqueItems;
                 collapsedSchema.Format = referencedSchema.Format;
             }
 
@@ -397,6 +411,7 @@ namespace Microsoft.Json.Schema
                 ExclusiveMaximum,
                 MinItems,
                 MaxItems,
+                UniqueItems,
                 Format
                 );
         }
@@ -438,6 +453,7 @@ namespace Microsoft.Json.Schema
                 && ExclusiveMaximum == other.ExclusiveMaximum
                 && MinItems ==  other.MinItems
                 && MaxItems == other.MaxItems
+                && UniqueItems == other.UniqueItems
                 && string.Equals(Format, other.Format, StringComparison.Ordinal);
         }
 

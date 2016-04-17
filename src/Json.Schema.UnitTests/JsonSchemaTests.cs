@@ -48,6 +48,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""minItems"": 1,
                     ""maxItems"": 3,
+                    ""uniqueItems"": true,
                     ""format"": ""date-time"",
                     ""maximimum"": 2,
                     ""exclusiveMaximum"": false
@@ -81,6 +82,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""minItems"": 1,
                     ""maxItems"": 3,
+                    ""uniqueItems"": true,
                     ""format"": ""date-time"",
                     ""maximimum"": 2,
                     ""exclusiveMaximum"": false
@@ -485,7 +487,30 @@ namespace Microsoft.Json.Schema.UnitTests
                 @"{
                   ""maximum"": 1,
                 }",
-                false)
+                false),
+
+            new EqualityTestCase(
+                "Different uniqueItems",
+                @"{
+                  ""uniqueItems"": true
+                }",
+                @"{
+                  ""uniqueItems"": false
+                }",
+                false
+            ),
+
+            // These two schemas would validate the same set of instances, but
+            // we consider them unequal because they serialize to different
+            // JSON schema strings.
+            new EqualityTestCase(
+                "False and missing uniqueItems",
+                @"{}",
+                @"{
+                  ""uniqueItems"": false
+                }",
+                false
+            ),
         };
 
         [Theory(DisplayName = "JsonSchema equality")]
