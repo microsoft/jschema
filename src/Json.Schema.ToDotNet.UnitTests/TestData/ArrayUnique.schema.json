@@ -1,0 +1,12 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "uniqueArrayProp": {
+      "type": "array",
+      "uniqueItems":  true,
+      "items": {
+        "type": "integer"
+      }
+    }
+  }
+}
