@@ -419,91 +419,6 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array-valued property with unique elements")]
-        public void GeneratesArrayValuedPropertyWithUniqueElements()
-        {
-            _settings.GenerateOverrides = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("ArrayUnique");
-
-            const string Expected =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
-    {
-        [DataMember(Name = ""uniqueArrayProp"", IsRequired = false, EmitDefaultValue = false)]
-        public ISet<int> UniqueArrayProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                if (UniqueArrayProp != null)
-                {
-                    foreach (var value_0 in UniqueArrayProp)
-                    {
-                        result = result * 31;
-                        result = (result * 31) + value_0.GetHashCode();
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.ReferenceEquals(UniqueArrayProp, other.UniqueArrayProp))
-            {
-                if (UniqueArrayProp == null || other.UniqueArrayProp == null)
-                {
-                    return false;
-                }
-
-                if (UniqueArrayProp.Count != other.UniqueArrayProp.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < UniqueArrayProp.Count; ++index_0)
-                {
-                    if (UniqueArrayProp[index_0] != other.UniqueArrayProp[index_0])
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-    }
-}";
-            string actual = generator.Generate(schema);
-
-            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayValuedProperty));
-
-            actual.Should().Be(Expected);
-        }
-
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
         public void GeneratesXmlCommentsForProperties()
         {
@@ -2335,6 +2250,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates hash set for arrays with uniqueItems true")]
         public void GeneratesHashSetForArraysWithUniqueItemsTrue()
         {
+            _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -2365,6 +2281,52 @@ namespace N
     {
         [DataMember(Name = ""uniqueArrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public ISet<int> UniqueArrayProp { get; set; }
+
+        public override bool Equals(object other)
+        {
+            return Equals(other as C);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = 17;
+            unchecked
+            {
+                if (UniqueArrayProp != null)
+                {
+                    foreach (var value_0 in UniqueArrayProp)
+                    {
+                        result = result * 31;
+                        result = (result * 31) + value_0.GetHashCode();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public bool Equals(C other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(UniqueArrayProp, other.UniqueArrayProp))
+            {
+                if (UniqueArrayProp == null || other.UniqueArrayProp == null)
+                {
+                    return false;
+                }
+
+                if (!UniqueArrayProp.SetEquals(other.UniqueArrayProp))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }";
             string actual = generator.Generate(schema);

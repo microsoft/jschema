@@ -286,7 +286,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                         break;
 
                     case JTokenType.Array:
-                        comparisonKind = ComparisonKind.Collection;
+                        comparisonKind = propertySchema.UniqueItems == true
+                            ? ComparisonKind.HashSet
+                            : ComparisonKind.Collection;
                         hashKind = HashKind.Collection;
                         initializationKind = InitializationKind.Collection;
                         namespaceName = "System.Collections.Generic";   // For IList.

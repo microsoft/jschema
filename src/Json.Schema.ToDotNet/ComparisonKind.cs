@@ -33,6 +33,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <summary>
         /// Compare dictionary entries.
         /// </summary>
-        Dictionary
+        Dictionary,
+
+        /// <summary>
+        /// Compare hash sets.
+        /// </summary>
+        HashSet
     }
 }
