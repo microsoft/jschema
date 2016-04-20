@@ -76,7 +76,6 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
             'k',
             "generate-cloning-code",
             HelpText = "Generate code necessary to clone instances.",
-            Default = true,
             Required = false)]
         public bool GenerateCloningCode { get; set; }
 

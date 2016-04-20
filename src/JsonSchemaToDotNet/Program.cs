@@ -13,11 +13,11 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
             Banner();
 
-            Parser.Default.ParseArguments<Options>(args)
+            return Parser.Default.ParseArguments<Options>(args)
                 .MapResult(
                     options => Run(options),
                     err => 1);
