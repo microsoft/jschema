@@ -696,11 +696,19 @@ namespace N
       }
     },
     ""arrayWithUniqueItems"": {
-      ""description"": ""An array property with unique items."",
+      ""description"": ""An array property with unique primitive items."",
       ""type"": ""array"",
       ""uniqueItems"": true,
       ""items"": {
         ""type"": ""integer""
+      }
+    },
+    ""arrayWithUniqueRefItems"": {
+      ""description"": ""An array property with unique items of cloneable type."",
+      ""type"": ""array"",
+      ""uniqueItems"": true,
+      ""items"": {
+        ""$ref"": ""#/definitions/d""
       }
     }
   },
@@ -839,10 +847,16 @@ namespace N
         public IDictionary<Uri, D> DictionaryWithUriKeyProp { get; set; }
 
         /// <summary>
-        /// An array property with unique items.
+        /// An array property with unique primitive items.
         /// </summary>
         [DataMember(Name = ""arrayWithUniqueItems"", IsRequired = false, EmitDefaultValue = false)]
         public ISet<int> ArrayWithUniqueItems { get; set; }
+
+        /// <summary>
+        /// An array property with unique items of cloneable type.
+        /// </summary>
+        [DataMember(Name = ""arrayWithUniqueRefItems"", IsRequired = false, EmitDefaultValue = false)]
+        public ISet<D> ArrayWithUniqueRefItems { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
@@ -896,9 +910,12 @@ namespace N
         /// <param name=""arrayWithUniqueItems"">
         /// An initialization value for the <see cref=""P: ArrayWithUniqueItems"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, ISet<int> arrayWithUniqueItems)
+        /// <param name=""arrayWithUniqueRefItems"">
+        /// An initialization value for the <see cref=""P: ArrayWithUniqueRefItems"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, ISet<int> arrayWithUniqueItems, ISet<D> arrayWithUniqueRefItems)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, arrayWithUniqueItems);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, arrayWithUniqueItems, arrayWithUniqueRefItems);
         }
 
         /// <summary>
@@ -917,7 +934,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.ArrayWithUniqueItems);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.ArrayWithUniqueItems, other.ArrayWithUniqueRefItems);
         }
 
         ISNode ISNode.DeepClone()
@@ -938,7 +955,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, ISet<int> arrayWithUniqueItems)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, ISet<int> arrayWithUniqueItems, ISet<D> arrayWithUniqueRefItems)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -1072,6 +1089,24 @@ namespace N
                 }
 
                 ArrayWithUniqueItems = destination_5;
+            }
+
+            if (arrayWithUniqueRefItems != null)
+            {
+                var destination_6 = new HashSet<D>();
+                foreach (var value_9 in arrayWithUniqueRefItems)
+                {
+                    if (value_9 == null)
+                    {
+                        destination_6.Add(null);
+                    }
+                    else
+                    {
+                        destination_6.Add(new D(value_9));
+                    }
+                }
+
+                ArrayWithUniqueRefItems = destination_6;
             }
         }
     }
@@ -1251,6 +1286,17 @@ namespace N
                             node.DictionaryWithUriKeyProp[key] = VisitNullChecked(value);
                         }
                     }
+                }
+
+                if (node.ArrayWithUniqueRefItems != null)
+                {
+                    var newSet = new HashSet<D>();
+                    foreach (D value in node.ArrayWithUniqueRefItems)
+                    {
+                        newSet.Add(VisitNullChecked(value));
+                    }
+
+                    node.ArrayWithUniqueRefItems = newSet;
                 }
             }
 

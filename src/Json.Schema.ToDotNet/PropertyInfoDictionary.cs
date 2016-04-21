@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json.Linq;
@@ -519,6 +520,53 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             _additionalTypeRequiredDelegate?.Invoke(
                 new AdditionalTypeRequiredInfo(hint, schema));
+        }
+
+        /// <summary>
+        /// Synthesize the concrete type that should be used to initialize a collection-
+        /// valued property in the implementation of the generated class's <code>Init</code>
+        /// method.
+        /// </summary>
+        /// <remarks>
+        /// For array-valued properties, the property type stored in the
+        /// PropertyInfoDictionary is <see cref="IList{T}" />. But in the implementation
+        /// of the <code>Init</code> method, the concrete type used to initialize the
+        /// property is <see cref="List{T}" />.
+        /// </remarks>
+        internal TypeSyntax GetConcreteListType(string propertyName)
+        {
+            TypeSyntax type = this[propertyName].Type;
+
+            string typeName = type.ToString();
+            if (typeName.StartsWith("IList"))
+            {
+                typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
+            }
+            else if (typeName.StartsWith("ISet"))
+            {
+                typeName = Regex.Replace(type.ToString(), "^ISet<", "HashSet<");
+            }
+
+            return SyntaxFactory.ParseTypeName(typeName);
+        }
+
+        /// <summary>
+        /// Synthesize the concrete type that should be used to initialize a dictionary-
+        /// valued property in the implementation of the generated class's <code>Init</code>
+        /// method.
+        /// <remarks>
+        /// For dictionary-valued properties, the property type stored in the
+        /// PropertyInfoDictionary is <see cref="IDictionary{K,V}" />. But in the
+        /// implementation of the <code>Init</code> method, the concrete type used to
+        /// initialize the property is <see cref="Dictionary{K,V}" />.
+        /// </remarks>
+        internal TypeSyntax GetConcreteDictionaryType(string propertyName)
+        {
+            TypeSyntax type = this[propertyName].Type;
+
+            string typeName = Regex.Replace(type.ToString(), "^IDictionary<", "Dictionary<");
+
+            return SyntaxFactory.ParseTypeName(typeName);
         }
     }
 }

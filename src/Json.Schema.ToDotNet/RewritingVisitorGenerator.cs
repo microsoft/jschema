@@ -19,6 +19,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
         private const string TypeParameterName = "T";
         private const string CountPropertyName = "Count";
+        private const string AddMethodName = "Add";
 
         private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
@@ -348,6 +349,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 bool isDictionary = false;
                 string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank, out isDictionary);
 
+                bool isUnique = propertyInfoDictionary[propertyName].ComparisonKind == ComparisonKind.HashSet;
+                TypeSyntax collectionType = propertyInfoDictionary.GetConcreteListType(propertyName);
+                TypeSyntax elementType = propertyInfoDictionary[propertyNameWithRank].Type;
+
                 ExpressionSyntax propertyAccessExpression =
                     SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
@@ -363,12 +368,22 @@ namespace Microsoft.Json.Schema.ToDotNet
                 {
                     _localVariableNameGenerator.Reset();
 
-                    StatementSyntax[] nullTestedStatements = isDictionary
-                        ? GenerateDictionaryVisit(arrayRank, propertyName)
-                        : GenerateArrayVisit(
+                    StatementSyntax[] nullTestedStatements = null;
+                    if (isDictionary)
+                    {
+                        nullTestedStatements = GenerateDictionaryVisit(arrayRank, propertyName);
+                    }
+                    else if (isUnique)
+                    {
+                        nullTestedStatements = GenerateHashSetVisit(propertyName, collectionType, elementType);
+                    }
+                    else
+                    {
+                        nullTestedStatements = GenerateArrayVisit(
                             arrayRank,
                             nestingLevel: 0,
                             arrayValuedExpression: propertyAccessExpression);
+                    }
 
                     statements.Add(
                         SyntaxFactory.IfStatement(
@@ -474,6 +489,65 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IfStatement(
                             SyntaxHelper.IsNotNull(ValueVariableName),
                             SyntaxFactory.Block(dictionaryElementVisitStatements))))
+            };
+        }
+
+        private StatementSyntax[] GenerateHashSetVisit(
+            string propertyName,
+            TypeSyntax collectionType,
+            TypeSyntax elementType)
+        {
+            const string NewHashSetVariableName = "newSet";
+            const string HashSetElementVariableName = "value";
+
+            ExpressionSyntax propertyAccess = SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(NodeParameterName),
+                SyntaxFactory.IdentifierName(propertyName));
+
+            return new StatementSyntax[]
+            {
+                // var newSet = new HashSet<D>();
+                SyntaxFactory.LocalDeclarationStatement(
+                    SyntaxFactory.VariableDeclaration(
+                        SyntaxHelper.Var(),
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.VariableDeclarator(
+                                SyntaxFactory.Identifier(NewHashSetVariableName),
+                                default(BracketedArgumentListSyntax),
+                                SyntaxFactory.EqualsValueClause(
+                                    SyntaxFactory.ObjectCreationExpression(
+                                        collectionType,
+                                        SyntaxHelper.ArgumentList(),
+                                        default(InitializerExpressionSyntax))))))),
+
+                // foreach (D value in node.ArrayWithUniqueRefItems)
+                SyntaxFactory.ForEachStatement(
+                    elementType,
+                    HashSetElementVariableName,
+                    propertyAccess,
+                    SyntaxFactory.Block(
+                        // newSet.Add(VisitNullChecked(value));
+                        SyntaxFactory.ExpressionStatement(
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    SyntaxFactory.IdentifierName(NewHashSetVariableName),
+                                    SyntaxFactory.IdentifierName(AddMethodName)),
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.InvocationExpression(
+                                        SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                                        SyntaxHelper.ArgumentList(SyntaxFactory.IdentifierName(HashSetElementVariableName)))))))),
+
+                // node.ArrayWithUniqueRefItems = newSet;
+                SyntaxFactory.ExpressionStatement(
+                    SyntaxFactory.AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(NodeParameterName),
+                            SyntaxFactory.IdentifierName(propertyName)),
+                        SyntaxFactory.IdentifierName(NewHashSetVariableName)))
             };
         }
 

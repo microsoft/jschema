@@ -318,53 +318,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             return type;
         }
 
-        /// <summary>
-        /// Synthesize the concrete type that should be used to initialize a collection-
-        /// valued property in the implementation of the generated class's <code>Init</code>
-        /// method.
-        /// </summary>
-        /// <remarks>
-        /// For array-valued properties, the property type stored in the
-        /// PropertyInfoDictionary is <see cref="IList{T}" />. But in the implementation
-        /// of the <code>Init</code> method, the concrete type used to initialize the
-        /// property is <see cref="List{T}" />.
-        /// </remarks>
-        private TypeSyntax GetConcreteListType(string propertyName)
-        {
-            TypeSyntax type = PropInfoDictionary[propertyName].Type;
-
-            string typeName = type.ToString();
-            if (typeName.StartsWith("IList"))
-            {
-                typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
-            }
-            else if (typeName.StartsWith("ISet"))
-            {
-                typeName = Regex.Replace(type.ToString(), "^ISet<", "HashSet<");
-            }
-
-            return SyntaxFactory.ParseTypeName(typeName);
-        }
-
-        /// <summary>
-        /// Synthesize the concrete type that should be used to initialize a dictionary-
-        /// valued property in the implementation of the generated class's <code>Init</code>
-        /// method.
-        /// <remarks>
-        /// For dictionary-valued properties, the property type stored in the
-        /// PropertyInfoDictionary is <see cref="IDictionary{K,V}" />. But in the
-        /// implementation of the <code>Init</code> method, the concrete type used to
-        /// initialize the property is <see cref="Dictionary{K,V}" />.
-        /// </remarks>
-        private TypeSyntax GetConcreteDictionaryType(string propertyName)
-        {
-            TypeSyntax type = PropInfoDictionary[propertyName].Type;
-
-            string typeName = Regex.Replace(type.ToString(), "^IDictionary<", "Dictionary<");
-
-            return SyntaxFactory.ParseTypeName(typeName);
-        }
-
         private Dictionary<string, string> MakePropertyCtorParamDescriptions()
         {
             var result = new Dictionary<string, string>();
@@ -564,7 +517,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             // Get the type of the concrete dictionary with which to initialize the
             // property. For example, if the property is of type IDictionary<string, double>,
             // it will be initialized with an object of type Dictionary<string, double>.
-            TypeSyntax type = GetConcreteDictionaryType(propertyName);
+            TypeSyntax type = PropInfoDictionary.GetConcreteDictionaryType(propertyName);
 
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(argName),
@@ -589,7 +542,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             // Get the type of the concrete collection with which to initialize the property.
             // For example, if the property is of type IList<int>, it will be initialized
             // with an object of type List<int>.
-            TypeSyntax type = GetConcreteListType(propertyName);
+            TypeSyntax type = PropInfoDictionary.GetConcreteListType(propertyName);
 
             // The name of a temporary variable in which the collection values will be
             // accumulated.
@@ -690,7 +643,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string dictionaryElementInfoKey = PropertyInfoDictionary.MakeDictionaryItemKeyName(propertyName);
             string listElementInfoKey = PropertyInfoDictionary.MakeElementKeyName(dictionaryElementInfoKey);
 
-            TypeSyntax dictionaryType = GetConcreteDictionaryType(propertyName);
+            TypeSyntax dictionaryType = PropInfoDictionary.GetConcreteDictionaryType(propertyName);
             string dictionaryElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
             ExpressionSyntax dictionaryElement = SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
@@ -720,7 +673,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IdentifierName(argName),
                         SyntaxFactory.Block(
                             DeclareCollection(
-                                GetConcreteListType(dictionaryElementInfoKey), collectionVariableName),
+                                PropInfoDictionary.GetConcreteListType(dictionaryElementInfoKey), collectionVariableName),
                             GenerateElementInitializationLoop(
                                 listElementVariableName,
                                 dictionaryElement,
@@ -746,7 +699,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             string argName = propertyName.ToCamelCase();
             string valueVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
-            TypeSyntax dictionaryType = GetConcreteDictionaryType(propertyName);
+            TypeSyntax dictionaryType = PropInfoDictionary.GetConcreteDictionaryType(propertyName);
 
             return SyntaxFactory.IfStatement(
                 // if (foo != null)
@@ -896,7 +849,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                         default(BracketedArgumentListSyntax),
                                         SyntaxFactory.EqualsValueClause(
                                             SyntaxFactory.ObjectCreationExpression(
-                                                GetConcreteListType(elementInfoKey),
+                                                PropInfoDictionary.GetConcreteListType(elementInfoKey),
                                                 SyntaxHelper.ArgumentList(),
                                                 default(InitializerExpressionSyntax))))))),
 

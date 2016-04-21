@@ -45,12 +45,19 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// A string that encodes a property name together with its array rank, for example,
         /// <code>Location[][]</code>.
         /// </param>
+        /// <param name="propertyInfoDictionary">
+        /// A dictionary containing code generation info for each property.
+        /// </param>
         /// <param name="arrayRank">
         /// The rank of the array encoded by <paramref name="decoratedPropertyName"/>.
         /// </param>
         /// <param name="isDictionary">
         /// <code>true</code> if the type encoded by <paramref name="decoratedPropertyName"/>
         /// is a dictionary; otherwise <code>false</code>.
+        /// </param>
+        /// <param name="isUnique">
+        /// <code>true</code> if the type encoded by <paramref name="decoratedPropertyName"/>
+        /// is an array with unique elements; otherwise <code>false</code>.
         /// </param>
         /// <returns>
         /// The property name encoded by the string <paramref name="decoratedPropertyName"/>.
@@ -69,10 +76,16 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// to <code>true</code>.
         /// </para>
         /// </example>
-        internal static string BasePropertyName(this string decoratedPropertyName, out int arrayRank, out bool isDictionary)
+        internal static string BasePropertyName(
+            this string decoratedPropertyName,
+            //PropertyInfoDictionary propertyInfoDictionary,
+            out int arrayRank,
+            out bool isDictionary /* , */
+            /* out bool isUnique */)
         {
             arrayRank = 0;
             isDictionary = false;
+            //isUnique = false;
 
             string propertyName = decoratedPropertyName;
             while (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
