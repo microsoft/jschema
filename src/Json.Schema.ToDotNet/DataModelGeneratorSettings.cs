@@ -3,6 +3,7 @@
 
 using System.Globalization;
 using System.Text;
+using Microsoft.Json.Schema.ToDotNet.Hints;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {

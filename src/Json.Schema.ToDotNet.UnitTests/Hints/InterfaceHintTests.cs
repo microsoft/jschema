@@ -3,9 +3,10 @@
 
 using System.Collections.Generic;
 using FluentAssertions;
+using Microsoft.Json.Schema.ToDotNet.UnitTests;
 using Xunit;
 
-namespace Microsoft.Json.Schema.ToDotNet.UnitTests
+namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
     public class InterfaceHintTests
     {
@@ -39,7 +40,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 @"{
   ""c"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.InterfaceHint, Microsoft.Json.Schema.ToDotNet"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.InterfaceHint, Microsoft.Json.Schema.ToDotNet"",
       ""description"": ""My interface.""
     }
   ]

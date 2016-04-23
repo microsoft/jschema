@@ -1,15 +1,17 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-namespace Microsoft.Json.Schema.ToDotNet
+namespace Microsoft.Json.Schema.ToDotNet.Hints
 {
     /// <summary>
     /// Represents a code generation hint that tells the generator to create
-    /// a property whose type is <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/>
-    /// rather than <see cref="System.Object"/>.
+    /// an interface in addition to a class.
     /// </summary>
-    public class DictionaryHint : CodeGenHint
+    public class InterfaceHint : CodeGenHint
     {
-        public string KeyTypeName { get; set; }
+        /// <summary>
+        /// Summary comment for the interface declaration.
+        /// </summary>
+        public string Description { get; set; }
     }
 }

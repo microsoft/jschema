@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Microsoft.Json.Schema.ToDotNet
+namespace Microsoft.Json.Schema.ToDotNet.Hints
 {
     /// <summary>
     /// Represents a dictionary that maps from the URI of a schema to an array of code

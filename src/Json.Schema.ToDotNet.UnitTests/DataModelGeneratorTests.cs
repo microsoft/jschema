@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using Microsoft.Json.Schema.ToDotNet.Hints;
 using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
@@ -723,27 +724,27 @@ namespace N
 @"{
   ""C.DictionaryProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
   ],
   ""C.DictionaryWithPrimitiveSchemaProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
   ],
   ""C.DictionaryWithObjectSchemaProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
   ],
   ""C.DictionaryWithObjectArraySchemaProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
     }
   ],
   ""C.DictionaryWithUriKeyProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.DictionaryHint, Microsoft.Json.Schema.ToDotNet"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet"",
       ""KeyTypeName"": ""Uri""
     }
   ]
@@ -1661,7 +1662,7 @@ namespace N
   ""properties"": {
     ""intDefProp"": {
       ""$ref"": ""#/definitions/d""
-    },
+    }
   },
   ""definitions"": {
     ""d"": {

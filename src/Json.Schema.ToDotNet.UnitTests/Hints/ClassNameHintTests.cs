@@ -3,10 +3,11 @@
 
 using System.Collections.Generic;
 using FluentAssertions;
+using Microsoft.Json.Schema.ToDotNet.UnitTests;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Microsoft.Json.Schema.ToDotNet.UnitTests
+namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
     public class ClassNameHintTests
     {
@@ -105,7 +106,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 @"{
   ""file"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.ClassNameHint, Microsoft.Json.Schema.ToDotNet"",
+      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.ClassNameHint, Microsoft.Json.Schema.ToDotNet"",
       ""className"": ""FileData""
     }
   ]

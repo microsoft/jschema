@@ -56,11 +56,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassNameHintTests.cs" />
     <Compile Include="DataModelGeneratorTests.cs" />
-    <Compile Include="DictionaryHintTests.cs" />
-    <Compile Include="EnumHintTests.cs" />
-    <Compile Include="InterfaceHintTests.cs" />
+    <Compile Include="Hints\ClassNameHintTests.cs" />
+    <Compile Include="Hints\DictionaryHintTests.cs" />
+    <Compile Include="Hints\EnumHintTests.cs" />
+    <Compile Include="Hints\InterfaceHintTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="TestSettings.cs" />

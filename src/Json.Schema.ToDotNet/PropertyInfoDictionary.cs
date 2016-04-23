@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Json.Schema.ToDotNet.Hints;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.ToDotNet
@@ -389,7 +390,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema)
         {
             string key = MakeElementKeyName(propertyName);
-            AddPropertyInfoFromPropertySchema(entries, key, schema.Items, false);
+            AddPropertyInfoFromPropertySchema(entries, key, schema.Items, isRequired: true);
             PropertyInfo info = entries.Single(kvp => kvp.Key == key).Value;
 
             // Create a list of whatever this property is. If the property
@@ -409,7 +410,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema dictionaryElementSchema)
         {
             string key = MakeDictionaryItemKeyName(propertyName);
-            AddPropertyInfoFromPropertySchema(entries, key, dictionaryElementSchema, false);
+            AddPropertyInfoFromPropertySchema(entries, key, dictionaryElementSchema, isRequired: true);
             PropertyInfo info = entries.Single(kvp => kvp.Key == key).Value;
 
 

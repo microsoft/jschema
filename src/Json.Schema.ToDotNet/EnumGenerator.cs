@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Json.Schema.ToDotNet.Hints;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {

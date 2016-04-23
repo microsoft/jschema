@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
+using Microsoft.Json.Schema.ToDotNet.Hints;
 
 namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 {
