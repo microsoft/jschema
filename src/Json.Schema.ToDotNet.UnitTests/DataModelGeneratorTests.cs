@@ -1165,6 +1165,7 @@ namespace N
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace N
 {
@@ -1255,7 +1256,8 @@ namespace N
 
                 if (node.DictionaryWithObjectSchemaProp != null)
                 {
-                    foreach (var key in node.DictionaryWithObjectSchemaProp.Keys)
+                    var keys = node.DictionaryWithObjectSchemaProp.Keys.ToArray();
+                    foreach (var key in keys)
                     {
                         var value = node.DictionaryWithObjectSchemaProp[key];
                         if (value != null)
@@ -1267,7 +1269,8 @@ namespace N
 
                 if (node.DictionaryWithObjectArraySchemaProp != null)
                 {
-                    foreach (var key in node.DictionaryWithObjectArraySchemaProp.Keys)
+                    var keys = node.DictionaryWithObjectArraySchemaProp.Keys.ToArray();
+                    foreach (var key in keys)
                     {
                         var value = node.DictionaryWithObjectArraySchemaProp[key];
                         if (value != null)
@@ -1282,7 +1285,8 @@ namespace N
 
                 if (node.DictionaryWithUriKeyProp != null)
                 {
-                    foreach (var key in node.DictionaryWithUriKeyProp.Keys)
+                    var keys = node.DictionaryWithUriKeyProp.Keys.ToArray();
+                    foreach (var key in keys)
                     {
                         var value = node.DictionaryWithUriKeyProp[key];
                         if (value != null)

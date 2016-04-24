@@ -20,6 +20,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string TypeParameterName = "T";
         private const string CountPropertyName = "Count";
         private const string AddMethodName = "Add";
+        private const string ToArrayMethodName = "ToArray";
 
         private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
@@ -68,7 +69,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     .AddMembers(
                         GenerateVisitClassMethods());
 
-            var usings = new List<string> { "System", "System.Collections.Generic" };
+            var usings = new List<string> { "System", "System.Collections.Generic", "System.Linq" };
 
             string summaryComment = string.Format(
                 CultureInfo.CurrentCulture,
@@ -421,6 +422,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private StatementSyntax[] GenerateDictionaryVisit(int arrayRank, string propertyName)
         {
             const string KeyVariableName = "key";
+            const string KeysVariableName = "keys";
             const string KeysPropertyName = "Keys";
             const string ValueVariableName = "value";
 
@@ -467,16 +469,33 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             return new StatementSyntax[]
             {
+                // var keys = node.PropertyName.Keys.ToArray();
+                SyntaxFactory.LocalDeclarationStatement(
+                    SyntaxFactory.VariableDeclaration(
+                        SyntaxHelper.Var(),
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.VariableDeclarator(
+                                SyntaxFactory.Identifier(KeysVariableName),
+                                default(BracketedArgumentListSyntax),
+                                SyntaxFactory.EqualsValueClause(
+                                    SyntaxFactory.InvocationExpression(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                SyntaxFactory.MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    SyntaxFactory.IdentifierName(NodeParameterName),
+                                                    SyntaxFactory.IdentifierName(propertyName)),
+                                                SyntaxFactory.IdentifierName(KeysPropertyName)),
+                                            SyntaxFactory.IdentifierName(ToArrayMethodName)),
+                                        SyntaxHelper.ArgumentList())))))),
+
+                // foreach (var key in keys)
                 SyntaxFactory.ForEachStatement(
                     SyntaxHelper.Var(),
                     KeyVariableName,
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName(NodeParameterName),
-                            SyntaxFactory.IdentifierName(propertyName)),
-                        SyntaxFactory.IdentifierName(KeysPropertyName)),
+                    SyntaxFactory.IdentifierName(KeysVariableName),
                     SyntaxFactory.Block(
                         SyntaxFactory.LocalDeclarationStatement(
                             SyntaxFactory.VariableDeclaration(
