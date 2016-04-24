@@ -10,6 +10,20 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
     /// </summary>
     public class DictionaryHint : CodeGenHint
     {
-        public string KeyTypeName { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DictionaryHint"/> class.
+        /// </summary>
+        /// <param name="keyTypeName">
+        /// The type name of the dictionary key (if null, the key type is <code>string</code>).
+        /// </param>
+        public DictionaryHint(string keyTypeName)
+        {
+            KeyTypeName = keyTypeName;
+        }
+
+        /// <summary>
+        /// Gets the type name of the dictionary key (if null, the key type is <code>string</code>).
+        /// </summary>
+        public string KeyTypeName { get; }
     }
 }

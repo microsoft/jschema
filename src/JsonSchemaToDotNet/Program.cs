@@ -46,7 +46,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     }
 
                     string hintDictionaryText = File.ReadAllText(options.CodeGenHintsPath);
-                    hintDictionary = HintDictionary.Deserialize(hintDictionaryText);
+                    hintDictionary = new HintDictionary(hintDictionaryText);
                 }
 
                 string copyrightNotice = null;

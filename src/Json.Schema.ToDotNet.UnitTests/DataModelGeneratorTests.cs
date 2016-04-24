@@ -724,28 +724,30 @@ namespace N
 @"{
   ""C.DictionaryProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ],
   ""C.DictionaryWithPrimitiveSchemaProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ],
   ""C.DictionaryWithObjectSchemaProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ],
   ""C.DictionaryWithObjectArraySchemaProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ],
   ""C.DictionaryWithUriKeyProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet"",
-      ""KeyTypeName"": ""Uri""
+      ""kind"": ""DictionaryHint"",
+      ""arguments"": {
+        ""keyTypeName"": ""Uri""
+      }
     }
   ]
 }";
@@ -1162,6 +1164,7 @@ namespace N
             const string ExpectedRewritingVisitor =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1315,7 +1318,7 @@ namespace N
     }
 }";
             _settings.GenerateCloningCode = true;
-            _settings.HintDictionary = HintDictionary.Deserialize(HintsText);
+            _settings.HintDictionary = new HintDictionary(HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             generator.Generate(schema);

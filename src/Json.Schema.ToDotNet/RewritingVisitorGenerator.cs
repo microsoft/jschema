@@ -68,7 +68,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     .AddMembers(
                         GenerateVisitClassMethods());
 
-            var usings = new List<string> { "System" };
+            var usings = new List<string> { "System", "System.Collections.Generic" };
 
             string summaryComment = string.Format(
                 CultureInfo.CurrentCulture,

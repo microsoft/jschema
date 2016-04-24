@@ -11,27 +11,56 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
     public class EnumHint : CodeGenHint
     {
         /// <summary>
-        /// Gets or sets the name of the enumeration type to generate.
+        /// Initializes a new instance of the <see cref="EnumHint"/> class.
         /// </summary>
-        public string TypeName { get; set; }
+        /// <param name="typeName">
+        /// The name of the enumeration type to generate.
+        /// </param>
+        /// <param name="description">
+        /// The string to place in the summary comment of the generated type.
+        /// </param>
+        /// <param name="enumValues">
+        /// The names of the enumeration constants to generate, if different from the
+        /// string specified in the enum property of theJSON Schema.
+        /// </param>
+        /// <param name="zeroValues">
+        /// The name of an enumeration constant to represent the 0 value, typically
+        /// "Unknown" or "None", if the enum values from the schema don't include such a
+        /// value.
+        /// </param>
+        public EnumHint(
+            string typeName,
+            string description,
+            string[] enumValues,
+            string zeroValues)
+        {
+            TypeName = typeName;
+            Description = description;
+            EnumValues = enumValues;
+            ZeroValue = zeroValues;
+        }
 
         /// <summary>
-        /// Gets or sets the string to place in the summary comment of the generated
-        /// type.
+        /// Sets the name of the enumeration type to generate.
         /// </summary>
-        public string Description { get; set; }
+        public string TypeName { get; }
 
         /// <summary>
-        /// Gets or sets the names of the enumeration constants to generate, if different
-        /// from the string specified in the enum property of theJSON Schema.
+        /// Sets the string to place in the summary comment of the generated type.
         /// </summary>
-        public string[] Enum { get; set; }
+        public string Description { get; }
 
         /// <summary>
-        /// Gets or sets the name of an enumeration constant to represent the 0 value
-        /// typically "Unknown" or "None", if the Enum values from the schema don't
-        /// include such a value.
+        /// Sets the names of the enumeration constants to generate, if different from
+        /// the string specified in the enum property of theJSON Schema.
         /// </summary>
-        public string ZeroValue { get; set; }
+        public string[] EnumValues { get; }
+
+        /// <summary>
+        /// Sets the name of an enumeration constant to represent the 0 value, typically
+        /// "Unknown" or "None", if the Enum values from the schema don't include such a
+        /// value.
+        /// </summary>
+        public string ZeroValue { get; }
     }
 }

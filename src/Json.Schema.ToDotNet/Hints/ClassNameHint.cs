@@ -11,8 +11,19 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
     public class ClassNameHint : CodeGenHint
     {
         /// <summary>
-        /// The name of the class to generate.
+        /// Initializes a new instance of the <see cref="ClassNameHint"/> class.
         /// </summary>
-        public string ClassName { get; set; }
+        /// <param name="className">
+        /// The name of the class to generate.
+        /// </param>
+        public ClassNameHint(string className)
+        {
+            ClassName = className;
+        }
+
+        /// <summary>
+        /// Gets the name of the class to generate.
+        /// </summary>
+        public string ClassName { get; }
     }
 }

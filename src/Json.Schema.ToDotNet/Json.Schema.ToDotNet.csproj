@@ -92,6 +92,9 @@
     <Compile Include="HashKind.cs" />
     <Compile Include="Hints\ClassNameHint.cs" />
     <Compile Include="Hints\CodeGenHint.cs" />
+    <Compile Include="Hints\HintInstantiationInfo.cs" />
+    <Compile Include="Hints\HintInstantiationInfoDictionary.cs" />
+    <Compile Include="Hints\HintKind.cs" />
     <Compile Include="Hints\DictionaryHint.cs" />
     <Compile Include="Hints\EnumHint.cs" />
     <Compile Include="Hints\HintDictionary.cs" />

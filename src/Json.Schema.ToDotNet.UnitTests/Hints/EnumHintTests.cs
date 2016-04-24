@@ -109,7 +109,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""color"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.EnumHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""EnumHint""
     }
   ]
 }",
@@ -201,8 +201,10 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.EnumHint, Microsoft.Json.Schema.ToDotNet"",
-      ""description"": ""Some pretty colors.""
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""description"": ""Some pretty colors.""
+      }
     }
   ]
 }",
@@ -229,9 +231,11 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.EnumHint, Microsoft.Json.Schema.ToDotNet"",
-      ""typeName"": ""Color"",
-      ""description"": ""Some pretty colors.""
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color"",
+        ""description"": ""Some pretty colors.""
+      }
     }
   ]
 }",
@@ -323,8 +327,10 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.EnumHint, Microsoft.Json.Schema.ToDotNet"",
-      ""typeName"": ""Color""
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color""
+      }
     }
   ]
 }",
@@ -416,10 +422,12 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.EnumHint, Microsoft.Json.Schema.ToDotNet"",
-      ""typeName"": ""Color"",
-      ""description"": ""Some pretty colors."",
-      ""enum"": [ ""crimson"", ""lemon"", ""avocado"" ]
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color"",
+        ""description"": ""Some pretty colors."",
+        ""enumValues"": [ ""crimson"", ""lemon"", ""avocado"" ]
+      }
     }
   ]
 }",
@@ -511,10 +519,12 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.EnumHint, Microsoft.Json.Schema.ToDotNet"",
-      ""typeName"": ""Color"",
-      ""description"": ""Some pretty colors."",
-      ""enum"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color"",
+        ""description"": ""Some pretty colors."",
+        ""enumValues"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
+      }
     }
   ]
 }",
@@ -540,11 +550,13 @@ namespace N
 @"{
   ""C.BackgroundColor"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.EnumHint, Microsoft.Json.Schema.ToDotNet"",
-      ""typeName"": ""Color"",
-      ""description"": ""Some pretty colors."",
-      ""enum"": [ ""crimson"", ""lemon"", ""avocado"" ],
-      ""zeroValue"": ""colorless""
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color"",
+        ""description"": ""Some pretty colors."",
+        ""enumValues"": [ ""crimson"", ""lemon"", ""avocado"" ],
+        ""zeroValue"": ""colorless""
+      }
     }
   ]
 }",
@@ -626,7 +638,7 @@ namespace N
         public void EnumHint(TestCase test)
         {
             _settings.GenerateOverrides = true;
-            _settings.HintDictionary = HintDictionary.Deserialize(test.HintsText);
+            _settings.HintDictionary = new HintDictionary(test.HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);

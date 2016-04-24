@@ -82,7 +82,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""C.DictProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ]
 }",
@@ -188,7 +188,7 @@ namespace N
 @"{
   ""C.DictProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ]
 }",
@@ -297,7 +297,7 @@ namespace N
 @"{
   ""C.DictProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ]
 }",
@@ -422,8 +422,10 @@ namespace N
 @"{
   ""C.DictProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet"",
-      ""KeyTypeName"": ""Uri""
+      ""kind"": ""DictionaryHint"",
+      ""arguments"": {
+        ""keyTypeName"": ""Uri""
+      }
     }
   ]
 }",
@@ -551,7 +553,7 @@ namespace N
 @"{
   ""C.DictProp"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.DictionaryHint, Microsoft.Json.Schema.ToDotNet""
+      ""kind"": ""DictionaryHint""
     }
   ]
 }",
@@ -672,7 +674,7 @@ namespace N
         [MemberData(nameof(TestCases))]
         public void DictionaryHint(TestCase test)
         {
-            _settings.HintDictionary = HintDictionary.Deserialize(test.HintsText);
+            _settings.HintDictionary = new HintDictionary(test.HintsText);
             _settings.GenerateOverrides = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 

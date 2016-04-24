@@ -40,8 +40,10 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""c"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.InterfaceHint, Microsoft.Json.Schema.ToDotNet"",
-      ""description"": ""My interface.""
+      ""kind"": ""InterfaceHint"",
+      ""arguments"": {
+        ""description"": ""My interface.""
+      }
     }
   ]
 }",
@@ -126,7 +128,7 @@ namespace N
             string interfaceText)
         {
             _settings.GenerateOverrides = true;
-            _settings.HintDictionary = HintDictionary.Deserialize(hintsText);
+            _settings.HintDictionary = new HintDictionary(hintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(schemaText);

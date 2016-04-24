@@ -106,8 +106,10 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""file"": [
     {
-      ""$type"": ""Microsoft.Json.Schema.ToDotNet.Hints.ClassNameHint, Microsoft.Json.Schema.ToDotNet"",
-      ""className"": ""FileData""
+      ""kind"": ""ClassNameHint"",
+      ""arguments"": {
+        ""className"": ""FileData""
+      }
     }
   ]
 }",
@@ -147,7 +149,7 @@ namespace N
         [MemberData(nameof(TestCases))]
         public void ClassNameHint(TestCase test)
         {
-            _settings.HintDictionary = HintDictionary.Deserialize(test.HintsText);
+            _settings.HintDictionary = new HintDictionary(test.HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
