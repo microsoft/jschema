@@ -128,7 +128,19 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         #region IReadOnlyDictionary
 
-        public PropertyInfo this[string key] => _dictionary[key];
+        public PropertyInfo this[string key]
+        {
+            get
+            {
+                PropertyInfo info;
+                if (!TryGetValue(key, out info))
+                {
+                    throw new ApplicationException($"The schema does not contain information describing the property or element {key}.");
+                }
+
+                return info;
+            }
+        }
 
         public int Count => _dictionary.Count;
 
