@@ -1,5 +1,8 @@
 <#
 .SYNOPSIS
+New-NuGetPackage.ps1 <packageName> <binariesDirectory> <configuration>
+
+.DESCRIPTION
 Create a NuGet package whose version is specified by the information in the CurrentVersion.xml
 file.
 #>
