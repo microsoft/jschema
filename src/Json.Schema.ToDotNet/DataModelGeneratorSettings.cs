@@ -54,10 +54,10 @@ namespace Microsoft.Json.Schema.ToDotNet
         public HintDictionary HintDictionary { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether method overrides such as
-        /// <code>Equals</code> and <code>GetHashCode</code> are to be generated.
+        /// Gets or sets a value indicating whether implementations of
+        /// <code>IEqualityComparer&lt;T></code> are to be generated.
         /// </summary>
-        public bool GenerateOverrides { get; set; }
+        public bool GenerateEqualityComparers { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the code necessary to clone

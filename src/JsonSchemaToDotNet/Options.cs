@@ -65,12 +65,12 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         public string CodeGenHintsPath { get; set; }
 
         [Option(
-            'd',
-            "generate-overrides",
-            HelpText = "Generate method overrides such as Equals and GetHashCode.",
+            'q',
+            "generate-equality-comparers",
+            HelpText = "Generate classes that implement IEqualityComparer<T>.",
             Default = true,
             Required = false)]
-        public bool GenerateOverrides { get; set; }
+        public bool GenerateEqualityComparers { get; set; }
 
         [Option(
             'k',

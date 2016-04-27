@@ -650,7 +650,7 @@ namespace N
         public void DictionaryHint(TestCase test)
         {
             _settings.HintDictionary = new HintDictionary(test.HintsText);
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);

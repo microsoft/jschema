@@ -612,7 +612,7 @@ namespace N
         [MemberData(nameof(TestCases))]
         public void EnumHint(TestCase test)
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             _settings.HintDictionary = new HintDictionary(test.HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 

@@ -18,7 +18,7 @@ namespace Microsoft.Json.Schema.ToDotNet
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
-        private readonly bool _generateOverrides;
+        private readonly bool _generateEqualityComparers;
         private readonly bool _generateCloningCode;
         private readonly bool _sealClasses;
         private readonly string _syntaxInterfaceName;
@@ -61,7 +61,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema,
             HintDictionary hintDictionary,
             string interfaceName,
-            bool generateOverrides,
+            bool generateEqualityComparers,
             bool generateCloningCode,
             bool sealClasses,
             string syntaxInterfaceName,
@@ -69,7 +69,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             : base(propertyInfoDictionary, schema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
-            _generateOverrides = generateOverrides;
+            _generateEqualityComparers = generateEqualityComparers;
             _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
             _sealClasses = sealClasses;
@@ -153,7 +153,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 
             members.AddRange(GenerateProperties());
 
-            if (_generateOverrides)
+            if (_generateEqualityComparers)
             {
                 members.AddRange(new MemberDeclarationSyntax[]
                 {

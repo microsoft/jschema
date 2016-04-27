@@ -73,7 +73,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     SchemaName = options.SchemaName,
                     CopyrightNotice = copyrightNotice,
                     HintDictionary = hintDictionary,
-                    GenerateOverrides = options.GenerateOverrides,
+                    GenerateEqualityComparers = options.GenerateEqualityComparers,
                     GenerateCloningCode = options.GenerateCloningCode,
                     SealClasses = options.SealClasses
                 };

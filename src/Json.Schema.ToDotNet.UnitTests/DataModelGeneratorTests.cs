@@ -116,7 +116,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
@@ -198,7 +198,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
@@ -325,7 +325,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
@@ -1264,7 +1264,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
         public void GeneratesClassesForSchemasInDefinitions()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
@@ -1420,7 +1420,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1482,7 +1482,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates uri-valued properties")]
         public void GeneratesUriValuedProperties()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1586,7 +1586,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref")]
         public void GeneratesArrayOfPrimitiveTypeByReference()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1683,7 +1683,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type")]
         public void GeneratesArrayOfArraysOfPrimitiveType()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1805,7 +1805,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
         public void GeneratesArrayOfArraysOfObjectType()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -1930,7 +1930,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
         public void GeneratesArrayOfArraysOfClassType()
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(

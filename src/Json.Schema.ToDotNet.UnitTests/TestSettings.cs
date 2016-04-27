@@ -16,7 +16,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
                 SchemaName = "S",
                 OutputDirectory = TestFileSystem.OutputDirectory,
                 ForceOverwrite = true,
-                GenerateOverrides = false,
+                GenerateEqualityComparers = false,
                 GenerateCloningCode = false
             };
         }

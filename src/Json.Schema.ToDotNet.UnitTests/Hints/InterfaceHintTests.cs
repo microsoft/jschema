@@ -122,7 +122,7 @@ namespace N
             string classText,
             string interfaceText)
         {
-            _settings.GenerateOverrides = true;
+            _settings.GenerateEqualityComparers = true;
             _settings.HintDictionary = new HintDictionary(hintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
