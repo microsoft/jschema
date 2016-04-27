@@ -300,9 +300,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         break;
 
                     case JTokenType.Array:
-                        comparisonKind = propertySchema.UniqueItems == true
-                            ? ComparisonKind.HashSet
-                            : ComparisonKind.Collection;
+                        comparisonKind = ComparisonKind.Collection;
                         hashKind = HashKind.Collection;
                         initializationKind = InitializationKind.Collection;
                         namespaceName = "System.Collections.Generic";   // For IList.
@@ -407,10 +405,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // Create a list of whatever this property is. If the property
             // is itself an array, this will result in a list of lists, and so on.
-            string abstractCollectionTypeName = schema.UniqueItems == true ? "ISet" : "IList";
-
             return SyntaxFactory.GenericName(
-                SyntaxFactory.Identifier(abstractCollectionTypeName),
+                SyntaxFactory.Identifier("IList"),
                 SyntaxFactory.TypeArgumentList(
                     SyntaxFactory.SingletonSeparatedList(info.Type)));
         }
@@ -554,10 +550,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (typeName.StartsWith("IList"))
             {
                 typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
-            }
-            else if (typeName.StartsWith("ISet"))
-            {
-                typeName = Regex.Replace(type.ToString(), "^ISet<", "HashSet<");
             }
 
             return SyntaxFactory.ParseTypeName(typeName);

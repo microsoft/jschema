@@ -37,7 +37,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string EqualsMethod = "Equals";
         private const string GetHashCodeMethod = "GetHashCode";
         private const string ReferenceEqualsMethod = "ReferenceEquals";
-        private const string SetEqualsMethod = "SetEquals";
         private const string IEquatableType = "IEquatable";
         private const string ObjectType = "Object";
         private const string IntTypeAlias = "int";
@@ -1204,9 +1203,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                 case ComparisonKind.Dictionary:
                     return MakeDictionaryEqualsTest(comparisonKindKey, left, right);
 
-                case ComparisonKind.HashSet:
-                    return MakeHashSetEqualsTest(left, right);
-
                 default:
                     throw new ArgumentException($"Property {comparisonKindKey} has unknown comparison type {comparisonKind}.");
             }
@@ -1409,32 +1405,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                                         SyntaxFactory.IdentifierName(dictionaryElementVariableName),
                                         SyntaxFactory.IdentifierName(ValueProperty)),
                                     SyntaxFactory.IdentifierName(otherPropertyVariableName))))));
-        }
-
-        private IfStatementSyntax MakeHashSetEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
-        {
-            return SyntaxFactory.IfStatement(
-                // if (!Object.ReferenceEquals(Prop, other.Prop))
-                SyntaxHelper.AreDifferentObjects(left, right),
-                SyntaxFactory.Block(
-                    // if (Prop == null || other.Prop == null)
-                    SyntaxFactory.IfStatement(
-                        SyntaxFactory.BinaryExpression(
-                            SyntaxKind.LogicalOrExpression,
-                            SyntaxHelper.IsNull(left),
-                            SyntaxHelper.IsNull(right)),
-                        SyntaxFactory.Block(SyntaxHelper.Return(false))),
-
-                    SyntaxFactory.IfStatement(
-                        SyntaxFactory.PrefixUnaryExpression(
-                            SyntaxKind.LogicalNotExpression,
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    left,
-                                    SyntaxFactory.IdentifierName(SetEqualsMethod)),
-                                SyntaxHelper.ArgumentList(right))),
-                        SyntaxFactory.Block(SyntaxHelper.Return(false)))));
         }
 
         #region Syntax helpers

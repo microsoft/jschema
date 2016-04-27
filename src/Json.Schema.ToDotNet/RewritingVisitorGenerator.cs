@@ -350,7 +350,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                 bool isDictionary = false;
                 string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank, out isDictionary);
 
-                bool isUnique = propertyInfoDictionary[propertyName].ComparisonKind == ComparisonKind.HashSet;
                 TypeSyntax collectionType = propertyInfoDictionary.GetConcreteListType(propertyName);
                 TypeSyntax elementType = propertyInfoDictionary[propertyNameWithRank].Type;
 
@@ -373,10 +372,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                     if (isDictionary)
                     {
                         nullTestedStatements = GenerateDictionaryVisit(arrayRank, propertyName);
-                    }
-                    else if (isUnique)
-                    {
-                        nullTestedStatements = GenerateHashSetVisit(propertyName, collectionType, elementType);
                     }
                     else
                     {
@@ -508,65 +503,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IfStatement(
                             SyntaxHelper.IsNotNull(ValueVariableName),
                             SyntaxFactory.Block(dictionaryElementVisitStatements))))
-            };
-        }
-
-        private StatementSyntax[] GenerateHashSetVisit(
-            string propertyName,
-            TypeSyntax collectionType,
-            TypeSyntax elementType)
-        {
-            const string NewHashSetVariableName = "newSet";
-            const string HashSetElementVariableName = "value";
-
-            ExpressionSyntax propertyAccess = SyntaxFactory.MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                SyntaxFactory.IdentifierName(NodeParameterName),
-                SyntaxFactory.IdentifierName(propertyName));
-
-            return new StatementSyntax[]
-            {
-                // var newSet = new HashSet<D>();
-                SyntaxFactory.LocalDeclarationStatement(
-                    SyntaxFactory.VariableDeclaration(
-                        SyntaxHelper.Var(),
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.VariableDeclarator(
-                                SyntaxFactory.Identifier(NewHashSetVariableName),
-                                default(BracketedArgumentListSyntax),
-                                SyntaxFactory.EqualsValueClause(
-                                    SyntaxFactory.ObjectCreationExpression(
-                                        collectionType,
-                                        SyntaxHelper.ArgumentList(),
-                                        default(InitializerExpressionSyntax))))))),
-
-                // foreach (D value in node.ArrayWithUniqueRefItems)
-                SyntaxFactory.ForEachStatement(
-                    elementType,
-                    HashSetElementVariableName,
-                    propertyAccess,
-                    SyntaxFactory.Block(
-                        // newSet.Add(VisitNullChecked(value));
-                        SyntaxFactory.ExpressionStatement(
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName(NewHashSetVariableName),
-                                    SyntaxFactory.IdentifierName(AddMethodName)),
-                                SyntaxHelper.ArgumentList(
-                                    SyntaxFactory.InvocationExpression(
-                                        SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
-                                        SyntaxHelper.ArgumentList(SyntaxFactory.IdentifierName(HashSetElementVariableName)))))))),
-
-                // node.ArrayWithUniqueRefItems = newSet;
-                SyntaxFactory.ExpressionStatement(
-                    SyntaxFactory.AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName(NodeParameterName),
-                            SyntaxFactory.IdentifierName(propertyName)),
-                        SyntaxFactory.IdentifierName(NewHashSetVariableName)))
             };
         }
 

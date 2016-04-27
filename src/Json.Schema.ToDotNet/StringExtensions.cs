@@ -55,10 +55,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <code>true</code> if the type encoded by <paramref name="decoratedPropertyName"/>
         /// is a dictionary; otherwise <code>false</code>.
         /// </param>
-        /// <param name="isUnique">
-        /// <code>true</code> if the type encoded by <paramref name="decoratedPropertyName"/>
-        /// is an array with unique elements; otherwise <code>false</code>.
-        /// </param>
         /// <returns>
         /// The property name encoded by the string <paramref name="decoratedPropertyName"/>.
         /// </returns>
@@ -80,12 +76,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             this string decoratedPropertyName,
             //PropertyInfoDictionary propertyInfoDictionary,
             out int arrayRank,
-            out bool isDictionary /* , */
-            /* out bool isUnique */)
+            out bool isDictionary)
         {
             arrayRank = 0;
             isDictionary = false;
-            //isUnique = false;
 
             string propertyName = decoratedPropertyName;
             while (propertyName.EndsWith(PropertyInfoDictionary.ArrayMarker))
