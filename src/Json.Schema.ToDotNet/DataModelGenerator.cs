@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -73,12 +74,21 @@ namespace Microsoft.Json.Schema.ToDotNet
                 throw Error.CreateException(Resources.ErrorNotAnObject, rootSchemaType.ToJsonSchemaName());
             }
 
-            string rootFileText = CreateFile(_settings.RootClassName, _rootSchema, _settings.SealClasses);
+            string rootFileText = GenerateClass(_settings.RootClassName, _rootSchema, _settings.SealClasses);
 
+            if (_settings.GenerateEqualityComparers)
+            {
+                GenerateEqualityComparer(_settings.RootClassName, _rootSchema);
+            }
 
             if (_rootSchema.Definitions != null)
             {
-                CreateFilesForDefinitions(_rootSchema.Definitions);
+                GenerateClassesForDefinitions(_rootSchema.Definitions);
+
+                if (_settings.GenerateEqualityComparers)
+                {
+                    GenerateEqualityComparers(_rootSchema.Definitions);
+                }
             }
 
             foreach (AdditionalTypeRequiredInfo additionalTypeRequiredInfo in _additionalTypesRequiredList)
@@ -118,22 +128,40 @@ namespace Microsoft.Json.Schema.ToDotNet
             return rootFileText;
         }
 
-        private void CreateFilesForDefinitions(IDictionary<string, JsonSchema> definitions)
+        private void GenerateClassesForDefinitions(IDictionary<string, JsonSchema> definitions)
         {
             foreach (KeyValuePair<string, JsonSchema> definition in definitions)
             {
-                CreateFileForDefinition(definition);
+                GenerateClassForDefinition(definition.Key, definition.Value);
             }
         }
 
-        private void CreateFileForDefinition(KeyValuePair<string, JsonSchema> definition)
+        private void GenerateClassForDefinition(string className, JsonSchema schema)
         {
-            ClassNameHint classNameHint = _settings.HintDictionary?.GetHint<ClassNameHint>(definition.Key);
-            string className = classNameHint != null
-                ? classNameHint.ClassName
-                : definition.Key;
+            GenerateClass(className, schema, _settings.SealClasses);
+        }
 
-            CreateFile(className, definition.Value, _settings.SealClasses);
+        private void GenerateEqualityComparers(IDictionary<string, JsonSchema> definitions)
+        {
+            foreach (KeyValuePair<string, JsonSchema> definition in definitions)
+            {
+                GenerateEqualityComparer(definition.Key, definition.Value);
+            }
+        }
+
+        private string GetHintedClassName(string className)
+        {
+            ClassNameHint classNameHint = _settings.HintDictionary?.GetHint<ClassNameHint>(className);
+            if (classNameHint != null)
+            {
+                className = classNameHint.ClassName;
+            }
+
+            return className;
+        }
+
+        private void GenerateEqualityComparer(string className, JsonSchema schema)
+        {
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
@@ -211,12 +239,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxHelper.MakeDocComment(description));
         }
 
-        internal string CreateFile(
+        internal string GenerateClass(
             string className,
             JsonSchema schema,
             bool sealClasses)
         {
-            className = className.ToPascalCase();
+            className = GetHintedClassName(className).ToPascalCase();
 
             var propertyInfoDictionary = new PropertyInfoDictionary(
                 className,
