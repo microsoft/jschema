@@ -101,11 +101,6 @@ namespace N
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, string> DictProp { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -206,11 +201,6 @@ namespace N
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, D> DictProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -315,11 +305,6 @@ namespace N
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<D>> DictProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -444,11 +429,6 @@ namespace N
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<Uri, IList<D>> DictProp { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -571,11 +551,6 @@ namespace N
     {
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<IList<D>>> DictProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {

@@ -143,11 +143,6 @@ namespace N
         [DataMember(Name = ""integerProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntegerProp { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -221,11 +216,6 @@ namespace N
     {
         [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ObjectProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -354,11 +344,6 @@ namespace N
     {
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -1300,11 +1285,6 @@ namespace N
         [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool RootProp { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -1346,11 +1326,6 @@ namespace N
     {
         [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
         public string Prop1 { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as Def1);
-        }
 
         public override int GetHashCode()
         {
@@ -1396,11 +1371,6 @@ namespace N
     {
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
         public int Prop2 { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as Def2);
-        }
 
         public override int GetHashCode()
         {
@@ -1478,11 +1448,6 @@ namespace N
         [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -1544,11 +1509,6 @@ namespace N
     {
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -1663,11 +1623,6 @@ namespace N
         [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
         public IList<int> ArrayOfIntByRef { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -1766,11 +1721,6 @@ namespace N
     {
         [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -1893,11 +1843,6 @@ namespace N
     {
         [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -2027,11 +1972,6 @@ namespace N
     {
         [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {

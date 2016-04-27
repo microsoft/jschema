@@ -157,7 +157,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 members.AddRange(new MemberDeclarationSyntax[]
                 {
-                    OverrideObjectEquals(),
                     OverrideGetHashCode(),
                     ImplementIEquatableEquals()
                 });
@@ -909,32 +908,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 default(InitializerExpressionSyntax))))));
         }
 
-        private MemberDeclarationSyntax OverrideObjectEquals()
-        {
-            _localVariableNameGenerator.Reset();
-
-            return SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
-                EqualsMethod)
-                .AddModifiers(
-                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                    SyntaxFactory.Token(SyntaxKind.OverrideKeyword))
-                .AddParameterListParameters(
-                            SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameter))
-                                .WithType(
-                                    SyntaxFactory.PredefinedType(
-                                    SyntaxFactory.Token(SyntaxKind.ObjectKeyword))))
-                .AddBodyStatements(
-                    SyntaxFactory.ReturnStatement(
-                        SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(EqualsMethod),
-                            SyntaxHelper.ArgumentList(
-                                SyntaxFactory.BinaryExpression(
-                                    SyntaxKind.AsExpression,
-                                    SyntaxFactory.IdentifierName(OtherParameter),
-                                    SyntaxFactory.ParseTypeName(TypeName))))));
-
-        }
         private MemberDeclarationSyntax OverrideGetHashCode()
         {
             _localVariableNameGenerator.Reset();

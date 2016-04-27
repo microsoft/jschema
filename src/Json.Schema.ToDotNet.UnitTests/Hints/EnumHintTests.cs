@@ -133,11 +133,6 @@ namespace N
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -259,11 +254,6 @@ namespace N
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
@@ -353,11 +343,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -450,11 +435,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {
@@ -579,11 +559,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
 
         public override int GetHashCode()
         {

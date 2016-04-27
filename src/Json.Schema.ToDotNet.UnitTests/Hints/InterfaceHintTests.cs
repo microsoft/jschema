@@ -67,11 +67,6 @@ namespace N
         [DataMember(Name = ""value"", IsRequired = false, EmitDefaultValue = false)]
         public int Value { get; set; }
 
-        public override bool Equals(object other)
-        {
-            return Equals(other as C);
-        }
-
         public override int GetHashCode()
         {
             int result = 17;
