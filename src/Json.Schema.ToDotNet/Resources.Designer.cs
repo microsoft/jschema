@@ -106,6 +106,15 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Defines methods to support the comparison of objects of type {0} for equality..
+        /// </summary>
+        internal static string EqualityComparerSummary {
+            get {
+                return ResourceManager.GetString("EqualityComparerSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot generate a type from a {0} object of type {1}..
         /// </summary>
         internal static string ErrorCannotGenerateAdditionalTypeFromHintType {

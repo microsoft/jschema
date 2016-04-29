@@ -1314,7 +1314,25 @@ namespace N
 }";
 
             const string ExpectedRootComparerClass =
-@"";
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public bool Equals(C left, C right)
+        {
+        }
+
+        public int GetHashCode(C obj)
+        {
+        }
+    }
+}";
 
             const string ExpectedDefinedClass1 =
 @"using System;
@@ -1362,7 +1380,25 @@ namespace N
 }";
 
             const string ExpectedComparerClass1 =
-@"";
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type Def1 for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class Def1EqualityComparer : IEqualityComparer<Def1>
+    {
+        public bool Equals(Def1 left, Def1 right)
+        {
+        }
+
+        public int GetHashCode(Def1 obj)
+        {
+        }
+    }
+}";
 
             const string ExpectedDefinedClass2 =
 @"using System;
@@ -1407,7 +1443,25 @@ namespace N
 }";
 
             const string ExpectedComparerClass2 =
-@"";
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type Def2 for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class Def2EqualityComparer : IEqualityComparer<Def2>
+    {
+        public bool Equals(Def2 left, Def2 right)
+        {
+        }
+
+        public int GetHashCode(Def2 obj)
+        {
+        }
+    }
+}";
 
             string primaryComparerPath = TestFileSystem.MakeOutputFilePath(
                 EqualityComparerGenerator.GetEqualityComparerClassName(TestSettings.RootClassName));

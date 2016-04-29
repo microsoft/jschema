@@ -163,7 +163,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             className = GetHintedClassName(className.ToPascalCase());
 
-            var equalityComparerGenerator = new EqualityComparerGenerator(_settings.NamespaceName);
+            var equalityComparerGenerator = new EqualityComparerGenerator(
+                _settings.CopyrightNotice,
+                _settings.NamespaceName);
 
             string equalityComparerText = equalityComparerGenerator.Generate(
                 className,

@@ -132,6 +132,9 @@
   <data name="DefaultCtorSummary" xml:space="preserve">
     <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class.</value>
   </data>
+  <data name="EqualityComparerSummary" xml:space="preserve">
+    <value>Defines methods to support the comparison of objects of type {0} for equality.</value>
+  </data>
   <data name="ErrorCannotGenerateAdditionalTypeFromHintType" xml:space="preserve">
     <value>Cannot generate a type from a {0} object of type {1}.</value>
   </data>
