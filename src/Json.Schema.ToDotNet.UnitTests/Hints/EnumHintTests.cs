@@ -12,8 +12,6 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
     public class EnumHintTests
     {
-        private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
-
         private readonly TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
 
@@ -132,32 +130,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + BackgroundColor.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (BackgroundColor != other.BackgroundColor)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }",
                 "Color",
@@ -253,32 +225,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + BackgroundColor.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (BackgroundColor != other.BackgroundColor)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }",
                 "Color",
@@ -343,32 +289,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + BackgroundColor.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (BackgroundColor != other.BackgroundColor)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }",
                 "Color",
@@ -435,32 +355,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + BackgroundColor.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (BackgroundColor != other.BackgroundColor)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }",
                 "Color",
@@ -559,32 +453,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
         public Color BackgroundColor { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + BackgroundColor.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (BackgroundColor != other.BackgroundColor)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }",
                 "Color",
@@ -612,7 +480,6 @@ namespace N
         [MemberData(nameof(TestCases))]
         public void EnumHint(TestCase test)
         {
-            _settings.GenerateEqualityComparers = true;
             _settings.HintDictionary = new HintDictionary(test.HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -628,18 +495,19 @@ namespace N
             {
                 action();
 
+                string primaryOutputFilePath = TestFileSystem.MakeOutputFilePath(_settings.RootClassName);
                 string enumFilePath = TestFileSystem.MakeOutputFilePath(test.EnumFileNameStem);
 
                 var expectedOutputFiles = new List<string>
                 {
-                    PrimaryOutputFilePath,
+                    primaryOutputFilePath,
                     enumFilePath
                 };
 
                 _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
                 _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
-                _testFileSystem[PrimaryOutputFilePath].Should().Be(test.ClassText);
+                _testFileSystem[primaryOutputFilePath].Should().Be(test.ClassText);
                 _testFileSystem[enumFilePath].Should().Be(test.EnumText);
             }
         }

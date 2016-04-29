@@ -1313,6 +1313,9 @@ namespace N
     }
 }";
 
+            const string ExpectedRootComparerClass =
+@"";
+
             const string ExpectedDefinedClass1 =
 @"using System;
 using System.CodeDom.Compiler;
@@ -1358,6 +1361,9 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass1 =
+@"";
+
             const string ExpectedDefinedClass2 =
 @"using System;
 using System.CodeDom.Compiler;
@@ -1399,22 +1405,42 @@ namespace N
         }
     }
 }";
-            string def1Path = TestFileSystem.MakeOutputFilePath("Def1");
-            string def2Path = TestFileSystem.MakeOutputFilePath("Def2");
+
+            const string ExpectedComparerClass2 =
+@"";
+
+            string primaryComparerPath = TestFileSystem.MakeOutputFilePath(
+                EqualityComparerGenerator.GetEqualityComparerClassName(TestSettings.RootClassName));
+
+            const string Def1ClassName = "Def1";
+            string def1Path = TestFileSystem.MakeOutputFilePath(Def1ClassName);
+            string def1ComparerPath = TestFileSystem.MakeOutputFilePath(
+                EqualityComparerGenerator.GetEqualityComparerClassName(Def1ClassName));
+
+            const string Def2ClassName = "Def2";
+            string def2Path = TestFileSystem.MakeOutputFilePath(Def2ClassName);
+            string def2ComparerPath = TestFileSystem.MakeOutputFilePath(
+                EqualityComparerGenerator.GetEqualityComparerClassName(Def2ClassName));
 
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
+                primaryComparerPath,
                 def1Path,
-                def2Path
+                def1ComparerPath,
+                def2Path,
+                def2ComparerPath
             };
 
             _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
             _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedRootClass);
+            _testFileSystem[primaryComparerPath].Should().Be(ExpectedRootComparerClass);
             _testFileSystem[def1Path].Should().Be(ExpectedDefinedClass1);
+            _testFileSystem[def1ComparerPath].Should().Be(ExpectedComparerClass1);
             _testFileSystem[def2Path].Should().Be(ExpectedDefinedClass2);
+            _testFileSystem[def2ComparerPath].Should().Be(ExpectedComparerClass2);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]

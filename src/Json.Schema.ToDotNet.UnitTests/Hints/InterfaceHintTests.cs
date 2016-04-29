@@ -10,8 +10,6 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
     public class InterfaceHintTests
     {
-        private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
-
         private readonly TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
 
@@ -66,32 +64,6 @@ namespace N
         /// </summary>
         [DataMember(Name = ""value"", IsRequired = false, EmitDefaultValue = false)]
         public int Value { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + Value.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (Value != other.Value)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }",
 
@@ -122,7 +94,6 @@ namespace N
             string classText,
             string interfaceText)
         {
-            _settings.GenerateEqualityComparers = true;
             _settings.HintDictionary = new HintDictionary(hintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -130,18 +101,19 @@ namespace N
 
             generator.Generate(schema);
 
+            string primaryOutputFilePath = TestFileSystem.MakeOutputFilePath(_settings.RootClassName);
             string interfaceFilePath = TestFileSystem.MakeOutputFilePath("I" + _settings.RootClassName);
 
             var expectedOutputFiles = new List<string>
             {
-                PrimaryOutputFilePath,
+                primaryOutputFilePath,
                 interfaceFilePath
             };
 
             _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
             _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
-            _testFileSystem[PrimaryOutputFilePath].Should().Be(classText);
+            _testFileSystem[primaryOutputFilePath].Should().Be(classText);
             _testFileSystem[interfaceFilePath].Should().Be(interfaceText);
         }
     }

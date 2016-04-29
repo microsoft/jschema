@@ -55,7 +55,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         /// <summary>
         /// Gets or sets a value indicating whether implementations of
-        /// <code>IEqualityComparer&lt;T></code> are to be generated.
+        /// <see cref="System.Collections.Generic.IEqualityComparer{T}"/> are to be generated.
         /// </summary>
         public bool GenerateEqualityComparers { get; set; }
 

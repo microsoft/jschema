@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -162,6 +161,16 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private void GenerateEqualityComparer(string className, JsonSchema schema)
         {
+            className = GetHintedClassName(className.ToPascalCase());
+
+            var equalityComparerGenerator = new EqualityComparerGenerator(_settings.NamespaceName);
+
+            string equalityComparerText = equalityComparerGenerator.Generate(
+                className,
+                _classInfoDictionary[className]);
+
+            _pathToFileContentsDictionary[EqualityComparerGenerator.GetEqualityComparerClassName(className)]
+                = equalityComparerText;
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
