@@ -20,6 +20,40 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         private TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
 
+        private class ExpectedContents
+        {
+            internal string ClassContents;
+            internal string ComparerClassContents;
+        }
+
+        private void AssertFileContentsMatchExpectedContents(IDictionary<string, ExpectedContents> expectedContentsDictionary)
+        {
+            // Each type in the schema generates a class and an equality comparer class.
+            _testFileSystem.Files.Count.Should().Be(expectedContentsDictionary.Count * 2);
+
+            foreach (string className in expectedContentsDictionary.Keys)
+            {
+                string classPath = TestFileSystem.MakeOutputFilePath(className);
+                _testFileSystem.Files.Should().Contain(classPath);
+
+                string expectedClassContents = expectedContentsDictionary[className].ClassContents;
+                if (expectedClassContents != null)
+                {
+                    _testFileSystem[classPath].Should().Be(expectedClassContents);
+                }
+
+                string comparerClassName = EqualityComparerGenerator.GetEqualityComparerClassName(className);
+                string comparerClassPath = TestFileSystem.MakeOutputFilePath(comparerClassName);
+                _testFileSystem.Files.Should().Contain(comparerClassPath);
+
+                string expectedComparerClassContents = expectedContentsDictionary[className].ComparerClassContents;
+                if (expectedComparerClassContents != null)
+                {
+                    _testFileSystem[comparerClassPath].Should().Be(expectedComparerClassContents);
+                }
+            }
+        }
+
         public DataModelGeneratorTests()
         {
             _testFileSystem = new TestFileSystem();
@@ -267,17 +301,16 @@ namespace N
 
             generator.Generate(schema);
 
-            var expectedOutputFiles = new List<string>
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                PrimaryOutputFilePath,
-                PrimaryComparerPath,
+                [TestSettings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                }
             };
 
-            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
-
-            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
-            _testFileSystem[PrimaryComparerPath].Should().Be(ExpectedComparerClass);
+            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
@@ -389,19 +422,18 @@ namespace N
 
             generator.Generate(schema);
 
-            var expectedOutputFiles = new List<string>
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                PrimaryOutputFilePath,
-                PrimaryComparerPath,
-                TestFileSystem.MakeOutputFilePath("D"),
-                TestFileSystem.MakeOutputFilePath(EqualityComparerGenerator.GetEqualityComparerClassName("D"))
+                [TestSettings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                },
+
+                ["D"] = new ExpectedContents()
             };
 
-            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
-
-            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
-            _testFileSystem[PrimaryComparerPath].Should().Be(ExpectedComparerClass);
+            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
@@ -478,12 +510,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
-
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -551,11 +578,104 @@ namespace N
         }
     }
 }";
+
+            string ExpectedComparerClass =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(left.ArrayProp, right.ArrayProp))
+            {
+                if (left.ArrayProp == null || right.ArrayProp == null)
+                {
+                    return false;
+                }
+
+                if (left.ArrayProp.Count != right.ArrayProp.Count)
+                {
+                    return false;
+                }
+
+                for (int index_0 = 0; index_0 < left.ArrayProp.Count; ++index_0)
+                {
+                    {
+                        var comparer = new objectEqualityComparer();
+                        if (!comparer.Equals(left.ArrayProp[index_0], right.ArrayProp[index_0]))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.ArrayProp != null)
+                {
+                    foreach (var value_0 in obj.ArrayProp)
+                    {
+                        result = result * 31;
+                        if (value_0 != null)
+                        {
+                            result = (result * 31) + value_0.GetHashCode();
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
+}";
+
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
+
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayValuedProperty));
+            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayValuedProperty));
 
-            actual.Should().Be(Expected);
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [TestSettings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                }
+            };
+
+            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
@@ -1417,13 +1537,6 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
         public void GeneratesClassesForSchemasInDefinitions()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
-
-            generator.Generate(schema);
-
             const string ExpectedRootClass =
 @"using System;
 using System.CodeDom.Compiler;
@@ -1702,45 +1815,39 @@ namespace N
         }
     }
 }";
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            const string Def1ClassName = "Def1";
-            string def1Path = TestFileSystem.MakeOutputFilePath(Def1ClassName);
-            string def1ComparerPath = TestFileSystem.MakeOutputFilePath(
-                EqualityComparerGenerator.GetEqualityComparerClassName(Def1ClassName));
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
 
-            const string Def2ClassName = "Def2";
-            string def2Path = TestFileSystem.MakeOutputFilePath(Def2ClassName);
-            string def2ComparerPath = TestFileSystem.MakeOutputFilePath(
-                EqualityComparerGenerator.GetEqualityComparerClassName(Def2ClassName));
+            generator.Generate(schema);
 
-            var expectedOutputFiles = new List<string>
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                PrimaryOutputFilePath,
-                PrimaryComparerPath,
-                def1Path,
-                def1ComparerPath,
-                def2Path,
-                def2ComparerPath
+                [TestSettings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedRootClass,
+                    ComparerClassContents = ExpectedRootComparerClass
+                },
+                ["Def1"] = new ExpectedContents
+                {
+                    ClassContents = ExpectedDefinedClass1,
+                    ComparerClassContents = ExpectedComparerClass1
+                },
+                ["Def2"] = new ExpectedContents
+                {
+                    ClassContents = ExpectedDefinedClass2,
+                    ComparerClassContents = ExpectedComparerClass2
+                }
             };
 
-            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
-
-            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedRootClass);
-            _testFileSystem[PrimaryComparerPath].Should().Be(ExpectedRootComparerClass);
-            _testFileSystem[def1Path].Should().Be(ExpectedDefinedClass1);
-            _testFileSystem[def1ComparerPath].Should().Be(ExpectedComparerClass1);
-            _testFileSystem[def2Path].Should().Be(ExpectedDefinedClass2);
-            _testFileSystem[def2ComparerPath].Should().Be(ExpectedComparerClass2);
+            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = SchemaReader.ReadSchema(
+            const string Schema =
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -1749,9 +1856,9 @@ namespace N
     ""format"": ""date-time""
     }
   }
-}");
+}";
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
@@ -1792,8 +1899,72 @@ namespace N
         }
     }
 }";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+            const string ExpectedComparerClass =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.StartTime != right.StartTime)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + obj.StartTime.GetHashCode();
+            }
+
+            return result;
+        }
+    }
+}";
+
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+
+            generator.Generate(schema);
+
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [TestSettings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                }
+            };
+
+            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates uri-valued properties")]
