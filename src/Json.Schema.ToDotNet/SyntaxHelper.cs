@@ -125,6 +125,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 ArgumentList(left, right)));
         }
 
+        internal static LiteralExpressionSyntax Null()
+        {
+            return SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression);
+        }
+
         internal static BinaryExpressionSyntax IsNull(string identifierName)
         {
             return IsNull(SyntaxFactory.IdentifierName(identifierName));
@@ -135,7 +140,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.BinaryExpression(
                 SyntaxKind.EqualsExpression,
                 expr,
-                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
+                Null());
         }
 
         internal static BinaryExpressionSyntax IsNotNull(string identifierName)
@@ -148,7 +153,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.BinaryExpression(
                 SyntaxKind.NotEqualsExpression,
                 expr,
-                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
+                Null());
         }
 
         internal static ArgumentListSyntax ArgumentList(params ExpressionSyntax[] args)
@@ -173,6 +178,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                     value
                     ? SyntaxKind.TrueLiteralExpression
                     : SyntaxKind.FalseLiteralExpression));
+        }
+
+        internal static StatementSyntax Return(int value)
+        {
+            return SyntaxFactory.ReturnStatement(
+                SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal(value)));
         }
 
         internal static TypeSyntax Var()

@@ -12,7 +12,10 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 {
     public class DataModelGeneratorTests
     {
-        private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
+        private static readonly string PrimaryOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName);
+
+        private static readonly string PrimaryComparerPath = TestFileSystem.MakeOutputFilePath(
+            EqualityComparerGenerator.GetEqualityComparerClassName(TestSettings.RootClassName));
 
         private TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
@@ -116,14 +119,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
-
-            string actual = generator.Generate(schema);
-
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
@@ -192,18 +188,102 @@ namespace N
         }
     }
 }";
-            actual.Should().Be(Expected);
+
+            const string ExpectedComparerClass =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.StringProp != right.StringProp)
+            {
+                return false;
+            }
+
+            if (left.NumberProp != right.NumberProp)
+            {
+                return false;
+            }
+
+            if (left.BooleanProp != right.BooleanProp)
+            {
+                return false;
+            }
+
+            if (left.IntegerProp != right.IntegerProp)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.StringProp != null)
+                {
+                    result = (result * 31) + obj.StringProp.GetHashCode();
+                }
+
+                result = (result * 31) + obj.NumberProp.GetHashCode();
+                result = (result * 31) + obj.BooleanProp.GetHashCode();
+                result = (result * 31) + obj.IntegerProp.GetHashCode();
+            }
+
+            return result;
+        }
+    }
+}";
+
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
+
+            generator.Generate(schema);
+
+            var expectedOutputFiles = new List<string>
+            {
+                PrimaryOutputFilePath,
+                PrimaryComparerPath,
+            };
+
+            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
+
+            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
+            _testFileSystem[PrimaryComparerPath].Should().Be(ExpectedComparerClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
-
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
@@ -247,8 +327,81 @@ namespace N
         }
     }
 }";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+            const string ExpectedComparerClass =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            {
+                var comparer = new DEqualityComparer();
+                if (!comparer.Equals(left.ObjectProp, right.ObjectProp))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.ObjectProp != null)
+                {
+                    result = (result * 31) + obj.ObjectProp.GetHashCode();
+                }
+            }
+
+            return result;
+        }
+    }
+}";
+
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
+
+            generator.Generate(schema);
+
+            var expectedOutputFiles = new List<string>
+            {
+                PrimaryOutputFilePath,
+                PrimaryComparerPath,
+                TestFileSystem.MakeOutputFilePath("D"),
+                TestFileSystem.MakeOutputFilePath(EqualityComparerGenerator.GetEqualityComparerClassName("D"))
+            };
+
+            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
+
+            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
+            _testFileSystem[PrimaryComparerPath].Should().Be(ExpectedComparerClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
@@ -1326,10 +1479,38 @@ namespace N
     {
         public bool Equals(C left, C right)
         {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.RootProp != right.RootProp)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public int GetHashCode(C obj)
         {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + obj.RootProp.GetHashCode();
+            }
+
+            return result;
         }
     }
 }";
@@ -1392,10 +1573,41 @@ namespace N
     {
         public bool Equals(Def1 left, Def1 right)
         {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.Prop1 != right.Prop1)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public int GetHashCode(Def1 obj)
         {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.Prop1 != null)
+                {
+                    result = (result * 31) + obj.Prop1.GetHashCode();
+                }
+            }
+
+            return result;
         }
     }
 }";
@@ -1455,16 +1667,41 @@ namespace N
     {
         public bool Equals(Def2 left, Def2 right)
         {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.Prop2 != right.Prop2)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public int GetHashCode(Def2 obj)
         {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + obj.Prop2.GetHashCode();
+            }
+
+            return result;
         }
     }
 }";
-
-            string primaryComparerPath = TestFileSystem.MakeOutputFilePath(
-                EqualityComparerGenerator.GetEqualityComparerClassName(TestSettings.RootClassName));
 
             const string Def1ClassName = "Def1";
             string def1Path = TestFileSystem.MakeOutputFilePath(Def1ClassName);
@@ -1479,7 +1716,7 @@ namespace N
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
-                primaryComparerPath,
+                PrimaryComparerPath,
                 def1Path,
                 def1ComparerPath,
                 def2Path,
@@ -1490,7 +1727,7 @@ namespace N
             _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedRootClass);
-            _testFileSystem[primaryComparerPath].Should().Be(ExpectedRootComparerClass);
+            _testFileSystem[PrimaryComparerPath].Should().Be(ExpectedRootComparerClass);
             _testFileSystem[def1Path].Should().Be(ExpectedDefinedClass1);
             _testFileSystem[def1ComparerPath].Should().Be(ExpectedComparerClass1);
             _testFileSystem[def2Path].Should().Be(ExpectedDefinedClass2);

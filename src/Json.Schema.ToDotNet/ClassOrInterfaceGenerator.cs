@@ -52,7 +52,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             var propDecls = new List<MemberDeclarationSyntax>();
 
-            foreach (string propertyName in GetPropertyNames())
+            foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
             {
                 propDecls.Add(CreatePropertyDeclaration(propertyName));
             }
@@ -63,27 +63,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         protected virtual string MakeHintDictionaryKey(string propertyName)
         {
             return TypeName + "." + propertyName.ToPascalCase();
-        }
-
-        /// <summary>
-        /// Gets the list of all properties declared in the schema.
-        /// </summary>
-        /// <remarks>
-        /// Don't include information about array elements. For example, if the class has
-        /// an array-valued property ArrayProp, then include "ArrayProp" in the list, but
-        /// not "ArrayProp[]".
-        /// </remarks>
-        /// <returns>
-        /// An array containing the names of the properties.
-        /// </returns>
-        protected string[] GetPropertyNames()
-        {
-            return PropInfoDictionary.Keys
-                .Where(key => key.IndexOf(PropertyInfoDictionary.ArrayMarker) == -1
-                                && key.IndexOf(PropertyInfoDictionary.DictionaryMarker) == -1)
-                .OrderBy(key => PropInfoDictionary[key].DeclarationOrder)
-                .Select(key => key.ToPascalCase())
-                .ToArray();
         }
 
         /// <summary>

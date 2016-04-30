@@ -269,7 +269,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             // Generate the argument list that will be passed from the copy ctor to the
             // Init method.
-            ExpressionSyntax[] arguments = GetPropertyNames()
+            ExpressionSyntax[] arguments = PropInfoDictionary.GetPropertyNames()
                 .Select(name =>  SyntaxFactory.IdentifierName(name.ToCamelCase()))
                 .ToArray();
 
@@ -320,7 +320,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             var result = new Dictionary<string, string>();
 
-            foreach (string propertyName in GetPropertyNames())
+            foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
             {
                 string paramName = propertyName.ToCamelCase();
 
@@ -337,7 +337,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             // Generate the argument list that will be passed from the copy ctor to the
             // Init method.
-            ExpressionSyntax[] initArguments = GetPropertyNames()
+            ExpressionSyntax[] initArguments = PropInfoDictionary.GetPropertyNames()
                 .Select(name => 
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
@@ -447,7 +447,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private ParameterSyntax[] GenerateInitMethodParameterList()
         {
-            return GetPropertyNames()
+            return PropInfoDictionary.GetPropertyNames()
                 .Select(name => SyntaxFactory.Parameter(
                     SyntaxFactory.Identifier(name.ToCamelCase()))
                     .WithType(GetParameterListType(name)))
@@ -458,7 +458,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             var statements = new List<StatementSyntax>();
 
-            foreach (string propertyName in GetPropertyNames())
+            foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
             {
                 StatementSyntax statement = GenerateInitialization(propertyName);
                 if (statement != null)
@@ -939,7 +939,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                 SyntaxKind.NumericLiteralExpression,
                                                 SyntaxFactory.Literal(GetHashCodeSeedValue))))))));
 
-            string[] propertyNames = GetPropertyNames();
+            string[] propertyNames = PropInfoDictionary.GetPropertyNames();
             if (propertyNames.Any())
             {
                 var uncheckedStatements = new List<StatementSyntax>();
@@ -1141,7 +1141,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxHelper.IsNull(OtherParameter),
                     SyntaxFactory.Block(SyntaxHelper.Return(false))));
 
-            foreach (string propertyName in GetPropertyNames())
+            foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
             {
                 statements.Add(
                     MakeComparisonTest(
