@@ -26,6 +26,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         ObjectEquals,
 
         /// <summary>
+        /// Compare with IEqualityComparer.Equals(a, b)
+        /// </summary>
+        EqualityComparerEquals,
+
+        /// <summary>
         /// Compare collection elements.
         /// </summary>
         Collection,

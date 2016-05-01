@@ -307,11 +307,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                         // and just initialize it by assignment.
                         if (propertySchema.Reference != null)
                         {
+                            comparisonKind = ComparisonKind.EqualityComparerEquals;
                             initializationKind = InitializationKind.Clone;
                             isOfSchemaDefinedType = true;
                         }
                         else
                         {
+                            comparisonKind = ComparisonKind.ObjectEquals;
                             initializationKind = InitializationKind.SimpleAssign;
                         }
 

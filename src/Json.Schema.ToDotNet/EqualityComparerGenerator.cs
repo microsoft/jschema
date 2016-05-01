@@ -35,7 +35,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string SecondEqualsArgumentName = "right";
         private const string GetHashCodeArgumentName = "obj";
 
-        private const string ComparerVariableName = "comparer";
         private const string GetHashCodeResultVariableName = "result";
 
         private const int GetHashCodeSeedValue = 17;
@@ -176,14 +175,14 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax[] GenerateEqualsBody()
         {
-            var statments = new List<StatementSyntax>();
+            var statements = new List<StatementSyntax>();
 
-            statments.Add(GenerateReferenceEqualityTest());
-            statments.Add(NullCheckTest());
+            statements.Add(GenerateReferenceEqualityTest());
+            statements.Add(NullCheckTest());
+            statements.AddRange(GenerateComparerDeclarations());
+            statements.AddRange(GeneratePropertyComparisons());
 
-            statments.AddRange(GeneratePropertyComparisons());
-
-            return statments.ToArray();
+            return statements.ToArray();
         }
 
         private IfStatementSyntax GenerateReferenceEqualityTest()
@@ -217,7 +216,50 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxHelper.Return(false)));
         }
 
-        private StatementSyntax[] GeneratePropertyComparisons()
+        private IList<StatementSyntax> GenerateComparerDeclarations()
+        {
+            var statements = new List<StatementSyntax>();
+
+            IEnumerable<string> comparerTypeNames = _propertyInfoDictionary.GetPropertyNames()
+                .Where(pn => _propertyInfoDictionary[pn].ComparisonKind == ComparisonKind.EqualityComparerEquals)
+                .Select(pn => GetComparerTypeName(pn))
+                .Distinct()
+                .OrderBy(ctn => ctn);
+
+            foreach (string comparerTypeName in comparerTypeNames)
+            {
+                statements.Add(GenerateComparerDeclaration(comparerTypeName));
+            }
+
+            return statements;
+        }
+
+        private string GetComparerTypeName(string index)
+        {
+            return GetEqualityComparerClassName(
+                _propertyInfoDictionary[index].Type.ToString());
+        }
+
+        private StatementSyntax GenerateComparerDeclaration(string comparerTypeName)
+        {
+            string comparerVariableName = comparerTypeName.ToCamelCase();
+
+            // var comparer = new XEqualityComparer();
+            return SyntaxFactory.LocalDeclarationStatement(
+                SyntaxFactory.VariableDeclaration(
+                    SyntaxHelper.Var(),
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.VariableDeclarator(
+                            SyntaxFactory.Identifier(comparerVariableName),
+                            default(BracketedArgumentListSyntax),
+                            SyntaxFactory.EqualsValueClause(
+                                SyntaxFactory.ObjectCreationExpression(
+                                    SyntaxFactory.ParseTypeName(comparerTypeName),
+                                    SyntaxHelper.ArgumentList(),
+                                    default(InitializerExpressionSyntax)))))));
+        }
+
+        private IList<StatementSyntax> GeneratePropertyComparisons()
         {
             var statements = new List<StatementSyntax>();
 
@@ -239,7 +281,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             // All comparisons succeeded.
             statements.Add(SyntaxHelper.Return(true));
 
-            return statements.ToArray();
+            return statements;
         }
 
         private StatementSyntax GeneratePropertyComparison(
@@ -247,17 +289,17 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax left,
             ExpressionSyntax right)
         {
-            PropertyInfo info = _propertyInfoDictionary[propertyName];
-            ComparisonKind comparisonKind = info.ComparisonKind;
-            TypeSyntax type = info.Type;
-
+            ComparisonKind comparisonKind = _propertyInfoDictionary[propertyName].ComparisonKind;
             switch (comparisonKind)
             {
                 case ComparisonKind.OperatorEquals:
                     return GeneratorOperatorEqualsComparison(left, right);
 
                 case ComparisonKind.ObjectEquals:
-                    return GenerateObjectEqualsComparison(left, right, type);
+                    return GenerateObjectEqualsComparison(left, right);
+
+                case ComparisonKind.EqualityComparerEquals:
+                    return GenerateEqualityEqualsComparison(propertyName, left, right);
 
                 case ComparisonKind.Collection:
                     return MakeCollectionEqualsTest(propertyName, left, right);
@@ -280,40 +322,39 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
 
-        private StatementSyntax GenerateObjectEqualsComparison(
-            ExpressionSyntax left,
-            ExpressionSyntax right,
-            TypeSyntax type)
+        private StatementSyntax GenerateObjectEqualsComparison(ExpressionSyntax left, ExpressionSyntax right)
         {
-            TypeSyntax comparerType = SyntaxFactory.ParseTypeName(
-                GetEqualityComparerClassName(type.ToString()));
+            // if (!(Object.Equals(left.Prop, right.Prop))
+            return SyntaxFactory.IfStatement(
+                SyntaxFactory.PrefixUnaryExpression(
+                    SyntaxKind.LogicalNotExpression,
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(ObjectTypeName),
+                            SyntaxFactory.IdentifierName(EqualsMethodName)),
+                        SyntaxHelper.ArgumentList(left, right))),
+                SyntaxFactory.Block(SyntaxHelper.Return(false)));
+        }
 
-            return SyntaxFactory.Block(
-                // var comparer = new XEqualityComparer();
-                SyntaxFactory.LocalDeclarationStatement(
-                    SyntaxFactory.VariableDeclaration(
-                        SyntaxHelper.Var(),
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.VariableDeclarator(
-                                SyntaxFactory.Identifier(ComparerVariableName),
-                                default(BracketedArgumentListSyntax),
-                                SyntaxFactory.EqualsValueClause(
-                                    SyntaxFactory.ObjectCreationExpression(
-                                        comparerType,
-                                        SyntaxHelper.ArgumentList(),
-                                        default(InitializerExpressionSyntax))))))),
+        private StatementSyntax GenerateEqualityEqualsComparison(
+            string propertyName,
+            ExpressionSyntax left,
+            ExpressionSyntax right)
+        {
+            string comparerVariableName = GetComparerTypeName(propertyName).ToCamelCase();
 
-                // if (!(comparer.Equals(left.Prop, right.Prop))
-                SyntaxFactory.IfStatement(
-                    SyntaxFactory.PrefixUnaryExpression(
-                        SyntaxKind.LogicalNotExpression,
-                        SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                SyntaxFactory.IdentifierName(ComparerVariableName),
-                                SyntaxFactory.IdentifierName(EqualsMethodName)),
-                            SyntaxHelper.ArgumentList(left, right))),
-                    SyntaxFactory.Block(SyntaxHelper.Return(false))));
+            // if (!(comparer.Equals(left.Prop, right.Prop))
+            return SyntaxFactory.IfStatement(
+                SyntaxFactory.PrefixUnaryExpression(
+                    SyntaxKind.LogicalNotExpression,
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(comparerVariableName),
+                            SyntaxFactory.IdentifierName(EqualsMethodName)),
+                        SyntaxHelper.ArgumentList(left, right))),
+                SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
 
         private StatementSyntax MakeCollectionEqualsTest(

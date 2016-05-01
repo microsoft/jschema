@@ -14,9 +14,6 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
     {
         private static readonly string PrimaryOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName);
 
-        private static readonly string PrimaryComparerPath = TestFileSystem.MakeOutputFilePath(
-            EqualityComparerGenerator.GetEqualityComparerClassName(TestSettings.RootClassName));
-
         private TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
 
@@ -120,12 +117,6 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates class description")]
         public void GeneratesClassDescription()
         {
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
-
-            string actual = generator.Generate(schema);
-
             const string Expected =
 @"using System;
 using System.CodeDom.Compiler;
@@ -142,12 +133,11 @@ namespace N
     {
     }
 }";
-            actual.Should().Be(Expected);
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
-            // This particular test shows not only that the correct text was produced,
-            // but that it was written to the expected path. Subsequent tests will
-            // just verify the text.
-            _testFileSystem.Files.Should().OnlyContain(key => key.Equals(PrimaryOutputFilePath));
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
@@ -296,7 +286,6 @@ namespace N
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
 
             generator.Generate(schema);
@@ -383,12 +372,9 @@ namespace N
                 return false;
             }
 
+            if (!Object.Equals(left.ObjectProp, right.ObjectProp))
             {
-                var comparer = new DEqualityComparer();
-                if (!comparer.Equals(left.ObjectProp, right.ObjectProp))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
@@ -616,12 +602,9 @@ namespace N
 
                 for (int index_0 = 0; index_0 < left.ArrayProp.Count; ++index_0)
                 {
+                    if (!Object.Equals(left.ArrayProp[index_0], right.ArrayProp[index_0]))
                     {
-                        var comparer = new objectEqualityComparer();
-                        if (!comparer.Equals(left.ArrayProp[index_0], right.ArrayProp[index_0]))
-                        {
-                            return false;
-                        }
+                        return false;
                     }
                 }
             }
@@ -659,7 +642,6 @@ namespace N
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
 
             string actual = generator.Generate(schema);
