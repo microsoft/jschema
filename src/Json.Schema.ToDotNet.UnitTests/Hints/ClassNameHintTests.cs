@@ -174,8 +174,7 @@ namespace N
                 return false;
             }
 
-            var fileDataEqualityComparer = new FileDataEqualityComparer();
-            if (!fileDataEqualityComparer.Equals(left.File, right.File))
+            if (!left.File.ValueEquals(right.File))
             {
                 return false;
             }

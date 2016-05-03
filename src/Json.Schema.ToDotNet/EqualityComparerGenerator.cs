@@ -20,6 +20,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string EqualityComparerInterfaceName = "I" + EqualityComparerSuffix;
 
         private const string EqualsMethodName = "Equals";
+        private const string ValueEqualsMethodName = "ValueEquals";
         private const string GetHashCodeMethodName = "GetHashCode";
 
         private const string ReferenceEqualsMethodName = "ReferenceEquals";
@@ -208,7 +209,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             statements.Add(GenerateReferenceEqualityTest());
             statements.Add(NullCheckTest());
-            statements.AddRange(GenerateComparerDeclarations());
             statements.AddRange(GeneratePropertyComparisons());
 
             return statements.ToArray();
@@ -243,49 +243,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxHelper.Null()))),
                 SyntaxFactory.Block(
                     SyntaxHelper.Return(false)));
-        }
-
-        private IList<StatementSyntax> GenerateComparerDeclarations()
-        {
-            var statements = new List<StatementSyntax>();
-
-            IEnumerable<string> comparerTypeNames = _propertyInfoDictionary.Keys
-                .Where(key => _propertyInfoDictionary[key].ComparisonKind == ComparisonKind.EqualityComparerEquals)
-                .Select(key => GetComparerTypeName(key))
-                .Distinct()
-                .OrderBy(ctn => ctn);
-
-            foreach (string comparerTypeName in comparerTypeNames)
-            {
-                statements.Add(GenerateComparerDeclaration(comparerTypeName));
-            }
-
-            return statements;
-        }
-
-        private string GetComparerTypeName(string index)
-        {
-            return GetEqualityComparerClassName(
-                _propertyInfoDictionary[index].Type.ToString());
-        }
-
-        private StatementSyntax GenerateComparerDeclaration(string comparerTypeName)
-        {
-            string comparerVariableName = comparerTypeName.ToCamelCase();
-
-            // var comparer = new XEqualityComparer();
-            return SyntaxFactory.LocalDeclarationStatement(
-                SyntaxFactory.VariableDeclaration(
-                    SyntaxHelper.Var(),
-                    SyntaxFactory.SingletonSeparatedList(
-                        SyntaxFactory.VariableDeclarator(
-                            SyntaxFactory.Identifier(comparerVariableName),
-                            default(BracketedArgumentListSyntax),
-                            SyntaxFactory.EqualsValueClause(
-                                SyntaxFactory.ObjectCreationExpression(
-                                    SyntaxFactory.ParseTypeName(comparerTypeName),
-                                    SyntaxHelper.ArgumentList(),
-                                    default(InitializerExpressionSyntax)))))));
         }
 
         private IList<StatementSyntax> GeneratePropertyComparisons()
@@ -371,18 +328,16 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax left,
             ExpressionSyntax right)
         {
-            string comparerVariableName = GetComparerTypeName(propertyName).ToCamelCase();
-
-            // if (!(comparer.Equals(left.Prop, right.Prop))
+            // if (!(left.Prop.ValueEquals(left.Prop, right.Prop))
             return SyntaxFactory.IfStatement(
                 SyntaxFactory.PrefixUnaryExpression(
                     SyntaxKind.LogicalNotExpression,
                     SyntaxFactory.InvocationExpression(
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName(comparerVariableName),
-                            SyntaxFactory.IdentifierName(EqualsMethodName)),
-                        SyntaxHelper.ArgumentList(left, right))),
+                            left,
+                            SyntaxFactory.IdentifierName(ValueEqualsMethodName)),
+                        SyntaxHelper.ArgumentList(right))),
                 SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
 

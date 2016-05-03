@@ -281,8 +281,7 @@ namespace N
                 return false;
             }
 
-            var dEqualityComparer = new DEqualityComparer();
-            if (!dEqualityComparer.Equals(left.ObjectProp, right.ObjectProp))
+            if (!left.ObjectProp.ValueEquals(right.ObjectProp))
             {
                 return false;
             }
@@ -656,13 +655,12 @@ namespace N
                 return false;
             }
 
-            var colorEqualityComparer = new ColorEqualityComparer();
-            if (!colorEqualityComparer.Equals(left.ForegroundColor, right.ForegroundColor))
+            if (!left.ForegroundColor.ValueEquals(right.ForegroundColor))
             {
                 return false;
             }
 
-            if (!colorEqualityComparer.Equals(left.BackgroundColor, right.BackgroundColor))
+            if (!left.BackgroundColor.ValueEquals(right.BackgroundColor))
             {
                 return false;
             }
@@ -2660,7 +2658,6 @@ namespace N
                 return false;
             }
 
-            var dEqualityComparer = new DEqualityComparer();
             if (!Object.ReferenceEquals(left.ArrayOfArrayOfD, right.ArrayOfArrayOfD))
             {
                 if (left.ArrayOfArrayOfD == null || right.ArrayOfArrayOfD == null)
@@ -2689,7 +2686,7 @@ namespace N
 
                         for (int index_1 = 0; index_1 < left.ArrayOfArrayOfD[index_0].Count; ++index_1)
                         {
-                            if (!dEqualityComparer.Equals(left.ArrayOfArrayOfD[index_0][index_1], right.ArrayOfArrayOfD[index_0][index_1]))
+                            if (!left.ArrayOfArrayOfD[index_0][index_1].ValueEquals(right.ArrayOfArrayOfD[index_0][index_1]))
                             {
                                 return false;
                             }
