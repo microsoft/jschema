@@ -108,7 +108,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             ClassDeclarationSyntax classDeclaration =
                 SyntaxFactory.ClassDeclaration(comparerClassName)
                     .AddModifiers(
-                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                        SyntaxFactory.Token(SyntaxKind.InternalKeyword),
                         SyntaxFactory.Token(SyntaxKind.SealedKeyword))
                     .AddBaseListTypes(comparerInterface)
                     .AddMembers(

@@ -147,7 +147,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -263,7 +263,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -436,7 +436,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -636,7 +636,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type ConsoleWindow for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class ConsoleWindowEqualityComparer : IEqualityComparer<ConsoleWindow>
+    internal sealed class ConsoleWindowEqualityComparer : IEqualityComparer<ConsoleWindow>
     {
         internal static readonly ConsoleWindowEqualityComparer Instance = new ConsoleWindowEqualityComparer();
 
@@ -742,7 +742,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type Color for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class ColorEqualityComparer : IEqualityComparer<Color>
+    internal sealed class ColorEqualityComparer : IEqualityComparer<Color>
     {
         internal static readonly ColorEqualityComparer Instance = new ColorEqualityComparer();
 
@@ -1559,7 +1559,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -1633,7 +1633,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type Def1 for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class Def1EqualityComparer : IEqualityComparer<Def1>
+    internal sealed class Def1EqualityComparer : IEqualityComparer<Def1>
     {
         internal static readonly Def1EqualityComparer Instance = new Def1EqualityComparer();
 
@@ -1710,7 +1710,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type Def2 for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class Def2EqualityComparer : IEqualityComparer<Def2>
+    internal sealed class Def2EqualityComparer : IEqualityComparer<Def2>
     {
         internal static readonly Def2EqualityComparer Instance = new Def2EqualityComparer();
 
@@ -1825,7 +1825,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -1931,7 +1931,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -2043,7 +2043,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -2160,7 +2160,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -2297,7 +2297,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -2459,7 +2459,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -2629,7 +2629,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 

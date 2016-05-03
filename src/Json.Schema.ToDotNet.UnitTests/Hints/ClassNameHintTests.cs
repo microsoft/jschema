@@ -157,7 +157,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type C for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class CEqualityComparer : IEqualityComparer<C>
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
     {
         internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
@@ -235,7 +235,7 @@ namespace N
     /// Defines methods to support the comparison of objects of type FileData for equality.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class FileDataEqualityComparer : IEqualityComparer<FileData>
+    internal sealed class FileDataEqualityComparer : IEqualityComparer<FileData>
     {
         internal static readonly FileDataEqualityComparer Instance = new FileDataEqualityComparer();
 
