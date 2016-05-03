@@ -101,6 +101,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, string> DictProp { get; set; }
@@ -149,6 +150,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, D> DictProp { get; set; }
@@ -200,6 +202,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<D>> DictProp { get; set; }
@@ -254,6 +257,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<Uri, IList<D>> DictProp { get; set; }
@@ -308,6 +312,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<IList<D>>> DictProp { get; set; }

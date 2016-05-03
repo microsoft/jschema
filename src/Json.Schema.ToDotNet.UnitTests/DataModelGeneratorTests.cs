@@ -124,6 +124,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProp { get; set; }
@@ -247,6 +248,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ObjectProp { get; set; }
@@ -419,6 +421,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
@@ -611,6 +614,7 @@ namespace N
         public static IEqualityComparer<ConsoleWindow> ValueComparer => ConsoleWindowEqualityComparer.Instance;
 
         public bool ValueEquals(ConsoleWindow other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         /// <summary>
         /// The color of the text on the screen.
@@ -710,6 +714,7 @@ namespace N
         public static IEqualityComparer<Color> ValueComparer => ColorEqualityComparer.Instance;
 
         public bool ValueEquals(Color other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         /// <summary>
         /// The value of the R component.
@@ -1542,6 +1547,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool RootProp { get; set; }
@@ -1616,6 +1622,7 @@ namespace N
         public static IEqualityComparer<Def1> ValueComparer => Def1EqualityComparer.Instance;
 
         public bool ValueEquals(Def1 other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
         public string Prop1 { get; set; }
@@ -1693,6 +1700,7 @@ namespace N
         public static IEqualityComparer<Def2> ValueComparer => Def2EqualityComparer.Instance;
 
         public bool ValueEquals(Def2 other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
         public int Prop2 { get; set; }
@@ -1809,6 +1817,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
@@ -1915,6 +1924,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
@@ -2027,6 +2037,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntDefProp { get; set; }
@@ -2144,6 +2155,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
         public IList<int> ArrayOfIntByRef { get; set; }
@@ -2281,6 +2293,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
@@ -2443,6 +2456,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
@@ -2613,6 +2627,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }

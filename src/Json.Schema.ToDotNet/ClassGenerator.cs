@@ -39,7 +39,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string DeepCloneCoreMethodName = "DeepCloneCore";
 
         private const string EqualsMethodName = "Equals";
+        private const string GetHashCodeMethodName = "GetHashCode";
         private const string ValueEqualsMethodName = "ValueEquals";
+        private const string ValueGetHashCodeMethodName = "ValueGetHashCode";
 
         private const string KeyPropertyName = "Key";
         private const string ValuePropertyName = "Value";
@@ -134,6 +136,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                 members.Add(GenerateValueComparerProperty());
                 members.Add(GenerateValueEqualsMethod());
+                members.Add(GenerateValueGetHashCodeMethod());
             }
 
             if (_generateCloningCode)
@@ -205,6 +208,28 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.ThisExpression(),
                                 SyntaxFactory.IdentifierName(OtherParameterName)))))
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+        }
+
+        private MemberDeclarationSyntax GenerateValueGetHashCodeMethod()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+                SyntaxFactory.Identifier(ValueGetHashCodeMethodName))
+                .WithParameterList(
+                    SyntaxFactory.ParameterList())
+                .WithModifiers(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
+                .WithExpressionBody(
+                    SyntaxFactory.ArrowExpressionClause(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(ValueComparerPropertyName),
+                                SyntaxFactory.IdentifierName(GetHashCodeMethodName)),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.ThisExpression()))))
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 

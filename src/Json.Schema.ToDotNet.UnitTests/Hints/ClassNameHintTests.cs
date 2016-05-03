@@ -140,6 +140,7 @@ namespace N
         public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""file"", IsRequired = false, EmitDefaultValue = false)]
         public FileData File { get; set; }
@@ -218,6 +219,7 @@ namespace N
         public static IEqualityComparer<FileData> ValueComparer => FileDataEqualityComparer.Instance;
 
         public bool ValueEquals(FileData other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
         [DataMember(Name = ""path"", IsRequired = false, EmitDefaultValue = false)]
         public string Path { get; set; }
