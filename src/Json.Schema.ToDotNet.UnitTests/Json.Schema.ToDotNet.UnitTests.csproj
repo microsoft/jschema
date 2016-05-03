@@ -56,7 +56,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assert.cs" />
     <Compile Include="DataModelGeneratorTests.cs" />
+    <Compile Include="ExpectedContents.cs" />
     <Compile Include="Hints\ClassNameHintTests.cs" />
     <Compile Include="Hints\DictionaryHintTests.cs" />
     <Compile Include="Hints\EnumHintTests.cs" />

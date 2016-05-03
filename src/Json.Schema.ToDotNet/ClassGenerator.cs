@@ -18,13 +18,12 @@ namespace Microsoft.Json.Schema.ToDotNet
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
-        private readonly bool _generateEqualityComparers;
         private readonly bool _generateCloningCode;
         private readonly bool _sealClasses;
         private readonly string _syntaxInterfaceName;
         private readonly string _kindEnumName;
 
-        // Name used for the parameters of Equals methods and copy ctor.
+        // Name used for the parameters of the copy ctor.
         private const string OtherParameter = "other";
 
         private const string DataContractAttributeName = "DataContract";
@@ -32,14 +31,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string DataMemberNamePropertyName = "Name";
         private const string DataMemberIsRequiredPropertyName = "IsRequired";
         private const string DataMemberEmitDefaultValuePropertyName = "EmitDefaultValue";
-
-        private const string CountProperty = "Count";
-        private const string EqualsMethod = "Equals";
-        private const string GetHashCodeMethod = "GetHashCode";
-        private const string ReferenceEqualsMethod = "ReferenceEquals";
-        private const string IEquatableType = "IEquatable";
-        private const string ObjectType = "Object";
-        private const string IntTypeAlias = "int";
 
         private const string AddMethod = "Add";
         private const string InitMethod = "Init";
@@ -49,11 +40,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string KeyProperty = "Key";
         private const string ValueProperty = "Value";
 
-        private const string GetHashCodeResultVariableName = "result";
-
-        private const int GetHashCodeSeedValue = 17;
-        private const int GetHashCodeCombiningValue = 31;
-
         private LocalVariableNameGenerator _localVariableNameGenerator;
 
         public ClassGenerator(
@@ -61,7 +47,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema,
             HintDictionary hintDictionary,
             string interfaceName,
-            bool generateEqualityComparers,
             bool generateCloningCode,
             bool sealClasses,
             string syntaxInterfaceName,
@@ -69,7 +54,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             : base(propertyInfoDictionary, schema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
-            _generateEqualityComparers = generateEqualityComparers;
             _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
             _sealClasses = sealClasses;
@@ -119,17 +103,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 baseTypes.Add(interfaceType);
             }
 
-            var iEquatable = SyntaxFactory.SimpleBaseType(
-                SyntaxFactory.GenericName(
-                    SyntaxFactory.Identifier(IEquatableType),
-                    SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
-                        new TypeSyntax[] {
-                        SyntaxFactory.ParseTypeName(TypeName)
-                        }))));
-
-            baseTypes.Add(iEquatable);
-
-            AddUsing("System");                         // For IEquatable<T>
+            AddUsing("System");
             AddUsing("System.Runtime.Serialization");   // For DataContractAttribute;
 
             if (baseTypes.Count > 0)
@@ -152,15 +126,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
                 
             members.AddRange(GenerateProperties());
-
-            if (_generateEqualityComparers)
-            {
-                members.AddRange(new MemberDeclarationSyntax[]
-                {
-                    OverrideGetHashCode(),
-                    ImplementIEquatableEquals()
-                });
-            }
 
             if (_generateCloningCode)
             {
@@ -907,494 +872,5 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                     SyntaxFactory.IdentifierName("Relative")))),
                                 default(InitializerExpressionSyntax))))));
         }
-
-        private MemberDeclarationSyntax OverrideGetHashCode()
-        {
-            _localVariableNameGenerator.Reset();
-
-            return SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                GetHashCodeMethod)
-                .AddModifiers(
-                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                    SyntaxFactory.Token(SyntaxKind.OverrideKeyword))
-                .WithBody(
-                    SyntaxFactory.Block(MakeHashCodeContributions()));
-
-        }
-
-        private StatementSyntax[] MakeHashCodeContributions()
-        {
-            var statements = new List<StatementSyntax>();
-
-            statements.Add(SyntaxFactory.LocalDeclarationStatement(
-                            SyntaxFactory.VariableDeclaration(
-                                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                                SyntaxFactory.SingletonSeparatedList(
-                                    SyntaxFactory.VariableDeclarator(
-                                        SyntaxFactory.Identifier(GetHashCodeResultVariableName),
-                                        default(BracketedArgumentListSyntax),
-                                        SyntaxFactory.EqualsValueClause(
-                                            SyntaxFactory.LiteralExpression(
-                                                SyntaxKind.NumericLiteralExpression,
-                                                SyntaxFactory.Literal(GetHashCodeSeedValue))))))));
-
-            string[] propertyNames = PropInfoDictionary.GetPropertyNames();
-            if (propertyNames.Any())
-            {
-                var uncheckedStatements = new List<StatementSyntax>();
-                foreach (var propertyName in propertyNames)
-                {
-                    uncheckedStatements.Add(
-                        MakeHashCodeContribution(propertyName, SyntaxFactory.IdentifierName(propertyName)));
-                }
-
-                statements.Add(SyntaxFactory.CheckedStatement(
-                    SyntaxKind.UncheckedStatement,
-                    SyntaxFactory.Block(uncheckedStatements)));
-            }
-
-            statements.Add(SyntaxFactory.ReturnStatement(
-                                SyntaxFactory.IdentifierName(GetHashCodeResultVariableName)));
-
-            return statements.ToArray();
-        }
-
-        private StatementSyntax MakeHashCodeContribution(string hashKindKey, ExpressionSyntax expression)
-        {
-            HashKind hashKind = PropInfoDictionary[hashKindKey].HashKind;
-            switch (hashKind)
-            {
-                case HashKind.ScalarValueType:
-                    return MakeScalarHashCodeContribution(expression);
-
-                case HashKind.ScalarReferenceType:
-                    return MakeScalarReferenceTypeHashCodeContribution(expression);
-
-                case HashKind.Collection:
-                    return MakeCollectionHashCodeContribution(hashKindKey, expression);
-
-                case HashKind.Dictionary:
-                    return MakeDictionaryHashCodeContribution(expression);
-
-                default:
-                    throw new ArgumentException($"Property {hashKindKey} has unknown comparison type {hashKind}.");
-            }
-        }
-
-        private StatementSyntax MakeScalarHashCodeContribution(ExpressionSyntax expression)
-        {
-            return SyntaxFactory.ExpressionStatement(
-                SyntaxFactory.AssignmentExpression(
-                    SyntaxKind.SimpleAssignmentExpression,
-                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                        SyntaxFactory.BinaryExpression(
-                            SyntaxKind.AddExpression,
-                            SyntaxFactory.ParenthesizedExpression(
-                                SyntaxFactory.BinaryExpression(
-                                    SyntaxKind.MultiplyExpression,
-                                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                                    SyntaxFactory.LiteralExpression(
-                                        SyntaxKind.NumericLiteralExpression,
-                                        SyntaxFactory.Literal(GetHashCodeCombiningValue)))),
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    expression,
-                                    SyntaxFactory.IdentifierName(GetHashCodeMethod))))));
-        }
-
-        private StatementSyntax MakeScalarReferenceTypeHashCodeContribution(ExpressionSyntax expression)
-        {
-            return SyntaxFactory.IfStatement(
-                SyntaxHelper.IsNotNull(expression),
-                SyntaxFactory.Block(MakeScalarHashCodeContribution(expression)));
-        }
-
-        private StatementSyntax MakeCollectionHashCodeContribution(
-            string hashKindKey,
-            ExpressionSyntax expression)
-        {
-            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
-
-            // From the type of the element (primitive, object, list, or dictionary), create
-            // the appropriate hash generation code.
-            string elementHashTypeKey = PropertyInfoDictionary.MakeElementKeyName(hashKindKey);
-
-            StatementSyntax hashCodeContribution =
-                MakeHashCodeContribution(
-                    elementHashTypeKey,
-                    SyntaxFactory.IdentifierName(collectionElementVariableName));
-
-            return SyntaxFactory.IfStatement(
-                SyntaxHelper.IsNotNull(expression),
-                SyntaxFactory.Block(
-                    SyntaxFactory.ForEachStatement(
-                        SyntaxHelper.Var(),
-                        collectionElementVariableName,
-                        expression,
-                        SyntaxFactory.Block(
-                            SyntaxFactory.ExpressionStatement(
-                                SyntaxFactory.AssignmentExpression(
-                                    SyntaxKind.SimpleAssignmentExpression,
-                                    SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                                    SyntaxFactory.BinaryExpression(
-                                        SyntaxKind.MultiplyExpression,
-                                        SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                                        SyntaxFactory.LiteralExpression(
-                                            SyntaxKind.NumericLiteralExpression,
-                                            SyntaxFactory.Literal(GetHashCodeCombiningValue))))),
-                            hashCodeContribution))));
-        }
-
-        private StatementSyntax MakeDictionaryHashCodeContribution(ExpressionSyntax expression)
-        {
-            string xorValueVariableName = _localVariableNameGenerator.GetNextXorVariableName();
-            string collectionElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
-
-            return SyntaxFactory.IfStatement(
-                SyntaxHelper.IsNotNull(expression),
-                SyntaxFactory.Block(
-                    // int xor_0 = 0;
-                    SyntaxFactory.LocalDeclarationStatement(
-                        SyntaxFactory.VariableDeclaration(
-                            SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                            SyntaxFactory.SingletonSeparatedList(
-                                SyntaxFactory.VariableDeclarator(
-                                    SyntaxFactory.Identifier(xorValueVariableName),
-                                    default(BracketedArgumentListSyntax),
-                                    SyntaxFactory.EqualsValueClause(
-                                        SyntaxFactory.LiteralExpression(
-                                            SyntaxKind.NumericLiteralExpression,
-                                            SyntaxFactory.Literal(0)))))))
-                        .WithLeadingTrivia(
-                            SyntaxFactory.ParseLeadingTrivia(Resources.XorDictionaryComment)),
-
-                    SyntaxFactory.ForEachStatement(
-                        SyntaxHelper.Var(),
-                        collectionElementVariableName,
-                        expression,
-                        SyntaxFactory.Block(
-                            // xor_0 ^= value_0.Key.GetHashCode();
-                            Xor(xorValueVariableName, collectionElementVariableName, KeyProperty),
-                            SyntaxFactory.IfStatement(
-                                SyntaxHelper.IsNotNull(
-                                    SyntaxFactory.MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(collectionElementVariableName),
-                                        SyntaxFactory.IdentifierName(ValueProperty))),
-                                SyntaxFactory.Block(
-                                    Xor(xorValueVariableName, collectionElementVariableName, ValueProperty))))),
-
-                    SyntaxFactory.ExpressionStatement(
-                        SyntaxFactory.AssignmentExpression(
-                            SyntaxKind.SimpleAssignmentExpression,
-                            SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                            SyntaxFactory.BinaryExpression(
-                                SyntaxKind.AddExpression,
-                                SyntaxFactory.ParenthesizedExpression(
-                                    SyntaxFactory.BinaryExpression(
-                                        SyntaxKind.MultiplyExpression,
-                                            SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
-                                                SyntaxFactory.LiteralExpression(
-                                                    SyntaxKind.NumericLiteralExpression,
-                                                    SyntaxFactory.Literal(GetHashCodeCombiningValue)))),
-                                SyntaxFactory.IdentifierName(xorValueVariableName))))));
-        }
-
-        private StatementSyntax Xor(string xorValueVariableName, string loopVariableName, string keyValuePairMemberName)
-        {
-            return SyntaxFactory.ExpressionStatement(
-                SyntaxFactory.AssignmentExpression(
-                    SyntaxKind.ExclusiveOrAssignmentExpression,
-                    SyntaxFactory.IdentifierName(xorValueVariableName),
-                    SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                SyntaxFactory.IdentifierName(loopVariableName),
-                                SyntaxFactory.IdentifierName(keyValuePairMemberName)),
-                        SyntaxFactory.IdentifierName(GetHashCodeMethod)))));
-        }
-
-        private MemberDeclarationSyntax ImplementIEquatableEquals()
-        {
-            _localVariableNameGenerator.Reset();
-
-            return SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)), EqualsMethod)
-                .AddModifiers(
-                    SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddParameterListParameters(
-                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameter))
-                        .WithType(SyntaxFactory.ParseTypeName(TypeName)))
-                .AddBodyStatements(GenerateEqualityTests());
-        }
-
-        private StatementSyntax[] GenerateEqualityTests()
-        {
-            var statements = new List<StatementSyntax>();
-
-            statements.Add(
-                SyntaxFactory.IfStatement(
-                    SyntaxHelper.IsNull(OtherParameter),
-                    SyntaxFactory.Block(SyntaxHelper.Return(false))));
-
-            foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
-            {
-                statements.Add(
-                    MakeComparisonTest(
-                        propertyName,
-                        SyntaxFactory.IdentifierName(propertyName),
-                        OtherPropName(propertyName)));
-            }
-
-            // All comparisons succeeded.
-            statements.Add(SyntaxHelper.Return(true));
-
-            return statements.ToArray();
-        }
-
-        private IfStatementSyntax MakeComparisonTest(
-            string comparisonKindKey,
-            ExpressionSyntax left,
-            ExpressionSyntax right)
-       {
-            ComparisonKind comparisonKind = PropInfoDictionary[comparisonKindKey].ComparisonKind;
-            switch (comparisonKind)
-            {
-                case ComparisonKind.OperatorEquals:
-                    return MakeOperatorEqualsTest(left, right);
-
-                case ComparisonKind.ObjectEquals:
-                    return MakeObjectEqualsTest(left, right);
-
-                case ComparisonKind.Collection:
-                    return MakeCollectionEqualsTest(comparisonKindKey, left, right);
-
-                case ComparisonKind.Dictionary:
-                    return MakeDictionaryEqualsTest(comparisonKindKey, left, right);
-
-                default:
-                    throw new ArgumentException($"Property {comparisonKindKey} has unknown comparison type {comparisonKind}.");
-            }
-        }
-
-        private IfStatementSyntax MakeOperatorEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
-        {
-            return SyntaxFactory.IfStatement(
-                SyntaxFactory.BinaryExpression(
-                    SyntaxKind.NotEqualsExpression,
-                    left,
-                    right),
-                SyntaxFactory.Block(SyntaxHelper.Return(false)));
-        }
-
-        private IfStatementSyntax MakeObjectEqualsTest(ExpressionSyntax left, ExpressionSyntax right)
-        {
-            return SyntaxFactory.IfStatement(
-                // if (!(Object.Equals(Prop, other.Prop))
-                SyntaxFactory.PrefixUnaryExpression(
-                    SyntaxKind.LogicalNotExpression,
-                    SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName(ObjectType),
-                            SyntaxFactory.IdentifierName(EqualsMethod)),
-                        SyntaxHelper.ArgumentList(left, right))),
-                SyntaxFactory.Block(SyntaxHelper.Return(false)));
-        }
-
-        private IfStatementSyntax MakeCollectionEqualsTest(
-            string comparisonKindKey,
-            ExpressionSyntax left,
-            ExpressionSyntax right)
-        {
-            return SyntaxFactory.IfStatement(
-                // if (!Object.ReferenceEquals(Prop, other.Prop))
-                SyntaxHelper.AreDifferentObjects(left, right),
-                SyntaxFactory.Block(
-                    // if (Prop == null || other.Prop == null)
-                    SyntaxFactory.IfStatement(
-                        SyntaxFactory.BinaryExpression(
-                            SyntaxKind.LogicalOrExpression,
-                            SyntaxHelper.IsNull(left),
-                            SyntaxHelper.IsNull(right)),
-                        SyntaxFactory.Block(SyntaxHelper.Return(false))),
-
-                    // if (Prop.Count != other.Prop.Count)
-                    SyntaxFactory.IfStatement(
-                        SyntaxFactory.BinaryExpression(
-                            SyntaxKind.NotEqualsExpression,
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                left,
-                                CountPropertyName()),
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                right,
-                                CountPropertyName())),
-                        SyntaxFactory.Block(SyntaxHelper.Return(false))),
-
-                    CollectionIndexLoop(comparisonKindKey, left, right)
-                    ));
-        }
-
-        private ForStatementSyntax CollectionIndexLoop(
-            string comparisonKindKey,
-            ExpressionSyntax left,
-            ExpressionSyntax right)
-        {
-            // The name of the index variable used in the loop over elements.
-            string indexVarName = _localVariableNameGenerator.GetNextLoopIndexVariableName();
-
-            // The two elements that will be compared each time through the loop.
-            ExpressionSyntax leftElement =
-                SyntaxFactory.ElementAccessExpression(
-                    left,
-                    SyntaxHelper.BracketedArgumentList(
-                        SyntaxFactory.IdentifierName(indexVarName)));
-
-            ExpressionSyntax rightElement =
-                SyntaxFactory.ElementAccessExpression(
-                right,
-                SyntaxHelper.BracketedArgumentList(
-                    SyntaxFactory.IdentifierName(indexVarName)));
-
-            // From the type of the element (primitive, object, list, or dictionary), create
-            // the appropriate comparison, for example, "a == b", or "Object.Equals(a, b)".
-            string elmentComparisonTypeKey = PropertyInfoDictionary.MakeElementKeyName(comparisonKindKey);
-
-            IfStatementSyntax comparisonStatement = MakeComparisonTest(elmentComparisonTypeKey, leftElement, rightElement);
-
-            return SyntaxFactory.ForStatement(
-                SyntaxFactory.VariableDeclaration(
-                    SyntaxFactory.ParseTypeName(IntTypeAlias),
-                    SyntaxFactory.SingletonSeparatedList(
-                        SyntaxFactory.VariableDeclarator(
-                            SyntaxFactory.Identifier(indexVarName),
-                            default(BracketedArgumentListSyntax),
-                            SyntaxFactory.EqualsValueClause(
-                                SyntaxFactory.LiteralExpression(
-                                    SyntaxKind.NumericLiteralExpression,
-                                    SyntaxFactory.Literal(0)))))),
-                SyntaxFactory.SeparatedList<ExpressionSyntax>(),
-                SyntaxFactory.BinaryExpression(
-                    SyntaxKind.LessThanExpression,
-                    SyntaxFactory.IdentifierName(indexVarName),
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        left,
-                        CountPropertyName())),
-                SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
-                    SyntaxFactory.PrefixUnaryExpression(
-                        SyntaxKind.PreIncrementExpression,
-                        SyntaxFactory.IdentifierName(indexVarName))),
-                SyntaxFactory.Block(comparisonStatement));
-        }
-
-        private IfStatementSyntax MakeDictionaryEqualsTest(
-            string propertyInfoKey,
-            ExpressionSyntax left,
-            ExpressionSyntax right)
-        {
-            string dictionaryElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
-            string otherPropertyVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
-
-            // Construct the key into the PropertyInfoDictionary so we can look up how
-            // dictionary elements are to be compared.
-            string valuePropertyInfoKey = PropertyInfoDictionary.MakeDictionaryItemKeyName(propertyInfoKey);
-            TypeSyntax dictionaryValueType = PropInfoDictionary[valuePropertyInfoKey].Type;
-
-            return SyntaxFactory.IfStatement(
-                // if (!Object.ReferenceEquals(left, right))
-                SyntaxHelper.AreDifferentObjects(left, right),
-                SyntaxFactory.Block(
-                    // if (left == null || right == null || left.Count != right.Count)
-                    SyntaxFactory.IfStatement(
-                        SyntaxFactory.BinaryExpression(
-                            SyntaxKind.LogicalOrExpression,
-                            SyntaxHelper.IsNull(left),
-                            SyntaxFactory.BinaryExpression(
-                                SyntaxKind.LogicalOrExpression,
-                                SyntaxHelper.IsNull(right),
-                                SyntaxFactory.BinaryExpression(
-                                    SyntaxKind.NotEqualsExpression,
-                                    SyntaxFactory.MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        left,
-                                        CountPropertyName()),
-                                    SyntaxFactory.MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        right,
-                                        CountPropertyName())))),
-                        // return false;
-                        SyntaxFactory.Block(SyntaxHelper.Return(false))),
-                    // foreach (var value_0 in left)
-                    SyntaxFactory.ForEachStatement(
-                        SyntaxHelper.Var(),
-                        dictionaryElementVariableName,
-                        left,
-                        SyntaxFactory.Block(
-                            // var value_1;
-                            SyntaxFactory.LocalDeclarationStatement(
-                                default(SyntaxTokenList), // modifiers
-                                SyntaxFactory.VariableDeclaration(
-                                    dictionaryValueType,
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.VariableDeclarator(otherPropertyVariableName)))),
-                            // if (!right.TryGetValue(value_0.Key, out value_1))
-                            SyntaxFactory.IfStatement(
-                                SyntaxFactory.PrefixUnaryExpression(
-                                    SyntaxKind.LogicalNotExpression,
-                                    SyntaxFactory.InvocationExpression(
-                                        SyntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            right,
-                                            SyntaxFactory.IdentifierName("TryGetValue")),
-                                        SyntaxFactory.ArgumentList(
-                                            SyntaxFactory.SeparatedList(
-                                                new ArgumentSyntax[]
-                                                {
-                                                    SyntaxFactory.Argument(
-                                                        SyntaxFactory.MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            SyntaxFactory.IdentifierName(dictionaryElementVariableName),
-                                                            SyntaxFactory.IdentifierName(KeyProperty))),
-                                                    SyntaxFactory.Argument(
-                                                        default(NameColonSyntax),
-                                                        SyntaxFactory.Token(SyntaxKind.OutKeyword),
-                                                        SyntaxFactory.IdentifierName(otherPropertyVariableName))
-
-                                                })))),
-                                // return false;
-                                SyntaxFactory.Block(SyntaxHelper.Return(false))),
-
-                            MakeComparisonTest(
-                                    valuePropertyInfoKey,
-                                    SyntaxFactory.MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(dictionaryElementVariableName),
-                                        SyntaxFactory.IdentifierName(ValueProperty)),
-                                    SyntaxFactory.IdentifierName(otherPropertyVariableName))))));
-        }
-
-        #region Syntax helpers
-
-        private SimpleNameSyntax CountPropertyName()
-        {
-            return SyntaxFactory.IdentifierName(CountProperty);
-        }
-
-        private ExpressionSyntax OtherPropName(string propName)
-        {
-            return SyntaxFactory.MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                SyntaxFactory.IdentifierName(OtherParameter),
-                SyntaxFactory.IdentifierName(propName));
-        }
-
-        #endregion Syntax helpers
     }
 }

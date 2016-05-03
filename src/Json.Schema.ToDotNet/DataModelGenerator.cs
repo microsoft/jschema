@@ -82,11 +82,12 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_rootSchema.Definitions != null)
             {
-                GenerateClassesForDefinitions(_rootSchema.Definitions);
+                List<KeyValuePair<string, JsonSchema>> typeDefinitions = _rootSchema.Definitions.Where(ShouldGenerateType).ToList();
+                GenerateClassesForDefinitions(typeDefinitions);
 
                 if (_settings.GenerateEqualityComparers)
                 {
-                    GenerateEqualityComparers(_rootSchema.Definitions);
+                    GenerateEqualityComparers(typeDefinitions);
                 }
             }
 
@@ -127,20 +128,20 @@ namespace Microsoft.Json.Schema.ToDotNet
             return rootFileText;
         }
 
-        private void GenerateClassesForDefinitions(IDictionary<string, JsonSchema> definitions)
+        private bool ShouldGenerateType(KeyValuePair<string, JsonSchema> definition)
+        {
+            return definition.Value.SafeGetType() != JTokenType.Array;
+        }
+
+        private void GenerateClassesForDefinitions(IEnumerable<KeyValuePair<string, JsonSchema>> definitions)
         {
             foreach (KeyValuePair<string, JsonSchema> definition in definitions)
             {
-                GenerateClassForDefinition(definition.Key, definition.Value);
+                GenerateClass(definition.Key, definition.Value, _settings.SealClasses);
             }
         }
 
-        private void GenerateClassForDefinition(string className, JsonSchema schema)
-        {
-            GenerateClass(className, schema, _settings.SealClasses);
-        }
-
-        private void GenerateEqualityComparers(IDictionary<string, JsonSchema> definitions)
+        private void GenerateEqualityComparers(IEnumerable<KeyValuePair<string, JsonSchema>> definitions)
         {
             foreach (KeyValuePair<string, JsonSchema> definition in definitions)
             {
@@ -161,7 +162,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private void GenerateEqualityComparer(string className, JsonSchema schema)
         {
-            className = GetHintedClassName(className.ToPascalCase());
+            className = GetHintedClassName(className).ToPascalCase();
 
             var equalityComparerGenerator = new EqualityComparerGenerator(
                 _settings.CopyrightNotice,
@@ -288,7 +289,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                     schema,
                     _settings.HintDictionary,
                     baseInterfaceName,
-                    _settings.GenerateEqualityComparers,
                     _settings.GenerateCloningCode,
                     _settings.SealClasses,
                     _nodeInterfaceName,

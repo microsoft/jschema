@@ -57,7 +57,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IC, IEquatable<C>
+    public partial class C : IC
     {
         /// <summary>
         /// The value.

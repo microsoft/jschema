@@ -28,6 +28,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string ObjectTypeName = "Object";
 
         private const string CountPropertyName = "Count";
+        private const string InstancePropertyName = "Instance";
         private const string KeyPropertyName = "Key";
         private const string ValuePropertyName = "Value";
 
@@ -111,10 +112,15 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Token(SyntaxKind.SealedKeyword))
                     .AddBaseListTypes(comparerInterface)
                     .AddMembers(
+                        GenerateInstanceProperty(),
                         GenerateEqualsMethod(),
                         GenerateGetHashCodeMethod());
 
-            var usings = new List<string>();
+            var usings = new List<string>
+            {
+                "System",                       // For Object.
+                "System.Collections.Generic"    // For IEqualityComparer<T>
+            };
 
             return classDeclaration.Format(
                 _copyrightNotice,
@@ -140,6 +146,29 @@ namespace Microsoft.Json.Schema.ToDotNet
                 CultureInfo.CurrentCulture,
                 Resources.EqualityComparerSummary,
                 _className);
+        }
+
+        private MemberDeclarationSyntax GenerateInstanceProperty()
+        {
+            TypeSyntax comparerType = SyntaxFactory.ParseTypeName(GetEqualityComparerClassName(_className));
+
+            // public static readonly ComparerType Instance = new ComparerType();
+            return SyntaxFactory.FieldDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                SyntaxFactory.TokenList(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+                    SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)),
+                SyntaxFactory.VariableDeclaration(comparerType,
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.VariableDeclarator(
+                            SyntaxFactory.Identifier(InstancePropertyName),
+                            default(BracketedArgumentListSyntax),
+                            SyntaxFactory.EqualsValueClause(
+                                SyntaxFactory.ObjectCreationExpression(
+                                    comparerType,
+                                    SyntaxHelper.ArgumentList(),
+                                    default(InitializerExpressionSyntax)))))));
         }
 
         private MemberDeclarationSyntax GenerateEqualsMethod()
@@ -220,9 +249,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             var statements = new List<StatementSyntax>();
 
-            IEnumerable<string> comparerTypeNames = _propertyInfoDictionary.GetPropertyNames()
-                .Where(pn => _propertyInfoDictionary[pn].ComparisonKind == ComparisonKind.EqualityComparerEquals)
-                .Select(pn => GetComparerTypeName(pn))
+            IEnumerable<string> comparerTypeNames = _propertyInfoDictionary.Keys
+                .Where(key => _propertyInfoDictionary[key].ComparisonKind == ComparisonKind.EqualityComparerEquals)
+                .Select(key => GetComparerTypeName(key))
                 .Distinct()
                 .OrderBy(ctn => ctn);
 

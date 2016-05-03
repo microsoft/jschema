@@ -317,7 +317,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                             initializationKind = InitializationKind.SimpleAssign;
                         }
 
-                        comparisonKind = ComparisonKind.ObjectEquals;
                         hashKind = HashKind.ScalarReferenceType;
                         type = MakeObjectType(propertySchema, out namespaceName);
                         break;

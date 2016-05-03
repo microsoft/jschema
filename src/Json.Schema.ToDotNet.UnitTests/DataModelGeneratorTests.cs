@@ -17,40 +17,6 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         private TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
 
-        private class ExpectedContents
-        {
-            internal string ClassContents;
-            internal string ComparerClassContents;
-        }
-
-        private void AssertFileContentsMatchExpectedContents(IDictionary<string, ExpectedContents> expectedContentsDictionary)
-        {
-            // Each type in the schema generates a class and an equality comparer class.
-            _testFileSystem.Files.Count.Should().Be(expectedContentsDictionary.Count * 2);
-
-            foreach (string className in expectedContentsDictionary.Keys)
-            {
-                string classPath = TestFileSystem.MakeOutputFilePath(className);
-                _testFileSystem.Files.Should().Contain(classPath);
-
-                string expectedClassContents = expectedContentsDictionary[className].ClassContents;
-                if (expectedClassContents != null)
-                {
-                    _testFileSystem[classPath].Should().Be(expectedClassContents);
-                }
-
-                string comparerClassName = EqualityComparerGenerator.GetEqualityComparerClassName(className);
-                string comparerClassPath = TestFileSystem.MakeOutputFilePath(comparerClassName);
-                _testFileSystem.Files.Should().Contain(comparerClassPath);
-
-                string expectedComparerClassContents = expectedContentsDictionary[className].ComparerClassContents;
-                if (expectedComparerClassContents != null)
-                {
-                    _testFileSystem[comparerClassPath].Should().Be(expectedComparerClassContents);
-                }
-            }
-        }
-
         public DataModelGeneratorTests()
         {
             _testFileSystem = new TestFileSystem();
@@ -129,7 +95,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
     }
 }";
@@ -152,7 +118,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProp { get; set; }
@@ -162,59 +128,13 @@ namespace N
         public bool BooleanProp { get; set; }
         [DataMember(Name = ""integerProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntegerProp { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                if (StringProp != null)
-                {
-                    result = (result * 31) + StringProp.GetHashCode();
-                }
-
-                result = (result * 31) + NumberProp.GetHashCode();
-                result = (result * 31) + BooleanProp.GetHashCode();
-                result = (result * 31) + IntegerProp.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (StringProp != other.StringProp)
-            {
-                return false;
-            }
-
-            if (NumberProp != other.NumberProp)
-            {
-                return false;
-            }
-
-            if (BooleanProp != other.BooleanProp)
-            {
-                return false;
-            }
-
-            if (IntegerProp != other.IntegerProp)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
 
             const string ExpectedComparerClass =
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -224,6 +144,8 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
         public bool Equals(C left, C right)
         {
             if (ReferenceEquals(left, right))
@@ -292,14 +214,14 @@ namespace N
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                [TestSettings.RootClassName] = new ExpectedContents
+                [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
 
-            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
@@ -314,43 +236,16 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ObjectProp { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                if (ObjectProp != null)
-                {
-                    result = (result * 31) + ObjectProp.GetHashCode();
-                }
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.Equals(ObjectProp, other.ObjectProp))
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
             const string ExpectedComparerClass =
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -360,6 +255,8 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
         public bool Equals(C left, C right)
         {
             if (ReferenceEquals(left, right))
@@ -372,7 +269,8 @@ namespace N
                 return false;
             }
 
-            if (!Object.Equals(left.ObjectProp, right.ObjectProp))
+            var dEqualityComparer = new DEqualityComparer();
+            if (!dEqualityComparer.Equals(left.ObjectProp, right.ObjectProp))
             {
                 return false;
             }
@@ -410,7 +308,7 @@ namespace N
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                [TestSettings.RootClassName] = new ExpectedContents
+                [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
                     ComparerClassContents = ExpectedComparerClass
@@ -419,7 +317,7 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
@@ -506,67 +404,17 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                if (ArrayProp != null)
-                {
-                    foreach (var value_0 in ArrayProp)
-                    {
-                        result = result * 31;
-                        if (value_0 != null)
-                        {
-                            result = (result * 31) + value_0.GetHashCode();
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.ReferenceEquals(ArrayProp, other.ArrayProp))
-            {
-                if (ArrayProp == null || other.ArrayProp == null)
-                {
-                    return false;
-                }
-
-                if (ArrayProp.Count != other.ArrayProp.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < ArrayProp.Count; ++index_0)
-                {
-                    if (!Object.Equals(ArrayProp[index_0], other.ArrayProp[index_0]))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
     }
 }";
 
             string ExpectedComparerClass =
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -576,6 +424,8 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
         public bool Equals(C left, C right)
         {
             if (ReferenceEquals(left, right))
@@ -650,14 +500,14 @@ namespace N
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                [TestSettings.RootClassName] = new ExpectedContents
+                [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
 
-            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
@@ -676,7 +526,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         /// <summary>
         /// An example property.
@@ -693,10 +543,7 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties whose property type is ref")]
         public void GeneratesXmlCommentsForPropertiesWhosePropertyTypeIsRef()
         {
-            _settings.RootClassName = "consoleWindow";
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = SchemaReader.ReadSchema(
+            const string Schema =
 @"{
   ""type"": ""object"",
   ""description"": ""Describes a console window."",
@@ -730,9 +577,9 @@ namespace N
       }
     }
   }
-}");
+}";
 
-            const string RootClassText =
+            const string ExpectedRootClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
@@ -744,7 +591,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class ConsoleWindow : IEquatable<ConsoleWindow>
+    public partial class ConsoleWindow
     {
         /// <summary>
         /// The color of the text on the screen.
@@ -759,8 +606,74 @@ namespace N
         public Color BackgroundColor { get; set; }
     }
 }";
+            const string ExpectedRootComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
-            const string ColorClassText =
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type ConsoleWindow for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class ConsoleWindowEqualityComparer : IEqualityComparer<ConsoleWindow>
+    {
+        public static readonly ConsoleWindowEqualityComparer Instance = new ConsoleWindowEqualityComparer();
+
+        public bool Equals(ConsoleWindow left, ConsoleWindow right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            var colorEqualityComparer = new ColorEqualityComparer();
+            if (!colorEqualityComparer.Equals(left.ForegroundColor, right.ForegroundColor))
+            {
+                return false;
+            }
+
+            if (!colorEqualityComparer.Equals(left.BackgroundColor, right.BackgroundColor))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(ConsoleWindow obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.ForegroundColor != null)
+                {
+                    result = (result * 31) + obj.ForegroundColor.GetHashCode();
+                }
+
+                if (obj.BackgroundColor != null)
+                {
+                    result = (result * 31) + obj.BackgroundColor.GetHashCode();
+                }
+            }
+
+            return result;
+        }
+    }
+}";
+
+            const string ExpectedColorClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
@@ -772,7 +685,7 @@ namespace N
     /// </summary>
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class Color : IEquatable<Color>
+    public partial class Color
     {
         /// <summary>
         /// The value of the R component.
@@ -794,22 +707,93 @@ namespace N
     }
 }";
 
+            const string ExpectedColorComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type Color for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class ColorEqualityComparer : IEqualityComparer<Color>
+    {
+        public static readonly ColorEqualityComparer Instance = new ColorEqualityComparer();
+
+        public bool Equals(Color left, Color right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.Red != right.Red)
+            {
+                return false;
+            }
+
+            if (left.Green != right.Green)
+            {
+                return false;
+            }
+
+            if (left.Blue != right.Blue)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(Color obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + obj.Red.GetHashCode();
+                result = (result * 31) + obj.Green.GetHashCode();
+                result = (result * 31) + obj.Blue.GetHashCode();
+            }
+
+            return result;
+        }
+    }
+}";
+
+            _settings.GenerateEqualityComparers = true;
+            _settings.RootClassName = "ConsoleWindow";
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+
             generator.Generate(schema);
 
-            string rootFilePath = TestFileSystem.MakeOutputFilePath(_settings.RootClassName.ToPascalCase());
-            string colorFilePath = TestFileSystem.MakeOutputFilePath("Color");
-
-            var expectedOutputFiles = new List<string>
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                rootFilePath,
-                colorFilePath
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedRootClass,
+                    ComparerClassContents = ExpectedRootComparerClass
+                },
+                ["Color"] = new ExpectedContents
+                {
+                    ClassContents = ExpectedColorClass,
+                    ComparerClassContents = ExpectedColorComparerClass
+                }
             };
 
-            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-            _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
-
-            _testFileSystem[rootFilePath].Should().Be(RootClassText);
-            _testFileSystem[colorFilePath].Should().Be(ColorClassText);
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates copyright notice")]
@@ -836,7 +820,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         /// <summary>
         /// An example property.
@@ -986,7 +970,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : ISNode, IEquatable<C>
+    public partial class C : ISNode
     {
         /// <summary>
         /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
@@ -1528,41 +1512,17 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool RootProp { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + RootProp.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (RootProp != other.RootProp)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
 
             const string ExpectedRootComparerClass =
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1572,6 +1532,8 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
         public bool Equals(C left, C right)
         {
             if (ReferenceEquals(left, right))
@@ -1619,44 +1581,17 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class Def1 : IEquatable<Def1>
+    public partial class Def1
     {
         [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
         public string Prop1 { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                if (Prop1 != null)
-                {
-                    result = (result * 31) + Prop1.GetHashCode();
-                }
-            }
-
-            return result;
-        }
-
-        public bool Equals(Def1 other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (Prop1 != other.Prop1)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
 
             const string ExpectedComparerClass1 =
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1666,6 +1601,8 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class Def1EqualityComparer : IEqualityComparer<Def1>
     {
+        public static readonly Def1EqualityComparer Instance = new Def1EqualityComparer();
+
         public bool Equals(Def1 left, Def1 right)
         {
             if (ReferenceEquals(left, right))
@@ -1716,41 +1653,17 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class Def2 : IEquatable<Def2>
+    public partial class Def2
     {
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
         public int Prop2 { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + Prop2.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(Def2 other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (Prop2 != other.Prop2)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
 
             const string ExpectedComparerClass2 =
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1760,6 +1673,8 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class Def2EqualityComparer : IEqualityComparer<Def2>
     {
+        public static readonly Def2EqualityComparer Instance = new Def2EqualityComparer();
+
         public bool Equals(Def2 left, Def2 right)
         {
             if (ReferenceEquals(left, right))
@@ -1806,7 +1721,7 @@ namespace N
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                [TestSettings.RootClassName] = new ExpectedContents
+                [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedRootClass,
                     ComparerClassContents = ExpectedRootComparerClass
@@ -1823,7 +1738,7 @@ namespace N
                 }
             };
 
-            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
@@ -1849,40 +1764,16 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
-
-        public override int GetHashCode()
-        {
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + StartTime.GetHashCode();
-            }
-
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (StartTime != other.StartTime)
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }";
             const string ExpectedComparerClass =
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace N
 {
@@ -1892,6 +1783,8 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
         public bool Equals(C left, C right)
         {
             if (ReferenceEquals(left, right))
@@ -1939,23 +1832,20 @@ namespace N
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                [TestSettings.RootClassName] = new ExpectedContents
+                [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
 
-            AssertFileContentsMatchExpectedContents(expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates uri-valued properties")]
         public void GeneratesUriValuedProperties()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = SchemaReader.ReadSchema(
+            string Schema =
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -1964,9 +1854,9 @@ namespace N
     ""format"": ""uri""
     }
   }
-}");
+}";
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
@@ -1975,51 +1865,90 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
+    }
+}";
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
-        public override int GetHashCode()
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
         {
-            int result = 17;
-            unchecked
+            if (ReferenceEquals(left, right))
             {
-                if (TargetFile != null)
-                {
-                    result = (result * 31) + TargetFile.GetHashCode();
-                }
+                return true;
             }
 
-            return result;
-        }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
             {
                 return false;
             }
 
-            if (TargetFile != other.TargetFile)
+            if (left.TargetFile != right.TargetFile)
             {
                 return false;
             }
 
             return true;
         }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.TargetFile != null)
+                {
+                    result = (result * 31) + obj.TargetFile.GetHashCode();
+                }
+            }
+
+            return result;
+        }
     }
 }";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
-        }
 
-        [Fact(DisplayName = "DataModelGenerator generates integer property from dictionary reference")]
-        public void GeneratesIntegerPropertyFromDictionaryReference()
-        {
+            _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(
+            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+
+            generator.Generate(schema);
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                }
+            };
+
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates integer property from reference")]
+        public void GeneratesIntegerPropertyFromReference()
+        {
+            const string Schema =
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -2032,9 +1961,9 @@ namespace N
       ""type"": ""integer""
     }
   }
-}");
+}";
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
@@ -2043,14 +1972,82 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntDefProp { get; set; }
     }
 }";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.IntDefProp != right.IntDefProp)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                result = (result * 31) + obj.IntDefProp.GetHashCode();
+            }
+
+            return result;
+        }
+    }
+}";
+
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+
+            generator.Generate(schema);
+
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                },
+                ["D"] = new ExpectedContents()
+            };
+
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref")]
@@ -2078,7 +2075,7 @@ namespace N
   }
 }");
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2088,19 +2085,76 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
         public IList<int> ArrayOfIntByRef { get; set; }
+    }
+}";
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
-        public override int GetHashCode()
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
         {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(left.ArrayOfIntByRef, right.ArrayOfIntByRef))
+            {
+                if (left.ArrayOfIntByRef == null || right.ArrayOfIntByRef == null)
+                {
+                    return false;
+                }
+
+                if (left.ArrayOfIntByRef.Count != right.ArrayOfIntByRef.Count)
+                {
+                    return false;
+                }
+
+                for (int index_0 = 0; index_0 < left.ArrayOfIntByRef.Count; ++index_0)
+                {
+                    if (left.ArrayOfIntByRef[index_0] != right.ArrayOfIntByRef[index_0])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
             int result = 17;
             unchecked
             {
-                if (ArrayOfIntByRef != null)
+                if (obj.ArrayOfIntByRef != null)
                 {
-                    foreach (var value_0 in ArrayOfIntByRef)
+                    foreach (var value_0 in obj.ArrayOfIntByRef)
                     {
                         result = result * 31;
                         result = (result * 31) + value_0.GetHashCode();
@@ -2110,53 +2164,30 @@ namespace N
 
             return result;
         }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.ReferenceEquals(ArrayOfIntByRef, other.ArrayOfIntByRef))
-            {
-                if (ArrayOfIntByRef == null || other.ArrayOfIntByRef == null)
-                {
-                    return false;
-                }
-
-                if (ArrayOfIntByRef.Count != other.ArrayOfIntByRef.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < ArrayOfIntByRef.Count; ++index_0)
-                {
-                    if (ArrayOfIntByRef[index_0] != other.ArrayOfIntByRef[index_0])
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
     }
 }";
+
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
+            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
 
-            actual.Should().Be(Expected);
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                },
+                ["D"] = new ExpectedContents()
+            };
+
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type")]
         public void GeneratesArrayOfArraysOfPrimitiveType()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = SchemaReader.ReadSchema(
+            const string Schema =
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -2175,9 +2206,9 @@ namespace N
       }
     }
   }
-}");
+}";
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2187,19 +2218,92 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
+    }
+}";
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
-        public override int GetHashCode()
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
         {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(left.ArrayOfArrayOfInt, right.ArrayOfArrayOfInt))
+            {
+                if (left.ArrayOfArrayOfInt == null || right.ArrayOfArrayOfInt == null)
+                {
+                    return false;
+                }
+
+                if (left.ArrayOfArrayOfInt.Count != right.ArrayOfArrayOfInt.Count)
+                {
+                    return false;
+                }
+
+                for (int index_0 = 0; index_0 < left.ArrayOfArrayOfInt.Count; ++index_0)
+                {
+                    if (!Object.ReferenceEquals(left.ArrayOfArrayOfInt[index_0], right.ArrayOfArrayOfInt[index_0]))
+                    {
+                        if (left.ArrayOfArrayOfInt[index_0] == null || right.ArrayOfArrayOfInt[index_0] == null)
+                        {
+                            return false;
+                        }
+
+                        if (left.ArrayOfArrayOfInt[index_0].Count != right.ArrayOfArrayOfInt[index_0].Count)
+                        {
+                            return false;
+                        }
+
+                        for (int index_1 = 0; index_1 < left.ArrayOfArrayOfInt[index_0].Count; ++index_1)
+                        {
+                            if (left.ArrayOfArrayOfInt[index_0][index_1] != right.ArrayOfArrayOfInt[index_0][index_1])
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
             int result = 17;
             unchecked
             {
-                if (ArrayOfArrayOfInt != null)
+                if (obj.ArrayOfArrayOfInt != null)
                 {
-                    foreach (var value_0 in ArrayOfArrayOfInt)
+                    foreach (var value_0 in obj.ArrayOfArrayOfInt)
                     {
                         result = result * 31;
                         if (value_0 != null)
@@ -2216,69 +2320,32 @@ namespace N
 
             return result;
         }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.ReferenceEquals(ArrayOfArrayOfInt, other.ArrayOfArrayOfInt))
-            {
-                if (ArrayOfArrayOfInt == null || other.ArrayOfArrayOfInt == null)
-                {
-                    return false;
-                }
-
-                if (ArrayOfArrayOfInt.Count != other.ArrayOfArrayOfInt.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < ArrayOfArrayOfInt.Count; ++index_0)
-                {
-                    if (!Object.ReferenceEquals(ArrayOfArrayOfInt[index_0], other.ArrayOfArrayOfInt[index_0]))
-                    {
-                        if (ArrayOfArrayOfInt[index_0] == null || other.ArrayOfArrayOfInt[index_0] == null)
-                        {
-                            return false;
-                        }
-
-                        if (ArrayOfArrayOfInt[index_0].Count != other.ArrayOfArrayOfInt[index_0].Count)
-                        {
-                            return false;
-                        }
-
-                        for (int index_1 = 0; index_1 < ArrayOfArrayOfInt[index_0].Count; ++index_1)
-                        {
-                            if (ArrayOfArrayOfInt[index_0][index_1] != other.ArrayOfArrayOfInt[index_0][index_1])
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
     }
 }";
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfPrimitiveType));
+            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayOfArraysOfPrimitiveType));
 
-            actual.Should().Be(Expected);
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                }
+            };
+
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
         public void GeneratesArrayOfArraysOfObjectType()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = SchemaReader.ReadSchema(
+            const string Schema =
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -2297,9 +2364,9 @@ namespace N
       }
     }
   }
-}");
+}";
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2309,19 +2376,92 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
+    }
+}";
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
-        public override int GetHashCode()
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
         {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(left.ArrayOfArrayOfObject, right.ArrayOfArrayOfObject))
+            {
+                if (left.ArrayOfArrayOfObject == null || right.ArrayOfArrayOfObject == null)
+                {
+                    return false;
+                }
+
+                if (left.ArrayOfArrayOfObject.Count != right.ArrayOfArrayOfObject.Count)
+                {
+                    return false;
+                }
+
+                for (int index_0 = 0; index_0 < left.ArrayOfArrayOfObject.Count; ++index_0)
+                {
+                    if (!Object.ReferenceEquals(left.ArrayOfArrayOfObject[index_0], right.ArrayOfArrayOfObject[index_0]))
+                    {
+                        if (left.ArrayOfArrayOfObject[index_0] == null || right.ArrayOfArrayOfObject[index_0] == null)
+                        {
+                            return false;
+                        }
+
+                        if (left.ArrayOfArrayOfObject[index_0].Count != right.ArrayOfArrayOfObject[index_0].Count)
+                        {
+                            return false;
+                        }
+
+                        for (int index_1 = 0; index_1 < left.ArrayOfArrayOfObject[index_0].Count; ++index_1)
+                        {
+                            if (!Object.Equals(left.ArrayOfArrayOfObject[index_0][index_1], right.ArrayOfArrayOfObject[index_0][index_1]))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
             int result = 17;
             unchecked
             {
-                if (ArrayOfArrayOfObject != null)
+                if (obj.ArrayOfArrayOfObject != null)
                 {
-                    foreach (var value_0 in ArrayOfArrayOfObject)
+                    foreach (var value_0 in obj.ArrayOfArrayOfObject)
                     {
                         result = result * 31;
                         if (value_0 != null)
@@ -2341,69 +2481,33 @@ namespace N
 
             return result;
         }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.ReferenceEquals(ArrayOfArrayOfObject, other.ArrayOfArrayOfObject))
-            {
-                if (ArrayOfArrayOfObject == null || other.ArrayOfArrayOfObject == null)
-                {
-                    return false;
-                }
-
-                if (ArrayOfArrayOfObject.Count != other.ArrayOfArrayOfObject.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < ArrayOfArrayOfObject.Count; ++index_0)
-                {
-                    if (!Object.ReferenceEquals(ArrayOfArrayOfObject[index_0], other.ArrayOfArrayOfObject[index_0]))
-                    {
-                        if (ArrayOfArrayOfObject[index_0] == null || other.ArrayOfArrayOfObject[index_0] == null)
-                        {
-                            return false;
-                        }
-
-                        if (ArrayOfArrayOfObject[index_0].Count != other.ArrayOfArrayOfObject[index_0].Count)
-                        {
-                            return false;
-                        }
-
-                        for (int index_1 = 0; index_1 < ArrayOfArrayOfObject[index_0].Count; ++index_1)
-                        {
-                            if (!Object.Equals(ArrayOfArrayOfObject[index_0][index_1], other.ArrayOfArrayOfObject[index_0][index_1]))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
     }
 }";
+
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfObjectType));
+            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayOfArraysOfObjectType));
 
-            actual.Should().Be(Expected);
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                }
+            };
+
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
         public void GeneratesArrayOfArraysOfClassType()
         {
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-
-            JsonSchema schema = SchemaReader.ReadSchema(
+            const string Schema =
 @"{
   ""type"": ""object"",
   ""properties"": {
@@ -2426,9 +2530,9 @@ namespace N
       }
     }
   }
-}");
+}";
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2438,19 +2542,93 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
+    }
+}";
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
-        public override int GetHashCode()
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
         {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            var dEqualityComparer = new DEqualityComparer();
+            if (!Object.ReferenceEquals(left.ArrayOfArrayOfD, right.ArrayOfArrayOfD))
+            {
+                if (left.ArrayOfArrayOfD == null || right.ArrayOfArrayOfD == null)
+                {
+                    return false;
+                }
+
+                if (left.ArrayOfArrayOfD.Count != right.ArrayOfArrayOfD.Count)
+                {
+                    return false;
+                }
+
+                for (int index_0 = 0; index_0 < left.ArrayOfArrayOfD.Count; ++index_0)
+                {
+                    if (!Object.ReferenceEquals(left.ArrayOfArrayOfD[index_0], right.ArrayOfArrayOfD[index_0]))
+                    {
+                        if (left.ArrayOfArrayOfD[index_0] == null || right.ArrayOfArrayOfD[index_0] == null)
+                        {
+                            return false;
+                        }
+
+                        if (left.ArrayOfArrayOfD[index_0].Count != right.ArrayOfArrayOfD[index_0].Count)
+                        {
+                            return false;
+                        }
+
+                        for (int index_1 = 0; index_1 < left.ArrayOfArrayOfD[index_0].Count; ++index_1)
+                        {
+                            if (!dEqualityComparer.Equals(left.ArrayOfArrayOfD[index_0][index_1], right.ArrayOfArrayOfD[index_0][index_1]))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
             int result = 17;
             unchecked
             {
-                if (ArrayOfArrayOfD != null)
+                if (obj.ArrayOfArrayOfD != null)
                 {
-                    foreach (var value_0 in ArrayOfArrayOfD)
+                    foreach (var value_0 in obj.ArrayOfArrayOfD)
                     {
                         result = result * 31;
                         if (value_0 != null)
@@ -2470,60 +2648,28 @@ namespace N
 
             return result;
         }
-
-        public bool Equals(C other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (!Object.ReferenceEquals(ArrayOfArrayOfD, other.ArrayOfArrayOfD))
-            {
-                if (ArrayOfArrayOfD == null || other.ArrayOfArrayOfD == null)
-                {
-                    return false;
-                }
-
-                if (ArrayOfArrayOfD.Count != other.ArrayOfArrayOfD.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < ArrayOfArrayOfD.Count; ++index_0)
-                {
-                    if (!Object.ReferenceEquals(ArrayOfArrayOfD[index_0], other.ArrayOfArrayOfD[index_0]))
-                    {
-                        if (ArrayOfArrayOfD[index_0] == null || other.ArrayOfArrayOfD[index_0] == null)
-                        {
-                            return false;
-                        }
-
-                        if (ArrayOfArrayOfD[index_0].Count != other.ArrayOfArrayOfD[index_0].Count)
-                        {
-                            return false;
-                        }
-
-                        for (int index_1 = 0; index_1 < ArrayOfArrayOfD[index_0].Count; ++index_1)
-                        {
-                            if (!Object.Equals(ArrayOfArrayOfD[index_0][index_1], other.ArrayOfArrayOfD[index_0][index_1]))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
     }
 }";
+
+            _settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(Expected, actual, nameof(GeneratesArrayOfArraysOfClassType));
+            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayOfArraysOfClassType));
 
-            actual.Should().Be(Expected);
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass,
+                    ComparerClassContents = ExpectedComparerClass
+                },
+                ["D"] = new ExpectedContents()
+            };
+
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates string for inline enum of string")]
@@ -2553,7 +2699,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""version"", IsRequired = false, EmitDefaultValue = false)]
         public string Version { get; set; }
@@ -2594,7 +2740,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C : IEquatable<C>
+    public partial class C
     {
         [DataMember(Name = ""requiredProp1"", IsRequired = true)]
         public string RequiredProp1 { get; set; }
@@ -2629,7 +2775,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C : IEquatable<C>
+    public sealed class C
     {
     }
 }";
