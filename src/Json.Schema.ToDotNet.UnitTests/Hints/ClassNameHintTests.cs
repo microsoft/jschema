@@ -128,6 +128,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 // PrimaryClassText
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -136,6 +137,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""file"", IsRequired = false, EmitDefaultValue = false)]
         public FileData File { get; set; }
     }
@@ -154,7 +159,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -201,6 +206,7 @@ namespace N
 // HintedClassText
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -209,6 +215,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class FileData
     {
+        public static IEqualityComparer<FileData> ValueComparer => FileDataEqualityComparer.Instance;
+
+        public bool ValueEquals(FileData other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""path"", IsRequired = false, EmitDefaultValue = false)]
         public string Path { get; set; }
     }
@@ -227,7 +237,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class FileDataEqualityComparer : IEqualityComparer<FileData>
     {
-        public static readonly FileDataEqualityComparer Instance = new FileDataEqualityComparer();
+        internal static readonly FileDataEqualityComparer Instance = new FileDataEqualityComparer();
 
         public bool Equals(FileData left, FileData right)
         {

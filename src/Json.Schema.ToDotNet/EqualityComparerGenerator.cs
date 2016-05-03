@@ -28,7 +28,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string ObjectTypeName = "Object";
 
         private const string CountPropertyName = "Count";
-        private const string InstancePropertyName = "Instance";
+        internal const string InstancePropertyName = "Instance";
         private const string KeyPropertyName = "Key";
         private const string ValuePropertyName = "Value";
 
@@ -103,7 +103,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             string comparerClassName = GetEqualityComparerClassName(_className);
 
-            var comparerInterface = MakeComparerBaseType();
+            var comparerInterface = GetComparerBaseType(_className);
 
             ClassDeclarationSyntax classDeclaration =
                 SyntaxFactory.ClassDeclaration(comparerClassName)
@@ -129,14 +129,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                 MakeSummaryComment());
         }
 
-        private BaseTypeSyntax MakeComparerBaseType()
+        internal static BaseTypeSyntax GetComparerBaseType(string className)
         {
             return SyntaxFactory.SimpleBaseType(
                 SyntaxFactory.GenericName(
                     SyntaxFactory.Identifier(EqualityComparerInterfaceName),
                     SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(
                         new TypeSyntax[] {
-                            SyntaxFactory.ParseTypeName(_className)
+                            SyntaxFactory.ParseTypeName(className)
                         }))));
         }
 
@@ -156,7 +156,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.FieldDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 SyntaxFactory.TokenList(
-                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.InternalKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword),
                     SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)),
                 SyntaxFactory.VariableDeclaration(comparerType,

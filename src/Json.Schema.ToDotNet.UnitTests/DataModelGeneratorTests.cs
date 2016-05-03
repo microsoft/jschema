@@ -112,6 +112,7 @@ namespace N
             const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -120,6 +121,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProp { get; set; }
         [DataMember(Name = ""numberProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -144,7 +149,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -230,6 +235,7 @@ namespace N
             const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -238,6 +244,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ObjectProp { get; set; }
     }
@@ -255,7 +265,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -406,6 +416,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
     }
@@ -424,7 +438,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -582,6 +596,7 @@ namespace N
             const string ExpectedRootClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -593,6 +608,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class ConsoleWindow
     {
+        public static IEqualityComparer<ConsoleWindow> ValueComparer => ConsoleWindowEqualityComparer.Instance;
+
+        public bool ValueEquals(ConsoleWindow other) => ValueComparer.Equals(this, other);
+
         /// <summary>
         /// The color of the text on the screen.
         /// </summary>
@@ -619,7 +638,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class ConsoleWindowEqualityComparer : IEqualityComparer<ConsoleWindow>
     {
-        public static readonly ConsoleWindowEqualityComparer Instance = new ConsoleWindowEqualityComparer();
+        internal static readonly ConsoleWindowEqualityComparer Instance = new ConsoleWindowEqualityComparer();
 
         public bool Equals(ConsoleWindow left, ConsoleWindow right)
         {
@@ -676,6 +695,7 @@ namespace N
             const string ExpectedColorClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -687,6 +707,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class Color
     {
+        public static IEqualityComparer<Color> ValueComparer => ColorEqualityComparer.Instance;
+
+        public bool ValueEquals(Color other) => ValueComparer.Equals(this, other);
+
         /// <summary>
         /// The value of the R component.
         /// </summary>
@@ -720,7 +744,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class ColorEqualityComparer : IEqualityComparer<Color>
     {
-        public static readonly ColorEqualityComparer Instance = new ColorEqualityComparer();
+        internal static readonly ColorEqualityComparer Instance = new ColorEqualityComparer();
 
         public bool Equals(Color left, Color right)
         {
@@ -1506,6 +1530,7 @@ namespace N
             const string ExpectedRootClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -1514,6 +1539,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool RootProp { get; set; }
     }
@@ -1532,7 +1561,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -1575,6 +1604,7 @@ namespace N
             const string ExpectedDefinedClass1 =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -1583,6 +1613,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class Def1
     {
+        public static IEqualityComparer<Def1> ValueComparer => Def1EqualityComparer.Instance;
+
+        public bool ValueEquals(Def1 other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
         public string Prop1 { get; set; }
     }
@@ -1601,7 +1635,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class Def1EqualityComparer : IEqualityComparer<Def1>
     {
-        public static readonly Def1EqualityComparer Instance = new Def1EqualityComparer();
+        internal static readonly Def1EqualityComparer Instance = new Def1EqualityComparer();
 
         public bool Equals(Def1 left, Def1 right)
         {
@@ -1647,6 +1681,7 @@ namespace N
             const string ExpectedDefinedClass2 =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -1655,6 +1690,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class Def2
     {
+        public static IEqualityComparer<Def2> ValueComparer => Def2EqualityComparer.Instance;
+
+        public bool ValueEquals(Def2 other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
         public int Prop2 { get; set; }
     }
@@ -1673,7 +1712,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class Def2EqualityComparer : IEqualityComparer<Def2>
     {
-        public static readonly Def2EqualityComparer Instance = new Def2EqualityComparer();
+        internal static readonly Def2EqualityComparer Instance = new Def2EqualityComparer();
 
         public bool Equals(Def2 left, Def2 right)
         {
@@ -1758,6 +1797,7 @@ namespace N
             const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -1766,6 +1806,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
     }
@@ -1783,7 +1827,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -1859,6 +1903,7 @@ namespace N
             const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -1867,6 +1912,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
     }
@@ -1884,7 +1933,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -1966,6 +2015,7 @@ namespace N
             const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
@@ -1974,6 +2024,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntDefProp { get; set; }
     }
@@ -1991,7 +2045,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -2087,6 +2141,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
         public IList<int> ArrayOfIntByRef { get; set; }
     }
@@ -2104,7 +2162,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -2220,6 +2278,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
     }
@@ -2237,7 +2299,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -2378,6 +2440,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
     }
@@ -2395,7 +2461,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {
@@ -2544,6 +2610,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
     }
@@ -2561,7 +2631,7 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class CEqualityComparer : IEqualityComparer<C>
     {
-        public static readonly CEqualityComparer Instance = new CEqualityComparer();
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
 
         public bool Equals(C left, C right)
         {

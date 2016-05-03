@@ -18,13 +18,14 @@ namespace Microsoft.Json.Schema.ToDotNet
     public class ClassGenerator : ClassOrInterfaceGenerator
     {
         private readonly string _baseInterfaceName;
+        private readonly bool _generateEqualityComparers;
         private readonly bool _generateCloningCode;
         private readonly bool _sealClasses;
         private readonly string _syntaxInterfaceName;
         private readonly string _kindEnumName;
 
         // Name used for the parameters of the copy ctor.
-        private const string OtherParameter = "other";
+        private const string OtherParameterName = "other";
 
         private const string DataContractAttributeName = "DataContract";
         private const string DataMemberAttributeName = "DataMember";
@@ -32,13 +33,17 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string DataMemberIsRequiredPropertyName = "IsRequired";
         private const string DataMemberEmitDefaultValuePropertyName = "EmitDefaultValue";
 
-        private const string AddMethod = "Add";
-        private const string InitMethod = "Init";
-        private const string DeepCloneMethod = "DeepClone";
-        private const string DeepCloneCoreMethod = "DeepCloneCore";
+        private const string AddMethodName = "Add";
+        private const string InitMethodName = "Init";
+        private const string DeepCloneMethodName = "DeepClone";
+        private const string DeepCloneCoreMethodName = "DeepCloneCore";
 
-        private const string KeyProperty = "Key";
-        private const string ValueProperty = "Value";
+        private const string EqualsMethodName = "Equals";
+        private const string ValueEqualsMethodName = "ValueEquals";
+
+        private const string KeyPropertyName = "Key";
+        private const string ValuePropertyName = "Value";
+        private const string ValueComparerPropertyName = "ValueComparer";
 
         private LocalVariableNameGenerator _localVariableNameGenerator;
 
@@ -47,6 +52,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema,
             HintDictionary hintDictionary,
             string interfaceName,
+            bool generateEqualityComparers,
             bool generateCloningCode,
             bool sealClasses,
             string syntaxInterfaceName,
@@ -54,6 +60,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             : base(propertyInfoDictionary, schema, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
+            _generateEqualityComparers = generateEqualityComparers;
             _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
             _sealClasses = sealClasses;
@@ -120,6 +127,15 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             var members = new List<MemberDeclarationSyntax>();
 
+            if (_generateEqualityComparers)
+            {
+                // For IEqualityComparer<T>.
+                Usings.Add("System.Collections.Generic");
+
+                members.Add(GenerateValueComparerProperty());
+                members.Add(GenerateValueEqualsMethod());
+            }
+
             if (_generateCloningCode)
             {
               members.Add(GenerateSyntaxKindProperty());
@@ -142,6 +158,54 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             TypeDeclaration = (TypeDeclaration as ClassDeclarationSyntax).AddMembers(members.ToArray());
+        }
+
+        private MemberDeclarationSyntax GenerateValueComparerProperty()
+        {
+            return SyntaxFactory.PropertyDeclaration(
+                SyntaxFactory.ParseTypeName(
+                    EqualityComparerGenerator.GetComparerBaseType(TypeName).ToString()),
+                ValueComparerPropertyName)
+                .WithModifiers(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                        SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
+                .WithExpressionBody(
+                    SyntaxFactory.ArrowExpressionClause(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(
+                                EqualityComparerGenerator.GetEqualityComparerClassName(TypeName)),
+                            SyntaxFactory.IdentifierName(
+                                EqualityComparerGenerator.InstancePropertyName))))
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+        }
+
+        private MemberDeclarationSyntax GenerateValueEqualsMethod()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
+                SyntaxFactory.Identifier(ValueEqualsMethodName))
+                .WithParameterList(
+                    SyntaxFactory.ParameterList(
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.Parameter(
+                                SyntaxFactory.Identifier(OtherParameterName))
+                                .WithType(SyntaxFactory.ParseTypeName(TypeName)))))
+                .WithModifiers(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
+                .WithExpressionBody(
+                    SyntaxFactory.ArrowExpressionClause(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(ValueComparerPropertyName),
+                                SyntaxFactory.IdentifierName(EqualsMethodName)),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.ThisExpression(),
+                                SyntaxFactory.IdentifierName(OtherParameterName)))))
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
         protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired)
@@ -247,7 +311,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddBodyStatements(
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(InitMethod),
+                            SyntaxFactory.IdentifierName(InitMethodName),
                             SyntaxHelper.ArgumentList(arguments))))
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
@@ -306,18 +370,18 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .Select(name => 
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName(OtherParameter),
+                        SyntaxFactory.IdentifierName(OtherParameterName),
                         SyntaxFactory.IdentifierName(name)))
                     .ToArray();
 
             return SyntaxFactory.ConstructorDeclaration(TypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
-                        SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameter))
+                        SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameterName))
                             .WithType(SyntaxFactory.ParseTypeName(TypeName)))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
-                        SyntaxHelper.IsNull(OtherParameter),
+                        SyntaxHelper.IsNull(OtherParameterName),
                         SyntaxFactory.Block(
                             SyntaxFactory.ThrowStatement(
                                 SyntaxFactory.ObjectCreationExpression(
@@ -327,10 +391,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                                             SyntaxFactory.InvocationExpression(
                                                 SyntaxFactory.IdentifierName("nameof"),
                                                 SyntaxHelper.ArgumentList(
-                                                    SyntaxFactory.IdentifierName(OtherParameter)))))))),
+                                                    SyntaxFactory.IdentifierName(OtherParameterName)))))))),
                     SyntaxFactory.ExpressionStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(InitMethod),
+                            SyntaxFactory.IdentifierName(InitMethodName),
                             SyntaxHelper.ArgumentList(initArguments))))
             .WithLeadingTrivia(
                 SyntaxHelper.MakeDocComment(
@@ -341,7 +405,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     returns: null,
                     paramDescriptionDictionary: new Dictionary<string, string>
                     {
-                        [OtherParameter] = Resources.CopyCtorOtherParam
+                        [OtherParameterName] = Resources.CopyCtorOtherParam
                     },
                     exceptionDictionary: new Dictionary<string, string>
                     {
@@ -349,7 +413,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             string.Format(
                                 CultureInfo.CurrentCulture,
                                 Resources.CopyCtorOtherNullException,
-                                OtherParameter)
+                                OtherParameterName)
                     }));
         }
 
@@ -357,14 +421,14 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
-                DeepCloneMethod)
+                DeepCloneMethodName)
                 .WithExplicitInterfaceSpecifier(
                     SyntaxFactory.ExplicitInterfaceSpecifier(
                         SyntaxFactory.IdentifierName(_syntaxInterfaceName)))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
+                            SyntaxFactory.IdentifierName(DeepCloneCoreMethodName),
                             SyntaxHelper.ArgumentList())));
         }
 
@@ -372,14 +436,14 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.ParseTypeName(TypeName),
-                DeepCloneMethod)
+                DeepCloneMethodName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
                             SyntaxFactory.ParseTypeName(TypeName),
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(DeepCloneCoreMethod),
+                                SyntaxFactory.IdentifierName(DeepCloneCoreMethodName),
                                 SyntaxHelper.ArgumentList()))))
                 .WithLeadingTrivia(SyntaxHelper.MakeDocComment(Resources.DeepCloneDescription));
         }
@@ -388,7 +452,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.ParseTypeName(_syntaxInterfaceName),
-                DeepCloneCoreMethod)
+                DeepCloneCoreMethodName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
@@ -404,7 +468,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)),
-                InitMethod)
+                InitMethodName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
                 .AddParameterListParameters(GenerateInitMethodParameterList())
                 .AddBodyStatements(GenerateInitializations());
@@ -611,7 +675,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax dictionaryElement = SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 SyntaxFactory.IdentifierName(dictionaryElementVariableName),
-                SyntaxFactory.IdentifierName(ValueProperty));
+                SyntaxFactory.IdentifierName(ValuePropertyName));
 
             string listElementVariableName = _localVariableNameGenerator.GetNextCollectionElementVariableName();
             string collectionVariableName = _localVariableNameGenerator.GetNextDestinationVariableName();
@@ -647,12 +711,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(propertyName),
-                                        SyntaxFactory.IdentifierName(AddMethod)),
+                                        SyntaxFactory.IdentifierName(AddMethodName)),
                                     SyntaxHelper.ArgumentList(
                                         SyntaxFactory.MemberAccessExpression(
                                             SyntaxKind.SimpleMemberAccessExpression,
                                             SyntaxFactory.IdentifierName(dictionaryElementVariableName),
-                                            SyntaxFactory.IdentifierName(KeyProperty)),
+                                            SyntaxFactory.IdentifierName(KeyPropertyName)),
                                         SyntaxFactory.IdentifierName(collectionVariableName))))))));
         }
 
@@ -689,19 +753,19 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(propertyName),
-                                        SyntaxFactory.IdentifierName(AddMethod)),
+                                        SyntaxFactory.IdentifierName(AddMethodName)),
                                     SyntaxHelper.ArgumentList(
                                         SyntaxFactory.MemberAccessExpression(
                                             SyntaxKind.SimpleMemberAccessExpression,
                                             SyntaxFactory.IdentifierName(valueVariableName),
-                                            SyntaxFactory.IdentifierName(KeyProperty)),
+                                            SyntaxFactory.IdentifierName(KeyPropertyName)),
                                         SyntaxFactory.ObjectCreationExpression(
                                             elementType,
                                             SyntaxHelper.ArgumentList(
                                                 SyntaxFactory.MemberAccessExpression(
                                                     SyntaxKind.SimpleMemberAccessExpression,
                                                     SyntaxFactory.IdentifierName(valueVariableName),
-                                                    SyntaxFactory.IdentifierName(ValueProperty))),
+                                                    SyntaxFactory.IdentifierName(ValuePropertyName))),
                                             default(InitializerExpressionSyntax)))))))));
         }
 
@@ -730,7 +794,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
                         SyntaxFactory.IdentifierName(destinationVariableName),
-                        SyntaxFactory.IdentifierName(AddMethod)),
+                        SyntaxFactory.IdentifierName(AddMethodName)),
                     SyntaxHelper.ArgumentList(
                         SyntaxFactory.IdentifierName(sourceVariableName))));
         }
@@ -750,7 +814,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(destinationVariableName),
-                                SyntaxFactory.IdentifierName(AddMethod)),
+                                SyntaxFactory.IdentifierName(AddMethodName)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.LiteralExpression(
                                     SyntaxKind.NullLiteralExpression))))),
@@ -761,7 +825,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(destinationVariableName),
-                                SyntaxFactory.IdentifierName(AddMethod)),
+                                SyntaxFactory.IdentifierName(AddMethodName)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.ObjectCreationExpression(
                                     elementType,
@@ -797,7 +861,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(destinationVariableName),
-                                SyntaxFactory.IdentifierName(AddMethod)),
+                                SyntaxFactory.IdentifierName(AddMethodName)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.LiteralExpression(
                                     SyntaxKind.NullLiteralExpression))))),
@@ -831,7 +895,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(destinationVariableName),
-                                SyntaxFactory.IdentifierName(AddMethod)),
+                                SyntaxFactory.IdentifierName(AddMethodName)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.IdentifierName(innerDestinationVariableName)))))));
         }

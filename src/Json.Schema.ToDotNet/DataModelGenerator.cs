@@ -289,6 +289,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     schema,
                     _settings.HintDictionary,
                     baseInterfaceName,
+                    _settings.GenerateEqualityComparers,
                     _settings.GenerateCloningCode,
                     _settings.SealClasses,
                     _nodeInterfaceName,

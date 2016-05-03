@@ -98,6 +98,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, string> DictProp { get; set; }
     }
@@ -142,6 +146,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, D> DictProp { get; set; }
     }
@@ -189,6 +197,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<D>> DictProp { get; set; }
     }
@@ -239,6 +251,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<Uri, IList<D>> DictProp { get; set; }
     }
@@ -289,6 +305,10 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+
         [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
         public IDictionary<string, IList<IList<D>>> DictProp { get; set; }
     }
