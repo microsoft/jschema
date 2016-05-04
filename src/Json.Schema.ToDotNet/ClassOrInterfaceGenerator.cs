@@ -87,12 +87,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName, info.IsRequired);
             if (attributes.Length > 0)
             {
-                propDecl = propDecl.AddAttributeLists(
-                    new AttributeListSyntax[]
-                    {
-                        SyntaxFactory.AttributeList(
-                            SyntaxFactory.SeparatedList(attributes))
-                    });
+                propDecl = propDecl.AddAttributeLists(attributes
+                    .Select(attr => SyntaxFactory.AttributeList(SyntaxFactory.SingletonSeparatedList(attr)))
+                    .ToArray());
             }
 
             return propDecl.WithLeadingTrivia(

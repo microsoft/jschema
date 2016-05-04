@@ -5,70 +5,14 @@ using FluentAssertions;
 using Microsoft.Json.Schema.ToDotNet.UnitTests;
 using Microsoft.Json.Schema.UnitTests;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class DictionaryHintTests
+    public class DictionaryHintTests : CodeGenerationTestBase
     {
-        private readonly TestFileSystem _testFileSystem;
-        private readonly DataModelGeneratorSettings _settings;
-
-        public class TestCase : IXunitSerializable
+        public static readonly TheoryData<HintTestCase> TestCases = new TheoryData<HintTestCase>
         {
-            public TestCase(
-                string name,
-                string schemaText,
-                string hintsText,
-                string expectedOutput)
-            {
-                Name = name;
-                SchemaText = schemaText;
-                HintsText = hintsText;
-                ExpectedOutput = expectedOutput;
-            }
-
-            public TestCase()
-            {
-                // Required for deserialization.
-            }
-
-            public string Name;
-            public string SchemaText;
-            public string HintsText;
-            public string ExpectedOutput;
-
-            public void Deserialize(IXunitSerializationInfo info)
-            {
-                Name = info.GetValue<string>(nameof(Name));
-                SchemaText = info.GetValue<string>(nameof(SchemaText));
-                HintsText = info.GetValue<string>(nameof(HintsText));
-                ExpectedOutput = info.GetValue<string>(nameof(ExpectedOutput));
-            }
-
-            public void Serialize(IXunitSerializationInfo info)
-            {
-                info.AddValue(nameof(Name), Name);
-                info.AddValue(nameof(SchemaText), SchemaText);
-                info.AddValue(nameof(HintsText), HintsText);
-                info.AddValue(nameof(ExpectedOutput), ExpectedOutput);
-            }
-
-            public override string ToString()
-            {
-                return Name;
-            }
-        }
-
-        public DictionaryHintTests()
-        {
-            _testFileSystem = new TestFileSystem();
-            _settings = TestSettings.MakeSettings();
-        }
-
-        public static readonly TheoryData<TestCase> TestCases = new TheoryData<TestCase>
-        {
-            new TestCase(
+            new HintTestCase(
                 "Dictionary<string, string> (property bag)",
 @"{
   ""type"": ""object"",
@@ -109,7 +53,7 @@ namespace N
 }"
             ),
 
-            new TestCase(
+            new HintTestCase(
                 "Dictionary<string, D>",
 @"{
   ""type"": ""object"",
@@ -158,7 +102,7 @@ namespace N
 }"
             ),
 
-            new TestCase(
+            new HintTestCase(
                 "Dictionary<string, IList<D>>",
 @"{
   ""type"": ""object"",
@@ -210,7 +154,7 @@ namespace N
 }"
             ),
 
-            new TestCase(
+            new HintTestCase(
                 "Dictionary<Uri, IList<D>>",
 @"{
   ""type"": ""object"",
@@ -265,7 +209,7 @@ namespace N
 }"
             ),
 
-            new TestCase(
+            new HintTestCase(
                 "Dictionary<string, IList<IList<D>>>",
 @"{
   ""type"": ""object"",
@@ -323,11 +267,11 @@ namespace N
 
         [Theory(DisplayName = nameof(DictionaryHint))]
         [MemberData(nameof(TestCases))]
-        public void DictionaryHint(TestCase test)
+        public void DictionaryHint(HintTestCase test)
         {
-            _settings.HintDictionary = new HintDictionary(test.HintsText);
-            _settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            Settings.HintDictionary = new HintDictionary(test.HintsText);
+            Settings.GenerateEqualityComparers = true;
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
 

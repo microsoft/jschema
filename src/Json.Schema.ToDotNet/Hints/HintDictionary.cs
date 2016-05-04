@@ -77,6 +77,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         private static readonly IDictionary<HintKind, HintCreator> s_hintCreatorDictionary = ImmutableDictionary.CreateRange(
             new Dictionary<HintKind, HintCreator>
             {
+                [HintKind.AttributeHint] = CreateAttributeHint,
                 [HintKind.ClassNameHint] = CreateClassNameHint,
                 [HintKind.DictionaryHint] = CreateDictionaryHint,
                 [HintKind.EnumHint] = CreateEnumHint,
@@ -94,6 +95,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             }
 
             return hint;
+        }
+
+        private static CodeGenHint CreateAttributeHint(JObject arguments)
+        {
+            string attributeTypeName = GetArgument<string>(arguments, nameof(AttributeHint.AttributeTypeName));
+
+            return new AttributeHint(attributeTypeName);
         }
 
         private static CodeGenHint CreateClassNameHint(JObject arguments)

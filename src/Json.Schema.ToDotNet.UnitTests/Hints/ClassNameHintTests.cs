@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using FluentAssertions;
 using Microsoft.Json.Schema.ToDotNet.UnitTests;
 using Xunit;
 using Xunit.Abstractions;
@@ -10,18 +9,9 @@ using Assert = Microsoft.Json.Schema.ToDotNet.UnitTests.Assert;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class ClassNameHintTests
+    public class ClassNameHintTests : CodeGenerationTestBase
     {
         private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
-
-        private readonly TestFileSystem _testFileSystem;
-        private readonly DataModelGeneratorSettings _settings;
-
-        public ClassNameHintTests()
-        {
-            _testFileSystem = new TestFileSystem();
-            _settings = TestSettings.MakeSettings();
-        }
 
         public class TestCase
         {
@@ -287,9 +277,9 @@ namespace N
         [MemberData(nameof(TestCases))]
         public void ClassNameHint(TestCase test)
         {
-            _settings.GenerateEqualityComparers = true;
-            _settings.HintDictionary = new HintDictionary(test.HintsText);
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            Settings.GenerateEqualityComparers = true;
+            Settings.HintDictionary = new HintDictionary(test.HintsText);
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
 
@@ -297,7 +287,7 @@ namespace N
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
-                [_settings.RootClassName] = new ExpectedContents
+                [Settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = test.PrimaryClassText,
                     ComparerClassContents = test.PrimaryClassComparerText
@@ -309,7 +299,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary);
         }
     }
 }

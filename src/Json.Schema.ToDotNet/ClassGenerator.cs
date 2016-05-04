@@ -235,6 +235,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired)
         {
+            var attributes = new List<AttributeSyntax>();
+
             var dataMemberAttributeArguments =
                 new List<AttributeArgumentSyntax>
                 {
@@ -261,13 +263,26 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression)));
             }
 
-            return new[]
-            {
+            AttributeSyntax dataMemberAttribute =
                 SyntaxFactory.Attribute(
                     SyntaxFactory.IdentifierName(DataMemberAttributeName),
                     SyntaxFactory.AttributeArgumentList(
-                        SyntaxFactory.SeparatedList(dataMemberAttributeArguments)))
-            };
+                        SyntaxFactory.SeparatedList(dataMemberAttributeArguments)));
+
+            attributes.Add(dataMemberAttribute);
+
+            string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
+            AttributeHint attributeHint = HintDictionary?.GetHint<AttributeHint>(hintDictionaryKey);
+            if (attributeHint != null)
+            {
+                AttributeSyntax hintedAttribute =
+                    SyntaxFactory.Attribute(
+                        SyntaxFactory.IdentifierName(attributeHint.AttributeTypeName));
+
+                attributes.Add(hintedAttribute);
+            }
+
+            return attributes.ToArray();
         }
 
         protected override SyntaxToken[] CreatePropertyModifiers()

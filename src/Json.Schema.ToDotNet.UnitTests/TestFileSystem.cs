@@ -10,7 +10,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
     /// <summary>
     /// Wrapper around the mock file system used in the unit tests.
     /// </summary>
-    internal class TestFileSystem
+    public class TestFileSystem
     {
         internal const string OutputDirectory = "Generated";
 

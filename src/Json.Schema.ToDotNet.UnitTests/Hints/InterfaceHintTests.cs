@@ -8,17 +8,8 @@ using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class InterfaceHintTests
+    public class InterfaceHintTests : CodeGenerationTestBase
     {
-        private readonly TestFileSystem _testFileSystem;
-        private readonly DataModelGeneratorSettings _settings;
-
-        public InterfaceHintTests()
-        {
-            _testFileSystem = new TestFileSystem();
-            _settings = TestSettings.MakeSettings();
-        }
-
         public static readonly object[] TestCases = new object[]
         {
             // We give the
@@ -94,15 +85,15 @@ namespace N
             string classText,
             string interfaceText)
         {
-            _settings.HintDictionary = new HintDictionary(hintsText);
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            Settings.HintDictionary = new HintDictionary(hintsText);
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(schemaText);
 
             generator.Generate(schema);
 
-            string primaryOutputFilePath = TestFileSystem.MakeOutputFilePath(_settings.RootClassName);
-            string interfaceFilePath = TestFileSystem.MakeOutputFilePath("I" + _settings.RootClassName);
+            string primaryOutputFilePath = TestFileSystem.MakeOutputFilePath(Settings.RootClassName);
+            string interfaceFilePath = TestFileSystem.MakeOutputFilePath("I" + Settings.RootClassName);
 
             var expectedOutputFiles = new List<string>
             {
@@ -110,11 +101,11 @@ namespace N
                 interfaceFilePath
             };
 
-            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-            _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
+            TestFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            TestFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
-            _testFileSystem[primaryOutputFilePath].Should().Be(classText);
-            _testFileSystem[interfaceFilePath].Should().Be(interfaceText);
+            TestFileSystem[primaryOutputFilePath].Should().Be(classText);
+            TestFileSystem[interfaceFilePath].Should().Be(interfaceText);
         }
     }
 }

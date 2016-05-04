@@ -57,11 +57,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assert.cs" />
+    <Compile Include="CodeGenerationTestBase.cs" />
     <Compile Include="DataModelGeneratorTests.cs" />
     <Compile Include="ExpectedContents.cs" />
+    <Compile Include="Hints\AttributeHintTests.cs" />
     <Compile Include="Hints\ClassNameHintTests.cs" />
     <Compile Include="Hints\DictionaryHintTests.cs" />
     <Compile Include="Hints\EnumHintTests.cs" />
+    <Compile Include="Hints\HintTestCase.cs" />
     <Compile Include="Hints\InterfaceHintTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFileSystem.cs" />

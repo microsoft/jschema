@@ -18,6 +18,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
     public enum HintKind
     {
         None = 0,
+        AttributeHint,
         ClassNameHint,
         DictionaryHint,
         EnumHint,

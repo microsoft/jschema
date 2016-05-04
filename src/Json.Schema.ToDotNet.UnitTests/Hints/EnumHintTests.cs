@@ -10,17 +10,8 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class EnumHintTests
+    public class EnumHintTests : CodeGenerationTestBase
     {
-        private readonly TestFileSystem _testFileSystem;
-        private readonly DataModelGeneratorSettings _settings;
-
-        public EnumHintTests()
-        {
-            _testFileSystem = new TestFileSystem();
-            _settings = TestSettings.MakeSettings();
-        }
-
         public class TestCase : IXunitSerializable
         {
             public TestCase(
@@ -480,8 +471,8 @@ namespace N
         [MemberData(nameof(TestCases))]
         public void EnumHint(TestCase test)
         {
-            _settings.HintDictionary = new HintDictionary(test.HintsText);
-            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            Settings.HintDictionary = new HintDictionary(test.HintsText);
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
 
@@ -495,7 +486,7 @@ namespace N
             {
                 action();
 
-                string primaryOutputFilePath = TestFileSystem.MakeOutputFilePath(_settings.RootClassName);
+                string primaryOutputFilePath = TestFileSystem.MakeOutputFilePath(Settings.RootClassName);
                 string enumFilePath = TestFileSystem.MakeOutputFilePath(test.EnumFileNameStem);
 
                 var expectedOutputFiles = new List<string>
@@ -504,11 +495,11 @@ namespace N
                     enumFilePath
                 };
 
-                _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
-                _testFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
+                TestFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+                TestFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
 
-                _testFileSystem[primaryOutputFilePath].Should().Be(test.ClassText);
-                _testFileSystem[enumFilePath].Should().Be(test.EnumText);
+                TestFileSystem[primaryOutputFilePath].Should().Be(test.ClassText);
+                TestFileSystem[enumFilePath].Should().Be(test.EnumText);
             }
         }
     }
