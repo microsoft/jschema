@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Microsoft.Json.Schema.ToDotNet.Hints
 {
     /// <summary>
@@ -12,19 +15,28 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// <summary>
         /// Initializes a new instance of the <see cref="AttributeHint"/> class.
         /// </summary>
-        /// <param name="attributeTypeName">
+        /// <param name="typeName">
         /// The fully qualified type name of the attribute to generate, without
         /// the "Attribute" suffix.
         /// </param>
-        public AttributeHint(string attributeTypeName)
+        /// <param name="arguments">
+        /// Arguments to the attribute's constructor.
+        /// </param>
+        public AttributeHint(string typeName, IEnumerable<string> arguments)
         {
-            AttributeTypeName = attributeTypeName;
+            TypeName = typeName;
+            Arguments = arguments != null ? arguments.ToList() : new List<string>();
         }
 
         /// <summary>
         /// Gets the fully qualified type name of the attribute to generate, without
         /// the "Attribute" suffix.
         /// </summary>
-        public string AttributeTypeName { get; }
+        public string TypeName { get; }
+
+        /// <summary>
+        /// Gets the arguments to the attribute's constructor.
+        /// </summary>
+        public IList<string> Arguments { get; }
     }
 }

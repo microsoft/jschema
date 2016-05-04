@@ -99,9 +99,10 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
 
         private static CodeGenHint CreateAttributeHint(JObject arguments)
         {
-            string attributeTypeName = GetArgument<string>(arguments, nameof(AttributeHint.AttributeTypeName));
+            string typeName = GetArgument<string>(arguments, nameof(AttributeHint.TypeName));
+            string[] attributeArguments = GetArrayArgument<string>(arguments, nameof(AttributeHint.Arguments));
 
-            return new AttributeHint(attributeTypeName);
+            return new AttributeHint(typeName, attributeArguments);
         }
 
         private static CodeGenHint CreateClassNameHint(JObject arguments)

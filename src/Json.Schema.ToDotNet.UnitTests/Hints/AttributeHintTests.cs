@@ -28,7 +28,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests.Hints
     {
       ""kind"": ""AttributeHint"",
       ""arguments"": {
-        ""attributeTypeName"": ""Test""
+        ""typeName"": ""Test""
       }
     }
   ]
@@ -46,6 +46,92 @@ namespace N
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test]
+        public int TheProperty { get; set; }
+    }
+}"
+            ),
+
+            new HintTestCase(
+                "One argument",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""theProperty"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""C.TheProperty"": [
+    {
+      ""kind"": ""AttributeHint"",
+      ""arguments"": {
+        ""typeName"": ""Test"",
+        ""arguments"": [
+          ""typeof(string)""
+        ]
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [Test(typeof(string))]
+        public int TheProperty { get; set; }
+    }
+}"
+            ),
+
+            new HintTestCase(
+                "Multiple arguments",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""theProperty"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""C.TheProperty"": [
+    {
+      ""kind"": ""AttributeHint"",
+      ""arguments"": {
+        ""typeName"": ""Test"",
+        ""arguments"": [
+          ""typeof(string)"",
+          ""42"",
+          ""\""a\""""
+        ]
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [Test(typeof(string), 42, ""a"")]
         public int TheProperty { get; set; }
     }
 }"

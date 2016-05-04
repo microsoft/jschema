@@ -277,7 +277,18 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 AttributeSyntax hintedAttribute =
                     SyntaxFactory.Attribute(
-                        SyntaxFactory.IdentifierName(attributeHint.AttributeTypeName));
+                        SyntaxFactory.IdentifierName(attributeHint.TypeName));
+
+                if (attributeHint?.Arguments.Count > 0)
+                {
+                    hintedAttribute = hintedAttribute
+                        .WithArgumentList(
+                            SyntaxFactory.AttributeArgumentList(
+                                SyntaxFactory.SeparatedList(
+                                    attributeHint.Arguments.Select(
+                                        arg => SyntaxFactory.AttributeArgument(
+                                                    SyntaxFactory.ParseExpression(arg))))));
+                }
 
                 attributes.Add(hintedAttribute);
             }
