@@ -43,6 +43,22 @@ namespace Microsoft.Json.Schema.ToDotNet
         ScalarReferenceType,
 
         /// <summary>
+        /// Generates code to compute the hash for an object whose type belongs to
+        /// the generated object model, after first checking for <code>null</code>.
+        /// </summary>
+        /// <example>
+        /// The class generator generates code like this for a property whose type
+        /// belongs to the generated object model:
+        /// <code>
+        /// if (ObjectModelProp != null)
+        /// {
+        ///     result = (result * 31) + ObjectModelProp.ValueGetHashCode();
+        /// }
+        /// </code>
+        /// </example>
+        ObjectModelType,
+
+        /// <summary>
         /// Generates code to compute the hash for a collection, after first checking for
         /// <code>null</code>.
         /// </summary>

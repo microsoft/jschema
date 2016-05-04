@@ -309,15 +309,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                         {
                             comparisonKind = ComparisonKind.EqualityComparerEquals;
                             initializationKind = InitializationKind.Clone;
+                            hashKind = HashKind.ObjectModelType;
                             isOfSchemaDefinedType = true;
                         }
                         else
                         {
                             comparisonKind = ComparisonKind.ObjectEquals;
                             initializationKind = InitializationKind.SimpleAssign;
+                            hashKind = HashKind.ScalarReferenceType;
                         }
 
-                        hashKind = HashKind.ScalarReferenceType;
                         type = MakeObjectType(propertySchema, out namespaceName);
                         break;
 

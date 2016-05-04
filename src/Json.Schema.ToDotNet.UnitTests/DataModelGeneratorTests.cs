@@ -281,7 +281,7 @@ namespace N
                 return false;
             }
 
-            if (!left.ObjectProp.ValueEquals(right.ObjectProp))
+            if (!D.ValueComparer.Equals(left.ObjectProp, right.ObjectProp))
             {
                 return false;
             }
@@ -301,7 +301,7 @@ namespace N
             {
                 if (obj.ObjectProp != null)
                 {
-                    result = (result * 31) + obj.ObjectProp.GetHashCode();
+                    result = (result * 31) + obj.ObjectProp.ValueGetHashCode();
                 }
             }
 
@@ -655,12 +655,12 @@ namespace N
                 return false;
             }
 
-            if (!left.ForegroundColor.ValueEquals(right.ForegroundColor))
+            if (!Color.ValueComparer.Equals(left.ForegroundColor, right.ForegroundColor))
             {
                 return false;
             }
 
-            if (!left.BackgroundColor.ValueEquals(right.BackgroundColor))
+            if (!Color.ValueComparer.Equals(left.BackgroundColor, right.BackgroundColor))
             {
                 return false;
             }
@@ -680,12 +680,12 @@ namespace N
             {
                 if (obj.ForegroundColor != null)
                 {
-                    result = (result * 31) + obj.ForegroundColor.GetHashCode();
+                    result = (result * 31) + obj.ForegroundColor.ValueGetHashCode();
                 }
 
                 if (obj.BackgroundColor != null)
                 {
-                    result = (result * 31) + obj.BackgroundColor.GetHashCode();
+                    result = (result * 31) + obj.BackgroundColor.ValueGetHashCode();
                 }
             }
 
@@ -2686,7 +2686,7 @@ namespace N
 
                         for (int index_1 = 0; index_1 < left.ArrayOfArrayOfD[index_0].Count; ++index_1)
                         {
-                            if (!left.ArrayOfArrayOfD[index_0][index_1].ValueEquals(right.ArrayOfArrayOfD[index_0][index_1]))
+                            if (!D.ValueComparer.Equals(left.ArrayOfArrayOfD[index_0][index_1], right.ArrayOfArrayOfD[index_0][index_1]))
                             {
                                 return false;
                             }
@@ -2720,7 +2720,7 @@ namespace N
                                 result = result * 31;
                                 if (value_1 != null)
                                 {
-                                    result = (result * 31) + value_1.GetHashCode();
+                                    result = (result * 31) + value_1.ValueGetHashCode();
                                 }
                             }
                         }

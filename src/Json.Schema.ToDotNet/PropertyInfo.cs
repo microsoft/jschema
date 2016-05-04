@@ -28,6 +28,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <param name="type">
         /// The type of the property.
         /// </param>
+        /// <param name="typeName">
+        /// The name of the type of the property.
+        /// </param>
         /// <param name="namespaceName">
         /// The qualified name of the namespace declaration required by this type,
         /// or <code>null</code> if no namespace declaration is required.
@@ -63,6 +66,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             HashKind = hashKind;
             InitializationKind = initializationKind;
             Type = type;
+            TypeName = type.ToString();
             NamespaceName = namespaceName;
             IsRequired = isRequired;
             IsOfSchemaDefinedType = isOfSchemaDefinedType;
@@ -100,6 +104,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets the type of the property.
         /// </summary>
         public TypeSyntax Type { get; }
+
+        /// <summary>
+        /// Gets the name of the type of the property.
+        /// </summary>
+        public string TypeName { get; }
 
         /// <summary>
         /// Gets the qualified name of the namespace declaration required by this type,

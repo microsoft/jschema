@@ -20,8 +20,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string EqualityComparerInterfaceName = "I" + EqualityComparerSuffix;
 
         private const string EqualsMethodName = "Equals";
-        private const string ValueEqualsMethodName = "ValueEquals";
         private const string GetHashCodeMethodName = "GetHashCode";
+        private const string GetValueHashCodeMethodName = "ValueGetHashCode";
 
         private const string ReferenceEqualsMethodName = "ReferenceEquals";
 
@@ -32,6 +32,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         internal const string InstancePropertyName = "Instance";
         private const string KeyPropertyName = "Key";
         private const string ValuePropertyName = "Value";
+        private const string ValueComparerPropertyName = "ValueComparer";
 
         private const string FirstEqualsAgumentName = "left";
         private const string SecondEqualsArgumentName = "right";
@@ -328,16 +329,27 @@ namespace Microsoft.Json.Schema.ToDotNet
             ExpressionSyntax left,
             ExpressionSyntax right)
         {
-            // if (!(left.Prop.ValueEquals(left.Prop, right.Prop))
+            string typeName = _propertyInfoDictionary[propertyName].TypeName;
+
+            // if (!(TypeName.ValueComparer.Equals(left.Prop, right.Prop))
+            //
+            // We choose this form, rather than using the convenience method
+            //
+            //      if (left.Prop.ValueEquals(right.Prop))
+            //
+            // because the comparer method takes care of the null check.
             return SyntaxFactory.IfStatement(
                 SyntaxFactory.PrefixUnaryExpression(
                     SyntaxKind.LogicalNotExpression,
                     SyntaxFactory.InvocationExpression(
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            left,
-                            SyntaxFactory.IdentifierName(ValueEqualsMethodName)),
-                        SyntaxHelper.ArgumentList(right))),
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.ParseTypeName(typeName),
+                                SyntaxFactory.IdentifierName(ValueComparerPropertyName)),
+                            SyntaxFactory.IdentifierName(EqualsMethodName)),
+                        SyntaxHelper.ArgumentList(left, right))),
                 SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
 
@@ -577,6 +589,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 case HashKind.ScalarReferenceType:
                     return GenerateScalarReferenceTypeHashCodeContribution(expression);
 
+                case HashKind.ObjectModelType:
+                    return GenerateObjectModelTypeHashCodeContribution(expression);
+
                 case HashKind.Collection:
                     return GenerateCollectionHashCodeContribution(hashKindKey, expression);
 
@@ -615,6 +630,35 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNotNull(expression),
                 SyntaxFactory.Block(GenerateScalarHashCodeContribution(expression)));
+        }
+
+        private StatementSyntax GenerateObjectModelTypeHashCodeContribution(ExpressionSyntax expression)
+        {
+            // if (x != null)
+            // {
+            //     result = (result * 31) + x.ValueGetHashCode();
+            // }
+            return SyntaxFactory.IfStatement(
+                SyntaxHelper.IsNotNull(expression),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ExpressionStatement(
+                        SyntaxFactory.AssignmentExpression(
+                            SyntaxKind.SimpleAssignmentExpression,
+                            SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                SyntaxFactory.BinaryExpression(
+                                    SyntaxKind.AddExpression,
+                                    SyntaxFactory.ParenthesizedExpression(
+                                        SyntaxFactory.BinaryExpression(
+                                            SyntaxKind.MultiplyExpression,
+                                            SyntaxFactory.IdentifierName(GetHashCodeResultVariableName),
+                                            SyntaxFactory.LiteralExpression(
+                                                SyntaxKind.NumericLiteralExpression,
+                                                SyntaxFactory.Literal(GetHashCodeCombiningValue)))),
+                                    SyntaxFactory.InvocationExpression(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            expression,
+                                            SyntaxFactory.IdentifierName(GetValueHashCodeMethodName))))))));
         }
 
         private StatementSyntax GenerateCollectionHashCodeContribution(

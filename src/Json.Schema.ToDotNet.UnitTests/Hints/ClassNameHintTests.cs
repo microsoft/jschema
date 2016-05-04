@@ -174,7 +174,7 @@ namespace N
                 return false;
             }
 
-            if (!left.File.ValueEquals(right.File))
+            if (!FileData.ValueComparer.Equals(left.File, right.File))
             {
                 return false;
             }
@@ -194,7 +194,7 @@ namespace N
             {
                 if (obj.File != null)
                 {
-                    result = (result * 31) + obj.File.GetHashCode();
+                    result = (result * 31) + obj.File.ValueGetHashCode();
                 }
             }
 
