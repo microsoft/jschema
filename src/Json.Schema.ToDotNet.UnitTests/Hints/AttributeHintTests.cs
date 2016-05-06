@@ -135,12 +135,97 @@ namespace N
         public int TheProperty { get; set; }
     }
 }"
-            )
+            ),
+
+            new HintTestCase(
+                "One property",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""theProperty"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""C.TheProperty"": [
+    {
+      ""kind"": ""AttributeHint"",
+      ""arguments"": {
+        ""typeName"": ""Test"",
+        ""properties"": {
+          ""DefaultValueHandling"": ""DefaultValueHandling.Ignore""
+        }
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [Test(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public int TheProperty { get; set; }
+    }
+}"
+            ),
+
+            new HintTestCase(
+                "Multiple properties",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""theProperty"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""C.TheProperty"": [
+    {
+      ""kind"": ""AttributeHint"",
+      ""arguments"": {
+        ""typeName"": ""Test"",
+        ""properties"": {
+          ""DefaultValueHandling"": ""DefaultValueHandling.Ignore"",
+          ""DefaultValue"": ""42""
+        }
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [Test(DefaultValueHandling = DefaultValueHandling.Ignore, DefaultValue = 42)]
+        public int TheProperty { get; set; }
+    }
+}"
+            ),
         };
 
-        [Theory(DisplayName = nameof(AttributeHint))]
+        [Theory(DisplayName = nameof(ToDotNet.Hints.AttributeHint))]
         [MemberData(nameof(TestCases))]
-        public void DictionaryHint(HintTestCase test)
+        public void AttributeHint(HintTestCase test)
         {
             Settings.HintDictionary = new HintDictionary(test.HintsText);
             var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
@@ -148,8 +233,6 @@ namespace N
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
 
             string actual = generator.Generate(schema);
-
-            TestUtil.WriteTestResultFiles(test.ExpectedOutput, actual, nameof(DictionaryHint));
 
             actual.Should().Be(test.ExpectedOutput);
         }

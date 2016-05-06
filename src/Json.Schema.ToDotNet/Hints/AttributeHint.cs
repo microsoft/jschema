@@ -22,10 +22,17 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// <param name="arguments">
         /// Arguments to the attribute's constructor.
         /// </param>
-        public AttributeHint(string typeName, IEnumerable<string> arguments)
+        /// <param name="properties">
+        /// The names and values of properties to set on the attribute.
+        /// </param>
+        public AttributeHint(
+            string typeName,
+            IEnumerable<string> arguments,
+            IDictionary<string, string> properties)
         {
             TypeName = typeName;
             Arguments = arguments != null ? arguments.ToList() : new List<string>();
+            Properties = properties != null ? properties : new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -38,5 +45,10 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// Gets the arguments to the attribute's constructor.
         /// </summary>
         public IList<string> Arguments { get; }
+
+        /// <summary>
+        /// Gets the names and values of the properties to set on the attribute
+        /// </summary>
+        public IDictionary<string, string> Properties { get; }
     }
 }

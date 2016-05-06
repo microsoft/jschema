@@ -279,15 +279,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Attribute(
                         SyntaxFactory.IdentifierName(attributeHint.TypeName));
 
-                if (attributeHint?.Arguments.Count > 0)
+                if (attributeHint.Arguments?.Count > 0)
                 {
                     hintedAttribute = hintedAttribute
-                        .WithArgumentList(
-                            SyntaxFactory.AttributeArgumentList(
-                                SyntaxFactory.SeparatedList(
-                                    attributeHint.Arguments.Select(
-                                        arg => SyntaxFactory.AttributeArgument(
-                                                    SyntaxFactory.ParseExpression(arg))))));
+                        .AddArgumentListArguments(
+                            attributeHint.Arguments.Select(
+                                arg => SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression(arg))).ToArray());
+                }
+
+                if (attributeHint.Properties?.Count > 0)
+                {
+                    hintedAttribute = hintedAttribute
+                        .AddArgumentListArguments(
+                            attributeHint.Properties.Select(
+                                prop => SyntaxFactory.AttributeArgument(
+                                    SyntaxFactory.NameEquals(prop.Key),
+                                    default(NameColonSyntax),
+                                    SyntaxFactory.ParseExpression(prop.Value))).ToArray());
                 }
 
                 attributes.Add(hintedAttribute);

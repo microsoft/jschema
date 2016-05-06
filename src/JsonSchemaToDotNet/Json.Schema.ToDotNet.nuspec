@@ -8,7 +8,7 @@
     <owners>Larry Golding, Michael C. Fanning</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Classes for generating .NET classes from a JSON Schema.</description>
-    <releaseNotes>Pre-release version. Generate HashSet&gt;T> for arrays with uniqueItems.</releaseNotes>
+    <releaseNotes>Pre-release version. Support AttributeHint with arguments and properties.</releaseNotes>
     <copyright>Copyright (C) Microsoft 2016</copyright>
     <licenseUrl>https://github.com/lgolding/jschema/blob/master/License.txt</licenseUrl>
     <projectUrl>https://github.com/lgolding/jschema</projectUrl>

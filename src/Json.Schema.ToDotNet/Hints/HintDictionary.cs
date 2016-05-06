@@ -101,8 +101,9 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         {
             string typeName = GetArgument<string>(arguments, nameof(AttributeHint.TypeName));
             string[] attributeArguments = GetArrayArgument<string>(arguments, nameof(AttributeHint.Arguments));
+            IDictionary<string, string> attributeProperties = GetObjectArgument(arguments, nameof(AttributeHint.Properties));
 
-            return new AttributeHint(typeName, attributeArguments);
+            return new AttributeHint(typeName, attributeArguments, attributeProperties);
         }
 
         private static CodeGenHint CreateClassNameHint(JObject arguments)
@@ -158,6 +159,23 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             }
             
             return arrayValue.Values<T>().ToArray();
+        }
+
+        private static IDictionary<string, string> GetObjectArgument(JObject arguments, string dotNetPropertyName)
+        {
+            JObject jObject = arguments?.Value<JObject>(dotNetPropertyName.ToCamelCase());
+            if (jObject == null)
+            {
+                return null;
+            }
+
+            var dictionary = new Dictionary<string, string>();
+            foreach (JProperty jProperty in jObject.Properties())
+            {
+                dictionary.Add(jProperty.Name, jProperty.Value.ToString());
+            }
+
+            return dictionary;
         }
     }
 }
