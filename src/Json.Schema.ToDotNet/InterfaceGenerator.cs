@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -28,7 +29,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
             return SyntaxFactory.InterfaceDeclaration(TypeName)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.PartialKeyword));
         }
 
         public override void AddMembers()
@@ -42,7 +45,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return new AttributeSyntax[0];
         }
 
-        protected override SyntaxToken[] CreatePropertyModifiers()
+        protected override SyntaxToken[] CreatePropertyModifiers(string propertyName)
         {
             return new SyntaxToken[0];
         }
@@ -53,6 +56,19 @@ namespace Microsoft.Json.Schema.ToDotNet
                 {
                     SyntaxHelper.MakeGetAccessor()
                 };
+        }
+
+        protected override bool IncludeProperty(string propertyName)
+        {
+            string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
+            PropertyModifiersHint propertyModifiersHint = HintDictionary.GetHint<PropertyModifiersHint>(hintDictionaryKey);
+            if (propertyModifiersHint?.Modifiers.Count > 0)
+            {
+                bool isPublic = propertyModifiersHint.Modifiers.Contains(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                return isPublic;
+            }
+
+            return true;
         }
 
         protected override string MakeHintDictionaryKey(string propertyName)

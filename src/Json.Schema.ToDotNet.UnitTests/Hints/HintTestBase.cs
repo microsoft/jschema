@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using FluentAssertions;
 using Microsoft.Json.Schema.ToDotNet.UnitTests;
 
@@ -10,14 +11,27 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
     {
         protected void RunHintTestCase(HintTestCase testCase)
         {
-            Settings.HintDictionary = new HintDictionary(testCase.HintsText);
-            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
+            string actual = null;
+            Action action = () =>
+            {
+                Settings.HintDictionary = new HintDictionary(testCase.HintsText);
+                var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText);
+                JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText);
 
-            string actual = generator.Generate(schema);
+                actual = generator.Generate(schema);
+            };
 
-            actual.Should().Be(testCase.ExpectedOutput);
+            if (testCase.ShouldThrow)
+            {
+                action.ShouldThrow<Exception>()
+                    .WithMessage('*' + (testCase.ExpectedErrorMessage ?? string.Empty) + '*');
+            }
+            else
+            {
+                action();
+                actual.Should().Be(testCase.ExpectedOutput);
+            }
         }
     }
 }

@@ -102,6 +102,7 @@
     <Compile Include="Hints\HintDictionary.cs" />
     <Compile Include="Hints\BaseTypeHint.cs" />
     <Compile Include="Hints\InterfaceHint.cs" />
+    <Compile Include="Hints\PropertyModifiersHint.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="InitializationKind.cs" />
     <Compile Include="InterfaceGenerator.cs" />

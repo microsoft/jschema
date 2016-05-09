@@ -22,6 +22,10 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
     ""value"": {
       ""description"": ""The value."",
       ""type"": ""integer""
+    },
+    ""value2"": {
+      ""description"": ""Internal value."",
+      ""type"": ""integer""
     }
   }
 }",
@@ -32,6 +36,16 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
       ""kind"": ""InterfaceHint"",
       ""arguments"": {
         ""description"": ""My interface.""
+      }
+    }
+  ],
+  ""C.Value2"": [
+    {
+      ""kind"": ""PropertyModifiersHint"",
+      ""arguments"": {
+        ""modifiers"": [
+          ""internal""
+        ]
       }
     }
   ]
@@ -55,6 +69,12 @@ namespace N
         /// </summary>
         [DataMember(Name = ""value"", IsRequired = false, EmitDefaultValue = false)]
         public int Value { get; set; }
+
+        /// <summary>
+        /// Internal value.
+        /// </summary>
+        [DataMember(Name = ""value2"", IsRequired = false, EmitDefaultValue = false)]
+        internal int Value2 { get; set; }
     }
 }",
 
@@ -66,7 +86,7 @@ namespace N
     /// My interface.
     /// </summary>
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public interface IC
+    public partial interface IC
     {
         /// <summary>
         /// The value.

@@ -133,6 +133,15 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid modifier..
+        /// </summary>
+        internal static string ErrorInvalidModifier {
+            get {
+                return ResourceManager.GetString("ErrorInvalidModifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The {0} object for the type {1} specifies {2} enum values, but the schema specifies {3} values. The schema and the {0} object must specify the same number of enum values..
         /// </summary>
         internal static string ErrorMismatchedEnumCount {

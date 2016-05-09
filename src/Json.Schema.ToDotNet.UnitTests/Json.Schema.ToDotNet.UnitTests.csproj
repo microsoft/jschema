@@ -68,6 +68,7 @@
     <Compile Include="Hints\HintTestCase.cs" />
     <Compile Include="Hints\HintTestBase.cs" />
     <Compile Include="Hints\InterfaceHintTests.cs" />
+    <Compile Include="Hints\PropertyModifiersHintTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="TestSettings.cs" />

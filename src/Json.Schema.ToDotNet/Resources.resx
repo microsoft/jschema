@@ -141,6 +141,9 @@
   <data name="ErrorEnumHintRequiresTypeName" xml:space="preserve">
     <value>The enumeration hint for the property {0} does not specify a type name for the generated enumeration.</value>
   </data>
+  <data name="ErrorInvalidModifier" xml:space="preserve">
+    <value>'{0}' is not a valid modifier.</value>
+  </data>
   <data name="ErrorMismatchedEnumCount" xml:space="preserve">
     <value>The {0} object for the type {1} specifies {2} enum values, but the schema specifies {3} values. The schema and the {0} object must specify the same number of enum values.</value>
   </data>

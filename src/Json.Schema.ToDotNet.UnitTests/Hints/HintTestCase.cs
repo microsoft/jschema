@@ -9,12 +9,16 @@ public class HintTestCase : IXunitSerializable
         string name,
         string schemaText,
         string hintsText,
-        string expectedOutput)
+        string expectedOutput,
+        bool shouldThrow = false,
+        string expectedErrorMessage = null)
     {
         Name = name;
         SchemaText = schemaText;
         HintsText = hintsText;
         ExpectedOutput = expectedOutput;
+        ShouldThrow = shouldThrow;
+        ExpectedErrorMessage = expectedErrorMessage;
     }
 
     public HintTestCase()
@@ -26,6 +30,8 @@ public class HintTestCase : IXunitSerializable
     public string SchemaText;
     public string HintsText;
     public string ExpectedOutput;
+    public bool ShouldThrow;
+    public string ExpectedErrorMessage;
 
     public void Deserialize(IXunitSerializationInfo info)
     {
@@ -33,6 +39,8 @@ public class HintTestCase : IXunitSerializable
         SchemaText = info.GetValue<string>(nameof(SchemaText));
         HintsText = info.GetValue<string>(nameof(HintsText));
         ExpectedOutput = info.GetValue<string>(nameof(ExpectedOutput));
+        ShouldThrow = info.GetValue<bool>(nameof(ShouldThrow));
+        ExpectedErrorMessage = info.GetValue<string>(nameof(ExpectedErrorMessage));
     }
 
     public void Serialize(IXunitSerializationInfo info)
@@ -41,6 +49,8 @@ public class HintTestCase : IXunitSerializable
         info.AddValue(nameof(SchemaText), SchemaText);
         info.AddValue(nameof(HintsText), HintsText);
         info.AddValue(nameof(ExpectedOutput), ExpectedOutput);
+        info.AddValue(nameof(ShouldThrow), ShouldThrow);
+        info.AddValue(nameof(ExpectedErrorMessage), ExpectedErrorMessage);
     }
 
     public override string ToString()

@@ -313,12 +313,25 @@ namespace Microsoft.Json.Schema.ToDotNet
             return attributes.ToArray();
         }
 
-        protected override SyntaxToken[] CreatePropertyModifiers()
+        protected override SyntaxToken[] CreatePropertyModifiers(string propertyName)
         {
-            return new SyntaxToken[]
+            string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
+            PropertyModifiersHint propertyModifiersHint = HintDictionary?.GetHint<PropertyModifiersHint>(hintDictionaryKey);
+
+            SyntaxToken[] modifierTokens;
+            if (propertyModifiersHint?.Modifiers != null)
+            {
+                modifierTokens = propertyModifiersHint.Modifiers.ToArray();
+            }
+            else
+            {
+                modifierTokens = new SyntaxToken[]
                 {
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword)
                 };
+            }
+
+            return modifierTokens;
         }
 
         protected override AccessorDeclarationSyntax[] CreatePropertyAccessors()

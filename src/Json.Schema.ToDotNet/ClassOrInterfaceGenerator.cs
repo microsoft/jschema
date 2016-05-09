@@ -26,7 +26,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected abstract AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired);
 
-        protected abstract SyntaxToken[] CreatePropertyModifiers();
+        protected abstract SyntaxToken[] CreatePropertyModifiers(string propertyName);
 
         protected abstract AccessorDeclarationSyntax[] CreatePropertyAccessors();
 
@@ -53,7 +53,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
             {
-                propDecls.Add(CreatePropertyDeclaration(propertyName));
+                if (IncludeProperty(propertyName))
+                {
+                    propDecls.Add(CreatePropertyDeclaration(propertyName));
+                }
             }
 
             return propDecls.ToArray();
@@ -62,6 +65,22 @@ namespace Microsoft.Json.Schema.ToDotNet
         protected virtual string MakeHintDictionaryKey(string propertyName)
         {
             return TypeName + "." + propertyName.ToPascalCase();
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether the specified property should be included
+        /// in the generated type.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The name of the property.
+        /// </param>
+        /// <returns>
+        /// <code>true</code> if the property specified by <paramref name="propertyName"/>
+        /// should be included in the generated type; otherwise <code>false</code>.
+        /// </returns>
+        protected virtual bool IncludeProperty(string propertyName)
+        {
+            return true;
         }
 
         /// <summary>
@@ -80,7 +99,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
                 info.Type,
                 propertyName.ToPascalCase())
-                .AddModifiers(CreatePropertyModifiers())
+                .AddModifiers(CreatePropertyModifiers(propertyName))
                 .AddAccessorListAccessors(CreatePropertyAccessors());
 
             AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName, info.IsRequired);

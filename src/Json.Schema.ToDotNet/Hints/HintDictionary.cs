@@ -82,7 +82,8 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
                 [HintKind.ClassNameHint] = CreateClassNameHint,
                 [HintKind.DictionaryHint] = CreateDictionaryHint,
                 [HintKind.EnumHint] = CreateEnumHint,
-                [HintKind.InterfaceHint] = CreateInterfaceHint
+                [HintKind.InterfaceHint] = CreateInterfaceHint,
+                [HintKind.PropertyModifiersHint] = CreatePropertyModifiersHint
             });
 
         private CodeGenHint CreateHintFromInfo(HintInstantiationInfo info)
@@ -144,6 +145,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             {
                 Description = GetArgument<string>(arguments, nameof(InterfaceHint.Description))
             };
+        }
+
+        private static CodeGenHint CreatePropertyModifiersHint(JObject arguments)
+        {
+            string[] modifiers = GetArrayArgument<string>(arguments, nameof(PropertyModifiersHint.Modifiers));
+
+            return new PropertyModifiersHint(modifiers);
         }
 
         private static T GetArgument<T>(JObject arguments, string dotNetPropertyName)
