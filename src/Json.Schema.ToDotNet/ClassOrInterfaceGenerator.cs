@@ -38,7 +38,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         
         protected MemberDeclarationSyntax[] GenerateProperties()
         {
-
             IEnumerable<string> namespaceNames = PropInfoDictionary
                 .Select(kvp => kvp.Value.NamespaceName)
                 .Where(n => n != null)

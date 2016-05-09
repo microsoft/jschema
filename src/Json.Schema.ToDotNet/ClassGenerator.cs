@@ -91,6 +91,15 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             var baseTypes = new List<BaseTypeSyntax>();
 
+            BaseTypeHint baseTypeHint = HintDictionary?.GetHint<BaseTypeHint>(TypeName.ToCamelCase());
+            if (baseTypeHint?.BaseTypeNames != null)
+            {
+                baseTypes.AddRange(
+                    baseTypeHint.BaseTypeNames.Select(
+                        btn => SyntaxFactory.SimpleBaseType(
+                            SyntaxFactory.ParseTypeName(btn))));
+            }
+
             // If this class implements an interface, add the interface to
             // the base type list.
             if (_baseInterfaceName != null)

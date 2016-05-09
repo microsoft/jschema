@@ -78,6 +78,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             new Dictionary<HintKind, HintCreator>
             {
                 [HintKind.AttributeHint] = CreateAttributeHint,
+                [HintKind.BaseTypeHint] = CreateBaseTypeNameHint,
                 [HintKind.ClassNameHint] = CreateClassNameHint,
                 [HintKind.DictionaryHint] = CreateDictionaryHint,
                 [HintKind.EnumHint] = CreateEnumHint,
@@ -104,6 +105,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             IDictionary<string, string> attributeProperties = GetObjectArgument(arguments, nameof(AttributeHint.Properties));
 
             return new AttributeHint(typeName, attributeArguments, attributeProperties);
+        }
+
+        private static CodeGenHint CreateBaseTypeNameHint(JObject arguments)
+        {
+            string[] baseTypeNames = GetArrayArgument<string>(arguments, nameof(BaseTypeHint.BaseTypeNames));
+
+            return new BaseTypeHint(baseTypeNames);
         }
 
         private static CodeGenHint CreateClassNameHint(JObject arguments)

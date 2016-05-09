@@ -19,6 +19,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
     {
         None = 0,
         AttributeHint,
+        BaseTypeHint,
         ClassNameHint,
         DictionaryHint,
         EnumHint,

@@ -1,14 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using FluentAssertions;
-using Microsoft.Json.Schema.ToDotNet.UnitTests;
-using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class DictionaryHintTests : CodeGenerationTestBase
+    public class DictionaryHintTests : HintTestBase
     {
         public static readonly TheoryData<HintTestCase> TestCases = new TheoryData<HintTestCase>
         {
@@ -267,19 +264,11 @@ namespace N
 
         [Theory(DisplayName = nameof(DictionaryHint))]
         [MemberData(nameof(TestCases))]
-        public void DictionaryHint(HintTestCase test)
+        public void DictionaryHint(HintTestCase testCase)
         {
-            Settings.HintDictionary = new HintDictionary(test.HintsText);
             Settings.GenerateEqualityComparers = true;
-            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
-
-            string actual = generator.Generate(schema);
-
-            TestUtil.WriteTestResultFiles(test.ExpectedOutput, actual, nameof(DictionaryHint));
-
-            actual.Should().Be(test.ExpectedOutput);
+            RunHintTestCase(testCase);
         }
     }
 }
