@@ -38,8 +38,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string DeepCloneMethodName = "DeepClone";
         private const string DeepCloneCoreMethodName = "DeepCloneCore";
 
-        private const string EqualsMethodName = "Equals";
-        private const string GetHashCodeMethodName = "GetHashCode";
         private const string ValueEqualsMethodName = "ValueEquals";
         private const string ValueGetHashCodeMethodName = "ValueGetHashCode";
 
@@ -213,7 +211,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(ValueComparerPropertyName),
-                                SyntaxFactory.IdentifierName(EqualsMethodName)),
+                                SyntaxFactory.IdentifierName(WellKnownMethodNames.EqualsMethod)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.ThisExpression(),
                                 SyntaxFactory.IdentifierName(OtherParameterName)))))
@@ -236,7 +234,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(ValueComparerPropertyName),
-                                SyntaxFactory.IdentifierName(GetHashCodeMethodName)),
+                                SyntaxFactory.IdentifierName(WellKnownMethodNames.GetHashCodeMethod)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.ThisExpression()))))
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));

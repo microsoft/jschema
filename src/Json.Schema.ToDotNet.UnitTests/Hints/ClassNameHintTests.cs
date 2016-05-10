@@ -11,8 +11,6 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
     public class ClassNameHintTests : CodeGenerationTestBase
     {
-        private const string PrimaryOutputFilePath = TestFileSystem.OutputDirectory + "\\" + TestSettings.RootClassName + ".cs";
-
         public class TestCase
         {
             public TestCase(

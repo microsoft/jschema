@@ -133,6 +133,15 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not a valid value of the enumerated type &apos;{1}&apos;..
+        /// </summary>
+        internal static string ErrorInvalidEnumValue {
+            get {
+                return ResourceManager.GetString("ErrorInvalidEnumValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid modifier..
         /// </summary>
         internal static string ErrorInvalidModifier {

@@ -141,6 +141,9 @@
   <data name="ErrorEnumHintRequiresTypeName" xml:space="preserve">
     <value>The enumeration hint for the property {0} does not specify a type name for the generated enumeration.</value>
   </data>
+  <data name="ErrorInvalidEnumValue" xml:space="preserve">
+    <value>The value '{0}' is not a valid value of the enumerated type '{1}'.</value>
+  </data>
   <data name="ErrorInvalidModifier" xml:space="preserve">
     <value>'{0}' is not a valid modifier.</value>
   </data>

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -14,9 +13,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 {
     internal static class SyntaxHelper
     {
-        private const string ObjectType = "Object";
-        private const string ReferenceEqualsMethod = "ReferenceEquals";
-
         private const string DocCommentSummaryFormat =
 @"/// <summary>
 /// {0}
@@ -120,8 +116,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName(ObjectType),
-                                    SyntaxFactory.IdentifierName(ReferenceEqualsMethod)),
+                                    SyntaxFactory.IdentifierName(WellKnownTypeNames.Object),
+                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod)),
                                 ArgumentList(left, right)));
         }
 

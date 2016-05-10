@@ -125,8 +125,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         private static CodeGenHint CreateDictionaryHint(JObject arguments)
         {
             string keyTypeName = GetArgument<string>(arguments, nameof(DictionaryHint.KeyTypeName));
+            string valueTypeName = GetArgument<string>(arguments, nameof(DictionaryHint.ValueTypeName));
+            string namespaceName = GetArgument<string>(arguments, nameof(DictionaryHint.NamespaceName));
+            string comparisonKind = GetArgument<string>(arguments, nameof(DictionaryHint.ComparisonKind));
+            string hashKind = GetArgument<string>(arguments, nameof(DictionaryHint.HashKind));
+            string initializationKind = GetArgument<string>(arguments, nameof(DictionaryHint.InitializationKind));
 
-            return new DictionaryHint(keyTypeName);
+            return new DictionaryHint(keyTypeName, valueTypeName, namespaceName, comparisonKind, hashKind, initializationKind);
         }
 
         private static CodeGenHint CreateEnumHint(JObject arguments)

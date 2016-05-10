@@ -454,7 +454,7 @@ namespace N
                 return false;
             }
 
-            if (!Object.ReferenceEquals(left.ArrayProp, right.ArrayProp))
+            if (!object.ReferenceEquals(left.ArrayProp, right.ArrayProp))
             {
                 if (left.ArrayProp == null || right.ArrayProp == null)
                 {
@@ -468,7 +468,7 @@ namespace N
 
                 for (int index_0 = 0; index_0 < left.ArrayProp.Count; ++index_0)
                 {
-                    if (!Object.Equals(left.ArrayProp[index_0], right.ArrayProp[index_0]))
+                    if (!object.Equals(left.ArrayProp[index_0], right.ArrayProp[index_0]))
                     {
                         return false;
                     }
@@ -946,6 +946,10 @@ namespace N
       ""additionalProperties"": {
         ""$ref"": ""#/definitions/d""
       }
+    },
+    ""dictionaryWithHintedValueProp"": {
+      ""description"": ""A dictionary property whose value type is hinted."",
+      ""type"": ""object""
     }
   },
   ""definitions"": {
@@ -982,6 +986,17 @@ namespace N
       ""kind"": ""DictionaryHint"",
       ""arguments"": {
         ""keyTypeName"": ""Uri""
+      }
+    }
+  ],
+  ""C.DictionaryWithHintedValueProp"": [
+    {
+      ""kind"": ""DictionaryHint"",
+      ""arguments"": {
+        ""valueTypeName"": ""V"",
+        ""comparisonKind"": ""ObjectEquals"",
+        ""hashKind"": ""ScalarReferenceType"",
+        ""initializationKind"": ""SimpleAssign""
       }
     }
   ]
@@ -1085,6 +1100,12 @@ namespace N
         public IDictionary<Uri, D> DictionaryWithUriKeyProp { get; set; }
 
         /// <summary>
+        /// A dictionary property whose value type is hinted.
+        /// </summary>
+        [DataMember(Name = ""dictionaryWithHintedValueProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<string, V> DictionaryWithHintedValueProp { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class.
         /// </summary>
         public C()
@@ -1133,9 +1154,12 @@ namespace N
         /// <param name=""dictionaryWithUriKeyProp"">
         /// An initialization value for the <see cref=""P: DictionaryWithUriKeyProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp)
+        /// <param name=""dictionaryWithHintedValueProp"">
+        /// An initialization value for the <see cref=""P: DictionaryWithHintedValueProp"" /> property.
+        /// </param>
+        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp);
+            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
         }
 
         /// <summary>
@@ -1154,7 +1178,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp);
+            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -1175,7 +1199,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp)
+        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
             IntProp = intProp;
             StringProp = stringProp;
@@ -1298,6 +1322,11 @@ namespace N
                 {
                     DictionaryWithUriKeyProp.Add(value_7.Key, new D(value_7.Value));
                 }
+            }
+
+            if (dictionaryWithHintedValueProp != null)
+            {
+                DictionaryWithHintedValueProp = new Dictionary<string, V>(dictionaryWithHintedValueProp);
             }
         }
     }
@@ -2186,7 +2215,7 @@ namespace N
                 return false;
             }
 
-            if (!Object.ReferenceEquals(left.ArrayOfIntByRef, right.ArrayOfIntByRef))
+            if (!object.ReferenceEquals(left.ArrayOfIntByRef, right.ArrayOfIntByRef))
             {
                 if (left.ArrayOfIntByRef == null || right.ArrayOfIntByRef == null)
                 {
@@ -2324,7 +2353,7 @@ namespace N
                 return false;
             }
 
-            if (!Object.ReferenceEquals(left.ArrayOfArrayOfInt, right.ArrayOfArrayOfInt))
+            if (!object.ReferenceEquals(left.ArrayOfArrayOfInt, right.ArrayOfArrayOfInt))
             {
                 if (left.ArrayOfArrayOfInt == null || right.ArrayOfArrayOfInt == null)
                 {
@@ -2338,7 +2367,7 @@ namespace N
 
                 for (int index_0 = 0; index_0 < left.ArrayOfArrayOfInt.Count; ++index_0)
                 {
-                    if (!Object.ReferenceEquals(left.ArrayOfArrayOfInt[index_0], right.ArrayOfArrayOfInt[index_0]))
+                    if (!object.ReferenceEquals(left.ArrayOfArrayOfInt[index_0], right.ArrayOfArrayOfInt[index_0]))
                     {
                         if (left.ArrayOfArrayOfInt[index_0] == null || right.ArrayOfArrayOfInt[index_0] == null)
                         {
@@ -2487,7 +2516,7 @@ namespace N
                 return false;
             }
 
-            if (!Object.ReferenceEquals(left.ArrayOfArrayOfObject, right.ArrayOfArrayOfObject))
+            if (!object.ReferenceEquals(left.ArrayOfArrayOfObject, right.ArrayOfArrayOfObject))
             {
                 if (left.ArrayOfArrayOfObject == null || right.ArrayOfArrayOfObject == null)
                 {
@@ -2501,7 +2530,7 @@ namespace N
 
                 for (int index_0 = 0; index_0 < left.ArrayOfArrayOfObject.Count; ++index_0)
                 {
-                    if (!Object.ReferenceEquals(left.ArrayOfArrayOfObject[index_0], right.ArrayOfArrayOfObject[index_0]))
+                    if (!object.ReferenceEquals(left.ArrayOfArrayOfObject[index_0], right.ArrayOfArrayOfObject[index_0]))
                     {
                         if (left.ArrayOfArrayOfObject[index_0] == null || right.ArrayOfArrayOfObject[index_0] == null)
                         {
@@ -2515,7 +2544,7 @@ namespace N
 
                         for (int index_1 = 0; index_1 < left.ArrayOfArrayOfObject[index_0].Count; ++index_1)
                         {
-                            if (!Object.Equals(left.ArrayOfArrayOfObject[index_0][index_1], right.ArrayOfArrayOfObject[index_0][index_1]))
+                            if (!object.Equals(left.ArrayOfArrayOfObject[index_0][index_1], right.ArrayOfArrayOfObject[index_0][index_1]))
                             {
                                 return false;
                             }
@@ -2658,7 +2687,7 @@ namespace N
                 return false;
             }
 
-            if (!Object.ReferenceEquals(left.ArrayOfArrayOfD, right.ArrayOfArrayOfD))
+            if (!object.ReferenceEquals(left.ArrayOfArrayOfD, right.ArrayOfArrayOfD))
             {
                 if (left.ArrayOfArrayOfD == null || right.ArrayOfArrayOfD == null)
                 {
@@ -2672,7 +2701,7 @@ namespace N
 
                 for (int index_0 = 0; index_0 < left.ArrayOfArrayOfD.Count; ++index_0)
                 {
-                    if (!Object.ReferenceEquals(left.ArrayOfArrayOfD[index_0], right.ArrayOfArrayOfD[index_0]))
+                    if (!object.ReferenceEquals(left.ArrayOfArrayOfD[index_0], right.ArrayOfArrayOfD[index_0]))
                     {
                         if (left.ArrayOfArrayOfD[index_0] == null || right.ArrayOfArrayOfD[index_0] == null)
                         {

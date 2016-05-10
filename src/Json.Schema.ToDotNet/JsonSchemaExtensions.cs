@@ -31,9 +31,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             string typeName,
             string propertyName,
             HintDictionary hintDictionary,
-            out string keyTypeName)
+            out DictionaryHint dictionaryHint)
         {
-            keyTypeName = null;
+            dictionaryHint = null;
 
             // Ignore any DictionaryHint that might apply to this property
             // if the property is not an object.
@@ -56,13 +56,12 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             string key = MakeHintDictionaryKey(typeName, propertyName);
-            DictionaryHint dictionaryHint = hintDictionary.GetHint<DictionaryHint>(key);
+            dictionaryHint = hintDictionary.GetHint<DictionaryHint>(key);
             if (dictionaryHint == null)
             {
                 return false;
             }
 
-            keyTypeName = dictionaryHint.KeyTypeName ?? "string";
             return true;
         }
 
