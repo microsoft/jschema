@@ -357,27 +357,27 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private void GenerateAdditionalTypeFromEnumHint(EnumHint enumHint, JsonSchema schema)
         {
-            if (enumHint.EnumValues != null
+            if (enumHint.EnumNames != null
                 && schema.Enum != null
-                && enumHint.EnumValues.Length > schema.Enum.Length)
+                && enumHint.EnumNames.Length > schema.Enum.Length)
             {
                 throw Error.CreateException(
                                 Resources.ErrorMismatchedEnumCount,
                                 nameof(EnumHint),
                                 enumHint.TypeName,
-                                enumHint.EnumValues.Length,
+                                enumHint.EnumNames.Length,
                                 schema.Enum.Length);
             }
 
             var enumValues = new List<string>();
-            if (!string.IsNullOrWhiteSpace(enumHint.ZeroValue))
+            if (!string.IsNullOrWhiteSpace(enumHint.ZeroValueName))
             {
-                enumValues.Add(enumHint.ZeroValue);
+                enumValues.Add(enumHint.ZeroValueName);
             }
 
-            if (enumHint.EnumValues != null)
+            if (enumHint.EnumNames != null)
             {
-                enumValues.AddRange(enumHint.EnumValues);
+                enumValues.AddRange(enumHint.EnumNames);
             }
             else
             {

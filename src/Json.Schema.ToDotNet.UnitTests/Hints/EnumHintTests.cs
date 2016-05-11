@@ -322,7 +322,7 @@ namespace N
       ""arguments"": {
         ""typeName"": ""Color"",
         ""description"": ""Some pretty colors."",
-        ""enumValues"": [ ""crimson"", ""lemon"", ""avocado"" ]
+        ""enumNames"": [ ""crimson"", ""lemon"", ""avocado"" ]
       }
     }
   ]
@@ -388,7 +388,7 @@ namespace N
       ""arguments"": {
         ""typeName"": ""Color"",
         ""description"": ""Some pretty colors."",
-        ""enumValues"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
+        ""enumNames"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
       }
     }
   ]
@@ -419,8 +419,8 @@ namespace N
       ""arguments"": {
         ""typeName"": ""Color"",
         ""description"": ""Some pretty colors."",
-        ""enumValues"": [ ""crimson"", ""lemon"", ""avocado"" ],
-        ""zeroValue"": ""colorless""
+        ""enumNames"": [ ""crimson"", ""lemon"", ""avocado"" ],
+        ""zeroValueName"": ""colorless""
       }
     }
   ]
@@ -485,7 +485,7 @@ namespace N
       ""arguments"": {
         ""typeName"": ""AccessModes"",
         ""flags"": true,
-        ""zeroValue"": ""none""
+        ""zeroValueName"": ""none""
       }
     }
   ]
@@ -520,6 +520,65 @@ namespace N
         Read,
         Write,
         Execute
+    }
+}"
+            ),
+
+            new TestCase(
+                "Values",
+                false,
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""permissions"": {
+      ""enum"": [""read"", ""write"", ""execute""]
+    }
+  }
+}",
+
+@"{
+  ""C.Permissions"": [
+    {
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""AccessModes"",
+        ""flags"": true,
+        ""zeroValueName"": ""none"",
+        ""enumValues"": [1, 2, 4]
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""permissions"", IsRequired = false, EmitDefaultValue = false)]
+        public AccessModes Permissions { get; set; }
+    }
+}",
+                "AccessModes",
+
+@"using System;
+using System.CodeDom.Compiler;
+
+namespace N
+{
+    [Flags]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public enum AccessModes
+    {
+        None,
+        Read = 1,
+        Write = 2,
+        Execute = 4
     }
 }"
             ),

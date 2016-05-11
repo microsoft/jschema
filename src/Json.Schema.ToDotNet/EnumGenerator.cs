@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -40,20 +42,64 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public override void AddMembers()
         {
-            if (Schema.Enum != null)
+            if (Schema?.Enum.Length > 0)
             {
-                var enumMembers =
-                        Schema.Enum.Select(
-                            enumName => SyntaxFactory.EnumMemberDeclaration(
-                                SyntaxFactory.Identifier(enumName.ToString().ToPascalCase())))
-                            .ToArray();
+                EnumHint enumHint = GetEnumHintForType(TypeName);
+                int[] enumValues = enumHint?.EnumValues;
 
-                if (enumMembers.Any())
+                var enumDeclaration = TypeDeclaration as EnumDeclarationSyntax;
+
+                var enumMembers = new List<EnumMemberDeclarationSyntax>();
+
+                int enumValueIndexOffset = enumHint?.HasZeroValue == true ? 1 : 0;
+
+
+                for (int i = 0; i < Schema.Enum.Length; ++i)
                 {
-                    var enumDeclaration = TypeDeclaration as EnumDeclarationSyntax;
-                    TypeDeclaration = enumDeclaration.AddMembers(enumMembers);
+                    EqualsValueClauseSyntax equalsValueClause = null;
+                    if (enumValues != null && ShouldSupplyValueFor(i, enumHint.HasZeroValue))
+                    {
+                        equalsValueClause = SyntaxFactory.EqualsValueClause(
+                            SyntaxFactory.LiteralExpression(
+                                SyntaxKind.NumericLiteralExpression,
+                                SyntaxFactory.Literal(enumValues[i - enumValueIndexOffset])));
+                    }
+
+                    string enumName = Schema.Enum[i].ToString().ToPascalCase();
+
+                    enumMembers.Add(
+                        SyntaxFactory.EnumMemberDeclaration(
+                            default(SyntaxList<AttributeListSyntax>),
+                            SyntaxFactory.Identifier(enumName),
+                            equalsValueClause));
+
                 }
+
+                TypeDeclaration = enumDeclaration.AddMembers(enumMembers.ToArray());
             }
+        }
+
+        /// <summary>
+        /// Return a value indicating whether an explicit value should be
+        /// supplied for the specified enum member.
+        /// </summary>
+        /// <param name="i">
+        /// The zero-based index of the enum member being generated.
+        /// </param>
+        /// <param name="hasZeroValue">
+        /// <code>true</code> if this enum type was hinted to have a zero value;
+        /// otherwise <code>false</code>.
+        /// </param>
+        /// <returns>
+        /// <code>true</code> if an explicit value should be generated for
+        /// the enum member specified by <paramref name="i"/>; otherwise
+        /// <code>false</code>.
+        /// </returns>
+        private bool ShouldSupplyValueFor(int i, bool hasZeroValue)
+        {
+            // If this enum has a zero value, don't supply an explicit value for it,
+            // but do supply explicit values for the remaining members.
+            return i > 0 || !hasZeroValue;
         }
 
         private EnumHint GetEnumHintForType(string typeName)
