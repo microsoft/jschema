@@ -464,7 +464,64 @@ namespace N
         Avocado
     }
 }"
-            )
+            ),
+
+            new TestCase(
+                "Flags",
+                false,
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""permissions"": {
+      ""enum"": [""read"", ""write"", ""execute""]
+    }
+  }
+}",
+
+@"{
+  ""C.Permissions"": [
+    {
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""AccessModes"",
+        ""flags"": true,
+        ""zeroValue"": ""none""
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""permissions"", IsRequired = false, EmitDefaultValue = false)]
+        public AccessModes Permissions { get; set; }
+    }
+}",
+                "AccessModes",
+
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    [Flags]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public enum AccessModes
+    {
+        None,
+        Read,
+        Write,
+        Execute
+    }
+}"
+            ),
         };
 
         [Theory(DisplayName = nameof(EnumHint))]

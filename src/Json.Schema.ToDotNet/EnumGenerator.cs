@@ -14,6 +14,8 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// </summary>
     public class EnumGenerator : TypeGenerator
     {
+        private const string FlagsAttributeName = "Flags";
+
         public EnumGenerator(
             JsonSchema schema,
             HintDictionary hintDictionary)
@@ -23,8 +25,16 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
         {
-            return SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
+            var enumDeclaration = SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+
+            EnumHint enumHint = GetEnumHintForType(TypeName);
+            if (enumHint?.Flags == true)
+            {
+                enumDeclaration = AddAttribute(enumDeclaration, FlagsAttributeName);
+            }
+
+            return enumDeclaration;
         }
 
         public override void AddMembers()
@@ -43,6 +53,25 @@ namespace Microsoft.Json.Schema.ToDotNet
                     TypeDeclaration = enumDeclaration.AddMembers(enumMembers);
                 }
             }
+        }
+
+        private EnumHint GetEnumHintForType(string typeName)
+        {
+            return HintDictionary
+                .SelectMany(kvp => kvp.Value)
+                .Where(hint => hint is EnumHint)
+                .Cast<EnumHint>()
+                .Where(eh => eh.TypeName == typeName)
+                .FirstOrDefault();
+        }
+
+        private EnumDeclarationSyntax AddAttribute(EnumDeclarationSyntax enumDeclaration, string attributeName)
+        {
+            return enumDeclaration.AddAttributeLists(
+                SyntaxFactory.AttributeList(
+                    SyntaxFactory.SingletonSeparatedList(
+                        SyntaxFactory.Attribute(
+                            SyntaxFactory.IdentifierName(attributeName)))));
         }
     }
 }

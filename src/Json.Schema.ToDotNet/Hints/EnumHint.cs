@@ -28,16 +28,22 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// "Unknown" or "None", if the enum values from the schema don't include such a
         /// value.
         /// </param>
+        /// <param name="flags">
+        /// <code>true</code> if the enumeration type is a flags enum; otherwise
+        /// <code>false</code>.
+        /// </param>
         public EnumHint(
             string typeName,
             string description,
             string[] enumValues,
-            string zeroValues)
+            string zeroValues,
+            bool flags)
         {
             TypeName = typeName;
             Description = description;
             EnumValues = enumValues;
             ZeroValue = zeroValues;
+            Flags = flags;
         }
 
         /// <summary>
@@ -62,5 +68,10 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// value.
         /// </summary>
         public string ZeroValue { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the enumeration type is a flags enum.
+        /// </summary>
+        public bool Flags { get; }
     }
 }

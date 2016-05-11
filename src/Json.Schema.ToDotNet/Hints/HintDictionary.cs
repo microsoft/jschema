@@ -140,8 +140,9 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             string description = GetArgument<string>(arguments, nameof(EnumHint.Description));
             string[] enumValues = GetArrayArgument<string>(arguments, nameof(EnumHint.EnumValues));
             string zeroValue = GetArgument<string>(arguments, nameof(EnumHint.ZeroValue));
+            bool flags = GetArgument<bool>(arguments, nameof(EnumHint.Flags));
 
-            return new EnumHint(typeName, description, enumValues, zeroValue);
+            return new EnumHint(typeName, description, enumValues, zeroValue, flags);
         }
 
         private static CodeGenHint CreateInterfaceHint(JObject arguments)
