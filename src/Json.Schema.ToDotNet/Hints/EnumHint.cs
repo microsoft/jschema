@@ -19,11 +19,11 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// <param name="description">
         /// The string to place in the summary comment of the generated type.
         /// </param>
-        /// <param name="enumNames">
+        /// <param name="memberNames">
         /// The names of the enumeration constants to generate, if different from the
         /// string specified in the enum property of theJSON Schema.
         /// </param>
-        /// <param name="enumValues">
+        /// <param name="memberValues">
         /// The numeric values of the enumeration constants, or null if the default
         /// values suffice.
         /// </param>
@@ -39,15 +39,15 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         public EnumHint(
             string typeName,
             string description,
-            string[] enumNames,
-            int[] enumValues,
+            string[] memberNames,
+            int[] memberValues,
             string zeroValueName,
             bool flags)
         {
             TypeName = typeName;
             Description = description;
-            EnumNames = enumNames;
-            EnumValues = enumValues;
+            MemberNames = memberNames;
+            MemberValues = memberValues;
             ZeroValueName = zeroValueName;
             Flags = flags;
         }
@@ -66,13 +66,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// Gets the names of the enumeration constants to generate, if different from
         /// the string specified in the enum property of theJSON Schema.
         /// </summary>
-        public string[] EnumNames { get; }
+        public string[] MemberNames { get; }
 
         /// <summary>
         /// Gets the numeric values of the enumeration constants, or null of the
         /// default values suffice.
         /// </summary>
-        public int[] EnumValues { get; set; }
+        public int[] MemberValues { get; set; }
 
         /// <summary>
         /// Gets the name of an enumeration constant to represent the 0 value, typically

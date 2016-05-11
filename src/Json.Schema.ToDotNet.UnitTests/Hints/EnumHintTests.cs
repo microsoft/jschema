@@ -322,7 +322,7 @@ namespace N
       ""arguments"": {
         ""typeName"": ""Color"",
         ""description"": ""Some pretty colors."",
-        ""enumNames"": [ ""crimson"", ""lemon"", ""avocado"" ]
+        ""memberNames"": [ ""crimson"", ""lemon"", ""avocado"" ]
       }
     }
   ]
@@ -388,7 +388,7 @@ namespace N
       ""arguments"": {
         ""typeName"": ""Color"",
         ""description"": ""Some pretty colors."",
-        ""enumNames"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
+        ""memberNames"": [ ""crimson"", ""lemon"", ""avocado"", ""navy"" ]
       }
     }
   ]
@@ -419,7 +419,7 @@ namespace N
       ""arguments"": {
         ""typeName"": ""Color"",
         ""description"": ""Some pretty colors."",
-        ""enumNames"": [ ""crimson"", ""lemon"", ""avocado"" ],
+        ""memberNames"": [ ""crimson"", ""lemon"", ""avocado"" ],
         ""zeroValueName"": ""colorless""
       }
     }
@@ -544,7 +544,7 @@ namespace N
         ""typeName"": ""AccessModes"",
         ""flags"": true,
         ""zeroValueName"": ""none"",
-        ""enumValues"": [1, 2, 4]
+        ""memberValues"": [1, 2, 4]
       }
     }
   ]

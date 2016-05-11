@@ -138,12 +138,12 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         {
             string typeName = GetArgument<string>(arguments, nameof(EnumHint.TypeName));
             string description = GetArgument<string>(arguments, nameof(EnumHint.Description));
-            string[] enumNames = GetArrayArgument<string>(arguments, nameof(EnumHint.EnumNames));
-            int[] enumValues = GetArrayArgument<int>(arguments, nameof(EnumHint.EnumValues));
+            string[] memberNames = GetArrayArgument<string>(arguments, nameof(EnumHint.MemberNames));
+            int[] memberValues = GetArrayArgument<int>(arguments, nameof(EnumHint.MemberValues));
             string zeroValue = GetArgument<string>(arguments, nameof(EnumHint.ZeroValueName));
             bool flags = GetArgument<bool>(arguments, nameof(EnumHint.Flags));
 
-            return new EnumHint(typeName, description, enumNames, enumValues, zeroValue, flags);
+            return new EnumHint(typeName, description, memberNames, memberValues, zeroValue, flags);
         }
 
         private static CodeGenHint CreateInterfaceHint(JObject arguments)

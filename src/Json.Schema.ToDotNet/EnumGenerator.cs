@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -45,7 +44,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (Schema?.Enum.Length > 0)
             {
                 EnumHint enumHint = GetEnumHintForType(TypeName);
-                int[] enumValues = enumHint?.EnumValues;
+                int[] enumValues = enumHint?.MemberValues;
 
                 var enumDeclaration = TypeDeclaration as EnumDeclarationSyntax;
 

@@ -937,6 +937,136 @@ namespace N
     }
 }",
             definesAdditionalClass: true),
+
+            new TestCase(
+                "Object defines properties",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""dictProp"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""tags"": {
+          ""type"": ""array"",
+          ""itemType"": ""string""
+        }
+      }
+    }
+  }
+}",
+
+@"{
+  ""C.DictProp"": [
+    {
+      ""kind"": ""DictionaryHint""
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        [DataMember(Name = ""dictProp"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<string, string> DictProp { get; set; }
+    }
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (!object.ReferenceEquals(left.DictProp, right.DictProp))
+            {
+                if (left.DictProp == null || right.DictProp == null || left.DictProp.Count != right.DictProp.Count)
+                {
+                    return false;
+                }
+
+                foreach (var value_0 in left.DictProp)
+                {
+                    string value_1;
+                    if (!right.DictProp.TryGetValue(value_0.Key, out value_1))
+                    {
+                        return false;
+                    }
+
+                    if (value_0.Value != value_1)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.DictProp != null)
+                {
+                    // Use xor for dictionaries to be order-independent.
+                    int xor_0 = 0;
+                    foreach (var value_2 in obj.DictProp)
+                    {
+                        xor_0 ^= value_2.Key.GetHashCode();
+                        if (value_2.Value != null)
+                        {
+                            xor_0 ^= value_2.Value.GetHashCode();
+                        }
+                    }
+
+                    result = (result * 31) + xor_0;
+                }
+            }
+
+            return result;
+        }
+    }
+}",
+            definesAdditionalClass: false),
         };
 
         [Theory(DisplayName = nameof(DictionaryHint))]

@@ -42,13 +42,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                 return false;
             }
 
-            // Likewise, don't make this property a dictionary if it defines
-            // any properties of its own
-            if (schema.Properties != null && schema.Properties.Any())
-            {
-                return false;
-            }
-
             // Is there a DictionaryHint that targets this property?
             if (hintDictionary == null)
             {
