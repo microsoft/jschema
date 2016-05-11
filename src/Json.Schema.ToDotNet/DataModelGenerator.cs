@@ -369,25 +369,25 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 schema.Enum.Length);
             }
 
-            var enumValues = new List<string>();
+            var enumNames = new List<string>();
             if (!string.IsNullOrWhiteSpace(enumHint.ZeroValueName))
             {
-                enumValues.Add(enumHint.ZeroValueName);
+                enumNames.Add(enumHint.ZeroValueName);
             }
 
             if (enumHint.EnumNames != null)
             {
-                enumValues.AddRange(enumHint.EnumNames);
+                enumNames.AddRange(enumHint.EnumNames);
             }
             else
             {
-                enumValues.AddRange(schema.Enum.Select(e => e.ToString()));
+                enumNames.AddRange(schema.Enum.Select(e => e.ToString()));
             }
 
             var enumTypeSchema = new JsonSchema
             {
                 Description = enumHint.Description ?? schema.Description,
-                Enum = enumValues.ToArray()
+                Enum = enumNames.ToArray()
             };
 
             var generator = new EnumGenerator(enumTypeSchema, _settings.HintDictionary);
