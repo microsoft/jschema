@@ -32,6 +32,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (enumHint?.Flags == true)
             {
                 enumDeclaration = AddAttribute(enumDeclaration, FlagsAttributeName);
+                AddUsing("System");
             }
 
             return enumDeclaration;

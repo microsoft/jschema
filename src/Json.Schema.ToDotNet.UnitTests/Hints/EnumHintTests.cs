@@ -507,7 +507,8 @@ namespace N
 }",
                 "AccessModes",
 
-@"using System.CodeDom.Compiler;
+@"using System;
+using System.CodeDom.Compiler;
 
 namespace N
 {
