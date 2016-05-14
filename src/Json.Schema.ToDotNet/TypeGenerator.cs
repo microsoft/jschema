@@ -30,7 +30,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected List<string> Usings { get; private set; }
 
-        public abstract BaseTypeDeclarationSyntax CreateTypeDeclaration();
+        public abstract BaseTypeDeclarationSyntax GenerateTypeDeclaration();
 
         /// <summary>
         /// Adds members to the type as directed by the schema.
@@ -55,7 +55,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public string Generate(string namespaceName, string typeName, string copyrightNotice, string description)
         {
             TypeName = typeName.ToPascalCase();
-            TypeDeclaration = CreateTypeDeclaration();
+            TypeDeclaration = GenerateTypeDeclaration();
 
             AddMembers();
 

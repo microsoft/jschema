@@ -69,7 +69,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _localVariableNameGenerator = new LocalVariableNameGenerator();
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
+        public override BaseTypeDeclarationSyntax GenerateTypeDeclaration()
         {
             SyntaxKind sealedOrPartial = _sealClasses
                 ? SyntaxKind.SealedKeyword
@@ -240,7 +240,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
-        protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired)
+        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, bool isRequired)
         {
             var attributes = new List<AttributeSyntax>();
 
@@ -311,7 +311,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return attributes.ToArray();
         }
 
-        protected override SyntaxToken[] CreatePropertyModifiers(string propertyName)
+        protected override SyntaxToken[] GeneratePropertyModifiers(string propertyName)
         {
             string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
             PropertyModifiersHint propertyModifiersHint = HintDictionary?.GetHint<PropertyModifiersHint>(hintDictionaryKey);
@@ -332,7 +332,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return modifierTokens;
         }
 
-        protected override AccessorDeclarationSyntax[] CreatePropertyAccessors()
+        protected override AccessorDeclarationSyntax[] GeneratePropertyAccessors()
         {
             return new AccessorDeclarationSyntax[]
                 {

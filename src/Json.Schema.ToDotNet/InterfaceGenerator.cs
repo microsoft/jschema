@@ -26,7 +26,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
+        public override BaseTypeDeclarationSyntax GenerateTypeDeclaration()
         {
             return SyntaxFactory.InterfaceDeclaration(TypeName)
                 .AddModifiers(
@@ -40,17 +40,17 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddMembers(GenerateProperties());
         }
 
-        protected override AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired)
+        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, bool isRequired)
         {
             return new AttributeSyntax[0];
         }
 
-        protected override SyntaxToken[] CreatePropertyModifiers(string propertyName)
+        protected override SyntaxToken[] GeneratePropertyModifiers(string propertyName)
         {
             return new SyntaxToken[0];
         }
 
-        protected override AccessorDeclarationSyntax[] CreatePropertyAccessors()
+        protected override AccessorDeclarationSyntax[] GeneratePropertyAccessors()
         {
             return new AccessorDeclarationSyntax[]
                 {

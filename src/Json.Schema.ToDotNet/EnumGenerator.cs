@@ -24,7 +24,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
         }
 
-        public override BaseTypeDeclarationSyntax CreateTypeDeclaration()
+        public override BaseTypeDeclarationSyntax GenerateTypeDeclaration()
         {
             var enumDeclaration = SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));

@@ -89,9 +89,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets the list of all properties declared in the schema.
         /// </summary>
         /// <remarks>
-        /// Don't include information about array elements. For example, if the class has
-        /// an array-valued property ArrayProp, then include "ArrayProp" in the list, but
-        /// not "ArrayProp[]".
+        /// Don't include information about array elements or dictionary entries.
+        /// For example, if the class has an array-valued property ArrayProp, then
+        /// include "ArrayProp" in the list, but not "ArrayProp[]". Similarly, if the
+        /// class has a dictionary-valued property DictProp, then include "DictProp" in
+        /// the list, but not "DictProp{}".
         /// </remarks>
         /// <returns>
         /// An array containing the names of the properties.

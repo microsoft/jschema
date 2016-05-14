@@ -24,11 +24,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropInfoDictionary = propertyInfoDictionary;
         }
 
-        protected abstract AttributeSyntax[] CreatePropertyAttributes(string propertyName, bool isRequired);
+        protected abstract AttributeSyntax[] GeneratePropertyAttributes(string propertyName, bool isRequired);
 
-        protected abstract SyntaxToken[] CreatePropertyModifiers(string propertyName);
+        protected abstract SyntaxToken[] GeneratePropertyModifiers(string propertyName);
 
-        protected abstract AccessorDeclarationSyntax[] CreatePropertyAccessors();
+        protected abstract AccessorDeclarationSyntax[] GeneratePropertyAccessors();
 
         /// <summary>
         /// Gets a dictionary that maps the name of each property in the generated class
@@ -99,10 +99,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
                 info.Type,
                 propertyName.ToPascalCase())
-                .AddModifiers(CreatePropertyModifiers(propertyName))
-                .AddAccessorListAccessors(CreatePropertyAccessors());
+                .AddModifiers(GeneratePropertyModifiers(propertyName))
+                .AddAccessorListAccessors(GeneratePropertyAccessors());
 
-            AttributeSyntax[] attributes = CreatePropertyAttributes(propertyName, info.IsRequired);
+            AttributeSyntax[] attributes = GeneratePropertyAttributes(propertyName, info.IsRequired);
             if (attributes.Length > 0)
             {
                 propDecl = propDecl.AddAttributeLists(attributes
