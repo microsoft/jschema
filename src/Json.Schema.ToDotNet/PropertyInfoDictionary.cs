@@ -365,10 +365,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
+            string serializedName = propertyName.ToPascalCase();
+
             entries.Add(new KeyValuePair<string, PropertyInfo>(
-                propertyName.ToPascalCase(),
+                serializedName,
                 new PropertyInfo(
                     propertySchema.Description,
+                    serializedName,
                     comparisonKind,
                     hashKind,
                     initializationKind,
@@ -455,12 +458,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                 entries.Add(new KeyValuePair<string, PropertyInfo>(
                     key,
                     new PropertyInfo(
-                        string.Empty,
-                        dictionaryHint.ComparisonKind,
-                        dictionaryHint.HashKind,
-                        dictionaryHint.InitializationKind,
-                        valueType,
-                        dictionaryHint.NamespaceName,
+                        description: string.Empty,
+                        serializedName: null,
+                        comparisonKind: dictionaryHint.ComparisonKind,
+                        hashKind: dictionaryHint.HashKind,
+                        initializationKind: dictionaryHint.InitializationKind,
+                        type: valueType,
+                        namespaceName: dictionaryHint.NamespaceName,
                         isRequired: true,
                         isOfSchemaDefinedType: false,
                         arrayRank: 0,

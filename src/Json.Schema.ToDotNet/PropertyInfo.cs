@@ -16,6 +16,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <param name="description">
         /// The description of the property, for use in a summary comment.
         /// </param>
+        /// <param name="serializedName">
+        /// The name of the property as serialized in the JSON file.
+        /// </param>
         /// <param name="comparisonKind">
         /// The kind of comparison code required by the property.
         /// </param>
@@ -51,6 +54,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </param>
         public PropertyInfo(
             string description,
+            string serializedName,
             ComparisonKind comparisonKind,
             HashKind hashKind,
             InitializationKind initializationKind,
@@ -62,6 +66,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             int declarationOrder)
         {
             Description = description;
+            SerializedName = serializedName;
             ComparisonKind = comparisonKind;
             HashKind = hashKind;
             InitializationKind = initializationKind;
@@ -78,6 +83,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets a description for the property, for use in a summary comment.
         /// </summary>
         public string Description { get; }
+
+        /// <summary>
+        /// Gets the name of the property as serialized in the JSON file.
+        /// </summary>
+        public string SerializedName { get; }
 
         /// <summary>
         /// Gets a value that specifies the kind of comparison code that must be
