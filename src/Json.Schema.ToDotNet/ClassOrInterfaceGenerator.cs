@@ -24,7 +24,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropInfoDictionary = propertyInfoDictionary;
         }
 
-        protected abstract AttributeSyntax[] GeneratePropertyAttributes(string propertyName, bool isRequired);
+        protected abstract AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired);
 
         protected abstract SyntaxToken[] GeneratePropertyModifiers(string propertyName);
 
@@ -102,7 +102,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddModifiers(GeneratePropertyModifiers(propertyName))
                 .AddAccessorListAccessors(GeneratePropertyAccessors());
 
-            AttributeSyntax[] attributes = GeneratePropertyAttributes(propertyName, info.IsRequired);
+            AttributeSyntax[] attributes = GeneratePropertyAttributes(propertyName, info.SerializedName, info.IsRequired);
             if (attributes.Length > 0)
             {
                 propDecl = propDecl.AddAttributeLists(attributes

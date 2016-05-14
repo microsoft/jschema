@@ -240,7 +240,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
-        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, bool isRequired)
+        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired)
         {
             var attributes = new List<AttributeSyntax>();
 
@@ -252,7 +252,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         default(NameColonSyntax),
                         SyntaxFactory.LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
-                            SyntaxFactory.Literal(propertyName.ToCamelCase()))),
+                            SyntaxFactory.Literal(serializedName))),
                     SyntaxFactory.AttributeArgument(
                         SyntaxFactory.NameEquals(DataMemberIsRequiredPropertyName),
                         default(NameColonSyntax),

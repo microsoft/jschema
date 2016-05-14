@@ -365,13 +365,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
-            string serializedName = propertyName.ToPascalCase();
-
             entries.Add(new KeyValuePair<string, PropertyInfo>(
-                serializedName,
+                propertyName.ToPascalCase(),
                 new PropertyInfo(
                     propertySchema.Description,
-                    serializedName,
+                    propertyName,
                     comparisonKind,
                     hashKind,
                     initializationKind,
