@@ -214,7 +214,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private void AddPropertyInfoFromPropertySchema(
             IList<KeyValuePair<string, PropertyInfo>> entries,
-            string propertyName,
+            string schemaPropertyName,
             JsonSchema propertySchema,
             bool isRequired)
         {
@@ -243,7 +243,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.Uri;
                 type = MakeNamedType("System.Uri", out namespaceName);
             }
-            else if (propertySchema.ShouldBeDictionary(_typeName, propertyName, _hintDictionary, out dictionaryHint))
+            else if (propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out dictionaryHint))
             {
                 comparisonKind = ComparisonKind.Dictionary;
                 hashKind = HashKind.Dictionary;
@@ -258,7 +258,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     ? propertySchema.AdditionalProperties.Schema
                     : new JsonSchema { Type = new JTokenType[] { JTokenType.String } };
 
-                type = MakeDictionaryType(entries, propertyName, dictionaryHint, dictionaryElementSchema);
+                type = MakeDictionaryType(entries, schemaPropertyName, dictionaryHint, dictionaryElementSchema);
                 namespaceName = "System.Collections.Generic";   // For IDictionary.
             }
             else if ((referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
@@ -268,7 +268,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(referencedEnumTypeName, out namespaceName);
             }
-            else if (propertySchema.ShouldBeEnum(_typeName, propertyName,  _hintDictionary, out enumHint))
+            else if (propertySchema.ShouldBeEnum(_typeName, schemaPropertyName,  _hintDictionary, out enumHint))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
@@ -329,7 +329,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         hashKind = HashKind.Collection;
                         initializationKind = InitializationKind.Collection;
                         namespaceName = "System.Collections.Generic";   // For IList.
-                        type = MakeArrayType(entries, propertyName, propertySchema);
+                        type = MakeArrayType(entries, schemaPropertyName, propertySchema);
                         break;
 
                     case JTokenType.None:
@@ -365,11 +365,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
+            var propertyNameHint = _hintDictionary?.GetHint<PropertyNameHint>(_typeName + "." + schemaPropertyName);
+            string dotNetPropertyName = propertyNameHint != null
+                ? propertyNameHint.DotNetPropertyName
+                : schemaPropertyName.ToPascalCase();
+
             entries.Add(new KeyValuePair<string, PropertyInfo>(
-                propertyName.ToPascalCase(),
+                dotNetPropertyName,
                 new PropertyInfo(
                     propertySchema.Description,
-                    propertyName,
+                    schemaPropertyName,
                     comparisonKind,
                     hashKind,
                     initializationKind,
