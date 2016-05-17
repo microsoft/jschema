@@ -46,6 +46,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     },
                     ""additionalProperties"": true,
                     ""$ref"": ""http://www.example.com/schema/#"",
+                    ""multipleOf"": 2,
                     ""minItems"": 1,
                     ""maxItems"": 3,
                     ""uniqueItems"": true,
@@ -80,6 +81,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     },
                     ""additionalProperties"": true,
                     ""$ref"": ""http://www.example.com/schema/#"",
+                    ""multipleOf"": 2,
                     ""minItems"": 1,
                     ""maxItems"": 3,
                     ""uniqueItems"": true,
@@ -435,6 +437,25 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 false
             ),
+
+            new EqualityTestCase(
+                "Different multipleOfs",
+                @"{
+                  ""multipleOf"": 2
+                }",
+                @"{
+                  ""multipleOf"": 3
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Null and non-null multipleOfs",
+                @"{
+                  ""multipleOf"": 2
+                }",
+                @"{
+                }",
+                false),
 
             new EqualityTestCase(
                 "Different maximums",

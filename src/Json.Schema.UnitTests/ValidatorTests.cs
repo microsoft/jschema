@@ -128,6 +128,42 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
+                "Numeric: multipleOf: valid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""multipleOf"": 2
+                }",
+                "4"),
+
+            new TestCase(
+                "Numeric: multipleOf: invalid integer",
+                @"{
+                  ""type"": ""integer"",
+                  ""multipleOf"": 2
+                }",
+                "5",
+                Error.Format(1, 1, ErrorNumber.NotAMultiple, 5, 2)
+                ),
+
+            new TestCase(
+                "Numeric: multipleOf: valid number",
+                @"{
+                  ""type"": ""number"",
+                  ""multipleOf"": 2.0
+                }",
+                "4.0"),
+
+            new TestCase(
+                "Numeric: multipleOf: invalid number",
+                @"{
+                  ""type"": ""number"",
+                  ""multipleOf"": 2.0
+                }",
+                "4.001",
+                Error.Format(1, 5, ErrorNumber.NotAMultiple, 4.001, 2.0)
+                ),
+
+            new TestCase(
                 "Numeric: maximum: valid integer",
                 @"{
                   ""type"": ""integer"",

@@ -272,6 +272,26 @@ namespace Microsoft.Json.Schema
         /// </example>
         TooFewProperties = 1011,
 
+
+        /// <summary>
+        /// An numeric instance is not a multiple of the specified value.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "number",
+        ///   "multipleOf": 2
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "4.001"
+        /// </code>
+        /// </example>
+        NotAMultiple = 1012,
+
         #endregion Errors in instance document
     }
 }

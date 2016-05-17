@@ -126,6 +126,9 @@
   <data name="ErrorInvalidAdditionalProperties" xml:space="preserve">
     <value>JSON schema requires the value of "additionalProperties" to be either a Boolean or a schema, but a token of type {0} was seen.</value>
   </data>
+  <data name="ErrorNotAMultiple" xml:space="preserve">
+    <value>The value {0} is not a multiple of {1} as required by the schema.</value>
+  </data>
   <data name="ErrorNotAString" xml:space="preserve">
     <value>JSON schema requires the value of the property "{0}" to be a string, but the token is of type {1}.</value>
   </data>

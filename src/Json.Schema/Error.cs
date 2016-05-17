@@ -52,6 +52,7 @@ namespace Microsoft.Json.Schema
                 [ErrorNumber.ValueTooSmallExclusive] = Resources.ErrorValueTooSmallExclusive,
                 [ErrorNumber.TooManyProperties] = Resources.ErrorTooManyProperties,
                 [ErrorNumber.TooFewProperties] = Resources.ErrorTooFewProperties,
+                [ErrorNumber.NotAMultiple] = Resources.ErrorNotAMultiple
             });
 
         internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)

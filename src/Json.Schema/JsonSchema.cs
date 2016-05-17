@@ -91,16 +91,18 @@ namespace Microsoft.Json.Schema
                 AdditionalProperties = new AdditionalProperties(other.AdditionalProperties);
             }
 
+            MultipleOf = other.MultipleOf;
+            Maximum = other.Maximum;
+            ExclusiveMaximum = other.ExclusiveMaximum;
             MinItems = other.MinItems;
             MaxItems = other.MaxItems;
             UniqueItems = other.UniqueItems;
+            Format = other.Format;
 
             if (other.Reference != null)
             {
                 Reference = new UriOrFragment(other.Reference);
             }
-
-            Format = other.Format;
         }
 
         /// <summary>
@@ -195,6 +197,15 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
         /// </remarks>
         public Dictionary<string, JsonSchema> Properties { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value of which a numeric schema instance must be a multiple.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
+        /// or <see cref="JTokenType.Float"/>.
+        /// </remarks>
+        public double? MultipleOf { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum valid value.
@@ -375,6 +386,7 @@ namespace Microsoft.Json.Schema
                     ? Collapse(referencedSchema.Items, rootSchema)
                     : null;
 
+                collapsedSchema.MultipleOf = referencedSchema.MultipleOf;
                 collapsedSchema.Maximum = referencedSchema.Maximum;
                 collapsedSchema.ExclusiveMaximum = referencedSchema.ExclusiveMaximum;
                 collapsedSchema.MinItems = referencedSchema.MinItems;
@@ -407,6 +419,7 @@ namespace Microsoft.Json.Schema
                 Required,
                 Definitions,
                 Reference,
+                MultipleOf,
                 Maximum,
                 ExclusiveMaximum,
                 MinItems,
@@ -449,6 +462,7 @@ namespace Microsoft.Json.Schema
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
+                && MultipleOf == other.MultipleOf
                 && Maximum == other.Maximum
                 && ExclusiveMaximum == other.ExclusiveMaximum
                 && MinItems ==  other.MinItems

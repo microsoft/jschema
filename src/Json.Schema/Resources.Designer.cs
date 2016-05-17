@@ -88,6 +88,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value {0} is not a multiple of {1} as required by the schema..
+        /// </summary>
+        internal static string ErrorNotAMultiple {
+            get {
+                return ResourceManager.GetString("ErrorNotAMultiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JSON schema requires the value of the property &quot;{0}&quot; to be a string, but the token is of type {1}..
         /// </summary>
         internal static string ErrorNotAString {

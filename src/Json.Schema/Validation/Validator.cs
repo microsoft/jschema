@@ -125,6 +125,19 @@ namespace Microsoft.Json.Schema.Validation
                     AddMessage(jValue, ErrorNumber.ValueTooSmall, value, minimum);
                 }
             }
+
+            if (schema.MultipleOf != null)
+            {
+                double factor = schema.MultipleOf.Value;
+                double value = jValue.Type == JTokenType.Float
+                    ? (double)jValue.Value
+                    : (long)jValue.Value;
+
+                if (value % factor != 0)
+                {
+                    AddMessage(jValue, ErrorNumber.NotAMultiple, value, factor);
+                }
+            }
         }
 
         private void ValidateArray(JArray jArray, JsonSchema schema)
