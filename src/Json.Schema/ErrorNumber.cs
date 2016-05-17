@@ -292,6 +292,44 @@ namespace Microsoft.Json.Schema
         /// </example>
         NotAMultiple = 1012,
 
+        /// <summary>
+        /// A string instance is longer than the schema permits.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "string",
+        ///   "maxLength": 2
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "abc"
+        /// </code>
+        /// </example>
+        StringTooLong = 1013,
+
+        /// <summary>
+        /// A string instance is shorter than the schema permits.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "string",
+        ///   "minLength": 2
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "a"
+        /// </code>
+        /// </example>
+        StringTooShort = 1014
+
         #endregion Errors in instance document
     }
 }

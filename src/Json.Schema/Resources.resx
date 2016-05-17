@@ -138,6 +138,13 @@
   <data name="ErrorRequiredPropertyMissing" xml:space="preserve">
     <value>The required property "{0}" is missing.</value>
   </data>
+  <data name="ErrorStringTooLong" xml:space="preserve">
+    <value>The string '{0}' has length {1}, which is greater than the maximum length {2} permitted by the schema.
+</value>
+  </data>
+  <data name="ErrorStringTooShort" xml:space="preserve">
+    <value>The string '{0}' has length {1}, which is less than the minimum length {2} permitted by the schema.</value>
+  </data>
   <data name="ErrorTooFewArrayItems" xml:space="preserve">
     <value>The schema requires at least {0} array items, but there are only {1}.</value>
   </data>

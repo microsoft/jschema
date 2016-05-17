@@ -128,6 +128,44 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
+                "String: maxLength: valid",
+                @"{
+                  ""type"": ""string"",
+                  ""maxLength"": 2
+                }",
+                "\"ab\""
+                ),
+
+            new TestCase(
+                "String: maxLength: invalid",
+                @"{
+                  ""type"": ""string"",
+                  ""maxLength"": 2
+                }",
+                "\"abc\"",
+                Error.Format(1, 5, ErrorNumber.StringTooLong, "abc", 3, 2)
+                ),
+
+            new TestCase(
+                "String: minLength: valid",
+                @"{
+                  ""type"": ""string"",
+                  ""minLength"": 2
+                }",
+                "\"ab\""
+                ),
+
+            new TestCase(
+                "String: minLength: invalid",
+                @"{
+                  ""type"": ""string"",
+                  ""minLength"": 2
+                }",
+                "\"a\"",
+                Error.Format(1, 3, ErrorNumber.StringTooShort, "a", 1, 2)
+                ),
+
+            new TestCase(
                 "Numeric: multipleOf: valid integer",
                 @"{
                   ""type"": ""integer"",

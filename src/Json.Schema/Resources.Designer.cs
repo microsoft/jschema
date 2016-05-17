@@ -124,6 +124,25 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is greater than the maximum length {2} permitted by the schema.
+        ///.
+        /// </summary>
+        internal static string ErrorStringTooLong {
+            get {
+                return ResourceManager.GetString("ErrorStringTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is less than the minimum length {2} permitted by the schema..
+        /// </summary>
+        internal static string ErrorStringTooShort {
+            get {
+                return ResourceManager.GetString("ErrorStringTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The schema requires at least {0} array items, but there are only {1}..
         /// </summary>
         internal static string ErrorTooFewArrayItems {

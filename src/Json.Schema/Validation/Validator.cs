@@ -72,6 +72,10 @@ namespace Microsoft.Json.Schema.Validation
 
             switch (schemaType)
             {
+                case JTokenType.String:
+                    ValidateString((JValue)jToken, schema);
+                    break;
+
                 case JTokenType.Integer:
                 case JTokenType.Float:
                     ValidateNumber((JValue)jToken, schema);
@@ -90,9 +94,32 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
+        private void ValidateString(JValue jValue, JsonSchema schema)
+        {
+            if (schema.MaxLength.HasValue)
+            {
+                string value = jValue.Value<string>();
+
+                if (value.Length > schema.MaxLength)
+                {
+                    AddMessage(jValue, ErrorNumber.StringTooLong, value, value.Length, schema.MaxLength);
+                }
+            }
+
+            if (schema.MinLength.HasValue)
+            {
+                string value = jValue.Value<string>();
+
+                if (value.Length < schema.MinLength)
+                {
+                    AddMessage(jValue, ErrorNumber.StringTooShort, value, value.Length, schema.MinLength);
+                }
+            }
+        }
+
         private void ValidateNumber(JValue jValue, JsonSchema schema)
         {
-            if (schema.Maximum != null)
+            if (schema.Maximum.HasValue)
             {
                 double maximum = schema.Maximum.Value;
                 double value = jValue.Type == JTokenType.Float
@@ -109,7 +136,7 @@ namespace Microsoft.Json.Schema.Validation
                 }
             }
 
-            if (schema.Minimum != null)
+            if (schema.Minimum.HasValue)
             {
                 double minimum = schema.Minimum.Value;
                 double value = jValue.Type == JTokenType.Float
@@ -126,7 +153,7 @@ namespace Microsoft.Json.Schema.Validation
                 }
             }
 
-            if (schema.MultipleOf != null)
+            if (schema.MultipleOf.HasValue)
             {
                 double factor = schema.MultipleOf.Value;
                 double value = jValue.Type == JTokenType.Float
