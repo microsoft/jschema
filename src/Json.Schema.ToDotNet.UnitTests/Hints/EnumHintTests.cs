@@ -619,5 +619,141 @@ namespace N
                 TestFileSystem[enumFilePath].Should().Be(test.EnumText);
             }
         }
+
+        [Fact(DisplayName = nameof(EnumHint_WildCard))]
+        public void EnumHint_WildCard()
+        {
+            const string SchemaText =
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""def1Prop"": {
+      ""$ref"": ""#/definitions/def1""
+    },
+    ""def2Prop"": {
+      ""$ref"": ""#/definitions/def2""
+    }
+  },
+  ""definitions"": {
+    ""def1"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""backgroundColor"": {
+          ""type"": ""string"",
+          ""enum"": [ ""red"", ""green"", ""blue"" ]
+        }
+      }
+    },
+    ""def2"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""backgroundColor"": {
+          ""type"": ""string"",
+          ""enum"": [ ""red"", ""green"", ""blue"" ]
+        }
+      }
+    }
+  }
+}";
+            const string HintsText =
+@"{
+  ""*.BackgroundColor"": [
+    {
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color""
+      }
+    }
+  ]
+}";
+
+            const string RootClassText = @"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""def1Prop"", IsRequired = false, EmitDefaultValue = false)]
+        public Def1 Def1Prop { get; set; }
+        [DataMember(Name = ""def2Prop"", IsRequired = false, EmitDefaultValue = false)]
+        public Def2 Def2Prop { get; set; }
+    }
+}";
+            const string Def1ClassText =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class Def1
+    {
+        [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
+        public Color BackgroundColor { get; set; }
+    }
+}";
+            const string Def2ClassText =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class Def2
+    {
+        [DataMember(Name = ""backgroundColor"", IsRequired = false, EmitDefaultValue = false)]
+        public Color BackgroundColor { get; set; }
+    }
+}";
+
+            const string EnumText =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public enum Color
+    {
+        Red,
+        Green,
+        Blue
+    }
+}";
+            Settings.HintDictionary = new HintDictionary(HintsText);
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+
+            generator.Generate(schema);
+
+            string primaryOutputFilePath = TestFileSystem.MakeOutputFilePath(Settings.RootClassName);
+            string enumFilePath = TestFileSystem.MakeOutputFilePath("Color");
+            string def1FilePath = TestFileSystem.MakeOutputFilePath("Def1");
+            string def2FilePath = TestFileSystem.MakeOutputFilePath("Def2");
+
+            var expectedOutputFiles = new List<string>
+            {
+                primaryOutputFilePath,
+                enumFilePath,
+                def1FilePath,
+                def2FilePath
+            };
+
+            TestFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            TestFileSystem.Files.Should().OnlyContain(key => expectedOutputFiles.Contains(key));
+
+            TestFileSystem[primaryOutputFilePath].Should().Be(RootClassText);
+            TestFileSystem[enumFilePath].Should().Be(EnumText);
+            TestFileSystem[def1FilePath].Should().Be(Def1ClassText);
+            TestFileSystem[def2FilePath].Should().Be(Def2ClassText);
+        }
     }
 }

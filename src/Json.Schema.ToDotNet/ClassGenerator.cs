@@ -313,8 +313,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected override SyntaxToken[] GeneratePropertyModifiers(string propertyName)
         {
-            string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
-            PropertyModifiersHint propertyModifiersHint = HintDictionary?.GetHint<PropertyModifiersHint>(hintDictionaryKey);
+            PropertyModifiersHint propertyModifiersHint = HintDictionary?.GetPropertyHint<PropertyModifiersHint>(TypeName, propertyName);
 
             SyntaxToken[] modifierTokens;
             if (propertyModifiersHint?.Modifiers != null)

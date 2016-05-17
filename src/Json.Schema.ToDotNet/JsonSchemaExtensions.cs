@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System.Linq;
 using Microsoft.Json.Schema.ToDotNet.Hints;
 using Newtonsoft.Json.Linq;
 
@@ -48,8 +47,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 return false;
             }
 
-            string key = MakeHintDictionaryKey(typeName, propertyName);
-            dictionaryHint = hintDictionary.GetHint<DictionaryHint>(key);
+            dictionaryHint = hintDictionary.GetPropertyHint<DictionaryHint>(typeName, propertyName);
             if (dictionaryHint == null)
             {
                 return false;
@@ -72,26 +70,21 @@ namespace Microsoft.Json.Schema.ToDotNet
                 return false;
             }
 
-            string key = MakeHintDictionaryKey(typeName, propertyName);
-            enumHint = hintDictionary.GetHint<EnumHint>(key);
+            enumHint = hintDictionary.GetPropertyHint<EnumHint>(typeName, propertyName);
             if (enumHint != null)
             {
                 if (string.IsNullOrWhiteSpace(enumHint.TypeName))
                 {
                     throw Error.CreateException(
                                     Resources.ErrorEnumHintRequiresTypeName,
-                                    key);
+                                    typeName,
+                                    propertyName);
                 }
 
                 return true;
             }
 
             return false;
-        }
-
-        private static string MakeHintDictionaryKey(string typeName, string propertyName)
-        {
-            return typeName + "." + propertyName.ToPascalCase();
         }
     }
 }

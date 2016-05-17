@@ -157,6 +157,47 @@ namespace N
                 true,
                 "invalid_modifier"
             ),
+
+            new HintTestCase(
+                "Wildcard hint",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""theProperty"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""*.TheProperty"": [
+    {
+      ""kind"": ""PropertyModifiersHint"",
+      ""arguments"": {
+        ""modifiers"": [
+          ""internal"",
+          ""override""
+        ]
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
+        internal override int TheProperty { get; set; }
+    }
+}"
+            ),
         };
 
         [Theory(DisplayName = nameof(PropertyModifiersHint))]

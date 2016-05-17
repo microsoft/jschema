@@ -124,7 +124,7 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The enumeration hint for the property {0} does not specify a type name for the generated enumeration..
+        ///   Looks up a localized string similar to The enumeration hint for the property {0}.{1} does not specify a type name for the generated enumeration..
         /// </summary>
         internal static string ErrorEnumHintRequiresTypeName {
             get {

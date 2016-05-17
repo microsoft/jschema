@@ -60,8 +60,16 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected override bool IncludeProperty(string propertyName)
         {
+            const string WildCard = "*";
+
             string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
             PropertyModifiersHint propertyModifiersHint = HintDictionary.GetHint<PropertyModifiersHint>(hintDictionaryKey);
+            if (propertyModifiersHint == null)
+            {
+                hintDictionaryKey = WildCard + "." + propertyName.ToPascalCase();
+                propertyModifiersHint = HintDictionary.GetHint<PropertyModifiersHint>(hintDictionaryKey);
+            }
+
             if (propertyModifiersHint?.Modifiers.Count > 0)
             {
                 bool isPublic = propertyModifiersHint.Modifiers.Contains(SyntaxFactory.Token(SyntaxKind.PublicKeyword));

@@ -15,6 +15,8 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
     /// </summary>
     public class HintDictionary : Dictionary<string, CodeGenHint[]>
     {
+        private const string WildCard = "*";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HintDictionary"/> class.
         /// </summary>
@@ -35,6 +37,25 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             }
 
             return hint;
+        }
+
+        public T GetPropertyHint<T>(string typeName, string propertyName)
+            where T: CodeGenHint
+        {
+            string key = MakeHintDictionaryKey(typeName, propertyName);
+            T hint = GetHint<T>(key);
+            if (hint == null)
+            {
+                key = MakeHintDictionaryKey(WildCard, propertyName);
+                hint = GetHint<T>(key);
+            }
+
+            return hint;
+        }
+
+        private static string MakeHintDictionaryKey(string typeName, string propertyName)
+        {
+            return typeName + "." + propertyName.ToPascalCase();
         }
 
         private void InstantiateHints(HintInstantiationInfoDictionary infoDictionary)

@@ -1100,5 +1100,151 @@ namespace N
 
             Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary);
         }
+
+        [Fact(DisplayName = nameof(DictionaryHint_WildCard))]
+        public void DictionaryHint_WildCard()
+        {
+            const string SchemaText =
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""def1Prop"": {
+      ""$ref"": ""#/definitions/def1""
+    },
+    ""def2Prop"": {
+      ""$ref"": ""#/definitions/def2""
+    }
+  },
+  ""definitions"": {
+    ""def1"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""properties"": {
+          ""type"": ""object""
+        }
+      }
+    },
+    ""def2"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""properties"": {
+          ""type"": ""object"",
+        }
+      }
+    }
+  }
+}";
+
+            const string HintsText =
+@"{
+  ""*.Properties"": [
+    {
+      ""kind"": ""DictionaryHint"",
+      ""arguments"": {
+        ""keyTypeName"": ""Uri""
+      }
+    }
+  ]
+}";
+
+            const string RootClassText =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        [DataMember(Name = ""def1Prop"", IsRequired = false, EmitDefaultValue = false)]
+        public Def1 Def1Prop { get; set; }
+        [DataMember(Name = ""def2Prop"", IsRequired = false, EmitDefaultValue = false)]
+        public Def2 Def2Prop { get; set; }
+    }
+}";
+
+            const string Def1ClassText =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class Def1
+    {
+        public static IEqualityComparer<Def1> ValueComparer => Def1EqualityComparer.Instance;
+
+        public bool ValueEquals(Def1 other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        [DataMember(Name = ""properties"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<Uri, string> Properties { get; set; }
+    }
+}";
+
+            const string Def2ClassText =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class Def2
+    {
+        public static IEqualityComparer<Def2> ValueComparer => Def2EqualityComparer.Instance;
+
+        public bool ValueEquals(Def2 other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        [DataMember(Name = ""properties"", IsRequired = false, EmitDefaultValue = false)]
+        public IDictionary<Uri, string> Properties { get; set; }
+    }
+}";
+
+            Settings.GenerateEqualityComparers = true;
+            Settings.HintDictionary = new HintDictionary(HintsText);
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+
+            generator.Generate(schema);
+
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [Settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = RootClassText,
+                    ComparerClassContents = null // Don't bother to compare the comparer class contents.
+                },
+
+                ["Def1"] = new ExpectedContents
+                {
+                    ClassContents = Def1ClassText,
+                    ComparerClassContents = null
+                },
+
+                ["Def2"] = new ExpectedContents
+                {
+                    ClassContents = Def2ClassText,
+                    ComparerClassContents = null
+                }
+            };
+
+            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary);
+        }
     }
 }

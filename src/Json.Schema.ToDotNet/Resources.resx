@@ -139,7 +139,7 @@
     <value>Cannot generate a type from a {0} object of type {1}.</value>
   </data>
   <data name="ErrorEnumHintRequiresTypeName" xml:space="preserve">
-    <value>The enumeration hint for the property {0} does not specify a type name for the generated enumeration.</value>
+    <value>The enumeration hint for the property {0}.{1} does not specify a type name for the generated enumeration.</value>
   </data>
   <data name="ErrorInvalidEnumValue" xml:space="preserve">
     <value>The value '{0}' is not a valid value of the enumerated type '{1}'.</value>
