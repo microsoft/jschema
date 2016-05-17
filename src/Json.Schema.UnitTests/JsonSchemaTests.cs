@@ -48,6 +48,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""maxLength"": 2,
                     ""minLength"": 2,
+                    ""pattern"": ""\\d{3}"",
                     ""multipleOf"": 2,
                     ""minItems"": 1,
                     ""maxItems"": 3,
@@ -85,6 +86,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""maxLength"": 2,
                     ""minLength"": 2,
+                    ""pattern"": ""\\d{3}"",
                     ""multipleOf"": 2,
                     ""minItems"": 1,
                     ""maxItems"": 3,
@@ -475,6 +477,25 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Null and non-null minLengths",
                 @"{
                   ""minLength"": 2
+                }",
+                @"{
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Different patterns",
+                @"{
+                  ""pattern"": ""\\d{3}"",
+                }",
+                @"{
+                  ""pattern"": ""\\d{4}"",
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Null and non-null patterns",
+                @"{
+                  ""pattern"": ""\\d{3}""
                 }",
                 @"{
                 }",

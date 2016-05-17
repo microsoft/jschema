@@ -166,6 +166,25 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
+                "String: pattern: valid",
+                @"{
+                  ""type"": ""string"",
+                  ""pattern"": ""\\d{3}""
+                }",
+                "\"a123b\""
+                ),
+
+            new TestCase(
+                "String: pattern: invalid",
+                @"{
+                  ""type"": ""string"",
+                  ""pattern"": ""\\d{3}""
+                }",
+                "\"a12b\"",
+                Error.Format(1, 6, ErrorNumber.StringDoesNotMatchPattern, "a12b", @"\d{3}")
+                ),
+
+            new TestCase(
                 "Numeric: multipleOf: valid integer",
                 @"{
                   ""type"": ""integer"",

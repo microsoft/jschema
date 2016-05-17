@@ -54,7 +54,8 @@ namespace Microsoft.Json.Schema
                 [ErrorNumber.TooFewProperties] = Resources.ErrorTooFewProperties,
                 [ErrorNumber.NotAMultiple] = Resources.ErrorNotAMultiple,
                 [ErrorNumber.StringTooLong] = Resources.ErrorStringTooLong,
-                [ErrorNumber.StringTooShort] = Resources.ErrorStringTooShort
+                [ErrorNumber.StringTooShort] = Resources.ErrorStringTooShort,
+                [ErrorNumber.StringDoesNotMatchPattern] = Resources.ErrorStringDoesNotMatchPattern
             });
 
         internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)

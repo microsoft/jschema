@@ -124,6 +124,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The string &apos;{0}&apos; does not match the regular expression &apos;{1}&apos; as required by the schema..
+        /// </summary>
+        internal static string ErrorStringDoesNotMatchPattern {
+            get {
+                return ResourceManager.GetString("ErrorStringDoesNotMatchPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is greater than the maximum length {2} permitted by the schema.
         ///.
         /// </summary>

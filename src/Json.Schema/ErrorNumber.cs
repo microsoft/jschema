@@ -328,7 +328,26 @@ namespace Microsoft.Json.Schema
         /// "a"
         /// </code>
         /// </example>
-        StringTooShort = 1014
+        StringTooShort = 1014,
+
+        /// <summary>
+        /// A string instance does not match the required regular expression.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "string",
+        ///   "pattern": "\\d{3}"
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "a12b"
+        /// </code>
+        /// </example>
+        StringDoesNotMatchPattern = 1015
 
         #endregion Errors in instance document
     }

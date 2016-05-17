@@ -91,15 +91,16 @@ namespace Microsoft.Json.Schema
                 AdditionalProperties = new AdditionalProperties(other.AdditionalProperties);
             }
 
+            Pattern = other.Pattern;
+            MaxLength = other.MaxLength;
+            MinLength = other.MinLength;
+            Format = other.Format;
             MultipleOf = other.MultipleOf;
             Maximum = other.Maximum;
             ExclusiveMaximum = other.ExclusiveMaximum;
             MinItems = other.MinItems;
             MaxItems = other.MaxItems;
             UniqueItems = other.UniqueItems;
-            MaxLength = other.MaxLength;
-            MinLength = other.MinLength;
-            Format = other.Format;
 
             if (other.Reference != null)
             {
@@ -215,6 +216,14 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.String"/>.
         /// </remarks>
         public int? MinLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets a regular expression which a string schema instance must match.
+        /// </summary>
+        /// <remarks>
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.String"/>.
+        /// </remarks>
+        public string Pattern { get; set; }
 
         /// <summary>
         /// Gets or sets a value of which a numeric schema instance must be a multiple.
@@ -404,6 +413,7 @@ namespace Microsoft.Json.Schema
                     ? Collapse(referencedSchema.Items, rootSchema)
                     : null;
 
+                collapsedSchema.Pattern = referencedSchema.Pattern;
                 collapsedSchema.MaxLength = referencedSchema.MaxLength;
                 collapsedSchema.MinLength = referencedSchema.MinLength;
                 collapsedSchema.MultipleOf = referencedSchema.MultipleOf;
@@ -439,6 +449,7 @@ namespace Microsoft.Json.Schema
                 Required,
                 Definitions,
                 Reference,
+                Pattern,
                 MaxLength,
                 MinLength,
                 MultipleOf,
@@ -484,6 +495,7 @@ namespace Microsoft.Json.Schema
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
+                && Pattern == other.Pattern
                 && MaxLength == other.MaxLength
                 && MinLength == other.MinLength
                 && MultipleOf == other.MultipleOf

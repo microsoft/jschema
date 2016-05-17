@@ -138,6 +138,9 @@
   <data name="ErrorRequiredPropertyMissing" xml:space="preserve">
     <value>The required property "{0}" is missing.</value>
   </data>
+  <data name="ErrorStringDoesNotMatchPattern" xml:space="preserve">
+    <value>The string '{0}' does not match the regular expression '{1}' as required by the schema.</value>
+  </data>
   <data name="ErrorStringTooLong" xml:space="preserve">
     <value>The string '{0}' has length {1}, which is greater than the maximum length {2} permitted by the schema.
 </value>

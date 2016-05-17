@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -113,6 +114,16 @@ namespace Microsoft.Json.Schema.Validation
                 if (value.Length < schema.MinLength)
                 {
                     AddMessage(jValue, ErrorNumber.StringTooShort, value, value.Length, schema.MinLength);
+                }
+            }
+
+            if (schema.Pattern != null)
+            {
+                string value = jValue.Value<string>();
+
+                if (!Regex.IsMatch(value, schema.Pattern))
+                {
+                    AddMessage(jValue, ErrorNumber.StringDoesNotMatchPattern, value, schema.Pattern);
                 }
             }
         }
