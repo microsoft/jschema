@@ -233,9 +233,29 @@ namespace Microsoft.Json.Schema.Validation
             }
 
             // Does the object contain any properties not specified by the schema?
-            IEnumerable<string> extraProperties = schema.Properties == null
+            List<string> extraProperties = schema.Properties == null
                 ? propertySet
-                : propertySet.Except(schema.Properties.Keys);
+                : propertySet.Except(schema.Properties.Keys).ToList();
+
+            if (schema.PatternProperties != null)
+            {
+                foreach (string patternRegEx in schema.PatternProperties.Keys)
+                {
+                    List<string> matchingProperties = extraProperties.Where(p => Regex.IsMatch(p, patternRegEx)).ToList();
+
+                    if (matchingProperties.Any())
+                    {
+                        JsonSchema propertySchema = schema.PatternProperties[patternRegEx];
+                        foreach (string matchingProperty in matchingProperties)
+                        {
+                            JProperty property = jObject.Property(matchingProperty);
+                            ValidateToken(property.Value, property.Path, propertySchema);
+                        }
+                    }
+
+                    extraProperties = extraProperties.Except(matchingProperties).ToList();
+                }
+            }
 
             // If additional properties are not allowed, ensure there are none.
             if (!(schema.AdditionalProperties?.Allowed  == true))

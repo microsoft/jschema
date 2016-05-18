@@ -35,6 +35,14 @@ namespace Microsoft.Json.Schema.UnitTests
                         ""type"": ""string""
                       }
                     },
+                    ""patternProperties"": {
+                      ""x*"": {
+                        ""type"": ""integer""
+                      },
+                      ""y\\d+"": {
+                        ""type"": ""boolean""
+                      }
+                    },
                     ""required"": [ ""a"" ],
                     ""definitions"": {
                       ""c"": {
@@ -71,6 +79,14 @@ namespace Microsoft.Json.Schema.UnitTests
                       },
                       ""b"": {
                         ""type"": ""string""
+                      }
+                    },
+                    ""patternProperties"": {
+                      ""x*"": {
+                        ""type"": ""integer""
+                      },
+                      ""y\\d+"": {
+                        ""type"": ""boolean""
                       }
                     },
                     ""required"": [ ""a"" ],
@@ -275,6 +291,48 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 false
             ),
+
+            new EqualityTestCase(
+                "Different patternProperties",
+                @"{
+                  ""patternProperties"": {
+                    ""x*"": {
+                      ""type"": ""integer""
+                    },
+                    ""y\\d+"": {
+                      ""type"": ""boolean""
+                    }
+                  }
+                }",
+                @"{
+                  ""patternProperties"": {
+                    ""\\w"": {
+                      ""type"": ""integer""
+                    },
+                    ""[^ab].+"": {
+                      ""type"": ""boolean""
+                    }
+                  }
+                }",
+                false
+                ),
+
+            new EqualityTestCase(
+                "Null and non-null patternProperties",
+                @"{
+                }",
+                @"{
+                  ""patternProperties"": {
+                    ""x*"": {
+                      ""type"": ""integer""
+                    },
+                    ""y\\d+"": {
+                      ""type"": ""boolean""
+                    }
+                  }
+                }",
+                false
+                ),
 
             new EqualityTestCase(
                 "Different definitions dictionaries",

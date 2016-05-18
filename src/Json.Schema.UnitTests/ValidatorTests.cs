@@ -552,6 +552,76 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
+                "Object: patternProperties: valid",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""p1"": {}
+  },
+  ""patternProperties"": {
+    ""p"": {},
+    ""[0-9]"": {}
+  }
+}",
+
+@"{
+  ""p1"": true,
+  ""p2"": null,
+  ""a32&o"": ""foobar"",
+  ""apple"": ""pie""
+}"
+                ),
+
+            new TestCase(
+                "Object: patternProperties: invalid: pattern property doesn't match schema",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""p1"": {}
+  },
+  ""patternProperties"": {
+    ""p"": {},
+    ""[0-9]"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""p1"": true,
+  ""p2"": null,
+  ""a32&o"": ""foobar"",
+  ""apple"": ""pie""
+}",
+                Error.Format(4, 20, ErrorNumber.WrongType, "a32&o", JTokenType.Integer, JTokenType.String)
+                ),
+
+            new TestCase(
+                "Object: patternProperties: invalid: non-matching property name",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""p1"": {}
+  },
+  ""patternProperties"": {
+    ""p"": {},
+    ""[0-9]"": {}
+  }
+}",
+
+@"{
+  ""p1"": true,
+  ""p2"": null,
+  ""a32&o"": ""foobar"",
+  """": [],
+  ""fiddle"": 42,
+  ""apple"": ""pie""
+}",
+                Error.Format(5, 6, ErrorNumber.AdditionalPropertiesProhibited, ""),
+                Error.Format(6, 12, ErrorNumber.AdditionalPropertiesProhibited, "fiddle")
+                ),
+
+            new TestCase(
                 "Object: required: invalid: missing property on root instance",
 
 @"{

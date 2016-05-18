@@ -91,6 +91,11 @@ namespace Microsoft.Json.Schema
                 AdditionalProperties = new AdditionalProperties(other.AdditionalProperties);
             }
 
+            if (other.PatternProperties != null)
+            {
+                PatternProperties = new Dictionary<string, JsonSchema>(other.PatternProperties);
+            }
+
             Pattern = other.Pattern;
             MaxLength = other.MaxLength;
             MinLength = other.MinLength;
@@ -200,6 +205,12 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
         /// </remarks>
         public Dictionary<string, JsonSchema> Properties { get; set; }
+
+        /// <summary>
+        /// Gets or sets a dictionary that maps a set of regular expressions to the schemas
+        /// to which properties whose names match those regular expressions must conform.
+        /// </summary>
+        public IDictionary<string, JsonSchema> PatternProperties { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum length of a string schema instance.
@@ -376,6 +387,16 @@ namespace Microsoft.Json.Schema
                     Collapse(schema.AdditionalProperties?.Schema, rootSchema));
             }
 
+            if (schema.PatternProperties != null)
+            {
+                collapsedSchema.PatternProperties = new Dictionary<string, JsonSchema>();
+                foreach (string key in schema.PatternProperties.Keys)
+                {
+                    collapsedSchema.PatternProperties.Add(
+                        key, Collapse(schema.PatternProperties[key], rootSchema));
+                }
+            }
+
             if (schema.Reference != null)
             {
                 if (!schema.Reference.IsFragment)
@@ -492,6 +513,9 @@ namespace Microsoft.Json.Schema
                 && (AdditionalProperties == null
                         ? other.AdditionalProperties == null
                         : AdditionalProperties.Equals(other.AdditionalProperties))
+                && (PatternProperties == null
+                        ? other.PatternProperties == null
+                        : PatternProperties.HasSameElementsAs(other.PatternProperties))
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
