@@ -14,7 +14,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
 {
     public class ValidationSuiteTests
     {
-        [Theory(DisplayName = nameof(ValidationSuite))]
+        [Theory(DisplayName = nameof(ValidationSuite), Skip = "NYI")]
         [ClassData(typeof(ValidationData))]
         public void ValidationSuite(TestSuite testSuite)
         {

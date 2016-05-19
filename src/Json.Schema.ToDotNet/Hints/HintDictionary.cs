@@ -164,8 +164,9 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             int[] memberValues = GetArrayArgument<int>(arguments, nameof(EnumHint.MemberValues));
             string zeroValue = GetArgument<string>(arguments, nameof(EnumHint.ZeroValueName));
             bool flags = GetArgument<bool>(arguments, nameof(EnumHint.Flags));
+            bool allowMemberCountMismatch = GetArgument<bool>(arguments, nameof(EnumHint.AllowMemberCountMismatch));
 
-            return new EnumHint(typeName, description, memberNames, memberValues, zeroValue, flags);
+            return new EnumHint(typeName, description, memberNames, memberValues, zeroValue, flags, allowMemberCountMismatch);
         }
 
         private static CodeGenHint CreateInterfaceHint(JObject arguments)

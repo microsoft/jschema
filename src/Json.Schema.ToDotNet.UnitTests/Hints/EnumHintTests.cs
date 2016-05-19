@@ -755,5 +755,78 @@ namespace N
             TestFileSystem[def1FilePath].Should().Be(Def1ClassText);
             TestFileSystem[def2FilePath].Should().Be(Def2ClassText);
         }
+
+        [Fact]
+        public void EnumHint_ThrowsOnMemberCountMismatch()
+        {
+            const string SchemaText =
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""backgroundColor"": {
+      ""type"": ""string"",
+      ""enum"": [""red"", ""yellow"", ""green""]
+    }
+  }
+}";
+
+            const string HintsText =
+@"{
+  ""C.BackgroundColor"": [
+    {
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color"",
+        ""memberNames"": [ ""red"", ""yellow"", ""green"", ""blue"" ]
+      }
+    }
+  ]
+}";
+            Settings.HintDictionary = new HintDictionary(HintsText);
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+
+            Action action = () => generator.Generate(schema);
+
+            action.ShouldThrow<Exception>().WithMessage("*Color*");
+        }
+
+        [Fact]
+        public void EnumHint_DoesNotThrowWhenCountMismatchCheckIsDisabled()
+        {
+            const string SchemaText =
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""backgroundColor"": {
+      ""type"": ""string"",
+      ""enum"": [""red"", ""yellow"", ""green""]
+    }
+  }
+}";
+
+            const string HintsText =
+@"{
+  ""C.BackgroundColor"": [
+    {
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color"",
+        ""memberNames"": [ ""red"", ""yellow"", ""green"", ""blue"" ],
+        ""allowMemberCountMismatch"": true
+      }
+    }
+  ]
+}";
+            Settings.HintDictionary = new HintDictionary(HintsText);
+            var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+
+            Action action = () => generator.Generate(schema);
+
+            action.ShouldNotThrow();
+        }
     }
 }

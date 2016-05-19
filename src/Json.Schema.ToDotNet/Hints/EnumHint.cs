@@ -36,13 +36,19 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// <code>true</code> if the enumeration type is a flags enum; otherwise
         /// <code>false</code>.
         /// </param>
+        /// <param name="allowMemberCountMismatch">
+        /// <code>true</code> if the code generator should allow the number of members in the
+        /// .NET enum to differ from the number specified in the JSON schema <code>enum</code>;
+        /// <code>false</code>.
+        /// </param>
         public EnumHint(
             string typeName,
             string description,
             string[] memberNames,
             int[] memberValues,
             string zeroValueName,
-            bool flags)
+            bool flags,
+            bool allowMemberCountMismatch)
         {
             TypeName = typeName;
             Description = description;
@@ -50,6 +56,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             MemberValues = memberValues;
             ZeroValueName = zeroValueName;
             Flags = flags;
+            AllowMemberCountMismatch = allowMemberCountMismatch;
         }
 
         /// <summary>
@@ -85,6 +92,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// Gets a value indicating whether the enumeration type is a flags enum.
         /// </summary>
         public bool Flags { get; }
+
+
+        /// <summary>
+        /// Gets a value indicating whether the code generator should allow the number of
+        /// members in the .NET enum to differ from the number specified in the JSON schema.
+        /// </summary>
+        public bool AllowMemberCountMismatch { get; }
 
         /// <summary>
         /// Returns a value indicating whether this enum should have a zero value.

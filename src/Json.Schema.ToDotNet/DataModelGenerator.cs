@@ -357,9 +357,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private void GenerateAdditionalTypeFromEnumHint(EnumHint enumHint, JsonSchema schema)
         {
-            if (enumHint.MemberNames != null
+            if (enumHint.AllowMemberCountMismatch == false
+                && enumHint.MemberNames != null
                 && schema.Enum != null
-                && enumHint.MemberNames.Length > schema.Enum.Length)
+                && enumHint.MemberNames.Length != schema.Enum.Length)
             {
                 throw Error.CreateException(
                                 Resources.ErrorMismatchedEnumCount,
