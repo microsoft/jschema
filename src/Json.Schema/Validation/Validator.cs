@@ -302,11 +302,14 @@ namespace Microsoft.Json.Schema.Validation
                 AddMessage(jArray, ErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
             }
 
-            int i = 0;
-            foreach (JToken jToken in jArray)
+            if (schema.Items != null)
             {
-                ValidateToken(jToken, $"{name}[{i}]", schema.Items);
-                ++i;
+                int i = 0;
+                foreach (JToken jToken in jArray)
+                {
+                    ValidateToken(jToken, $"{name}[{i}]", schema.Items);
+                    ++i;
+                }
             }
         }
 
