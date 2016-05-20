@@ -70,7 +70,7 @@ namespace Microsoft.Json.Schema
 
             if (other.Required != null)
             {
-                Required = other.Required.Clone() as string[];
+                Required = new List<string>(other.Required);
             }
 
             if (other.Definitions != null)
@@ -195,7 +195,7 @@ namespace Microsoft.Json.Schema
         /// <remarks>
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
         /// </remarks>
-        public string[] Required { get; set; }
+        public IList<string> Required { get; set; }
 
         /// <summary>
         /// Gets or sets a value describing any additional properties allowed by the
