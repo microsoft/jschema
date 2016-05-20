@@ -118,6 +118,11 @@ namespace Microsoft.Json.Schema
             {
                 AnyOf = new List<JsonSchema>(other.AnyOf);
             }
+
+            if (other.OneOf != null)
+            {
+                OneOf = new List<JsonSchema>(other.OneOf);
+            }
         }
 
         /// <summary>
@@ -362,6 +367,11 @@ namespace Microsoft.Json.Schema
         public IList<JsonSchema> AnyOf { get; set; }
 
         /// <summary>
+        /// Gets or sets a set of schemas against exactly one of which the instance must be valid.
+        /// </summary>
+        public IList<JsonSchema> OneOf { get; set; }
+
+        /// <summary>
         /// Pull properties from any referenced schemas up into this schema.
         /// </summary>
         public static JsonSchema Collapse(JsonSchema schema)
@@ -422,6 +432,11 @@ namespace Microsoft.Json.Schema
             if (schema.AnyOf != null)
             {
                 collapsedSchema.AnyOf = schema.AnyOf.Select(s => Collapse(s, rootSchema)).ToList();
+            }
+
+            if (schema.OneOf != null)
+            {
+                collapsedSchema.OneOf = schema.OneOf.Select(s => Collapse(s, rootSchema)).ToList();
             }
 
             if (schema.Reference != null)
@@ -504,7 +519,8 @@ namespace Microsoft.Json.Schema
                 UniqueItems,
                 Format,
                 AllOf,
-                AnyOf
+                AnyOf,
+                OneOf
                 );
         }
 
@@ -559,7 +575,10 @@ namespace Microsoft.Json.Schema
                         : AllOf.HasSameElementsAs(other.AllOf))
                 && (AnyOf == null
                         ? other.AnyOf == null
-                        : AnyOf.HasSameElementsAs(other.AnyOf));
+                        : AnyOf.HasSameElementsAs(other.AnyOf))
+                && (OneOf == null
+                        ? other.OneOf == null
+                        : OneOf.HasSameElementsAs(other.OneOf));
         }
 
         #endregion

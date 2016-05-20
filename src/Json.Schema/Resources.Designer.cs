@@ -88,6 +88,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The instance did not satisfy all of the {0} schemas specified by &quot;allOf&quot; as required by the schema..
+        /// </summary>
+        internal static string ErrorNotAllOf {
+            get {
+                return ResourceManager.GetString("ErrorNotAllOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value {0} is not a multiple of {1} as required by the schema..
         /// </summary>
         internal static string ErrorNotAMultiple {
@@ -97,11 +106,29 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The instance did not satisfy any of the {0} schemas specified by &quot;anyOf&quot; as required by the schema..
+        /// </summary>
+        internal static string ErrorNotAnyOf {
+            get {
+                return ResourceManager.GetString("ErrorNotAnyOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JSON schema requires the value of the property &quot;{0}&quot; to be a string, but the token is of type {1}..
         /// </summary>
         internal static string ErrorNotAString {
             get {
                 return ResourceManager.GetString("ErrorNotAString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance satisfied {0} of the {1} schemas specified by &quot;oneOf&quot;, instead of satisfying exactly one of them as required by the schema..
+        /// </summary>
+        internal static string ErrorNotOneOf {
+            get {
+                return ResourceManager.GetString("ErrorNotOneOf", resourceCulture);
             }
         }
         

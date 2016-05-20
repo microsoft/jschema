@@ -55,7 +55,10 @@ namespace Microsoft.Json.Schema
                 [ErrorNumber.NotAMultiple] = Resources.ErrorNotAMultiple,
                 [ErrorNumber.StringTooLong] = Resources.ErrorStringTooLong,
                 [ErrorNumber.StringTooShort] = Resources.ErrorStringTooShort,
-                [ErrorNumber.StringDoesNotMatchPattern] = Resources.ErrorStringDoesNotMatchPattern
+                [ErrorNumber.StringDoesNotMatchPattern] = Resources.ErrorStringDoesNotMatchPattern,
+                [ErrorNumber.NotAllOf] = Resources.ErrorNotAllOf,
+                [ErrorNumber.NotAnyOf] = Resources.ErrorNotAnyOf,
+                [ErrorNumber.NotOneOf] = Resources.ErrorNotOneOf
             });
 
         internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)

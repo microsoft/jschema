@@ -347,7 +347,23 @@ namespace Microsoft.Json.Schema
         /// "a12b"
         /// </code>
         /// </example>
-        StringDoesNotMatchPattern = 1015
+        StringDoesNotMatchPattern = 1015,
+
+        /// <summary>
+        /// An instance does not match all of the schemas specified by "allOf".
+        /// </summary>
+        NotAllOf = 1016,
+
+        /// <summary>
+        /// An instance does not match any of the schemas specified by "anyOf".
+        /// </summary>
+        NotAnyOf = 1017,
+
+        /// <summary>
+        /// An instance matches either zero or more than one of the schemas
+        /// specified by "oneOf".
+        /// </summary>
+        NotOneOf = 1018,
 
         #endregion Errors in instance document
     }

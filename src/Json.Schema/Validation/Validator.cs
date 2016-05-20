@@ -79,7 +79,7 @@ namespace Microsoft.Json.Schema.Validation
                     break;
 
                 case JTokenType.Array:
-                    ValidateArray((JArray)jToken, schema);
+                    ValidateArray((JArray)jToken, name, schema);
                     break;
 
                 default:
@@ -88,15 +88,37 @@ namespace Microsoft.Json.Schema.Validation
 
             if (schema.AllOf != null)
             {
-                foreach (JsonSchema allOfSchema in schema.AllOf)
-                {
-                    ValidateToken(jToken, name, allOfSchema);
-                }
+                ValidateAllOf(jToken, name, schema.AllOf);
             }
 
             if (schema.AnyOf != null)
             {
                 ValidateAnyOf(jToken, name, schema.AnyOf);
+            }
+
+            if (schema.OneOf != null)
+            {
+                ValidateOneOf(jToken, name, schema.OneOf);
+            }
+        }
+
+        private void ValidateAllOf(
+            JToken jToken,
+            string name,
+            IList<JsonSchema> allOfSchemas)
+        {
+            var allOfErrorMessages = new List<string>();
+
+            foreach (JsonSchema allOfSchema in allOfSchemas)
+            {
+                var allOfValidator = new Validator(allOfSchema);
+                allOfValidator.ValidateToken(jToken, name, allOfSchema);
+                allOfErrorMessages.AddRange(allOfValidator._messages);
+            }
+
+            if (allOfErrorMessages.Any())
+            {
+                AddMessage(jToken, ErrorNumber.NotAllOf, allOfSchemas.Count);
             }
         }
 
@@ -105,7 +127,6 @@ namespace Microsoft.Json.Schema.Validation
             string name,
             IList<JsonSchema> anyOfSchemas)
         {
-            List<string> anyOfErrorMessages = new List<string>();
             bool valid = false;
 
             // Since this token is valid if it's valid against *any* of the schemas,
@@ -123,13 +144,40 @@ namespace Microsoft.Json.Schema.Validation
                     valid = true;
                     break;
                 }
-
-                anyOfErrorMessages.AddRange(anyOfValidator._messages);
             }
 
             if (!valid)
             {
-                _messages.AddRange(anyOfErrorMessages);
+                AddMessage(jToken, ErrorNumber.NotAnyOf, anyOfSchemas.Count);
+            }
+        }
+
+        private void ValidateOneOf(
+            JToken jToken,
+            string name,
+            IList<JsonSchema> oneOfSchemas)
+        {
+            int numValid = 0;
+
+            // Since this token is valid if it's valid against *exactly one* of the schemas,
+            // we can't just call ValidateToken against each schema. If we did that,
+            // we'd accumulate errors from all the failed schemas, only to find out
+            // that they weren't really errors at all. So we instantiate a new
+            // validator for each schema, and only report the errors from the current
+            // validator if *all but one* fail.
+            foreach (JsonSchema oneOfSchema in oneOfSchemas)
+            {
+                var oneOfValidator = new Validator(oneOfSchema);
+                oneOfValidator.ValidateToken(jToken, name, oneOfSchema);
+                if (!oneOfValidator._messages.Any())
+                {
+                    ++numValid;
+                }
+            }
+
+            if (numValid != 1)
+            {
+                AddMessage(jToken, ErrorNumber.NotOneOf, numValid, oneOfSchemas.Count);
             }
         }
 
@@ -241,7 +289,7 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private void ValidateArray(JArray jArray, JsonSchema schema)
+        private void ValidateArray(JArray jArray, string name, JsonSchema schema)
         {
             int numItems = jArray.Count;
             if (numItems < schema.MinItems)
@@ -252,6 +300,13 @@ namespace Microsoft.Json.Schema.Validation
             if (numItems > schema.MaxItems)
             {
                 AddMessage(jArray, ErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
+            }
+
+            int i = 0;
+            foreach (JToken jToken in jArray)
+            {
+                ValidateToken(jToken, $"{name}[{i}]", schema.Items);
+                ++i;
             }
         }
 

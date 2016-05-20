@@ -126,11 +126,20 @@
   <data name="ErrorInvalidAdditionalProperties" xml:space="preserve">
     <value>JSON schema requires the value of "additionalProperties" to be either a Boolean or a schema, but a token of type {0} was seen.</value>
   </data>
+  <data name="ErrorNotAllOf" xml:space="preserve">
+    <value>The instance did not satisfy all of the {0} schemas specified by "allOf" as required by the schema.</value>
+  </data>
   <data name="ErrorNotAMultiple" xml:space="preserve">
     <value>The value {0} is not a multiple of {1} as required by the schema.</value>
   </data>
+  <data name="ErrorNotAnyOf" xml:space="preserve">
+    <value>The instance did not satisfy any of the {0} schemas specified by "anyOf" as required by the schema.</value>
+  </data>
   <data name="ErrorNotAString" xml:space="preserve">
     <value>JSON schema requires the value of the property "{0}" to be a string, but the token is of type {1}.</value>
+  </data>
+  <data name="ErrorNotOneOf" xml:space="preserve">
+    <value>The instance satisfied {0} of the {1} schemas specified by "oneOf", instead of satisfying exactly one of them as required by the schema.</value>
   </data>
   <data name="ErrorOnlyDefinitionFragmentsSupported" xml:space="preserve">
     <value>This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the "definitions" property, for example "#/definitions/def1". The URI reference "{0}" is not supported.</value>
