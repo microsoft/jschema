@@ -273,24 +273,28 @@ namespace Microsoft.Json.Schema.Validation
             }
 
             // If additional properties are not allowed, ensure there are none.
-            if (!(schema.AdditionalProperties?.Allowed  == true))
+            // Additional properties are allowed by default.
+            if (schema.AdditionalProperties != null)
             {
-                foreach (string propertyName in extraProperties)
-                {
-                    JProperty property = jObject.Property(propertyName);
-                    AddMessage(property, ErrorNumber.AdditionalPropertiesProhibited, propertyName);
-                }
-            }
-            else
-            {
-                // Additional properties are allowed. If there is a schema to which they
-                // must conform, ensure that they do.
-                if (schema.AdditionalProperties.Schema != null)
+                if (!schema.AdditionalProperties.Allowed)
                 {
                     foreach (string propertyName in extraProperties)
                     {
                         JProperty property = jObject.Property(propertyName);
-                        ValidateToken(property.Value, property.Path, schema.AdditionalProperties.Schema);
+                        AddMessage(property, ErrorNumber.AdditionalPropertiesProhibited, propertyName);
+                    }
+                }
+                else
+                {
+                    // Additional properties are allowed. If there is a schema to which they
+                    // must conform, ensure that they do.
+                    if (schema.AdditionalProperties.Schema != null)
+                    {
+                        foreach (string propertyName in extraProperties)
+                        {
+                            JProperty property = jObject.Property(propertyName);
+                            ValidateToken(property.Value, property.Path, schema.AdditionalProperties.Schema);
+                        }
                     }
                 }
             }

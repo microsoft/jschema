@@ -466,7 +466,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
-                "Object: additionalProperties: invalid: disallowed by default",
+                "Object: additionalProperties: valid: allowed by default",
 
 @"{
   ""type"": ""object"",
@@ -480,8 +480,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
   ""a"": 2,
   ""b"": {}
-}",
-                Error.Format(3, 7, ErrorNumber.AdditionalPropertiesProhibited, "b")
+}"
                 ),
 
             new TestCase(
@@ -600,6 +599,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "Object: patternProperties: invalid: non-matching property name",
 @"{
   ""type"": ""object"",
+  ""additionalProperties"": false,
   ""properties"": {
     ""p1"": {}
   },
