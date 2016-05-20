@@ -2,8 +2,11 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Json.Schema.Validation;
 
 namespace Microsoft.Json.Schema.JsonSchemaValidator
@@ -12,6 +15,8 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
     {
         private static int Main(string[] args)
         {
+            Banner();
+
             int exitCode = 1;
 
             if (args.Length == 2)
@@ -61,6 +66,24 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             {
                 Console.Error.WriteLine(errorMessage);
             }
+        }
+
+        private static void Banner()
+        {
+            Assembly entryAssembly = Assembly.GetEntryAssembly();
+            IEnumerable<Attribute> attributes = entryAssembly.GetCustomAttributes();
+
+            var titleAttribute = attributes.Single(a => a is AssemblyTitleAttribute) as AssemblyTitleAttribute;
+            string programName = titleAttribute.Title;
+
+            string version = entryAssembly.GetName().Version.ToString();
+
+            var copyrightAttribute = attributes.Single(a => a is AssemblyCopyrightAttribute) as AssemblyCopyrightAttribute;
+            string copyright = copyrightAttribute.Copyright;
+
+            Console.WriteLine(string.Format(CultureInfo.CurrentCulture, Resources.Banner, programName, version));
+            Console.WriteLine(copyright);
+            Console.WriteLine();
         }
     }
 }

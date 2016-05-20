@@ -126,8 +126,9 @@ namespace Microsoft.Json.Schema.Validation
 
             foreach (JsonSchema allOfSchema in allOfSchemas)
             {
-                var allOfValidator = new Validator(allOfSchema);
-                allOfValidator.ValidateToken(jToken, name, allOfSchema);
+                JsonSchema schema = Resolve(allOfSchema);
+                var allOfValidator = new Validator(schema);
+                allOfValidator.ValidateToken(jToken, name, schema);
                 allOfErrorMessages.AddRange(allOfValidator._messages);
             }
 
@@ -152,8 +153,9 @@ namespace Microsoft.Json.Schema.Validation
             // validator if they *all* fail.
             foreach (JsonSchema anyOfSchema in anyOfSchemas)
             {
-                var anyOfValidator = new Validator(anyOfSchema);
-                anyOfValidator.ValidateToken(jToken, name, anyOfSchema);
+                JsonSchema schema = Resolve(anyOfSchema);
+                var anyOfValidator = new Validator(schema);
+                anyOfValidator.ValidateToken(jToken, name, schema);
                 if (!anyOfValidator._messages.Any())
                 {
                     valid = true;
@@ -182,8 +184,9 @@ namespace Microsoft.Json.Schema.Validation
             // validator if *all but one* fail.
             foreach (JsonSchema oneOfSchema in oneOfSchemas)
             {
-                var oneOfValidator = new Validator(oneOfSchema);
-                oneOfValidator.ValidateToken(jToken, name, oneOfSchema);
+                JsonSchema schema = Resolve(oneOfSchema);
+                var oneOfValidator = new Validator(schema);
+                oneOfValidator.ValidateToken(jToken, name, schema);
                 if (!oneOfValidator._messages.Any())
                 {
                     ++numValid;
@@ -362,6 +365,7 @@ namespace Microsoft.Json.Schema.Validation
                     JsonSchema propertySchema;
                     if (schema.Properties.TryGetValue(propertyName, out propertySchema))
                     {
+                        propertySchema = Resolve(propertySchema);
                         JProperty property = jObject.Property(propertyName);
                         ValidateToken(property.Value, property.Path, propertySchema);
                     }
