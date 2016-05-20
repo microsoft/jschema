@@ -27,6 +27,11 @@ if "%ERRORLEVEL%" NEQ "0" (
 goto ExitFailed
 )
 
+%XUNIT% bld\bin\Json.Schema.ValidationSuiteTests\AnyCPU_%Configuration%\Microsoft.Json.Schema.ValidationSuiteTests.dll
+if "%ERRORLEVEL%" NEQ "0" (
+goto ExitFailed
+)
+
 goto Exit
 
 :ExitFailed
