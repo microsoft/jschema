@@ -20,6 +20,7 @@ namespace Microsoft.Json.Schema.Validation
 
         private readonly Stack<JsonSchema> _schemas;
         private List<string> _messages;
+        private Dictionary<string, JsonSchema> _definitions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Validator"/> class.
@@ -34,10 +35,24 @@ namespace Microsoft.Json.Schema.Validation
                 throw new ArgumentNullException(nameof(schema));
             }
 
+            _definitions = schema.Definitions;
+
+            schema = Resolve(schema);
+
             _messages = new List<string>();
 
             _schemas = new Stack<JsonSchema>();
             _schemas.Push(schema);
+        }
+
+        private JsonSchema Resolve(JsonSchema schema)
+        {
+            if (schema.Reference != null)
+            {
+                schema = _definitions[schema.Reference.GetDefinitionName()];
+            }
+
+            return schema;
         }
 
         public string[] Validate(string instanceText)
@@ -307,7 +322,7 @@ namespace Microsoft.Json.Schema.Validation
                 int i = 0;
                 foreach (JToken jToken in jArray)
                 {
-                    ValidateToken(jToken, $"{name}[{i}]", schema.Items);
+                    ValidateToken(jToken, $"{name}[{i}]", Resolve(schema.Items));
                     ++i;
                 }
             }
