@@ -117,6 +117,11 @@ namespace Microsoft.Json.Schema
             {
                 AllOf = new List<JsonSchema>(other.AllOf);
             }
+
+            if (other.AnyOf != null)
+            {
+                AnyOf = new List<JsonSchema>(other.AnyOf);
+            }
         }
 
         /// <summary>
@@ -350,7 +355,15 @@ namespace Microsoft.Json.Schema
         /// </remarks>
         public string Format { get; set; }
 
+        /// <summary>
+        /// Gets or sets a set of schemas against all of which the instance must be valid.
+        /// </summary>
         public IList<JsonSchema> AllOf { get; set; }
+
+        /// <summary>
+        /// Gets or sets a set of schemas against any of which the instance must be valid.
+        /// </summary>
+        public IList<JsonSchema> AnyOf { get; set; }
 
         /// <summary>
         /// Pull properties from any referenced schemas up into this schema.
@@ -408,6 +421,11 @@ namespace Microsoft.Json.Schema
             if (schema.AllOf != null)
             {
                 collapsedSchema.AllOf = schema.AllOf.Select(s => Collapse(s, rootSchema)).ToList();
+            }
+
+            if (schema.AnyOf != null)
+            {
+                collapsedSchema.AnyOf = schema.AnyOf.Select(s => Collapse(s, rootSchema)).ToList();
             }
 
             if (schema.Reference != null)
@@ -493,7 +511,8 @@ namespace Microsoft.Json.Schema
                 MaxItems,
                 UniqueItems,
                 Format,
-                AllOf
+                AllOf,
+                AnyOf
                 );
         }
 
@@ -545,7 +564,10 @@ namespace Microsoft.Json.Schema
                 && string.Equals(Format, other.Format, StringComparison.Ordinal)
                 && (AllOf == null
                         ? other.AllOf == null
-                        : AllOf.HasSameElementsAs(other.AllOf));
+                        : AllOf.HasSameElementsAs(other.AllOf))
+                && (AnyOf == null
+                        ? other.AnyOf == null
+                        : AnyOf.HasSameElementsAs(other.AnyOf));
         }
 
         #endregion

@@ -19,7 +19,7 @@ namespace Microsoft.Json.Schema.Validation
         internal const string RootObjectName = "root object";
 
         private readonly Stack<JsonSchema> _schemas;
-        private IList<string> _messages;
+        private List<string> _messages;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Validator"/> class.
@@ -33,6 +33,8 @@ namespace Microsoft.Json.Schema.Validation
             {
                 throw new ArgumentNullException(nameof(schema));
             }
+
+            _messages = new List<string>();
 
             _schemas = new Stack<JsonSchema>();
             _schemas.Push(schema);
@@ -90,6 +92,44 @@ namespace Microsoft.Json.Schema.Validation
                 {
                     ValidateToken(jToken, name, allOfSchema);
                 }
+            }
+
+            if (schema.AnyOf != null)
+            {
+                ValidateAnyOf(jToken, name, schema.AnyOf);
+            }
+        }
+
+        private void ValidateAnyOf(
+            JToken jToken,
+            string name,
+            IList<JsonSchema> anyOfSchemas)
+        {
+            List<string> anyOfErrorMessages = new List<string>();
+            bool valid = false;
+
+            // Since this token is valid if it's valid against *any* of the schemas,
+            // we can't just call ValidateToken against each schema. If we did that,
+            // we'd accumulate errors from all the failed schemas, only to find out
+            // that they weren't really errors at all. So we instantiate a new
+            // validator for each schema, and only report the errors from the current
+            // validator if they *all* fail.
+            foreach (JsonSchema anyOfSchema in anyOfSchemas)
+            {
+                var anyOfValidator = new Validator(anyOfSchema);
+                anyOfValidator.ValidateToken(jToken, name, anyOfSchema);
+                if (!anyOfValidator._messages.Any())
+                {
+                    valid = true;
+                    break;
+                }
+
+                anyOfErrorMessages.AddRange(anyOfValidator._messages);
+            }
+
+            if (!valid)
+            {
+                _messages.AddRange(anyOfErrorMessages);
             }
         }
 
