@@ -24,7 +24,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
             var validator = new Validator(testData.Schema);
 
             string[] errorMessages = validator.Validate(testData.InstanceText);
-            errorMessages.Should().BeEmpty();
+            errorMessages.Should().BeEmpty($"test \"{testData.Description}\" should pass");
         }
     }
 
@@ -58,6 +58,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
                             {
                                 new TestData
                                 {
+                                    FileName = Path.GetFileName(testFile),
                                     Description = description,
                                     Schema = testSuite.Schema,
                                     InstanceText = GetInstanceText(testCase.Data),
@@ -73,6 +74,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
                     {
                         new TestData
                         {
+                            FileName = Path.GetFileName(testFile),
                             ErrorMessage = $"Error reading {testFile}: {ex.Message}"
                         }
                     });
@@ -128,10 +130,18 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
 
     public class TestData
     {
+        public string FileName { get; set; }
         public string Description { get; set; }
         public JsonSchema Schema { get; set; }
         public string InstanceText { get; set; }
         public bool Valid { get; set; }
         public string ErrorMessage { get; set; }
+
+        public override string ToString()
+        {
+            return string.IsNullOrWhiteSpace(Description)
+                ? FileName
+                : $"{FileName}: {Description}";
+        }
     }
 }
