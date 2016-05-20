@@ -68,5 +68,14 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator {
                 return ResourceManager.GetString("Banner", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation time: {0}.
+        /// </summary>
+        internal static string ElapsedTime {
+            get {
+                return ResourceManager.GetString("ElapsedTime", resourceCulture);
+            }
+        }
     }
 }

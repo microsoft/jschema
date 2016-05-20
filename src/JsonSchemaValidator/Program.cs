@@ -21,7 +21,11 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
 
             if (args.Length == 2)
             {
+                DateTime start = DateTime.Now;
                 exitCode = Validate(args[0], args[1]);
+                TimeSpan elapsedTime = DateTime.Now - start;
+                Console.WriteLine(
+                    string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime));
             }
             else
             {
