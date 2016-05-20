@@ -22,13 +22,8 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
             testData.ErrorMessage.Should().BeNull();
 
             var validator = new Validator(testData.Schema);
-            string instanceText = testData.Instance.ToString();
-            if (testData.Instance.Type == JTokenType.String)
-            {
-                instanceText = '"' + instanceText + '"';
-            }
 
-            string[] errorMessages = validator.Validate(instanceText);
+            string[] errorMessages = validator.Validate(testData.InstanceText);
             errorMessages.Should().BeEmpty();
         }
     }
@@ -65,7 +60,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
                                 {
                                     Description = description,
                                     Schema = testSuite.Schema,
-                                    Instance = testCase.Data,
+                                    InstanceText = GetInstanceText(testCase.Data),
                                     Valid = testCase.Valid
                                 }
                             });
@@ -94,6 +89,27 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
         {
             return GetEnumerator();
         }
+
+        private string GetInstanceText(JToken data)
+        {
+            string instanceText = data.ToString();
+
+            switch (data.Type)
+            {
+                case JTokenType.String:
+                    instanceText = '"' + instanceText + '"';
+                    break;
+
+                case JTokenType.Boolean:
+                    instanceText = instanceText.ToLowerInvariant();
+                    break;
+
+                default:
+                    break;
+            }
+
+            return instanceText;
+        }
     }
 
     public class TestSuite
@@ -114,7 +130,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
     {
         public string Description { get; set; }
         public JsonSchema Schema { get; set; }
-        public JToken Instance { get; set; }
+        public string InstanceText { get; set; }
         public bool Valid { get; set; }
         public string ErrorMessage { get; set; }
     }
