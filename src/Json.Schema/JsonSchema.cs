@@ -44,12 +44,7 @@ namespace Microsoft.Json.Schema
 
             if (other.Type != null)
             {
-                Type = new JTokenType[other.Type.Length];
-                Array.Copy(other.Type, Type, other.Type.Length);
-            }
-            else
-            {
-                Type = null;
+                Type = new List<JTokenType>(other.Type);
             }
 
             if (other.Enum != null)
@@ -160,7 +155,7 @@ namespace Microsoft.Json.Schema
         public string Description { get; set; }
 
         [JsonConverter(typeof(SchemaTypeConverter))]
-        public JTokenType[] Type { get; set; }
+        public IList<JTokenType> Type { get; set; }
 
         /// <summary>
         /// Gets or sets an array containing the values that are valid for an object
@@ -449,12 +444,7 @@ namespace Microsoft.Json.Schema
 
                 if (referencedSchema.Type != null)
                 {
-                    collapsedSchema.Type = new JTokenType[referencedSchema.Type.Length];
-                    Array.Copy(referencedSchema.Type, collapsedSchema.Type, referencedSchema.Type.Length);
-                }
-                else
-                {
-                    collapsedSchema.Type = null;
+                    collapsedSchema.Type = new List<JTokenType>(referencedSchema.Type);
                 }
 
                 collapsedSchema.Enum = referencedSchema.Enum != null

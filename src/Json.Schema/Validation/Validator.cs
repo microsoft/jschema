@@ -133,12 +133,12 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private string FormatSchemaTypes(JTokenType[] schemaTypes)
+        private string FormatSchemaTypes(IList<JTokenType> schemaTypes)
         {
             return string.Join(", ", schemaTypes.Select(t => t.ToString()));
         }
 
-        private bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, JTokenType[] schemaTypes)
+        private bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, IList<JTokenType> schemaTypes)
         {
             if (schemaTypes == null || !schemaTypes.Any())
             {

@@ -106,7 +106,7 @@ namespace Microsoft.Json.Schema
     {
         public static JTokenType SafeGetType(this JsonSchema schema)
         {
-            return (schema.Type != null && schema.Type.Length > 0)
+            return (schema.Type != null && schema.Type.Count > 0)
                 ? schema.Type[0]
                 : JTokenType.None;
         }
