@@ -41,7 +41,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public override void AddMembers()
         {
-            if (Schema?.Enum.Length > 0)
+            if (Schema?.Enum.Count > 0)
             {
                 EnumHint enumHint = GetEnumHintForType(TypeName);
                 int[] enumValues = enumHint?.MemberValues;
@@ -53,7 +53,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 int enumValueIndexOffset = enumHint?.HasZeroValue == true ? 1 : 0;
 
 
-                for (int i = 0; i < Schema.Enum.Length; ++i)
+                for (int i = 0; i < Schema.Enum.Count; ++i)
                 {
                     EqualsValueClauseSyntax equalsValueClause = null;
                     if (enumValues != null && ShouldSupplyValueFor(i, enumHint.HasZeroValue))

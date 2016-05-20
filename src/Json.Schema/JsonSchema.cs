@@ -49,9 +49,10 @@ namespace Microsoft.Json.Schema
 
             if (other.Enum != null)
             {
-                // A shallow copy is fine since Enum will be checked to ensure that it
+                // A shallow copy is fine for now since Enum will be checked to ensure that it
                 // contain only primitive types.
-                Enum = other.Enum.Clone() as object[];
+                // But it won't do if we want to pass the JSON Schema validation suite.
+                Enum = new List<object>(other.Enum);
             }
 
             if (other.Items != null)
@@ -161,7 +162,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets an array containing the values that are valid for an object
         /// that conforms to the current schema.
         /// </summary>
-        public object[] Enum { get; set; }
+        public IList<object> Enum { get; set; }
 
         /// <summary>
         /// Gets or sets the JSON schema that applies to the array items, if the current
@@ -447,9 +448,10 @@ namespace Microsoft.Json.Schema
                     collapsedSchema.Type = new List<JTokenType>(referencedSchema.Type);
                 }
 
-                collapsedSchema.Enum = referencedSchema.Enum != null
-                    ? referencedSchema.Enum.Clone() as object[]
-                    : null;
+                if (referencedSchema.Enum != null)
+                {
+                    collapsedSchema.Enum = new List<object>(referencedSchema.Enum);
+                }
 
                 collapsedSchema.Items = referencedSchema.Items != null
                     ? Collapse(referencedSchema.Items, rootSchema)

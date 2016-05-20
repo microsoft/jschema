@@ -360,14 +360,14 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (enumHint.AllowMemberCountMismatch == false
                 && enumHint.MemberNames != null
                 && schema.Enum != null
-                && enumHint.MemberNames.Length != schema.Enum.Length)
+                && enumHint.MemberNames.Length != schema.Enum.Count)
             {
                 throw Error.CreateException(
                                 Resources.ErrorMismatchedEnumCount,
                                 nameof(EnumHint),
                                 enumHint.TypeName,
                                 enumHint.MemberNames.Length,
-                                schema.Enum.Length);
+                                schema.Enum.Count);
             }
 
             var enumNames = new List<string>();
@@ -388,7 +388,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             var enumTypeSchema = new JsonSchema
             {
                 Description = enumHint.Description ?? schema.Description,
-                Enum = enumNames.ToArray()
+                Enum = enumNames.Cast<object>().ToList()
             };
 
             var generator = new EnumGenerator(enumTypeSchema, _settings.HintDictionary);

@@ -520,14 +520,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                     && kvp.Value.Any(hint => hint is EnumHint));
         }
 
-        private JTokenType InferJTokenTypeFromEnumValues(object[] enumValues)
+        private JTokenType InferJTokenTypeFromEnumValues(IList<object> enumValues)
         {
             JTokenType JTokenType = JTokenType.None;
 
             if (enumValues != null && enumValues.Any())
             {
                 JTokenType = GetJTokenTypeFromObject(enumValues[0]);
-                for (int i = 1; i < enumValues.Length; ++i)
+                for (int i = 1; i < enumValues.Count; ++i)
                 {
                     if (GetJTokenTypeFromObject(enumValues[i]) != JTokenType)
                     {
