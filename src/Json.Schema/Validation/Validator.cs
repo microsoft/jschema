@@ -248,7 +248,7 @@ namespace Microsoft.Json.Schema.Validation
             }
 
             // Does the object contain any properties not specified by the schema?
-            List<string> extraProperties = schema.Properties == null
+            List<string> additionalPropertyNames = schema.Properties == null
                 ? propertySet
                 : propertySet.Except(schema.Properties.Keys).ToList();
 
@@ -256,19 +256,19 @@ namespace Microsoft.Json.Schema.Validation
             {
                 foreach (string patternRegEx in schema.PatternProperties.Keys)
                 {
-                    List<string> matchingProperties = extraProperties.Where(p => Regex.IsMatch(p, patternRegEx)).ToList();
+                    List<string> matchingPropertyNames = additionalPropertyNames.Where(p => Regex.IsMatch(p, patternRegEx)).ToList();
 
-                    if (matchingProperties.Any())
+                    if (matchingPropertyNames.Any())
                     {
                         JsonSchema propertySchema = schema.PatternProperties[patternRegEx];
-                        foreach (string matchingProperty in matchingProperties)
+                        foreach (string matchingProperty in matchingPropertyNames)
                         {
                             JProperty property = jObject.Property(matchingProperty);
                             ValidateToken(property.Value, property.Path, propertySchema);
                         }
                     }
 
-                    extraProperties = extraProperties.Except(matchingProperties).ToList();
+                    additionalPropertyNames = additionalPropertyNames.Except(matchingPropertyNames).ToList();
                 }
             }
 
@@ -276,25 +276,33 @@ namespace Microsoft.Json.Schema.Validation
             // Additional properties are allowed by default.
             if (schema.AdditionalProperties != null)
             {
-                if (!schema.AdditionalProperties.Allowed)
+                ValidateAdditionalProperties(jObject, additionalPropertyNames, schema.AdditionalProperties);
+            }
+        }
+
+        private void ValidateAdditionalProperties(
+            JObject jObject,
+            List<string> additionalPropertyNames,
+            AdditionalProperties additionalProperties)
+        {
+            if (!additionalProperties.Allowed)
+            {
+                foreach (string propertyName in additionalPropertyNames)
                 {
-                    foreach (string propertyName in extraProperties)
+                    JProperty property = jObject.Property(propertyName);
+                    AddMessage(property, ErrorNumber.AdditionalPropertiesProhibited, propertyName);
+                }
+            }
+            else
+            {
+                // Additional properties are allowed. If there is a schema to which they
+                // must conform, ensure that they do.
+                if (additionalProperties.Schema != null)
+                {
+                    foreach (string propertyName in additionalPropertyNames)
                     {
                         JProperty property = jObject.Property(propertyName);
-                        AddMessage(property, ErrorNumber.AdditionalPropertiesProhibited, propertyName);
-                    }
-                }
-                else
-                {
-                    // Additional properties are allowed. If there is a schema to which they
-                    // must conform, ensure that they do.
-                    if (schema.AdditionalProperties.Schema != null)
-                    {
-                        foreach (string propertyName in extraProperties)
-                        {
-                            JProperty property = jObject.Property(propertyName);
-                            ValidateToken(property.Value, property.Path, schema.AdditionalProperties.Schema);
-                        }
+                        ValidateToken(property.Value, property.Path, additionalProperties.Schema);
                     }
                 }
             }
