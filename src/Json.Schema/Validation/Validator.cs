@@ -83,6 +83,14 @@ namespace Microsoft.Json.Schema.Validation
                 default:
                     break;
             }
+
+            if (schema.AllOf != null)
+            {
+                foreach (JsonSchema allOfSchema in schema.AllOf)
+                {
+                    ValidateToken(jToken, name, allOfSchema);
+                }
+            }
         }
 
         private string FormatSchemaTypes(JTokenType[] schemaTypes)

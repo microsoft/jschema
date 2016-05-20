@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -110,6 +111,11 @@ namespace Microsoft.Json.Schema
             if (other.Reference != null)
             {
                 Reference = new UriOrFragment(other.Reference);
+            }
+
+            if (other.AllOf != null)
+            {
+                AllOf = new List<JsonSchema>(other.AllOf);
             }
         }
 
@@ -344,6 +350,8 @@ namespace Microsoft.Json.Schema
         /// </remarks>
         public string Format { get; set; }
 
+        public IList<JsonSchema> AllOf { get; set; }
+
         /// <summary>
         /// Pull properties from any referenced schemas up into this schema.
         /// </summary>
@@ -395,6 +403,11 @@ namespace Microsoft.Json.Schema
                     collapsedSchema.PatternProperties.Add(
                         key, Collapse(schema.PatternProperties[key], rootSchema));
                 }
+            }
+
+            if (schema.AllOf != null)
+            {
+                collapsedSchema.AllOf = schema.AllOf.Select(s => Collapse(s, rootSchema)).ToList();
             }
 
             if (schema.Reference != null)
@@ -479,7 +492,8 @@ namespace Microsoft.Json.Schema
                 MinItems,
                 MaxItems,
                 UniqueItems,
-                Format
+                Format,
+                AllOf
                 );
         }
 
@@ -528,7 +542,10 @@ namespace Microsoft.Json.Schema
                 && MinItems ==  other.MinItems
                 && MaxItems == other.MaxItems
                 && UniqueItems == other.UniqueItems
-                && string.Equals(Format, other.Format, StringComparison.Ordinal);
+                && string.Equals(Format, other.Format, StringComparison.Ordinal)
+                && (AllOf == null
+                        ? other.AllOf == null
+                        : AllOf.HasSameElementsAs(other.AllOf));
         }
 
         #endregion
