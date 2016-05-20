@@ -55,23 +55,13 @@ namespace Microsoft.Json.Schema.Validation
 
         private void ValidateToken(JToken jToken, string name, JsonSchema schema)
         {
-            // If the schema doesn't specify a type, anything goes.
-            JTokenType schemaType = schema.SafeGetType();
-            if (schemaType == JTokenType.None)
+            if (!TokenTypeIsCompatibleWithSchema(jToken.Type, schema.Type))
             {
+                AddMessage(jToken, ErrorNumber.WrongType, name, FormatSchemaTypes(schema.Type), jToken.Type);
                 return;
             }
 
-            // Check that the token is of the correct type, but allow an integer where a
-            // "number" was specified.
-            if (jToken.Type != schemaType
-                && !(jToken.Type == JTokenType.Integer && schemaType == JTokenType.Float))
-            {
-                AddMessage(jToken, ErrorNumber.WrongType, name, schemaType, jToken.Type);
-                return;
-            }
-
-            switch (schemaType)
+            switch (jToken.Type)
             {
                 case JTokenType.String:
                     ValidateString((JValue)jToken, schema);
@@ -93,6 +83,31 @@ namespace Microsoft.Json.Schema.Validation
                 default:
                     break;
             }
+        }
+
+        private string FormatSchemaTypes(JTokenType[] schemaTypes)
+        {
+            return string.Join(", ", schemaTypes.Select(t => t.ToString()));
+        }
+
+        private bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, JTokenType[] schemaTypes)
+        {
+            if (schemaTypes == null || !schemaTypes.Any())
+            {
+                return true;
+            }
+
+            if (schemaTypes.Contains(instanceType))
+            {
+                return true;
+            }
+
+            if (instanceType == JTokenType.Integer && schemaTypes.Contains(JTokenType.Float))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void ValidateString(JValue jValue, JsonSchema schema)

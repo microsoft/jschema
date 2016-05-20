@@ -15,7 +15,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
 {
     public class ValidationSuiteTests
     {
-        [Theory(DisplayName = nameof(ValidationSuite), Skip = "NYI")]
+        [Theory(DisplayName = nameof(ValidationSuite))]
         [ClassData(typeof(ValidationData))]
         public void ValidationSuite(TestData testData)
         {
@@ -24,7 +24,15 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
             var validator = new Validator(testData.Schema);
 
             string[] errorMessages = validator.Validate(testData.InstanceText);
-            errorMessages.Should().BeEmpty($"test \"{testData.Description}\" should pass");
+
+            if (testData.Valid)
+            {
+                errorMessages.Should().BeEmpty($"test \"{testData.Description}\" should pass");
+            }
+            else
+            {
+                errorMessages.Should().NotBeEmpty($"test \"{testData.Description}\" should pass");
+            }
         }
     }
 

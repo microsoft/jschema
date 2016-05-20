@@ -233,7 +233,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires &quot;{0}&quot; to be of type &quot;{1}&quot;, but the schema validator found a token of type &quot;{2}&quot;..
+        ///   Looks up a localized string similar to The schema requires &quot;{0}&quot; to be one of the types [{1}], but the schema validator found a token of type {2}..
         /// </summary>
         internal static string ErrorWrongType {
             get {
