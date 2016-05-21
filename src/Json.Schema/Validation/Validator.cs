@@ -149,6 +149,9 @@ namespace Microsoft.Json.Schema.Validation
                 case JTokenType.Integer:
                     return IntegerEquals(jToken.Value<long>(), obj);
 
+                case JTokenType.Float:
+                    return FloatEquals(jToken.Value<double>(), obj);
+
                 default:
                     return false;
             }
@@ -163,6 +166,11 @@ namespace Microsoft.Json.Schema.Validation
         private static bool IntegerEquals(long tokenNumber, object obj)
         {
             return obj is long && tokenNumber == (long)obj;
+        }
+
+        private static bool FloatEquals(double tokenNumber, object obj)
+        {
+            return obj is double && tokenNumber == (double)obj;
         }
 
         private void ValidateAllOf(

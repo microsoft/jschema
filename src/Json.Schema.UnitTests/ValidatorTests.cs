@@ -743,6 +743,52 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
                 Error.Format(2, 14, ErrorNumber.WrongType, "a", JTokenType.Boolean, JTokenType.String)
                 ),
+
+            new TestCase(
+                "enum: valid int value",
+
+@"{
+  ""enum"": [1, 2, 3]
+}",
+
+@"3"
+                ),
+
+            new TestCase(
+                "enum: invalid int value",
+
+@"{
+  ""enum"": [1, 2, 3]
+}",
+
+@"4",
+                Error.Format(1, 1, ErrorNumber.InvalidEnumValue, "4", "1, 2, 3")
+                ),
+
+            // Anything from here on down is not covered by the JSON-Schema-Test-Suite.
+            // When we cull the above tests for duplication with the test suite, we must
+            // keep these:
+
+            new TestCase(
+                "enum: valid float value",
+
+@"{
+  ""enum"": [1.0, 2.0, 3.0]
+}",
+
+@"3.0"
+                ),
+
+            new TestCase(
+                "enum: invalid float value",
+
+@"{
+  ""enum"": [1.01, 2.0, 3.0]
+}",
+
+@"4.0",
+                Error.Format(1, 3, ErrorNumber.InvalidEnumValue, "4", "1.01, 2, 3")
+                ),
         };
 
         [Theory(DisplayName = "Validation")]
