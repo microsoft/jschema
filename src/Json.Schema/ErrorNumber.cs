@@ -365,6 +365,11 @@ namespace Microsoft.Json.Schema
         /// </summary>
         NotOneOf = 1018,
 
+        /// <summary>
+        /// An instance does not match any of the values specified by "enum".
+        /// </summary>
+        InvalidEnumValue = 1019
+
         #endregion Errors in instance document
     }
 }

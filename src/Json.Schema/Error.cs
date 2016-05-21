@@ -58,7 +58,8 @@ namespace Microsoft.Json.Schema
                 [ErrorNumber.StringDoesNotMatchPattern] = Resources.ErrorStringDoesNotMatchPattern,
                 [ErrorNumber.NotAllOf] = Resources.ErrorNotAllOf,
                 [ErrorNumber.NotAnyOf] = Resources.ErrorNotAnyOf,
-                [ErrorNumber.NotOneOf] = Resources.ErrorNotOneOf
+                [ErrorNumber.NotOneOf] = Resources.ErrorNotOneOf,
+                [ErrorNumber.InvalidEnumValue] = Resources.ErrorInvalidEnumValue
             });
 
         internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)

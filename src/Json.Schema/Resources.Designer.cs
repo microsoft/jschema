@@ -88,6 +88,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match any of the enum values &apos;{1}&apos;..
+        /// </summary>
+        internal static string ErrorInvalidEnumValue {
+            get {
+                return ResourceManager.GetString("ErrorInvalidEnumValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The instance did not satisfy all of the {0} schemas specified by &quot;allOf&quot; as required by the schema..
         /// </summary>
         internal static string ErrorNotAllOf {
@@ -260,7 +269,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires &quot;{0}&quot; to be one of the types [{1}], but the schema validator found a token of type {2}..
+        ///   Looks up a localized string similar to The schema requires &apos;{0}&apos; to be one of the types [{1}], but the schema validator found a token of type {2}..
         /// </summary>
         internal static string ErrorWrongType {
             get {

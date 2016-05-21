@@ -185,6 +185,9 @@
     <value>({0},{1}): error {2}: {3}</value>
   </data>
   <data name="ErrorWrongType" xml:space="preserve">
-    <value>The schema requires "{0}" to be one of the types [{1}], but the schema validator found a token of type {2}.</value>
+    <value>The schema requires '{0}' to be one of the types [{1}], but the schema validator found a token of type {2}.</value>
+  </data>
+  <data name="ErrorInvalidEnumValue" xml:space="preserve">
+    <value>The value '{0}' does not match any of the enum values '{1}'.</value>
   </data>
 </root>

@@ -101,6 +101,11 @@ namespace Microsoft.Json.Schema.Validation
                     break;
             }
 
+            if (schema.Enum != null)
+            {
+                ValidateEnum(jToken, name, schema.Enum);
+            }
+
             if (schema.AllOf != null)
             {
                 ValidateAllOf(jToken, name, schema.AllOf);
@@ -115,6 +120,35 @@ namespace Microsoft.Json.Schema.Validation
             {
                 ValidateOneOf(jToken, name, schema.OneOf);
             }
+        }
+
+        private void ValidateEnum(JToken jToken, string name, IList<object> @enum)
+        {
+            switch (jToken.Type)
+            {
+                case JTokenType.String:
+                    ValidateStringEnum(jToken, name, @enum);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void ValidateStringEnum(JToken jToken, string name, IList<object> @enum)
+        {
+            string stringToken = jToken.Value<string>();
+
+            foreach (object value in @enum)
+            {
+                string stringValue = value as string;
+                if (stringValue != null && stringToken.Equals(stringValue, StringComparison.Ordinal))
+                {
+                    return;
+                }
+            }
+
+            AddMessage(jToken, ErrorNumber.InvalidEnumValue, stringToken, string.Join(", ", @enum.Select(e => e.ToString())));
         }
 
         private void ValidateAllOf(
