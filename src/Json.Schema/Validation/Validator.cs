@@ -17,6 +17,7 @@ namespace Microsoft.Json.Schema.Validation
     public class Validator
     {
         internal const string RootObjectName = "root object";
+        private const string Null = "null";
 
         private readonly Stack<JsonSchema> _schemas;
         private List<string> _messages;
@@ -472,9 +473,27 @@ namespace Microsoft.Json.Schema.Validation
                 case JTokenType.Object:
                     return ObjectEquals(jToken as JObject, obj);
 
+                case JTokenType.Null:
+                    return NullEquals(obj);
+
                 default:
                     return false;
             }
+        }
+
+        private static bool NullEquals(object obj)
+        {
+            if (obj == null)
+            {
+                return true;
+            }
+
+            if (obj is JToken)
+            {
+                return (obj as JToken).Type == JTokenType.Null;
+            }
+
+            return false;
         }
 
         private static bool StringEquals(string tokenString, object obj)
@@ -555,6 +574,11 @@ namespace Microsoft.Json.Schema.Validation
                 return FormatToken(obj as JToken);
             }
 
+            if (obj == null)
+            {
+                return Null;
+            }
+
             string formattedObject = obj.ToString();
 
             if (obj is string)
@@ -585,6 +609,10 @@ namespace Microsoft.Json.Schema.Validation
 
                 case JTokenType.Array:
                     formattedToken = FormatArray(formattedToken);
+                    break;
+
+                case JTokenType.Null:
+                    formattedToken = Null;
                     break;
 
                 default:
