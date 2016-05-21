@@ -117,6 +117,10 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
                     instanceText = instanceText.ToLowerInvariant();
                     break;
 
+                case JTokenType.Null:
+                    instanceText = "null";
+                    break;
+
                 default:
                     break;
             }

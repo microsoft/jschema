@@ -469,6 +469,9 @@ namespace Microsoft.Json.Schema.Validation
                 case JTokenType.Array:
                     return ArrayEquals(jToken as JArray, obj);
 
+                case JTokenType.Object:
+                    return ObjectEquals(jToken as JObject, obj);
+
                 default:
                     return false;
             }
@@ -519,6 +522,25 @@ namespace Microsoft.Json.Schema.Validation
             }
 
             return true;
+        }
+
+        private static bool ObjectEquals(JObject jObject, object obj)
+        {
+            JObject objJObject = obj as JObject;
+            if (objJObject == null)
+            {
+                return false;
+            }
+
+            IList<string> propertyNames = jObject.Properties().Select(p => p.Name).ToList();
+            IList<string> objPropertyNames = objJObject.Properties().Select(p => p.Name).ToList();
+
+            if (!propertyNames.HasSameElementsAs(objPropertyNames))
+            {
+                return false;
+            }
+
+            return propertyNames.All(pn => DeepEquals(jObject[pn], objJObject[pn]));
         }
 
         private static string FormatSchemaTypes(IList<JTokenType> schemaTypes)
