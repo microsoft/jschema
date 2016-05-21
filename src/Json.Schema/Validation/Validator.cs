@@ -195,13 +195,13 @@ namespace Microsoft.Json.Schema.Validation
                     return StringEquals(jToken.Value<string>(), obj);
 
                 case JTokenType.Integer:
-                    return IntegerEquals(jToken.Value<long>(), obj);
+                    return ValueEquals(jToken.Value<long>(), obj);
 
                 case JTokenType.Float:
-                    return FloatEquals(jToken.Value<double>(), obj);
+                    return ValueEquals(jToken.Value<double>(), obj);
 
                 case JTokenType.Boolean:
-                    return BooleanEquals(jToken.Value<bool>(), obj);
+                    return ValueEquals(jToken.Value<bool>(), obj);
 
                 default:
                     return false;
@@ -214,19 +214,9 @@ namespace Microsoft.Json.Schema.Validation
             return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
         }
 
-        private static bool IntegerEquals(long tokenNumber, object obj)
+        private static bool ValueEquals<T>(T value, object obj)
         {
-            return obj is long && tokenNumber == (long)obj;
-        }
-
-        private static bool FloatEquals(double tokenNumber, object obj)
-        {
-            return obj is double && tokenNumber == (double)obj;
-        }
-
-        private static bool BooleanEquals(bool tokenBoolean, object obj)
-        {
-            return obj is bool && tokenBoolean == (bool)obj;
+            return obj is T && value.Equals((T)obj);
         }
 
         private void ValidateAllOf(
