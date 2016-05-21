@@ -38,7 +38,10 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
 
     public class ValidationData : IEnumerable<object[]>
     {
-        private const string TestSuitePath = @"G:\Code\JSON-Schema-Test-Suite\tests\draft4";
+        // This assumes that we are building, or have built at least once, from
+        // the command line by using the script BuildAndTest.cmd, which clones
+        // the JSON-Schema-Test-Suite repo into a location adjacent to the JSchema repo.
+        private const string TestSuitePath = @"..\..\..\..\..\JSON-Schema-Test-Suite\tests\draft4";
 
         private readonly List<object[]> _data;
 

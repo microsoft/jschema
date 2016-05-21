@@ -27,6 +27,12 @@ if "%ERRORLEVEL%" NEQ "0" (
 goto ExitFailed
 )
 
+set JSON_SCHEMA_TEST_SUITE_PATH=..\JSON-Schema-Test-Suite
+set JSON_SCHEMA_TEST_SUITE_URI=https://github.com/json-schema-org/JSON-Schema-Test-Suite
+if not exist %JSON_SCHEMA_TEST_SUITE_PATH% (
+git clone %JSON_SCHEMA_TEST_SUITE_URI% %JSON_SCHEMA_TEST_SUITE_PATH%
+)
+
 %XUNIT% bld\bin\Json.Schema.ValidationSuiteTests\AnyCPU_%Configuration%\Microsoft.Json.Schema.ValidationSuiteTests.dll
 if "%ERRORLEVEL%" NEQ "0" (
 goto ExitFailed
