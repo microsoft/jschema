@@ -124,32 +124,39 @@ namespace Microsoft.Json.Schema.Validation
 
         private void ValidateEnum(JToken jToken, string name, IList<object> @enum)
         {
+            if (!TokenMatchesEnum(jToken, @enum))
+            {
+                AddMessage(
+                    jToken,
+                    ErrorNumber.InvalidEnumValue,
+                    jToken.ToString(),
+                    string.Join(", ", @enum.Select(e => e.ToString())));
+            }
+        }
+
+        private bool TokenMatchesEnum(JToken jToken, IList<object> @enum)
+        {
+            return @enum.Any(e => DeepEquals(jToken, e));
+        }
+
+        private bool DeepEquals(JToken jToken, object obj)
+        {
             switch (jToken.Type)
             {
                 case JTokenType.String:
-                    ValidateStringEnum(jToken, name, @enum);
-                    break;
+                    return StringEquals(jToken.Value<string>(), obj);
 
                 default:
-                    break;
+                    return false;
             }
         }
 
-        private void ValidateStringEnum(JToken jToken, string name, IList<object> @enum)
+        private bool StringEquals(string tokenString, object obj)
         {
-            string stringToken = jToken.Value<string>();
-
-            foreach (object value in @enum)
-            {
-                string stringValue = value as string;
-                if (stringValue != null && stringToken.Equals(stringValue, StringComparison.Ordinal))
-                {
-                    return;
-                }
-            }
-
-            AddMessage(jToken, ErrorNumber.InvalidEnumValue, stringToken, string.Join(", ", @enum.Select(e => e.ToString())));
+            string objString = obj as string;
+            return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
         }
+
 
         private void ValidateAllOf(
             JToken jToken,
