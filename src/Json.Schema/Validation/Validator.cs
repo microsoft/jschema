@@ -330,7 +330,7 @@ namespace Microsoft.Json.Schema.Validation
                 AddMessage(
                     jToken,
                     ErrorNumber.InvalidEnumValue,
-                    FormatToken(jToken),
+                    FormatObject(jToken),
                     string.Join(", ", @enum.Select(e => FormatObject(e))));
             }
         }
@@ -450,7 +450,7 @@ namespace Microsoft.Json.Schema.Validation
             return @enum.Any(e => DeepEquals(jToken, e));
         }
 
-        private bool DeepEquals(JToken jToken, object obj)
+        private static bool DeepEquals(JToken jToken, object obj)
         {
             switch (jToken.Type)
             {
@@ -458,13 +458,16 @@ namespace Microsoft.Json.Schema.Validation
                     return StringEquals(jToken.Value<string>(), obj);
 
                 case JTokenType.Integer:
-                    return ValueEquals(jToken.Value<long>(), obj);
+                    return IntegerEquals(jToken, obj);
 
                 case JTokenType.Float:
-                    return ValueEquals(jToken.Value<double>(), obj);
+                    return FloatEquals(jToken, obj);
 
                 case JTokenType.Boolean:
-                    return ValueEquals(jToken.Value<bool>(), obj);
+                    return BooleanEquals(jToken.Value<bool>(), obj);
+
+                case JTokenType.Array:
+                    return ArrayEquals(jToken as JArray, obj);
 
                 default:
                     return false;
@@ -477,14 +480,111 @@ namespace Microsoft.Json.Schema.Validation
             return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
         }
 
-        private static bool ValueEquals<T>(T value, object obj)
+        private static bool IntegerEquals(JToken jToken, object obj)
         {
-            return obj is T && value.Equals((T)obj);
+            long value;
+            JToken objToken = obj as JToken;
+            if (objToken != null && objToken.Type == JTokenType.Integer)
+            {
+                value = objToken.Value<long>();
+            }
+            else if (obj is long)
+            {
+                value = (long)obj;
+            }
+            else
+            {
+                return false;
+            }
+
+            return value == jToken.Value<long>();
+        }
+
+        private static bool FloatEquals(JToken jToken, object obj)
+        {
+            double value;
+            JToken objToken = obj as JToken;
+            if (objToken != null && objToken.Type == JTokenType.Float)
+            {
+                value = objToken.Value<double>();
+            }
+            else if (obj is double)
+            {
+                value = (double)obj;
+            }
+            else
+            {
+                return false;
+            }
+
+            return value == jToken.Value<double>();
+        }
+
+        private static bool BooleanEquals(JToken jToken, object obj)
+        {
+            bool value;
+            JToken objToken = obj as JToken;
+            if (objToken != null && objToken.Type == JTokenType.Boolean)
+            {
+                value = objToken.Value<bool>();
+            }
+            else if (obj is bool)
+            {
+                value = (bool)obj;
+            }
+            else
+            {
+                return false;
+            }
+
+            return value == jToken.Value<bool>();
+        }
+
+        private static bool ArrayEquals(JArray jArray, object obj)
+        {
+            JArray objJArray = obj as JArray;
+            if (objJArray == null || objJArray.Count != jArray.Count)
+            {
+                return false;
+            }
+
+            JToken[] tokens = jArray.ToArray();
+            JToken[] objTokens = objJArray.ToArray();
+            for (int i = 0; i < tokens.Length; ++i)
+            {
+                if (!DeepEquals(tokens[i], objTokens[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static string FormatSchemaTypes(IList<JTokenType> schemaTypes)
         {
             return string.Join(", ", schemaTypes.Select(t => t.ToString()));
+        }
+
+        private static string FormatObject(object obj)
+        {
+            if (obj is JToken)
+            {
+                return FormatToken(obj as JToken);
+            }
+
+            string formattedObject = obj.ToString();
+
+            if (obj is string)
+            {
+                formattedObject = FormatQuotedString(formattedObject);
+            }
+            else if (obj is bool)
+            {
+                formattedObject = FormatBoolean(formattedObject);
+            }
+
+            return formattedObject;
         }
 
         private static string FormatToken(JToken jToken)
@@ -501,28 +601,15 @@ namespace Microsoft.Json.Schema.Validation
                     formattedToken = FormatBoolean(formattedToken);
                     break;
 
+                case JTokenType.Array:
+                    formattedToken = FormatArray(formattedToken);
+                    break;
+
                 default:
                     break;
             }
 
             return formattedToken;
-        }
-
-        private static string FormatObject(object obj)
-        {
-            string formattedObject = obj.ToString();
-
-            Type objType = obj.GetType();
-            if (objType == typeof(string))
-            {
-                formattedObject = FormatQuotedString(formattedObject);
-            }
-            else if (objType == typeof(bool))
-            {
-                formattedObject = FormatBoolean(formattedObject);
-            }
-
-            return formattedObject;
         }
 
         private static string FormatQuotedString(string s)
@@ -533,6 +620,15 @@ namespace Microsoft.Json.Schema.Validation
         private static string FormatBoolean(string s)
         {
             return s.ToLowerInvariant();
+        }
+
+        private static string FormatArray(string s)
+        {
+            s = Regex.Replace(s, @"\[\s+", @"[");
+            s = Regex.Replace(s, @",\s+", ", ");
+            s = Regex.Replace(s, @"\s+\]", "]");
+
+            return s;
         }
 
         private void AddMessage(JToken jToken, ErrorNumber errorNumber, params object[] args)

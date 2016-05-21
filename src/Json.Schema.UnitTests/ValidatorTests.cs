@@ -810,6 +810,27 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"false",
                 Error.Format(1, 5, ErrorNumber.InvalidEnumValue, "false", "true")
                 ),
+
+            new TestCase(
+                "enum: valid array value",
+
+@"{
+  ""enum"": [[1, 2], [3, 4], [5, 6]]
+}",
+
+@"[3, 4]"
+                ),
+
+            new TestCase(
+                "enum: invalid array value",
+
+@"{
+  ""enum"": [[1, 2], [3, 4], [5, 6]]
+}",
+
+@"[3, 6]",
+                Error.Format(1, 1, ErrorNumber.InvalidEnumValue, "[3, 6]", "[1, 2], [3, 4], [5, 6]")
+                ),
         };
 
         [Theory(DisplayName = "Validation")]
