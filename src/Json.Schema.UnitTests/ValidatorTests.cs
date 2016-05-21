@@ -789,6 +789,27 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"4.0",
                 Error.Format(1, 3, ErrorNumber.InvalidEnumValue, "4", "1.01, 2, 3")
                 ),
+
+            new TestCase(
+                "enum: valid bool value",
+
+@"{
+  ""enum"": [true]
+}",
+
+@"true"
+                ),
+
+            new TestCase(
+                "enum: invalid bool value",
+
+@"{
+  ""enum"": [true]
+}",
+
+@"false",
+                Error.Format(1, 5, ErrorNumber.InvalidEnumValue, "false", "true")
+                ),
         };
 
         [Theory(DisplayName = "Validation")]

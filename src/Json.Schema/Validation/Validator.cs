@@ -129,9 +129,57 @@ namespace Microsoft.Json.Schema.Validation
                 AddMessage(
                     jToken,
                     ErrorNumber.InvalidEnumValue,
-                    jToken.ToString(),
-                    string.Join(", ", @enum.Select(e => e.ToString())));
+                    FormatToken(jToken),
+                    string.Join(", ", @enum.Select(e => FormatObject(e))));
             }
+        }
+
+        private static string FormatToken(JToken jToken)
+        {
+            string formattedToken = jToken.ToString();
+
+            switch (jToken.Type)
+            {
+                case JTokenType.String:
+                    formattedToken = FormatQuotedString(formattedToken);
+                    break;
+
+                case JTokenType.Boolean:
+                    formattedToken = FormatBoolean(formattedToken);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return formattedToken;
+        }
+
+        private static string FormatObject(object obj)
+        {
+            string formattedObject = obj.ToString();
+
+            Type objType = obj.GetType();
+            if (objType == typeof(string))
+            {
+                formattedObject = FormatQuotedString(formattedObject);
+            }
+            else if (objType == typeof(bool))
+            {
+                formattedObject = FormatBoolean(formattedObject);
+            }
+
+            return formattedObject;
+        }
+
+        private static string FormatQuotedString(string s)
+        {
+            return '"' + s + '"';
+        }
+
+        private static string FormatBoolean(string s)
+        {
+            return s.ToLowerInvariant();
         }
 
         private bool TokenMatchesEnum(JToken jToken, IList<object> @enum)
@@ -152,6 +200,9 @@ namespace Microsoft.Json.Schema.Validation
                 case JTokenType.Float:
                     return FloatEquals(jToken.Value<double>(), obj);
 
+                case JTokenType.Boolean:
+                    return BooleanEquals(jToken.Value<bool>(), obj);
+
                 default:
                     return false;
             }
@@ -171,6 +222,11 @@ namespace Microsoft.Json.Schema.Validation
         private static bool FloatEquals(double tokenNumber, object obj)
         {
             return obj is double && tokenNumber == (double)obj;
+        }
+
+        private static bool BooleanEquals(bool tokenBoolean, object obj)
+        {
+            return obj is bool && tokenBoolean == (bool)obj;
         }
 
         private void ValidateAllOf(
