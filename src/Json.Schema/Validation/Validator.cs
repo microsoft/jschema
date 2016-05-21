@@ -458,13 +458,13 @@ namespace Microsoft.Json.Schema.Validation
                     return StringEquals(jToken.Value<string>(), obj);
 
                 case JTokenType.Integer:
-                    return IntegerEquals(jToken, obj);
+                    return ValueEquals<long>(jToken, obj);
 
                 case JTokenType.Float:
-                    return FloatEquals(jToken, obj);
+                    return ValueEquals<double>(jToken, obj);
 
                 case JTokenType.Boolean:
-                    return BooleanEquals(jToken.Value<bool>(), obj);
+                    return ValueEquals<bool>(jToken, obj);
 
                 case JTokenType.Array:
                     return ArrayEquals(jToken as JArray, obj);
@@ -480,64 +480,24 @@ namespace Microsoft.Json.Schema.Validation
             return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
         }
 
-        private static bool IntegerEquals(JToken jToken, object obj)
+        private static bool ValueEquals<T>(JToken jToken, object obj)
         {
-            long value;
+            T value;
             JToken objToken = obj as JToken;
-            if (objToken != null && objToken.Type == JTokenType.Integer)
+            if (objToken != null && objToken.Type == jToken.Type)
             {
-                value = objToken.Value<long>();
+                value = objToken.Value<T>();
             }
-            else if (obj is long)
+            else if (obj is T)
             {
-                value = (long)obj;
+                value = (T)obj;
             }
             else
             {
                 return false;
             }
 
-            return value == jToken.Value<long>();
-        }
-
-        private static bool FloatEquals(JToken jToken, object obj)
-        {
-            double value;
-            JToken objToken = obj as JToken;
-            if (objToken != null && objToken.Type == JTokenType.Float)
-            {
-                value = objToken.Value<double>();
-            }
-            else if (obj is double)
-            {
-                value = (double)obj;
-            }
-            else
-            {
-                return false;
-            }
-
-            return value == jToken.Value<double>();
-        }
-
-        private static bool BooleanEquals(JToken jToken, object obj)
-        {
-            bool value;
-            JToken objToken = obj as JToken;
-            if (objToken != null && objToken.Type == JTokenType.Boolean)
-            {
-                value = objToken.Value<bool>();
-            }
-            else if (obj is bool)
-            {
-                value = (bool)obj;
-            }
-            else
-            {
-                return false;
-            }
-
-            return value == jToken.Value<bool>();
+            return value.Equals(jToken.Value<T>());
         }
 
         private static bool ArrayEquals(JArray jArray, object obj)
