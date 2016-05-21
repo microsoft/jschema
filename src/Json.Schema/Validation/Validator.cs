@@ -146,17 +146,24 @@ namespace Microsoft.Json.Schema.Validation
                 case JTokenType.String:
                     return StringEquals(jToken.Value<string>(), obj);
 
+                case JTokenType.Integer:
+                    return IntegerEquals(jToken.Value<long>(), obj);
+
                 default:
                     return false;
             }
         }
 
-        private bool StringEquals(string tokenString, object obj)
+        private static bool StringEquals(string tokenString, object obj)
         {
             string objString = obj as string;
             return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
         }
 
+        private static bool IntegerEquals(long tokenNumber, object obj)
+        {
+            return obj is long && tokenNumber == (long)obj;
+        }
 
         private void ValidateAllOf(
             JToken jToken,
