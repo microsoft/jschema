@@ -45,16 +45,6 @@ namespace Microsoft.Json.Schema.Validation
             _schemas.Push(schema);
         }
 
-        private JsonSchema Resolve(JsonSchema schema)
-        {
-            if (schema.Reference != null)
-            {
-                schema = _definitions[schema.Reference.GetDefinitionName()];
-            }
-
-            return schema;
-        }
-
         public string[] Validate(string instanceText)
         {
             _messages = new List<string>();
@@ -68,6 +58,16 @@ namespace Microsoft.Json.Schema.Validation
             }
 
             return _messages.ToArray();
+        }
+
+        private JsonSchema Resolve(JsonSchema schema)
+        {
+            if (schema.Reference != null)
+            {
+                schema = _definitions[schema.Reference.GetDefinitionName()];
+            }
+
+            return schema;
         }
 
         private void ValidateToken(JToken jToken, string name, JsonSchema schema)
@@ -122,191 +122,7 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private void ValidateEnum(JToken jToken, string name, IList<object> @enum)
-        {
-            if (!TokenMatchesEnum(jToken, @enum))
-            {
-                AddMessage(
-                    jToken,
-                    ErrorNumber.InvalidEnumValue,
-                    FormatToken(jToken),
-                    string.Join(", ", @enum.Select(e => FormatObject(e))));
-            }
-        }
-
-        private static string FormatToken(JToken jToken)
-        {
-            string formattedToken = jToken.ToString();
-
-            switch (jToken.Type)
-            {
-                case JTokenType.String:
-                    formattedToken = FormatQuotedString(formattedToken);
-                    break;
-
-                case JTokenType.Boolean:
-                    formattedToken = FormatBoolean(formattedToken);
-                    break;
-
-                default:
-                    break;
-            }
-
-            return formattedToken;
-        }
-
-        private static string FormatObject(object obj)
-        {
-            string formattedObject = obj.ToString();
-
-            Type objType = obj.GetType();
-            if (objType == typeof(string))
-            {
-                formattedObject = FormatQuotedString(formattedObject);
-            }
-            else if (objType == typeof(bool))
-            {
-                formattedObject = FormatBoolean(formattedObject);
-            }
-
-            return formattedObject;
-        }
-
-        private static string FormatQuotedString(string s)
-        {
-            return '"' + s + '"';
-        }
-
-        private static string FormatBoolean(string s)
-        {
-            return s.ToLowerInvariant();
-        }
-
-        private bool TokenMatchesEnum(JToken jToken, IList<object> @enum)
-        {
-            return @enum.Any(e => DeepEquals(jToken, e));
-        }
-
-        private bool DeepEquals(JToken jToken, object obj)
-        {
-            switch (jToken.Type)
-            {
-                case JTokenType.String:
-                    return StringEquals(jToken.Value<string>(), obj);
-
-                case JTokenType.Integer:
-                    return ValueEquals(jToken.Value<long>(), obj);
-
-                case JTokenType.Float:
-                    return ValueEquals(jToken.Value<double>(), obj);
-
-                case JTokenType.Boolean:
-                    return ValueEquals(jToken.Value<bool>(), obj);
-
-                default:
-                    return false;
-            }
-        }
-
-        private static bool StringEquals(string tokenString, object obj)
-        {
-            string objString = obj as string;
-            return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
-        }
-
-        private static bool ValueEquals<T>(T value, object obj)
-        {
-            return obj is T && value.Equals((T)obj);
-        }
-
-        private void ValidateAllOf(
-            JToken jToken,
-            string name,
-            IList<JsonSchema> allOfSchemas)
-        {
-            var allOfErrorMessages = new List<string>();
-
-            foreach (JsonSchema allOfSchema in allOfSchemas)
-            {
-                JsonSchema schema = Resolve(allOfSchema);
-                var allOfValidator = new Validator(schema);
-                allOfValidator.ValidateToken(jToken, name, schema);
-                allOfErrorMessages.AddRange(allOfValidator._messages);
-            }
-
-            if (allOfErrorMessages.Any())
-            {
-                AddMessage(jToken, ErrorNumber.NotAllOf, allOfSchemas.Count);
-            }
-        }
-
-        private void ValidateAnyOf(
-            JToken jToken,
-            string name,
-            IList<JsonSchema> anyOfSchemas)
-        {
-            bool valid = false;
-
-            // Since this token is valid if it's valid against *any* of the schemas,
-            // we can't just call ValidateToken against each schema. If we did that,
-            // we'd accumulate errors from all the failed schemas, only to find out
-            // that they weren't really errors at all. So we instantiate a new
-            // validator for each schema, and only report the errors from the current
-            // validator if they *all* fail.
-            foreach (JsonSchema anyOfSchema in anyOfSchemas)
-            {
-                JsonSchema schema = Resolve(anyOfSchema);
-                var anyOfValidator = new Validator(schema);
-                anyOfValidator.ValidateToken(jToken, name, schema);
-                if (!anyOfValidator._messages.Any())
-                {
-                    valid = true;
-                    break;
-                }
-            }
-
-            if (!valid)
-            {
-                AddMessage(jToken, ErrorNumber.NotAnyOf, anyOfSchemas.Count);
-            }
-        }
-
-        private void ValidateOneOf(
-            JToken jToken,
-            string name,
-            IList<JsonSchema> oneOfSchemas)
-        {
-            int numValid = 0;
-
-            // Since this token is valid if it's valid against *exactly one* of the schemas,
-            // we can't just call ValidateToken against each schema. If we did that,
-            // we'd accumulate errors from all the failed schemas, only to find out
-            // that they weren't really errors at all. So we instantiate a new
-            // validator for each schema, and only report the errors from the current
-            // validator if *all but one* fail.
-            foreach (JsonSchema oneOfSchema in oneOfSchemas)
-            {
-                JsonSchema schema = Resolve(oneOfSchema);
-                var oneOfValidator = new Validator(schema);
-                oneOfValidator.ValidateToken(jToken, name, schema);
-                if (!oneOfValidator._messages.Any())
-                {
-                    ++numValid;
-                }
-            }
-
-            if (numValid != 1)
-            {
-                AddMessage(jToken, ErrorNumber.NotOneOf, numValid, oneOfSchemas.Count);
-            }
-        }
-
-        private string FormatSchemaTypes(IList<JTokenType> schemaTypes)
-        {
-            return string.Join(", ", schemaTypes.Select(t => t.ToString()));
-        }
-
-        private bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, IList<JTokenType> schemaTypes)
+        private static bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, IList<JTokenType> schemaTypes)
         {
             if (schemaTypes == null || !schemaTypes.Any())
             {
@@ -507,6 +323,100 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
+        private void ValidateEnum(JToken jToken, string name, IList<object> @enum)
+        {
+            if (!TokenMatchesEnum(jToken, @enum))
+            {
+                AddMessage(
+                    jToken,
+                    ErrorNumber.InvalidEnumValue,
+                    FormatToken(jToken),
+                    string.Join(", ", @enum.Select(e => FormatObject(e))));
+            }
+        }
+
+        private void ValidateAllOf(
+            JToken jToken,
+            string name,
+            IList<JsonSchema> allOfSchemas)
+        {
+            var allOfErrorMessages = new List<string>();
+
+            foreach (JsonSchema allOfSchema in allOfSchemas)
+            {
+                JsonSchema schema = Resolve(allOfSchema);
+                var allOfValidator = new Validator(schema);
+                allOfValidator.ValidateToken(jToken, name, schema);
+                allOfErrorMessages.AddRange(allOfValidator._messages);
+            }
+
+            if (allOfErrorMessages.Any())
+            {
+                AddMessage(jToken, ErrorNumber.NotAllOf, allOfSchemas.Count);
+            }
+        }
+
+        private void ValidateAnyOf(
+            JToken jToken,
+            string name,
+            IList<JsonSchema> anyOfSchemas)
+        {
+            bool valid = false;
+
+            // Since this token is valid if it's valid against *any* of the schemas,
+            // we can't just call ValidateToken against each schema. If we did that,
+            // we'd accumulate errors from all the failed schemas, only to find out
+            // that they weren't really errors at all. So we instantiate a new
+            // validator for each schema, and only report the errors from the current
+            // validator if they *all* fail.
+            foreach (JsonSchema anyOfSchema in anyOfSchemas)
+            {
+                JsonSchema schema = Resolve(anyOfSchema);
+                var anyOfValidator = new Validator(schema);
+                anyOfValidator.ValidateToken(jToken, name, schema);
+                if (!anyOfValidator._messages.Any())
+                {
+                    valid = true;
+                    break;
+                }
+            }
+
+            if (!valid)
+            {
+                AddMessage(jToken, ErrorNumber.NotAnyOf, anyOfSchemas.Count);
+            }
+        }
+
+        private void ValidateOneOf(
+            JToken jToken,
+            string name,
+            IList<JsonSchema> oneOfSchemas)
+        {
+            int numValid = 0;
+
+            // Since this token is valid if it's valid against *exactly one* of the schemas,
+            // we can't just call ValidateToken against each schema. If we did that,
+            // we'd accumulate errors from all the failed schemas, only to find out
+            // that they weren't really errors at all. So we instantiate a new
+            // validator for each schema, and only report the errors from the current
+            // validator if *all but one* fail.
+            foreach (JsonSchema oneOfSchema in oneOfSchemas)
+            {
+                JsonSchema schema = Resolve(oneOfSchema);
+                var oneOfValidator = new Validator(schema);
+                oneOfValidator.ValidateToken(jToken, name, schema);
+                if (!oneOfValidator._messages.Any())
+                {
+                    ++numValid;
+                }
+            }
+
+            if (numValid != 1)
+            {
+                AddMessage(jToken, ErrorNumber.NotOneOf, numValid, oneOfSchemas.Count);
+            }
+        }
+
         private void ValidateAdditionalProperties(
             JObject jObject,
             List<string> additionalPropertyNames,
@@ -533,6 +443,96 @@ namespace Microsoft.Json.Schema.Validation
                     }
                 }
             }
+        }
+
+        private bool TokenMatchesEnum(JToken jToken, IList<object> @enum)
+        {
+            return @enum.Any(e => DeepEquals(jToken, e));
+        }
+
+        private bool DeepEquals(JToken jToken, object obj)
+        {
+            switch (jToken.Type)
+            {
+                case JTokenType.String:
+                    return StringEquals(jToken.Value<string>(), obj);
+
+                case JTokenType.Integer:
+                    return ValueEquals(jToken.Value<long>(), obj);
+
+                case JTokenType.Float:
+                    return ValueEquals(jToken.Value<double>(), obj);
+
+                case JTokenType.Boolean:
+                    return ValueEquals(jToken.Value<bool>(), obj);
+
+                default:
+                    return false;
+            }
+        }
+
+        private static bool StringEquals(string tokenString, object obj)
+        {
+            string objString = obj as string;
+            return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
+        }
+
+        private static bool ValueEquals<T>(T value, object obj)
+        {
+            return obj is T && value.Equals((T)obj);
+        }
+
+        private static string FormatSchemaTypes(IList<JTokenType> schemaTypes)
+        {
+            return string.Join(", ", schemaTypes.Select(t => t.ToString()));
+        }
+
+        private static string FormatToken(JToken jToken)
+        {
+            string formattedToken = jToken.ToString();
+
+            switch (jToken.Type)
+            {
+                case JTokenType.String:
+                    formattedToken = FormatQuotedString(formattedToken);
+                    break;
+
+                case JTokenType.Boolean:
+                    formattedToken = FormatBoolean(formattedToken);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return formattedToken;
+        }
+
+        private static string FormatObject(object obj)
+        {
+            string formattedObject = obj.ToString();
+
+            Type objType = obj.GetType();
+            if (objType == typeof(string))
+            {
+                formattedObject = FormatQuotedString(formattedObject);
+            }
+            else if (objType == typeof(bool))
+            {
+                formattedObject = FormatBoolean(formattedObject);
+            }
+
+            return formattedObject;
+        }
+
+        private static string FormatQuotedString(string s)
+        {
+            return '"' + s + '"';
+        }
+
+        private static string FormatBoolean(string s)
+        {
+            return s.ToLowerInvariant();
         }
 
         private void AddMessage(JToken jToken, ErrorNumber errorNumber, params object[] args)
