@@ -190,4 +190,7 @@
   <data name="ErrorInvalidEnumValue" xml:space="preserve">
     <value>The value '{0}' does not match any of the enum values '{1}'.</value>
   </data>
+  <data name="ErrorNotUnique" xml:space="preserve">
+    <value>The elements of the are are not unique, as required by the schema.</value>
+  </data>
 </root>

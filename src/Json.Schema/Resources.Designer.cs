@@ -142,6 +142,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The elements of the are are not unique, as required by the schema..
+        /// </summary>
+        internal static string ErrorNotUnique {
+            get {
+                return ResourceManager.GetString("ErrorNotUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the &quot;definitions&quot; property, for example &quot;#/definitions/def1&quot;. The URI reference &quot;{0}&quot; is not supported..
         /// </summary>
         internal static string ErrorOnlyDefinitionFragmentsSupported {

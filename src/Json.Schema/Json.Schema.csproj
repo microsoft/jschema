@@ -103,6 +103,7 @@
     <Compile Include="SchemaWriter.cs" />
     <Compile Include="UriOrFragmentConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
+    <Compile Include="Validation\JTokenEqualityComparer.cs" />
     <Compile Include="Validation\Validator.cs" />
   </ItemGroup>
   <ItemGroup>

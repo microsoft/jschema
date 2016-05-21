@@ -368,7 +368,12 @@ namespace Microsoft.Json.Schema
         /// <summary>
         /// An instance does not match any of the values specified by "enum".
         /// </summary>
-        InvalidEnumValue = 1019
+        InvalidEnumValue = 1019,
+
+        /// <summary>
+        /// The elements of an array instance are not unique.
+        /// </summary>
+        NotUnique = 1020
 
         #endregion Errors in instance document
     }

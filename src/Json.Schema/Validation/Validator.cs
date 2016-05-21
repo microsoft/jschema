@@ -248,6 +248,11 @@ namespace Microsoft.Json.Schema.Validation
                     ++i;
                 }
             }
+
+            if (schema.UniqueItems == true)
+            {
+                ValidateUnique(jArray);
+            }
         }
 
         private void ValidateObject(JObject jObject, JsonSchema schema)
@@ -446,120 +451,17 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
+        private void ValidateUnique(JArray jArray)
+        {
+            if (jArray.Distinct(JTokenEqualityComparer.Instance).Count() != jArray.Count)
+            {
+                AddMessage(jArray, ErrorNumber.NotUnique);
+            }
+        }
+
         private bool TokenMatchesEnum(JToken jToken, IList<object> @enum)
         {
-            return @enum.Any(e => DeepEquals(jToken, e));
-        }
-
-        private static bool DeepEquals(JToken jToken, object obj)
-        {
-            switch (jToken.Type)
-            {
-                case JTokenType.String:
-                    return StringEquals(jToken.Value<string>(), obj);
-
-                case JTokenType.Integer:
-                    return ValueEquals<long>(jToken, obj);
-
-                case JTokenType.Float:
-                    return ValueEquals<double>(jToken, obj);
-
-                case JTokenType.Boolean:
-                    return ValueEquals<bool>(jToken, obj);
-
-                case JTokenType.Array:
-                    return ArrayEquals(jToken as JArray, obj);
-
-                case JTokenType.Object:
-                    return ObjectEquals(jToken as JObject, obj);
-
-                case JTokenType.Null:
-                    return NullEquals(obj);
-
-                default:
-                    return false;
-            }
-        }
-
-        private static bool NullEquals(object obj)
-        {
-            if (obj == null)
-            {
-                return true;
-            }
-
-            if (obj is JToken)
-            {
-                return (obj as JToken).Type == JTokenType.Null;
-            }
-
-            return false;
-        }
-
-        private static bool StringEquals(string tokenString, object obj)
-        {
-            string objString = obj as string;
-            return objString != null && objString.Equals(tokenString, StringComparison.Ordinal);
-        }
-
-        private static bool ValueEquals<T>(JToken jToken, object obj)
-        {
-            T value;
-            JToken objToken = obj as JToken;
-            if (objToken != null && objToken.Type == jToken.Type)
-            {
-                value = objToken.Value<T>();
-            }
-            else if (obj is T)
-            {
-                value = (T)obj;
-            }
-            else
-            {
-                return false;
-            }
-
-            return value.Equals(jToken.Value<T>());
-        }
-
-        private static bool ArrayEquals(JArray jArray, object obj)
-        {
-            JArray objJArray = obj as JArray;
-            if (objJArray == null || objJArray.Count != jArray.Count)
-            {
-                return false;
-            }
-
-            JToken[] tokens = jArray.ToArray();
-            JToken[] objTokens = objJArray.ToArray();
-            for (int i = 0; i < tokens.Length; ++i)
-            {
-                if (!DeepEquals(tokens[i], objTokens[i]))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private static bool ObjectEquals(JObject jObject, object obj)
-        {
-            JObject objJObject = obj as JObject;
-            if (objJObject == null)
-            {
-                return false;
-            }
-
-            IList<string> propertyNames = jObject.Properties().Select(p => p.Name).ToList();
-            IList<string> objPropertyNames = objJObject.Properties().Select(p => p.Name).ToList();
-
-            if (!propertyNames.HasSameElementsAs(objPropertyNames))
-            {
-                return false;
-            }
-
-            return propertyNames.All(pn => DeepEquals(jObject[pn], objJObject[pn]));
+            return @enum.Any(e => JTokenEqualityComparer.DeepEquals(jToken, e));
         }
 
         private static string FormatSchemaTypes(IList<JTokenType> schemaTypes)
