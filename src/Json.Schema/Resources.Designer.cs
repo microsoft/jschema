@@ -106,7 +106,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance did not satisfy all of the {0} schemas specified by &quot;allOf&quot; as required by the schema..
+        ///   Looks up a localized string similar to The instance did not satisfy all of the {0} schemas specified by &quot;allOf&quot;..
         /// </summary>
         internal static string ErrorNotAllOf {
             get {
@@ -115,7 +115,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is not a multiple of {1} as required by the schema..
+        ///   Looks up a localized string similar to The value {0} is not a multiple of {1}..
         /// </summary>
         internal static string ErrorNotAMultiple {
             get {
@@ -124,7 +124,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance did not satisfy any of the {0} schemas specified by &quot;anyOf&quot; as required by the schema..
+        ///   Looks up a localized string similar to &apos;{0}&apos; did not satisfy any of the {1} schemas specified by &quot;anyOf&quot;..
         /// </summary>
         internal static string ErrorNotAnyOf {
             get {
@@ -142,7 +142,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance satisfied {0} of the {1} schemas specified by &quot;oneOf&quot;, instead of satisfying exactly one of them as required by the schema..
+        ///   Looks up a localized string similar to The instance satisfied {0} of the {1} schemas specified by &quot;oneOf&quot;, instead of satisfying exactly one of them..
         /// </summary>
         internal static string ErrorNotOneOf {
             get {
@@ -151,7 +151,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The elements of the are are not unique, as required by the schema..
+        ///   Looks up a localized string similar to The elements of the &apos;{0}&apos; array are not unique..
         /// </summary>
         internal static string ErrorNotUnique {
             get {
@@ -178,7 +178,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string &apos;{0}&apos; does not match the regular expression &apos;{1}&apos; as required by the schema..
+        ///   Looks up a localized string similar to The string &apos;{0}&apos; does not match the regular expression &apos;{1}&apos;..
         /// </summary>
         internal static string ErrorStringDoesNotMatchPattern {
             get {
@@ -187,7 +187,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is greater than the maximum length {2} permitted by the schema.
+        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is greater than the maximum length {2}.
         ///.
         /// </summary>
         internal static string ErrorStringTooLong {
@@ -197,7 +197,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is less than the minimum length {2} permitted by the schema..
+        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is less than the minimum length {2}..
         /// </summary>
         internal static string ErrorStringTooShort {
             get {
@@ -215,7 +215,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The array has {0} items, but the array of schemas specified by  &quot;items&quot; has only {1} items, and &quot;additionalItems&quot; is not specified to allow additional array items..
+        ///   Looks up a localized string similar to The array &apos;{0}&apos; has {1} items, but the array of schemas specified by  &quot;items&quot; has only {2} items, and &quot;additionalItems&quot; is not specified to allow additional array items..
         /// </summary>
         internal static string ErrorTooFewItemSchemas {
             get {
@@ -251,7 +251,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is greater than the maximum value of {1} permitted by the schema..
+        ///   Looks up a localized string similar to The value {0} is greater than the maximum value of {1}..
         /// </summary>
         internal static string ErrorValueTooLarge {
             get {
@@ -260,7 +260,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is greater than or equal to the exclusive maximum value of {1} permitted by the schema..
+        ///   Looks up a localized string similar to The value {0} is greater than or equal to the exclusive maximum value of {1}..
         /// </summary>
         internal static string ErrorValueTooLargeExclusive {
             get {
@@ -269,7 +269,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is less than the minimum value of {1} permitted by the schema..
+        ///   Looks up a localized string similar to The value {0} is less than the minimum value of {1}..
         /// </summary>
         internal static string ErrorValueTooSmall {
             get {
@@ -278,7 +278,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is less than or equal to the exclusive minimum value of {1} permitted by the schema..
+        ///   Looks up a localized string similar to The value {0} is less than or equal to the exclusive minimum value of {1}..
         /// </summary>
         internal static string ErrorValueTooSmallExclusive {
             get {

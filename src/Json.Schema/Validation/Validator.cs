@@ -264,14 +264,14 @@ namespace Microsoft.Json.Schema.Validation
                     }
                     else
                     {
-                        AddMessage(jArray, ErrorNumber.TooFewItemSchemas, jArray.Count, schema.Items.Schemas.Count);
+                        AddMessage(jArray, ErrorNumber.TooFewItemSchemas, name, jArray.Count, schema.Items.Schemas.Count);
                     }
                 }
             }
 
             if (schema.UniqueItems == true)
             {
-                ValidateUnique(jArray);
+                ValidateUnique(jArray, name);
             }
         }
 
@@ -409,7 +409,7 @@ namespace Microsoft.Json.Schema.Validation
 
             if (!valid)
             {
-                AddMessage(jToken, ErrorNumber.NotAnyOf, anyOfSchemas.Count);
+                AddMessage(jToken, ErrorNumber.NotAnyOf, name, anyOfSchemas.Count);
             }
         }
 
@@ -471,11 +471,11 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private void ValidateUnique(JArray jArray)
+        private void ValidateUnique(JArray jArray, string name)
         {
             if (jArray.Distinct(JTokenEqualityComparer.Instance).Count() != jArray.Count)
             {
-                AddMessage(jArray, ErrorNumber.NotUnique);
+                AddMessage(jArray, ErrorNumber.NotUnique, name);
             }
         }
 

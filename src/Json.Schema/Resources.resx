@@ -127,19 +127,19 @@
     <value>JSON schema requires the value of "additionalProperties" to be either a Boolean or a schema, but a token of type {0} was seen.</value>
   </data>
   <data name="ErrorNotAllOf" xml:space="preserve">
-    <value>The instance did not satisfy all of the {0} schemas specified by "allOf" as required by the schema.</value>
+    <value>The instance did not satisfy all of the {0} schemas specified by "allOf".</value>
   </data>
   <data name="ErrorNotAMultiple" xml:space="preserve">
-    <value>The value {0} is not a multiple of {1} as required by the schema.</value>
+    <value>The value {0} is not a multiple of {1}.</value>
   </data>
   <data name="ErrorNotAnyOf" xml:space="preserve">
-    <value>The instance did not satisfy any of the {0} schemas specified by "anyOf" as required by the schema.</value>
+    <value>'{0}' did not satisfy any of the {1} schemas specified by "anyOf".</value>
   </data>
   <data name="ErrorNotAString" xml:space="preserve">
     <value>JSON schema requires the value of the property "{0}" to be a string, but the token is of type {1}.</value>
   </data>
   <data name="ErrorNotOneOf" xml:space="preserve">
-    <value>The instance satisfied {0} of the {1} schemas specified by "oneOf", instead of satisfying exactly one of them as required by the schema.</value>
+    <value>The instance satisfied {0} of the {1} schemas specified by "oneOf", instead of satisfying exactly one of them.</value>
   </data>
   <data name="ErrorOnlyDefinitionFragmentsSupported" xml:space="preserve">
     <value>This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the "definitions" property, for example "#/definitions/def1". The URI reference "{0}" is not supported.</value>
@@ -148,14 +148,14 @@
     <value>The required property "{0}" is missing.</value>
   </data>
   <data name="ErrorStringDoesNotMatchPattern" xml:space="preserve">
-    <value>The string '{0}' does not match the regular expression '{1}' as required by the schema.</value>
+    <value>The string '{0}' does not match the regular expression '{1}'.</value>
   </data>
   <data name="ErrorStringTooLong" xml:space="preserve">
-    <value>The string '{0}' has length {1}, which is greater than the maximum length {2} permitted by the schema.
+    <value>The string '{0}' has length {1}, which is greater than the maximum length {2}.
 </value>
   </data>
   <data name="ErrorStringTooShort" xml:space="preserve">
-    <value>The string '{0}' has length {1}, which is less than the minimum length {2} permitted by the schema.</value>
+    <value>The string '{0}' has length {1}, which is less than the minimum length {2}.</value>
   </data>
   <data name="ErrorTooFewArrayItems" xml:space="preserve">
     <value>The schema requires at least {0} array items, but there are only {1}.</value>
@@ -170,16 +170,16 @@
     <value>The schema permits at most {0} object properties, but there are {1}.</value>
   </data>
   <data name="ErrorValueTooLarge" xml:space="preserve">
-    <value>The value {0} is greater than the maximum value of {1} permitted by the schema.</value>
+    <value>The value {0} is greater than the maximum value of {1}.</value>
   </data>
   <data name="ErrorValueTooLargeExclusive" xml:space="preserve">
-    <value>The value {0} is greater than or equal to the exclusive maximum value of {1} permitted by the schema.</value>
+    <value>The value {0} is greater than or equal to the exclusive maximum value of {1}.</value>
   </data>
   <data name="ErrorValueTooSmall" xml:space="preserve">
-    <value>The value {0} is less than the minimum value of {1} permitted by the schema.</value>
+    <value>The value {0} is less than the minimum value of {1}.</value>
   </data>
   <data name="ErrorValueTooSmallExclusive" xml:space="preserve">
-    <value>The value {0} is less than or equal to the exclusive minimum value of {1} permitted by the schema.</value>
+    <value>The value {0} is less than or equal to the exclusive minimum value of {1}.</value>
   </data>
   <data name="ErrorWithLineInfo" xml:space="preserve">
     <value>({0},{1}): error {2}: {3}</value>
@@ -191,13 +191,13 @@
     <value>The value '{0}' does not match any of the enum values '{1}'.</value>
   </data>
   <data name="ErrorNotUnique" xml:space="preserve">
-    <value>The elements of the are are not unique, as required by the schema.</value>
+    <value>The elements of the '{0}' array are not unique.</value>
   </data>
   <data name="ErrorInvalidItemsType" xml:space="preserve">
     <value>JSON schema requires the value of "items" to be either a schema or an array of schemas, but a token of type {0} was seen.</value>
   </data>
   <data name="ErrorTooFewItemSchemas" xml:space="preserve">
-    <value>The array has {0} items, but the array of schemas specified by  "items" has only {1} items, and "additionalItems" is not specified to allow additional array items.</value>
+    <value>The array '{0}' has {1} items, but the array of schemas specified by  "items" has only {2} items, and "additionalItems" is not specified to allow additional array items.</value>
   </data>
   <data name="ExceptionNotASingleSchema" xml:space="preserve">
     <value>The schema does not specify a single schema for all array items. Access the per-item schemas through the Schemas property.</value>
