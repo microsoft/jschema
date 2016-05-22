@@ -12,6 +12,8 @@ namespace Microsoft.Json.Schema
 {
     public class Error
     {
+        internal const string RootTokenPath = "";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Error"/> class.
         /// </summary>
@@ -29,7 +31,7 @@ namespace Microsoft.Json.Schema
         {
             IJsonLineInfo lineInfo = jToken;
 
-            Message = Format(lineInfo.LineNumber, lineInfo.LinePosition, errorNumber, args);
+            Message = Format(lineInfo.LineNumber, lineInfo.LinePosition, jToken.Path, errorNumber, args);
         }
 
         public string Message { get; }
@@ -80,12 +82,13 @@ namespace Microsoft.Json.Schema
             params object[] args)
         {
             return new ApplicationException(
-                Format(lineNumber, linePosition, errorNumber, args));
+                Format(lineNumber, linePosition, null, errorNumber, args));
         }
 
         internal static string Format(
             int lineNumber,
             int linePosition,
+            string path,
             ErrorNumber errorNumber,
             params object[] args)
         {
@@ -94,13 +97,30 @@ namespace Microsoft.Json.Schema
 
             string errorCode = string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
 
-            string fullMessage = string.Format(
-                CultureInfo.CurrentCulture,
-                Resources.ErrorWithLineInfo,
-                lineNumber,
-                linePosition,
-                errorCode,
-                message);
+            string fullMessage;
+            if (path != null)
+            {
+                path = path == string.Empty ? RootTokenPath : "'" + path + "'";
+
+                fullMessage = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Resources.ErrorWithLineInfoAndPath,
+                    lineNumber,
+                    linePosition,
+                    errorCode,
+                    path,
+                    message);
+            }
+            else
+            {
+                fullMessage = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Resources.ErrorWithLineInfo,
+                    lineNumber,
+                    linePosition,
+                    errorCode,
+                    message);
+            }
 
             return fullMessage;
         }

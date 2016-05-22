@@ -16,7 +16,6 @@ namespace Microsoft.Json.Schema.Validation
     /// </summary>
     public class Validator
     {
-        internal const string RootObjectName = "root object";
         private const string Null = "null";
 
         private readonly Stack<JsonSchema> _schemas;
@@ -55,7 +54,7 @@ namespace Microsoft.Json.Schema.Validation
                 JToken token = JToken.ReadFrom(new JsonTextReader(reader));
                 JsonSchema schema = _schemas.Peek();
 
-                ValidateToken(token, RootObjectName, schema);
+                ValidateToken(token, schema);
             }
 
             return _messages.ToArray();
@@ -71,11 +70,11 @@ namespace Microsoft.Json.Schema.Validation
             return schema;
         }
 
-        private void ValidateToken(JToken jToken, string name, JsonSchema schema)
+        private void ValidateToken(JToken jToken, JsonSchema schema)
         {
             if (!TokenTypeIsCompatibleWithSchema(jToken.Type, schema.Type))
             {
-                AddMessage(jToken, ErrorNumber.WrongType, name, FormatSchemaTypes(schema.Type), jToken.Type);
+                AddMessage(jToken, ErrorNumber.WrongType, FormatSchemaTypes(schema.Type), jToken.Type);
                 return;
             }
 
@@ -95,7 +94,7 @@ namespace Microsoft.Json.Schema.Validation
                     break;
 
                 case JTokenType.Array:
-                    ValidateArray((JArray)jToken, name, schema);
+                    ValidateArray((JArray)jToken, schema);
                     break;
 
                 default:
@@ -104,22 +103,22 @@ namespace Microsoft.Json.Schema.Validation
 
             if (schema.Enum != null)
             {
-                ValidateEnum(jToken, name, schema.Enum);
+                ValidateEnum(jToken, schema.Enum);
             }
 
             if (schema.AllOf != null)
             {
-                ValidateAllOf(jToken, name, schema.AllOf);
+                ValidateAllOf(jToken, schema.AllOf);
             }
 
             if (schema.AnyOf != null)
             {
-                ValidateAnyOf(jToken, name, schema.AnyOf);
+                ValidateAnyOf(jToken, schema.AnyOf);
             }
 
             if (schema.OneOf != null)
             {
-                ValidateOneOf(jToken, name, schema.OneOf);
+                ValidateOneOf(jToken, schema.OneOf);
             }
         }
 
@@ -226,7 +225,7 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private void ValidateArray(JArray jArray, string name, JsonSchema schema)
+        private void ValidateArray(JArray jArray, JsonSchema schema)
         {
             int numItems = jArray.Count;
             if (numItems < schema.MinItems)
@@ -243,11 +242,9 @@ namespace Microsoft.Json.Schema.Validation
             {
                 if (schema.Items.SingleSchema)
                 {
-                    int i = 0;
                     foreach (JToken jToken in jArray)
                     {
-                        ValidateToken(jToken, $"{name}[{i}]", Resolve(schema.Items.Schema));
-                        ++i;
+                        ValidateToken(jToken, Resolve(schema.Items.Schema));
                     }
                 }
                 else
@@ -258,20 +255,19 @@ namespace Microsoft.Json.Schema.Validation
                         int i = 0;
                         foreach (JToken jToken in jArray)
                         {
-                            ValidateToken(jToken, $"{name}[{i}]", Resolve(schema.Items.Schemas[i]));
-                            ++i;
+                            ValidateToken(jToken, Resolve(schema.Items.Schemas[i++]));
                         }
                     }
                     else
                     {
-                        AddMessage(jArray, ErrorNumber.TooFewItemSchemas, name, jArray.Count, schema.Items.Schemas.Count);
+                        AddMessage(jArray, ErrorNumber.TooFewItemSchemas, jArray.Count, schema.Items.Schemas.Count);
                     }
                 }
             }
 
             if (schema.UniqueItems == true)
             {
-                ValidateUnique(jArray, name);
+                ValidateUnique(jArray);
             }
         }
 
@@ -311,7 +307,7 @@ namespace Microsoft.Json.Schema.Validation
                     {
                         propertySchema = Resolve(propertySchema);
                         JProperty property = jObject.Property(propertyName);
-                        ValidateToken(property.Value, property.Path, propertySchema);
+                        ValidateToken(property.Value, propertySchema);
                     }
                 }
             }
@@ -333,7 +329,7 @@ namespace Microsoft.Json.Schema.Validation
                         foreach (string matchingProperty in matchingPropertyNames)
                         {
                             JProperty property = jObject.Property(matchingProperty);
-                            ValidateToken(property.Value, property.Path, propertySchema);
+                            ValidateToken(property.Value, propertySchema);
                         }
                     }
 
@@ -349,7 +345,7 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private void ValidateEnum(JToken jToken, string name, IList<object> @enum)
+        private void ValidateEnum(JToken jToken, IList<object> @enum)
         {
             if (!TokenMatchesEnum(jToken, @enum))
             {
@@ -363,7 +359,6 @@ namespace Microsoft.Json.Schema.Validation
 
         private void ValidateAllOf(
             JToken jToken,
-            string name,
             IList<JsonSchema> allOfSchemas)
         {
             var allOfErrorMessages = new List<string>();
@@ -372,7 +367,7 @@ namespace Microsoft.Json.Schema.Validation
             {
                 JsonSchema schema = Resolve(allOfSchema);
                 var allOfValidator = new Validator(schema);
-                allOfValidator.ValidateToken(jToken, name, schema);
+                allOfValidator.ValidateToken(jToken, schema);
                 allOfErrorMessages.AddRange(allOfValidator._messages);
             }
 
@@ -384,7 +379,6 @@ namespace Microsoft.Json.Schema.Validation
 
         private void ValidateAnyOf(
             JToken jToken,
-            string name,
             IList<JsonSchema> anyOfSchemas)
         {
             bool valid = false;
@@ -399,7 +393,7 @@ namespace Microsoft.Json.Schema.Validation
             {
                 JsonSchema schema = Resolve(anyOfSchema);
                 var anyOfValidator = new Validator(schema);
-                anyOfValidator.ValidateToken(jToken, name, schema);
+                anyOfValidator.ValidateToken(jToken, schema);
                 if (!anyOfValidator._messages.Any())
                 {
                     valid = true;
@@ -409,13 +403,12 @@ namespace Microsoft.Json.Schema.Validation
 
             if (!valid)
             {
-                AddMessage(jToken, ErrorNumber.NotAnyOf, name, anyOfSchemas.Count);
+                AddMessage(jToken, ErrorNumber.NotAnyOf, anyOfSchemas.Count);
             }
         }
 
         private void ValidateOneOf(
             JToken jToken,
-            string name,
             IList<JsonSchema> oneOfSchemas)
         {
             int numValid = 0;
@@ -430,7 +423,7 @@ namespace Microsoft.Json.Schema.Validation
             {
                 JsonSchema schema = Resolve(oneOfSchema);
                 var oneOfValidator = new Validator(schema);
-                oneOfValidator.ValidateToken(jToken, name, schema);
+                oneOfValidator.ValidateToken(jToken, schema);
                 if (!oneOfValidator._messages.Any())
                 {
                     ++numValid;
@@ -465,17 +458,17 @@ namespace Microsoft.Json.Schema.Validation
                     foreach (string propertyName in additionalPropertyNames)
                     {
                         JProperty property = jObject.Property(propertyName);
-                        ValidateToken(property.Value, property.Path, additionalProperties.Schema);
+                        ValidateToken(property.Value, additionalProperties.Schema);
                     }
                 }
             }
         }
 
-        private void ValidateUnique(JArray jArray, string name)
+        private void ValidateUnique(JArray jArray)
         {
             if (jArray.Distinct(JTokenEqualityComparer.Instance).Count() != jArray.Count)
             {
-                AddMessage(jArray, ErrorNumber.NotUnique, name);
+                AddMessage(jArray, ErrorNumber.NotUnique);
             }
         }
 

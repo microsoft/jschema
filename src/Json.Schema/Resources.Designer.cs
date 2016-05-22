@@ -61,7 +61,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema does not define a property named &quot;{0}&quot;, and the schema does not permit additional properties..
+        ///   Looks up a localized string similar to The schema does not define a property named &apos;{0}&apos;, and the schema does not permit additional properties..
         /// </summary>
         internal static string ErrorAdditionalPropertiesProhibited {
             get {
@@ -70,7 +70,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This schema does not contain the sub-schema definition referred to by the $ref value &quot;{0}&quot;..
+        ///   Looks up a localized string similar to This schema does not contain the sub-schema definition referred to by the $ref value &apos;{0}&apos;..
         /// </summary>
         internal static string ErrorDefinitionDoesNotExist {
             get {
@@ -88,7 +88,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match any of the enum values &apos;{1}&apos;..
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match any of the enum values [&apos;{1}&apos;]..
         /// </summary>
         internal static string ErrorInvalidEnumValue {
             get {
@@ -106,7 +106,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance did not satisfy all of the {0} schemas specified by &quot;allOf&quot;..
+        ///   Looks up a localized string similar to The instance did not conform to all of the {0} schemas specified by &apos;allOf&apos;..
         /// </summary>
         internal static string ErrorNotAllOf {
             get {
@@ -124,7 +124,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; did not satisfy any of the {1} schemas specified by &quot;anyOf&quot;..
+        ///   Looks up a localized string similar to The instance does not conform to any of the {0} schemas specified by &apos;anyOf&apos;..
         /// </summary>
         internal static string ErrorNotAnyOf {
             get {
@@ -133,7 +133,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSON schema requires the value of the property &quot;{0}&quot; to be a string, but the token is of type {1}..
+        ///   Looks up a localized string similar to The property is required to be a string, but the token is of type {0}..
         /// </summary>
         internal static string ErrorNotAString {
             get {
@@ -142,7 +142,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance satisfied {0} of the {1} schemas specified by &quot;oneOf&quot;, instead of satisfying exactly one of them..
+        ///   Looks up a localized string similar to The instance conforms to {0} of the {1} schemas specified by &apos;oneOf&apos;, instead of conforming to exactly one of them..
         /// </summary>
         internal static string ErrorNotOneOf {
             get {
@@ -151,7 +151,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The elements of the &apos;{0}&apos; array are not unique..
+        ///   Looks up a localized string similar to The elements of the array are not unique..
         /// </summary>
         internal static string ErrorNotUnique {
             get {
@@ -160,7 +160,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the &quot;definitions&quot; property, for example &quot;#/definitions/def1&quot;. The URI reference &quot;{0}&quot; is not supported..
+        ///   Looks up a localized string similar to This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the &apos;definitions&apos; property, for example &apos;#/definitions/def1&apos;. The URI reference &apos;{0}&apos; is not supported..
         /// </summary>
         internal static string ErrorOnlyDefinitionFragmentsSupported {
             get {
@@ -169,7 +169,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The required property &quot;{0}&quot; is missing..
+        ///   Looks up a localized string similar to The required property &apos;{0}&apos; is missing..
         /// </summary>
         internal static string ErrorRequiredPropertyMissing {
             get {
@@ -215,7 +215,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The array &apos;{0}&apos; has {1} items, but the array of schemas specified by  &quot;items&quot; has only {2} items, and &quot;additionalItems&quot; is not specified to allow additional array items..
+        ///   Looks up a localized string similar to The array has {0} items, but the array of schemas specified by  &apos;items&apos; has only {1} items, and &apos;additionalItems&apos; is not specified to allow additional array items..
         /// </summary>
         internal static string ErrorTooFewItemSchemas {
             get {
@@ -296,7 +296,16 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires &apos;{0}&apos; to be one of the types [{1}], but the schema validator found a token of type {2}..
+        ///   Looks up a localized string similar to ({0},{1}): error {2}: at {3}: {4}.
+        /// </summary>
+        internal static string ErrorWithLineInfoAndPath {
+            get {
+                return ResourceManager.GetString("ErrorWithLineInfoAndPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The schema requires one of the types [{0}], but the schema validator found a token of type {1}..
         /// </summary>
         internal static string ErrorWrongType {
             get {

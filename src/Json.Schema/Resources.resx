@@ -118,34 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorAdditionalPropertiesProhibited" xml:space="preserve">
-    <value>The schema does not define a property named "{0}", and the schema does not permit additional properties.</value>
+    <value>The schema does not define a property named '{0}', and the schema does not permit additional properties.</value>
   </data>
   <data name="ErrorDefinitionDoesNotExist" xml:space="preserve">
-    <value>This schema does not contain the sub-schema definition referred to by the $ref value "{0}".</value>
+    <value>This schema does not contain the sub-schema definition referred to by the $ref value '{0}'.</value>
   </data>
   <data name="ErrorInvalidAdditionalProperties" xml:space="preserve">
     <value>JSON schema requires the value of "additionalProperties" to be either a Boolean or a schema, but a token of type {0} was seen.</value>
   </data>
   <data name="ErrorNotAllOf" xml:space="preserve">
-    <value>The instance did not satisfy all of the {0} schemas specified by "allOf".</value>
+    <value>The instance did not conform to all of the {0} schemas specified by 'allOf'.</value>
   </data>
   <data name="ErrorNotAMultiple" xml:space="preserve">
     <value>The value {0} is not a multiple of {1}.</value>
   </data>
   <data name="ErrorNotAnyOf" xml:space="preserve">
-    <value>'{0}' did not satisfy any of the {1} schemas specified by "anyOf".</value>
+    <value>The instance does not conform to any of the {0} schemas specified by 'anyOf'.</value>
   </data>
   <data name="ErrorNotAString" xml:space="preserve">
-    <value>JSON schema requires the value of the property "{0}" to be a string, but the token is of type {1}.</value>
+    <value>The property is required to be a string, but the token is of type {0}.</value>
   </data>
   <data name="ErrorNotOneOf" xml:space="preserve">
-    <value>The instance satisfied {0} of the {1} schemas specified by "oneOf", instead of satisfying exactly one of them.</value>
+    <value>The instance conforms to {0} of the {1} schemas specified by 'oneOf', instead of conforming to exactly one of them.</value>
   </data>
   <data name="ErrorOnlyDefinitionFragmentsSupported" xml:space="preserve">
-    <value>This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the "definitions" property, for example "#/definitions/def1". The URI reference "{0}" is not supported.</value>
+    <value>This partial implementation of JSON Schema only accepts $ref values in the form of fragments that refer to sub-properties of the 'definitions' property, for example '#/definitions/def1'. The URI reference '{0}' is not supported.</value>
   </data>
   <data name="ErrorRequiredPropertyMissing" xml:space="preserve">
-    <value>The required property "{0}" is missing.</value>
+    <value>The required property '{0}' is missing.</value>
   </data>
   <data name="ErrorStringDoesNotMatchPattern" xml:space="preserve">
     <value>The string '{0}' does not match the regular expression '{1}'.</value>
@@ -185,21 +185,24 @@
     <value>({0},{1}): error {2}: {3}</value>
   </data>
   <data name="ErrorWrongType" xml:space="preserve">
-    <value>The schema requires '{0}' to be one of the types [{1}], but the schema validator found a token of type {2}.</value>
+    <value>The schema requires one of the types [{0}], but the schema validator found a token of type {1}.</value>
   </data>
   <data name="ErrorInvalidEnumValue" xml:space="preserve">
-    <value>The value '{0}' does not match any of the enum values '{1}'.</value>
+    <value>The value '{0}' does not match any of the enum values ['{1}'].</value>
   </data>
   <data name="ErrorNotUnique" xml:space="preserve">
-    <value>The elements of the '{0}' array are not unique.</value>
+    <value>The elements of the array are not unique.</value>
   </data>
   <data name="ErrorInvalidItemsType" xml:space="preserve">
     <value>JSON schema requires the value of "items" to be either a schema or an array of schemas, but a token of type {0} was seen.</value>
   </data>
   <data name="ErrorTooFewItemSchemas" xml:space="preserve">
-    <value>The array '{0}' has {1} items, but the array of schemas specified by  "items" has only {2} items, and "additionalItems" is not specified to allow additional array items.</value>
+    <value>The array has {0} items, but the array of schemas specified by  'items' has only {1} items, and 'additionalItems' is not specified to allow additional array items.</value>
   </data>
   <data name="ExceptionNotASingleSchema" xml:space="preserve">
     <value>The schema does not specify a single schema for all array items. Access the per-item schemas through the Schemas property.</value>
+  </data>
+  <data name="ErrorWithLineInfoAndPath" xml:space="preserve">
+    <value>({0},{1}): error {2}: at {3}: {4}</value>
   </data>
 </root>
