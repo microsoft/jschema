@@ -455,10 +455,11 @@ namespace Microsoft.Json.Schema.Validation
                 // must conform, ensure that they do.
                 if (additionalProperties.Schema != null)
                 {
+                    JsonSchema resolvedSchema = Resolve(additionalProperties.Schema);
                     foreach (string propertyName in additionalPropertyNames)
                     {
                         JProperty property = jObject.Property(propertyName);
-                        ValidateToken(property.Value, additionalProperties.Schema);
+                        ValidateToken(property.Value, resolvedSchema);
                     }
                 }
             }

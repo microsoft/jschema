@@ -527,6 +527,33 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
+                "Object: additionalProperties: invalid: disallowed by referenced schema",
+
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""a"": {
+      ""type"": ""integer""
+    }
+  },
+  ""additionalProperties"": {
+    ""$ref"": ""#/definitions/ap""
+  },
+  ""definitions"": {
+    ""ap"": {
+      ""type"": ""boolean""
+    }
+  }
+}",
+
+@"{
+  ""a"": 2,
+  ""b"": ""false""
+}",
+                Error.Format(3, 15, "b", ErrorNumber.WrongType, JTokenType.Boolean, JTokenType.String)
+                ),
+
+            new TestCase(
                 "Object: additionalProperties: invalid: disallowed by schema on member object",
 
 @"{
