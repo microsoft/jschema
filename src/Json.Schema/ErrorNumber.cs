@@ -32,7 +32,7 @@ namespace Microsoft.Json.Schema
         NotAString = 1,
 
         /// <summary>
-        /// In the schema, <code>additionalProperties</code> property is neither a Boolean
+        /// In the schema, the <code>additionalProperties</code> property is neither a Boolean
         /// nor an object.
         /// </summary>
         /// <example>
@@ -43,6 +43,18 @@ namespace Microsoft.Json.Schema
         /// </code>
         /// </example>
         InvalidAdditionalPropertiesType = 2,
+
+        /// <summary>
+        /// In the schema, the <code>items</code> property is neither an object nor an array.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "items": 2
+        /// }
+        /// </code>
+        /// </example>
+        InvalidItemsType = 3,
 
         #endregion Errors in schema document
 
@@ -373,7 +385,13 @@ namespace Microsoft.Json.Schema
         /// <summary>
         /// The elements of an array instance are not unique.
         /// </summary>
-        NotUnique = 1020
+        NotUnique = 1020,
+
+        /// <summary>
+        /// The array has more items than does the array of schemas specified by "items",
+        /// and "additionalItems" is not specified to allow additional array items.
+        /// </summary>
+        TooFewItemSchemas = 1021
 
         #endregion Errors in instance document
     }

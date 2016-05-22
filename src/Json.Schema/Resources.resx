@@ -193,4 +193,13 @@
   <data name="ErrorNotUnique" xml:space="preserve">
     <value>The elements of the are are not unique, as required by the schema.</value>
   </data>
+  <data name="ErrorInvalidItemsType" xml:space="preserve">
+    <value>JSON schema requires the value of "items" to be either a schema or an array of schemas, but a token of type {0} was seen.</value>
+  </data>
+  <data name="ErrorTooFewItemSchemas" xml:space="preserve">
+    <value>The array has {0} items, but the array of schemas specified by  "items" has only {1} items, and "additionalItems" is not specified to allow additional array items.</value>
+  </data>
+  <data name="ExceptionNotASingleSchema" xml:space="preserve">
+    <value>The schema does not specify a single schema for all array items. Access the per-item schemas through the Schemas property.</value>
+  </data>
 </root>

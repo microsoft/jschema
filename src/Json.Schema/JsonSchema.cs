@@ -57,7 +57,7 @@ namespace Microsoft.Json.Schema
 
             if (other.Items != null)
             {
-                Items = new JsonSchema(other.Items);
+                Items = new Items(other.Items);
             }
 
             if (other.Properties != null)
@@ -170,13 +170,13 @@ namespace Microsoft.Json.Schema
         public IList<object> Enum { get; set; }
 
         /// <summary>
-        /// Gets or sets the JSON schema that applies to the array items, if the current
+        /// Gets or sets the JSON schema or schemas that applies to the array items, if the current
         /// schema is of array type.
         /// </summary>
         /// <remarks>
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
         /// </remarks>
-        public JsonSchema Items { get; set; }
+        public Items Items { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum valid number of properties.
@@ -385,7 +385,11 @@ namespace Microsoft.Json.Schema
 
             if (schema.Items != null)
             {
-                collapsedSchema.Items = Collapse(schema.Items, rootSchema);
+                collapsedSchema.Items = new Items(
+                    new List<JsonSchema>(
+                        schema.Items.Schemas.Select(
+                            itemSchema => Collapse(itemSchema, rootSchema))));
+                collapsedSchema.Items.SingleSchema = schema.Items.SingleSchema;
             }
 
             if (schema.Properties != null)
@@ -468,9 +472,14 @@ namespace Microsoft.Json.Schema
                     collapsedSchema.Enum = new List<object>(referencedSchema.Enum);
                 }
 
-                collapsedSchema.Items = referencedSchema.Items != null
-                    ? Collapse(referencedSchema.Items, rootSchema)
-                    : null;
+                if (referencedSchema.Items != null)
+                {
+                    collapsedSchema.Items = new Items(
+                        new List<JsonSchema>(
+                            referencedSchema.Items.Schemas.Select(
+                                itemSchema => Collapse(itemSchema, rootSchema))));
+                    collapsedSchema.Items.SingleSchema = referencedSchema.Items.SingleSchema;
+                }
 
                 collapsedSchema.Pattern = referencedSchema.Pattern;
                 collapsedSchema.MaxLength = referencedSchema.MaxLength;
@@ -496,12 +505,12 @@ namespace Microsoft.Json.Schema
 
         public override int GetHashCode()
         {
-            return Hash.Combine(
+            List<object> hashContributors = new List<object>
+            {
                 Id,
                 SchemaVersion,
                 Title,
                 Description,
-                Type,
                 Enum,
                 Items,
                 Properties,
@@ -521,7 +530,11 @@ namespace Microsoft.Json.Schema
                 AllOf,
                 AnyOf,
                 OneOf
-                );
+            };
+
+            hashContributors.AddRange(Type.Cast<object>());
+
+            return Hash.Combine(hashContributors);
         }
 
         #endregion Object overrides

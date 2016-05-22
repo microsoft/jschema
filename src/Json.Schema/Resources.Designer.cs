@@ -97,6 +97,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JSON schema requires the value of &quot;items&quot; to be either a schema or an array of schemas, but a token of type {0} was seen..
+        /// </summary>
+        internal static string ErrorInvalidItemsType {
+            get {
+                return ResourceManager.GetString("ErrorInvalidItemsType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The instance did not satisfy all of the {0} schemas specified by &quot;allOf&quot; as required by the schema..
         /// </summary>
         internal static string ErrorNotAllOf {
@@ -206,6 +215,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The array has {0} items, but the array of schemas specified by  &quot;items&quot; has only {1} items, and &quot;additionalItems&quot; is not specified to allow additional array items..
+        /// </summary>
+        internal static string ErrorTooFewItemSchemas {
+            get {
+                return ResourceManager.GetString("ErrorTooFewItemSchemas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The schema requires at least {0} object properties, but there are only {1}..
         /// </summary>
         internal static string ErrorTooFewProperties {
@@ -283,6 +301,15 @@ namespace Microsoft.Json.Schema {
         internal static string ErrorWrongType {
             get {
                 return ResourceManager.GetString("ErrorWrongType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The schema does not specify a single schema for all array items. Access the per-item schemas through the Schemas property..
+        /// </summary>
+        internal static string ExceptionNotASingleSchema {
+            get {
+                return ResourceManager.GetString("ExceptionNotASingleSchema", resourceCulture);
             }
         }
     }

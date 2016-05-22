@@ -84,7 +84,7 @@ namespace Microsoft.Json.Schema
 
         public override int GetHashCode()
         {
-            return Hash.Combine(Allowed, Schema);
+            return Hash.Combine(new object[] { Allowed, Schema });
         }
 
         #endregion

@@ -241,11 +241,31 @@ namespace Microsoft.Json.Schema.Validation
 
             if (schema.Items != null)
             {
-                int i = 0;
-                foreach (JToken jToken in jArray)
+                if (schema.Items.SingleSchema)
                 {
-                    ValidateToken(jToken, $"{name}[{i}]", Resolve(schema.Items));
-                    ++i;
+                    int i = 0;
+                    foreach (JToken jToken in jArray)
+                    {
+                        ValidateToken(jToken, $"{name}[{i}]", Resolve(schema.Items.Schema));
+                        ++i;
+                    }
+                }
+                else
+                {
+                    // TODO: Use additionalItems if available.
+                    if (schema.Items.Schemas.Count >= jArray.Count)
+                    {
+                        int i = 0;
+                        foreach (JToken jToken in jArray)
+                        {
+                            ValidateToken(jToken, $"{name}[{i}]", Resolve(schema.Items.Schemas[i]));
+                            ++i;
+                        }
+                    }
+                    else
+                    {
+                        AddMessage(jArray, ErrorNumber.TooFewItemSchemas, jArray.Count, schema.Items.Schemas.Count);
+                    }
                 }
             }
 

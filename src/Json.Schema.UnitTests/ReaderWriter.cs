@@ -101,10 +101,12 @@ namespace Microsoft.Json.Schema.UnitTests
                         ["arrayProp"] = new JsonSchema
                         {
                             Type = new JTokenType[] { JTokenType.Array },
-                            Items = new JsonSchema
-                            {
-                                Type = new JTokenType[] { JTokenType.Object }
-                            }
+                            Items = new Items(
+                                new JsonSchema
+                                {
+                                    Type = new JTokenType[] { JTokenType.Object }
+                                }
+                            )
                         }
                     },
                     MinItems = 1,
@@ -123,10 +125,12 @@ namespace Microsoft.Json.Schema.UnitTests
                         ["integerArrayProp"] = new JsonSchema
                         {
                             Type = new JTokenType[] { JTokenType.Array },
-                            Items = new JsonSchema
-                            {
-                                Type = new JTokenType[] { JTokenType.Integer }
-                            }
+                            Items = new Items(
+                                new JsonSchema
+                                {
+                                    Type = new JTokenType[] { JTokenType.Integer }
+                                }
+                            )
                         }
                     }
                 }

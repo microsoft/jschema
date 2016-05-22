@@ -2,41 +2,42 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
     /// <summary>
-    /// Converts a property of type <see cref="AdditionalProperties"/> to or from a string
+    /// Converts a property of type <see cref="Items"/> to or from a string
     /// during serialization or deserialization.
     /// </summary>
-    internal class AdditionalPropertiesConverter : JsonConverter
+    public class ItemsConverter : JsonConverter
     {
-        public static readonly AdditionalPropertiesConverter Instance = new AdditionalPropertiesConverter();
+        public static readonly ItemsConverter Instance = new ItemsConverter();
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(AdditionalProperties);
+            return objectType == typeof(Items);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JToken jToken = JToken.Load(reader);
 
-            if (jToken.Type == JTokenType.Boolean)
-            {
-                bool val = jToken.ToObject<bool>();
-                return new AdditionalProperties(val);
-            }
-            else if (jToken.Type == JTokenType.Object)
+            if (jToken.Type == JTokenType.Object)
             {
                 JsonSchema schema = jToken.ToObject<JsonSchema>(serializer);
-                return new AdditionalProperties(schema);
+                return new Items(schema);
+            }
+            else if (jToken.Type == JTokenType.Array)
+            {
+                IList<JsonSchema> schemas = jToken.ToObject<IList<JsonSchema>>(serializer);
+                return new Items(schemas);
             }
             else
             {
-                serializer.CaptureError(jToken, ErrorNumber.InvalidAdditionalPropertiesType, jToken.Type);
+                serializer.CaptureError(jToken, ErrorNumber.InvalidItemsType, jToken.Type);
                 return null;
             }
         }
@@ -60,16 +61,21 @@ namespace Microsoft.Json.Schema
         /// </remarks>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var additionalProperties = (AdditionalProperties)value;
+            var items = (Items)value;
 
-            if (additionalProperties.Schema != null)
+            if (items.SingleSchema)
             {
-                SchemaWriter.WriteSchema(writer, additionalProperties.Schema);
+                SchemaWriter.WriteSchema(writer, items.Schema);
             }
             else
             {
-                JValue v = (JValue)JToken.FromObject(additionalProperties.Allowed);
-                v.WriteTo(writer);
+                writer.WriteStartArray();
+                foreach (JsonSchema schema in items.Schemas)
+                {
+                    SchemaWriter.WriteSchema(writer, items.Schema);
+                }
+
+                writer.WriteEndArray();
             }
         }
     }

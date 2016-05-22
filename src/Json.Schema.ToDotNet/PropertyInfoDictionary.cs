@@ -431,7 +431,12 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema)
         {
             string key = MakeElementKeyName(propertyName);
-            AddPropertyInfoFromPropertySchema(entries, key, schema.Items, isRequired: true);
+            if (!schema.Items.SingleSchema)
+            {
+                throw new ApplicationException($"Cannot generate code for the array property '{propertyName}' because the 'items' property of the schema contains different schemas for each array element.");
+            }
+
+            AddPropertyInfoFromPropertySchema(entries, key, schema.Items.Schema, isRequired: true);
             PropertyInfo info = entries.Single(kvp => kvp.Key == key).Value;
 
             // Create a list of whatever this property is. If the property

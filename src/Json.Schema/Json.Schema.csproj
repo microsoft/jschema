@@ -86,6 +86,8 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="InvalidSchemaException.cs" />
+    <Compile Include="Items.cs" />
+    <Compile Include="ItemsConverter.cs" />
     <Compile Include="JsonSchema.cs" />
     <Compile Include="JsonSchemaContractResolver.cs" />
     <Compile Include="ErrorNumber.cs" />
