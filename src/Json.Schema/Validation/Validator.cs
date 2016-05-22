@@ -120,6 +120,11 @@ namespace Microsoft.Json.Schema.Validation
             {
                 ValidateOneOf(jToken, schema.OneOf);
             }
+
+            if (schema.Not != null)
+            {
+                ValidateNot(jToken, schema.Not);
+            }
         }
 
         private static bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, IList<JTokenType> schemaTypes)
@@ -417,7 +422,7 @@ namespace Microsoft.Json.Schema.Validation
             // we can't just call ValidateToken against each schema. If we did that,
             // we'd accumulate errors from all the failed schemas, only to find out
             // that they weren't really errors at all. So we instantiate a new
-            // validator for each schema, and only report the errors from the current
+            // validator for each schema, and only report an error from the current
             // validator if *all but one* fail.
             foreach (JsonSchema oneOfSchema in oneOfSchemas)
             {
@@ -433,6 +438,23 @@ namespace Microsoft.Json.Schema.Validation
             if (numValid != 1)
             {
                 AddMessage(jToken, ErrorNumber.NotOneOf, numValid, oneOfSchemas.Count);
+            }
+        }
+
+        private void ValidateNot(JToken jToken, JsonSchema notSchema)
+        {
+            // Since this token is valid if it's *not* valid against the schema, we can't
+            // just call ValidateToken against this schema. If we did that, we'd
+            // accumulate and report the errors from this schema, even though we want
+            // there to be at least one error. So we instantiate a new validator for this
+            // schema, and only report an error from the current validator if
+            // validation against this schema *succeeds*.
+            JsonSchema schema = Resolve(notSchema);
+            var notValidator = new Validator(schema);
+            notValidator.ValidateToken(jToken, schema);
+            if (!notValidator._messages.Any())
+            {
+                AddMessage(jToken, ErrorNumber.ValidatesAgainstNotSchema);
             }
         }
 

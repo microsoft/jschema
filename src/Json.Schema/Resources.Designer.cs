@@ -251,6 +251,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The instance validates successfully against the schema specified by &apos;not&apos;..
+        /// </summary>
+        internal static string ErrorValidatesAgainstNotSchema {
+            get {
+                return ResourceManager.GetString("ErrorValidatesAgainstNotSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value {0} is greater than the maximum value of {1}..
         /// </summary>
         internal static string ErrorValueTooLarge {

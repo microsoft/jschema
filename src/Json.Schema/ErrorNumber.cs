@@ -391,7 +391,12 @@ namespace Microsoft.Json.Schema
         /// The array has more items than does the array of schemas specified by "items",
         /// and "additionalItems" is not specified to allow additional array items.
         /// </summary>
-        TooFewItemSchemas = 1021
+        TooFewItemSchemas = 1021,
+
+        /// <summary>
+        /// An instance validates successfully agains the schema specified by "not".
+        /// </summary>
+        ValidatesAgainstNotSchema
 
         #endregion Errors in instance document
     }

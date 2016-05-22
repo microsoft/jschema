@@ -63,7 +63,8 @@ namespace Microsoft.Json.Schema
                 [ErrorNumber.NotOneOf] = Resources.ErrorNotOneOf,
                 [ErrorNumber.InvalidEnumValue] = Resources.ErrorInvalidEnumValue,
                 [ErrorNumber.NotUnique] = Resources.ErrorNotUnique,
-                [ErrorNumber.TooFewItemSchemas] = Resources.ErrorTooFewItemSchemas
+                [ErrorNumber.TooFewItemSchemas] = Resources.ErrorTooFewItemSchemas,
+                [ErrorNumber.ValidatesAgainstNotSchema] = Resources.ErrorValidatesAgainstNotSchema
             });
 
         internal static ApplicationException CreateException(string messageFormat, params object[] messageArgs)

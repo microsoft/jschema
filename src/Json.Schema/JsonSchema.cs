@@ -123,6 +123,11 @@ namespace Microsoft.Json.Schema
             {
                 OneOf = new List<JsonSchema>(other.OneOf);
             }
+
+            if (other.Not != null)
+            {
+                Not = new JsonSchema(other.Not);
+            }
         }
 
         /// <summary>
@@ -357,19 +362,24 @@ namespace Microsoft.Json.Schema
         public string Format { get; set; }
 
         /// <summary>
-        /// Gets or sets a set of schemas against all of which the instance must be valid.
+        /// Gets or sets a set of schemas against all of which the instance must validate successfully.
         /// </summary>
         public IList<JsonSchema> AllOf { get; set; }
 
         /// <summary>
-        /// Gets or sets a set of schemas against any of which the instance must be valid.
+        /// Gets or sets a set of schemas against any of which the instance must validate successfully.
         /// </summary>
         public IList<JsonSchema> AnyOf { get; set; }
 
         /// <summary>
-        /// Gets or sets a set of schemas against exactly one of which the instance must be valid.
+        /// Gets or sets a set of schemas against exactly one of which the instance must validate successfully.
         /// </summary>
         public IList<JsonSchema> OneOf { get; set; }
+
+        /// <summary>
+        /// Gets or sets a schemas against which the instance must not validate successfully.
+        /// </summary>
+        public JsonSchema Not { get; set; }
 
         /// <summary>
         /// Pull properties from any referenced schemas up into this schema.
@@ -441,6 +451,11 @@ namespace Microsoft.Json.Schema
             if (schema.OneOf != null)
             {
                 collapsedSchema.OneOf = schema.OneOf.Select(s => Collapse(s, rootSchema)).ToList();
+            }
+
+            if (schema.Not != null)
+            {
+                collapsedSchema.Not = Collapse(schema.Not, rootSchema);
             }
 
             if (schema.Reference != null)
@@ -529,7 +544,8 @@ namespace Microsoft.Json.Schema
                 Format,
                 AllOf,
                 AnyOf,
-                OneOf
+                OneOf,
+                Not
             };
 
             hashContributors.AddRange(Type.Cast<object>());
@@ -591,7 +607,10 @@ namespace Microsoft.Json.Schema
                         : AnyOf.HasSameElementsAs(other.AnyOf))
                 && (OneOf == null
                         ? other.OneOf == null
-                        : OneOf.HasSameElementsAs(other.OneOf));
+                        : OneOf.HasSameElementsAs(other.OneOf))
+                && (Not == null
+                        ? other.Not == null
+                        : Not.Equals(other.Not));
         }
 
         #endregion

@@ -877,6 +877,46 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"null",
                 Error.Format(1, 4, string.Empty, ErrorNumber.InvalidEnumValue, "null", "1, 2")
             ),
+
+            new TestCase(
+                "not: instance does not validate against 'not' schema",
+@"{
+  ""not"": {
+    ""type"": ""integer""
+  }
+}",
+
+"\"s\""
+                ),
+
+            new TestCase(
+                "not: instance validates against 'not' schema",
+@"{
+  ""not"": {
+    ""type"": ""integer""
+  }
+}",
+
+"42",
+                Error.Format(1, 2, string.Empty, ErrorNumber.ValidatesAgainstNotSchema)
+                ),
+
+            new TestCase(
+                "not: instance validates against referenced 'not' schema",
+@"{
+  ""not"": {
+    ""$ref"": ""#/definitions/nd""
+  },
+  ""definitions"": {
+    ""nd"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+"42",
+                Error.Format(1, 2, string.Empty, ErrorNumber.ValidatesAgainstNotSchema)
+                )
         };
 
         [Theory(DisplayName = "Validation")]
