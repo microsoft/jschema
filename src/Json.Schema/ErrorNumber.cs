@@ -362,17 +362,17 @@ namespace Microsoft.Json.Schema
         StringDoesNotMatchPattern = 1015,
 
         /// <summary>
-        /// An instance does not match all of the schemas specified by "allOf".
+        /// An instance does not validate successfully against all of the schemas specified by "allOf".
         /// </summary>
         NotAllOf = 1016,
 
         /// <summary>
-        /// An instance does not match any of the schemas specified by "anyOf".
+        /// An instance does not validate successfully against any of the schemas specified by "anyOf".
         /// </summary>
         NotAnyOf = 1017,
 
         /// <summary>
-        /// An instance matches either zero or more than one of the schemas
+        /// An instance validates successfully against either zero or more than one of the schemas
         /// specified by "oneOf".
         /// </summary>
         NotOneOf = 1018,

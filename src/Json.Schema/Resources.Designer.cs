@@ -106,7 +106,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance did not conform to all of the {0} schemas specified by &apos;allOf&apos;..
+        ///   Looks up a localized string similar to The instance does not validate successfully against all of the {0} schemas specified by &apos;allOf&apos;..
         /// </summary>
         internal static string ErrorNotAllOf {
             get {
@@ -124,7 +124,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance does not conform to any of the {0} schemas specified by &apos;anyOf&apos;..
+        ///   Looks up a localized string similar to The instance does validate successfully against any of the {0} schemas specified by &apos;anyOf&apos;..
         /// </summary>
         internal static string ErrorNotAnyOf {
             get {
@@ -142,7 +142,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance conforms to {0} of the {1} schemas specified by &apos;oneOf&apos;, instead of conforming to exactly one of them..
+        ///   Looks up a localized string similar to The instance validates successfully against {0} of the {1} schemas specified by &apos;oneOf&apos;, instead of validating successfully against exactly one of them..
         /// </summary>
         internal static string ErrorNotOneOf {
             get {
