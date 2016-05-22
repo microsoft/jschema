@@ -206,7 +206,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires at least {0} array items, but there are only {1}..
+        ///   Looks up a localized string similar to The schema requires at least {0} array items, but there are {1}..
         /// </summary>
         internal static string ErrorTooFewArrayItems {
             get {
@@ -224,7 +224,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires at least {0} object properties, but there are only {1}..
+        ///   Looks up a localized string similar to The schema requires at least {0} object properties, but there are {1}..
         /// </summary>
         internal static string ErrorTooFewProperties {
             get {
@@ -305,7 +305,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires one of the types [{0}], but the schema validator found a token of type {1}..
+        ///   Looks up a localized string similar to The schema requires one of the types [{0}], but a token of type &apos;{1}&apos; was found..
         /// </summary>
         internal static string ErrorWrongType {
             get {

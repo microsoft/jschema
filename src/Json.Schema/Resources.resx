@@ -158,10 +158,10 @@
     <value>The string '{0}' has length {1}, which is less than the minimum length {2}.</value>
   </data>
   <data name="ErrorTooFewArrayItems" xml:space="preserve">
-    <value>The schema requires at least {0} array items, but there are only {1}.</value>
+    <value>The schema requires at least {0} array items, but there are {1}.</value>
   </data>
   <data name="ErrorTooFewProperties" xml:space="preserve">
-    <value>The schema requires at least {0} object properties, but there are only {1}.</value>
+    <value>The schema requires at least {0} object properties, but there are {1}.</value>
   </data>
   <data name="ErrorTooManyArrayItems" xml:space="preserve">
     <value>The schema permits at most {0} array items, but there are {1}.</value>
@@ -185,7 +185,7 @@
     <value>({0},{1}): error {2}: {3}</value>
   </data>
   <data name="ErrorWrongType" xml:space="preserve">
-    <value>The schema requires one of the types [{0}], but the schema validator found a token of type {1}.</value>
+    <value>The schema requires one of the types [{0}], but a token of type '{1}' was found.</value>
   </data>
   <data name="ErrorInvalidEnumValue" xml:space="preserve">
     <value>The value '{0}' does not match any of the enum values [{1}].</value>
