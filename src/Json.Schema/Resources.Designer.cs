@@ -88,7 +88,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match any of the enum values [&apos;{1}&apos;]..
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match any of the enum values [{1}]..
         /// </summary>
         internal static string ErrorInvalidEnumValue {
             get {

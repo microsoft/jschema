@@ -188,7 +188,7 @@
     <value>The schema requires one of the types [{0}], but the schema validator found a token of type {1}.</value>
   </data>
   <data name="ErrorInvalidEnumValue" xml:space="preserve">
-    <value>The value '{0}' does not match any of the enum values ['{1}'].</value>
+    <value>The value '{0}' does not match any of the enum values [{1}].</value>
   </data>
   <data name="ErrorNotUnique" xml:space="preserve">
     <value>The elements of the array are not unique.</value>

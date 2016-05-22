@@ -87,7 +87,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maxItems"": 4
                 }",
                 "[ 1, 2, 3, 4, 5 ]",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.TooManyArrayItems, 4, 5)
+                Error.Format(1, 1, string.Empty, ErrorNumber.TooManyArrayItems, 4, 5)
                 ),
 
             new TestCase(
@@ -106,7 +106,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minItems"": 2
                 }",
                 "[ 1 ]",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.TooFewArrayItems, 2, 1)
+                Error.Format(1, 1, string.Empty, ErrorNumber.TooFewArrayItems, 2, 1)
                 ),
 
             new TestCase(
@@ -143,7 +143,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maxLength"": 2
                 }",
                 "\"abc\"",
-                Error.Format(1, 5, Error.RootTokenPath, ErrorNumber.StringTooLong, "abc", 3, 2)
+                Error.Format(1, 5, string.Empty, ErrorNumber.StringTooLong, "abc", 3, 2)
                 ),
 
             new TestCase(
@@ -162,7 +162,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minLength"": 2
                 }",
                 "\"a\"",
-                Error.Format(1, 3, Error.RootTokenPath, ErrorNumber.StringTooShort, "a", 1, 2)
+                Error.Format(1, 3, string.Empty, ErrorNumber.StringTooShort, "a", 1, 2)
                 ),
 
             new TestCase(
@@ -181,7 +181,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""pattern"": ""\\d{3}""
                 }",
                 "\"a12b\"",
-                Error.Format(1, 6, Error.RootTokenPath, ErrorNumber.StringDoesNotMatchPattern, "a12b", @"\d{3}")
+                Error.Format(1, 6, string.Empty, ErrorNumber.StringDoesNotMatchPattern, "a12b", @"\d{3}")
                 ),
 
             new TestCase(
@@ -199,7 +199,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""multipleOf"": 2
                 }",
                 "5",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.NotAMultiple, 5, 2)
+                Error.Format(1, 1, string.Empty, ErrorNumber.NotAMultiple, 5, 2)
                 ),
 
             new TestCase(
@@ -217,7 +217,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""multipleOf"": 2.0
                 }",
                 "4.001",
-                Error.Format(1, 5, Error.RootTokenPath, ErrorNumber.NotAMultiple, 4.001, 2.0)
+                Error.Format(1, 5, string.Empty, ErrorNumber.NotAMultiple, 4.001, 2.0)
                 ),
 
             new TestCase(
@@ -235,7 +235,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maximum"": 1
                 }",
                 "2",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.ValueTooLarge, 2, 1)
+                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooLarge, 2, 1)
                 ),
 
             new TestCase(
@@ -253,7 +253,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maximum"": 3.14
                 }",
                 "3.2",
-                Error.Format(1, 3, Error.RootTokenPath, ErrorNumber.ValueTooLarge, 3.2, 3.14)
+                Error.Format(1, 3, string.Empty, ErrorNumber.ValueTooLarge, 3.2, 3.14)
                 ),
 
             new TestCase(
@@ -273,7 +273,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMaximum"": true
                 }",
                 "1",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.ValueTooLargeExclusive, 1, 1)
+                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooLargeExclusive, 1, 1)
                 ),
 
             new TestCase(
@@ -293,7 +293,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMaximum"": true
                 }",
                 "3.14",
-                Error.Format(1, 4, Error.RootTokenPath, ErrorNumber.ValueTooLargeExclusive, 3.14, 3.14)
+                Error.Format(1, 4, string.Empty, ErrorNumber.ValueTooLargeExclusive, 3.14, 3.14)
                 ),
 
             new TestCase(
@@ -311,7 +311,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minimum"": 1
                 }",
                 "0",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.ValueTooSmall, 0, 1)
+                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooSmall, 0, 1)
                 ),
 
             new TestCase(
@@ -329,7 +329,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minimum"": 3.14
                 }",
                 "3.13",
-                Error.Format(1, 4, Error.RootTokenPath, ErrorNumber.ValueTooSmall, 3.13, 3.14)
+                Error.Format(1, 4, string.Empty, ErrorNumber.ValueTooSmall, 3.13, 3.14)
                 ),
 
             new TestCase(
@@ -349,7 +349,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMinimum"": true
                 }",
                 "1",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.ValueTooSmallExclusive, 1, 1)
+                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooSmallExclusive, 1, 1)
                 ),
 
             new TestCase(
@@ -369,7 +369,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMinimum"": true
                 }",
                 "3.14",
-                Error.Format(1, 4, Error.RootTokenPath, ErrorNumber.ValueTooSmallExclusive, 3.14, 3.14)
+                Error.Format(1, 4, string.Empty, ErrorNumber.ValueTooSmallExclusive, 3.14, 3.14)
                 ),
 
             new TestCase(
@@ -396,7 +396,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 1,
   ""b"": 2
 }",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.TooManyProperties, 1, 2)
+                Error.Format(1, 1, string.Empty, ErrorNumber.TooManyProperties, 1, 2)
                 ),
 
             new TestCase(
@@ -423,7 +423,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
   ""a"": 1
 }",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.TooFewProperties, 2, 1)
+                Error.Format(1, 1, string.Empty, ErrorNumber.TooFewProperties, 2, 1)
                 ),
 
             new TestCase(
@@ -640,8 +640,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
     ""b"": true
 }",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.RequiredPropertyMissing, "a"),
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.RequiredPropertyMissing, "c")
+                Error.Format(1, 1, string.Empty, ErrorNumber.RequiredPropertyMissing, "a"),
+                Error.Format(1, 1, string.Empty, ErrorNumber.RequiredPropertyMissing, "c")
                 ),
 
             new TestCase(
@@ -687,7 +687,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "type: Non-integer instance does not match integer schema",
                 @"{ ""type"": ""integer"" }",
                 "\"s\"",
-                Error.Format(1, 3, Error.RootTokenPath, ErrorNumber.WrongType, JTokenType.Integer, JTokenType.String)
+                Error.Format(1, 3, string.Empty, ErrorNumber.WrongType, JTokenType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -700,7 +700,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "type: Non-array instance does not match array schema",
                  @"{ ""type"": ""array"" }",
                 "true",
-                Error.Format(1, 4, Error.RootTokenPath, ErrorNumber.WrongType, JTokenType.Array, JTokenType.Boolean)
+                Error.Format(1, 4, string.Empty, ErrorNumber.WrongType, JTokenType.Array, JTokenType.Boolean)
                 ),
 
             new TestCase(
@@ -762,7 +762,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"4",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.InvalidEnumValue, "4", "1, 2, 3")
+                Error.Format(1, 1, string.Empty, ErrorNumber.InvalidEnumValue, "4", "1, 2, 3")
                 ),
 
             // Anything from here on down is not covered by the JSON-Schema-Test-Suite.
@@ -787,7 +787,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"4.0",
-                Error.Format(1, 3, Error.RootTokenPath, ErrorNumber.InvalidEnumValue, "4", "1.01, 2, 3")
+                Error.Format(1, 3, string.Empty, ErrorNumber.InvalidEnumValue, "4", "1.01, 2, 3")
                 ),
 
             new TestCase(
@@ -808,7 +808,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"false",
-                Error.Format(1, 5, Error.RootTokenPath, ErrorNumber.InvalidEnumValue, "false", "true")
+                Error.Format(1, 5, string.Empty, ErrorNumber.InvalidEnumValue, "false", "true")
                 ),
 
             new TestCase(
@@ -829,7 +829,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"[3, 6]",
-                Error.Format(1, 1, Error.RootTokenPath, ErrorNumber.InvalidEnumValue, "[3, 6]", "[1, 2], [3, 4], [5, 6]")
+                Error.Format(1, 1, string.Empty, ErrorNumber.InvalidEnumValue, "[3, 6]", "[1, 2], [3, 4], [5, 6]")
                 ),
 
             new TestCase(
@@ -848,7 +848,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"null",
-                Error.Format(1, 4, Error.RootTokenPath, ErrorNumber.InvalidEnumValue, "null", "1, 2")
+                Error.Format(1, 4, string.Empty, ErrorNumber.InvalidEnumValue, "null", "1, 2")
             ),
         };
 

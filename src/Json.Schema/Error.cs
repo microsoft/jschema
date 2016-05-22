@@ -12,7 +12,7 @@ namespace Microsoft.Json.Schema
 {
     public class Error
     {
-        internal const string RootTokenPath = "";
+        internal const string RootTokenPath = "root";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Error"/> class.
