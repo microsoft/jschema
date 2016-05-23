@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Json.Schema.Validation;
+using Newtonsoft.Json;
 
 namespace Microsoft.Json.Schema.JsonSchemaValidator
 {
@@ -27,6 +28,8 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                 if (exitCode == 0)
                 {
                     TimeSpan elapsedTime = DateTime.Now - start;
+
+                    // Tool notification
                     Console.WriteLine(
                         string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime));
                 }
@@ -43,10 +46,10 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
         {
             int returnCode = 1;
 
-            string schemaText = File.ReadAllText(schemaFile);
-
             try
             {
+                string schemaText = File.ReadAllText(schemaFile);
+
                 JsonSchema schema = SchemaReader.ReadSchema(schemaText);
 
                 var validator = new Validator(schema);
@@ -64,8 +67,17 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                     returnCode = 0;
                 }
             }
+            catch (JsonReaderException ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+            }
             catch (InvalidSchemaException ex)
             {
+                Console.Error.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Tool notification
                 Console.Error.WriteLine(ex.Message);
             }
 
