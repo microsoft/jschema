@@ -23,9 +23,13 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             {
                 DateTime start = DateTime.Now;
                 exitCode = Validate(args[0], args[1]);
-                TimeSpan elapsedTime = DateTime.Now - start;
-                Console.WriteLine(
-                    string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime));
+
+                if (exitCode == 0)
+                {
+                    TimeSpan elapsedTime = DateTime.Now - start;
+                    Console.WriteLine(
+                        string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime));
+                }
             }
             else
             {
@@ -40,21 +44,29 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             int returnCode = 1;
 
             string schemaText = File.ReadAllText(schemaFile);
-            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
 
-            var validator = new Validator(schema);
-
-            string instanceText = File.ReadAllText(instanceFile);
-            string[] errorMessages = validator.Validate(instanceText);
-            
-            if (errorMessages.Any())
+            try
             {
-                ReportErrors(instanceFile, schemaFile, errorMessages);
+                JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+
+                var validator = new Validator(schema);
+
+                string instanceText = File.ReadAllText(instanceFile);
+                string[] errorMessages = validator.Validate(instanceText);
+
+                if (errorMessages.Any())
+                {
+                    ReportErrors(instanceFile, schemaFile, errorMessages);
+                }
+                else
+                {
+                    Console.WriteLine($"Success: The file {instanceFile} is valid according to the schema {schemaFile}.");
+                    returnCode = 0;
+                }
             }
-            else
+            catch (InvalidSchemaException ex)
             {
-                Console.WriteLine($"Success: The file {instanceFile} is valid according to the schema {schemaFile}.");
-                returnCode = 0;
+                Console.Error.WriteLine(ex.Message);
             }
 
             return returnCode;
