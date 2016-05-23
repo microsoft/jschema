@@ -7,7 +7,7 @@
     <authors>Larry Golding</authors>
     <owners>Larry Golding, Michael C. Fanning</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Classes for working with JSON Schema.</description>
+    <description>Classes and tools for working with JSON Schema.</description>
     <releaseNotes>Pre-release version</releaseNotes>
     <copyright>Copyright (C) Microsoft 2016</copyright>
     <licenseUrl>https://github.com/lgolding/jschema/blob/master/License.txt</licenseUrl>
@@ -51,5 +51,12 @@
 
     <file src='Microsoft.Json.Schema.dll' target='lib\net45\Microsoft.Json.Schema.dll'/>
     <file src='Microsoft.Json.Schema.pdb' target='lib\net45\Microsoft.Json.Schema.pdb'/>
+
+    <file src='JsonSchemaValidator.exe' target='tools\JsonSchemaValidator.exe' />
+    <file src='JsonSchemaValidator.pdb' target='tools\JsonSchemaValidator.pdb' />
+    <file src='Microsoft.Json.Schema.dll' target='tools\Microsoft.Json.Schema.dll' />
+    <file src='Microsoft.Json.Schema.pdb' target='tools\Microsoft.Json.Schema.pdb' />
+    <file src='Newtonsoft.Json.dll' target='tools\Newtonsoft.Json.dll' />
+    <file src='System.Collections.Immutable.dll' target='tools\System.Collections.Immutable.dll' />
   </files>
 </package>

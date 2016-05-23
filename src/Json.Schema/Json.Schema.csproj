@@ -109,7 +109,6 @@
     <Compile Include="Validation\Validator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Json.Schema.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -125,5 +124,4 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build\CreateNuGetPackage.targets" />
 </Project>
