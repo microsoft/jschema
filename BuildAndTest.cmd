@@ -5,6 +5,10 @@ if exist bld rmdir /s /q bld
 
 set Configuration=Release
 
+if NOT exist "GeneratedKey.snk" (
+sn -k GeneratedKey.snk
+)
+
 REM Restore NuGet packages.
 .nuget\NuGet.exe restore src\Everything.sln -ConfigFile .nuget\NuGet.Config
 
