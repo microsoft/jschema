@@ -106,6 +106,24 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid schema type..
+        /// </summary>
+        internal static string ErrorInvalidTypeString {
+            get {
+                return ResourceManager.GetString("ErrorInvalidTypeString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JSON schema requires the value of &quot;type&quot; to be either a string or an array of strings, but a token of type {0} was seen..
+        /// </summary>
+        internal static string ErrorInvalidTypeType {
+            get {
+                return ResourceManager.GetString("ErrorInvalidTypeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The instance does not validate successfully against all of the {0} schemas specified by &apos;allOf&apos;..
         /// </summary>
         internal static string ErrorNotAllOf {

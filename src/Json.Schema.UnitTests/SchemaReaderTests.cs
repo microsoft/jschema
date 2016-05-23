@@ -159,7 +159,21 @@ namespace Microsoft.Json.Schema.UnitTests
   ""title"": 1,
   ""additionalProperties"": 2
 }",
-                    2)
+                    2),
+
+                new LogicallyInvalidSchemaTestCase(
+                    "type is not a string or an array",
+@"{
+  ""type"": 2
+}"
+                    ),
+
+                new LogicallyInvalidSchemaTestCase(
+                    "type array has invalid element",
+@"{
+  ""type"": [ ""string"", false ]
+}"
+                    )
         };
 
         [Theory(DisplayName = "SchemaReader throws on logically invalid schema")]

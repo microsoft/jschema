@@ -56,6 +56,30 @@ namespace Microsoft.Json.Schema
         /// </example>
         InvalidItemsType = 3,
 
+        /// <summary>
+        /// In the schema, the <code>type</code> property is neither a string nor an array of strings.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "type": 2
+        /// }
+        /// </code>
+        /// </example>
+        InvalidTypeType = 4,
+
+        /// <summary>
+        /// In the schema, the <code>type</code> property contains an invalid type string.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "type": [ "string", "invalid" ]
+        /// }
+        /// </code>
+        /// </example>
+        InvalidTypeString = 5,
+
         #endregion Errors in schema document
 
         #region Errors in instance document

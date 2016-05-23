@@ -208,4 +208,10 @@
   <data name="ErrorValidatesAgainstNotSchema" xml:space="preserve">
     <value>The instance validates successfully against the schema specified by 'not'.</value>
   </data>
+  <data name="ErrorInvalidTypeString" xml:space="preserve">
+    <value>'{0}' is not a valid schema type.</value>
+  </data>
+  <data name="ErrorInvalidTypeType" xml:space="preserve">
+    <value>JSON schema requires the value of "type" to be either a string or an array of strings, but a token of type {0} was seen.</value>
+  </data>
 </root>

@@ -31,6 +31,19 @@ namespace Microsoft.Json.Schema.UnitTests
 
             new object[]
             {
+                "MultipleTypes",
+                new JsonSchema
+                {
+                    Id = new UriOrFragment("http://www.example.com/schemas/basic#"),
+                    SchemaVersion = JsonSchema.V4Draft,
+                    Title = "The title",
+                    Description = "The description",
+                    Type = new JTokenType[] { JTokenType.Object, JTokenType.String }
+                }
+            },
+
+            new object[]
+            {
                 "Properties",
                 new JsonSchema
                 {

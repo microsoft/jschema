@@ -43,6 +43,8 @@ namespace Microsoft.Json.Schema
             {
                 [ErrorNumber.NotAString] = Resources.ErrorNotAString,
                 [ErrorNumber.InvalidAdditionalPropertiesType] = Resources.ErrorInvalidAdditionalProperties,
+                [ErrorNumber.InvalidTypeType] = Resources.ErrorInvalidTypeType,
+                [ErrorNumber.InvalidTypeString] = Resources.ErrorInvalidTypeString,
                 [ErrorNumber.WrongType] = Resources.ErrorWrongType,
                 [ErrorNumber.RequiredPropertyMissing] = Resources.ErrorRequiredPropertyMissing,
                 [ErrorNumber.TooFewArrayItems] = Resources.ErrorTooFewArrayItems,
