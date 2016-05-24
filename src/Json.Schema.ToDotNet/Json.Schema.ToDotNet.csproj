@@ -7,6 +7,11 @@
     <AssemblyName>Microsoft.Json.Schema.ToDotNet</AssemblyName>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
+  <PropertyGroup>
+    <!-- Override the TargetFrameworkVersion specified in build.props. This project must target
+         .NET 4.5.2 because Roslyn, upon which this project depends, targets that version. -->
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />

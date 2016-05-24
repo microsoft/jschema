@@ -8,6 +8,12 @@
     <NuGetPackageName>Json.Schema.ToDotNet</NuGetPackageName>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
+  <PropertyGroup>
+    <!-- Override the TargetFrameworkVersion specified in build.props. This project must target
+         .NET 4.5.2 because Json.Schema.ToDotNet, upon which this project depends, targets that version
+         (and ToDotNet targets that version because it depends on Roslyn). -->
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine, Version=2.0.273.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.0.273-beta\lib\net45\CommandLine.dll</HintPath>
