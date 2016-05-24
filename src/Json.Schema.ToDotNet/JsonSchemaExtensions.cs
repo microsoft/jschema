@@ -21,7 +21,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private static bool IsStringWithFormat(this JsonSchema schema, string format)
         {
             return
-                schema.SafeGetType() == JTokenType.String
+                schema.SafeGetType() == SchemaType.String
                 && schema.Format == format;
         }
 
@@ -36,7 +36,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             // Ignore any DictionaryHint that might apply to this property
             // if the property is not an object.
-            if (schema.SafeGetType() != JTokenType.Object)
+            if (schema.SafeGetType() != SchemaType.Object)
             {
                 return false;
             }

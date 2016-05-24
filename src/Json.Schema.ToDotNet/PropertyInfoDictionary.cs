@@ -26,12 +26,12 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private readonly ImmutableDictionary<string, PropertyInfo> _dictionary;
 
-        private static readonly Dictionary<JTokenType, SyntaxKind> s_JTokenTypeToSyntaxKindDictionary = new Dictionary<JTokenType, SyntaxKind>
+        private static readonly Dictionary<SchemaType, SyntaxKind> s_SchemaTypeToSyntaxKindDictionary = new Dictionary<SchemaType, SyntaxKind>
         {
-            [JTokenType.Boolean] = SyntaxKind.BoolKeyword,
-            [JTokenType.Integer] = SyntaxKind.IntKeyword,
-            [JTokenType.Float] = SyntaxKind.DoubleKeyword,
-            [JTokenType.String] = SyntaxKind.StringKeyword
+            [SchemaType.Boolean] = SyntaxKind.BoolKeyword,
+            [SchemaType.Integer] = SyntaxKind.IntKeyword,
+            [SchemaType.Number] = SyntaxKind.DoubleKeyword,
+            [SchemaType.String] = SyntaxKind.StringKeyword
         };
 
         // A string which, when appended to a property name used as a key into the
@@ -138,10 +138,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             return propertyName.ToPascalCase() + DictionaryMarker;
         }
 
-        public static SyntaxKind GetTypeKeywordFromJTokenType(JTokenType type)
+        public static SyntaxKind GetTypeKeywordFromSchemaType(SchemaType type)
         {
             SyntaxKind typeKeyword;
-            if (!s_JTokenTypeToSyntaxKindDictionary.TryGetValue(type, out typeKeyword))
+            if (!s_SchemaTypeToSyntaxKindDictionary.TryGetValue(type, out typeKeyword))
             {
                 typeKeyword = SyntaxKind.ObjectKeyword;
             }
@@ -256,7 +256,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 // a dictionary from string to string.
                 JsonSchema dictionaryElementSchema = propertySchema.AdditionalProperties?.Schema != null
                     ? propertySchema.AdditionalProperties.Schema
-                    : new JsonSchema { Type = new JTokenType[] { JTokenType.String } };
+                    : new JsonSchema { Type = new SchemaType[] { SchemaType.String } };
 
                 type = MakeDictionaryType(entries, schemaPropertyName, dictionaryHint, dictionaryElementSchema);
                 namespaceName = "System.Collections.Generic";   // For IDictionary.
@@ -282,27 +282,27 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
             else
         	{
-                JTokenType propertyType = propertySchema.SafeGetType();
+                SchemaType propertyType = propertySchema.SafeGetType();
 
                 switch (propertyType)
                 {
-                    case JTokenType.Boolean:
-                    case JTokenType.Integer:
-                    case JTokenType.Float:
+                    case SchemaType.Boolean:
+                    case SchemaType.Integer:
+                    case SchemaType.Number:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarValueType;
                         initializationKind = InitializationKind.SimpleAssign;
                         type = MakePrimitiveType(propertyType);
                         break;
 
-                    case JTokenType.String:
+                    case SchemaType.String:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarReferenceType;
                         initializationKind = InitializationKind.SimpleAssign;
                         type = MakePrimitiveType(propertyType);
                         break;
 
-                    case JTokenType.Object:
+                    case SchemaType.Object:
                         // If the schema for this property references a named type,
                         // the generated Init method will initialize it by cloning an object
                         // of that type. Otherwise, we treat this property as a System.Object
@@ -324,7 +324,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         type = MakeObjectType(propertySchema, out namespaceName);
                         break;
 
-                    case JTokenType.Array:
+                    case SchemaType.Array:
                         comparisonKind = ComparisonKind.Collection;
                         hashKind = HashKind.Collection;
                         initializationKind = InitializationKind.Collection;
@@ -332,23 +332,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                         type = MakeArrayType(entries, schemaPropertyName, propertySchema);
                         break;
 
-                    case JTokenType.None:
-                        JTokenType inferredType = InferJTokenTypeFromEnumValues(propertySchema.Enum);
-                        if (inferredType == JTokenType.None)
+                    case SchemaType.None:
+                        SchemaType inferredType = InferSchemaTypeFromEnumValues(propertySchema.Enum);
+                        if (inferredType == SchemaType.None)
                         {
                             comparisonKind = ComparisonKind.ObjectEquals;
                             hashKind = HashKind.ScalarReferenceType;
                             initializationKind = InitializationKind.None;
-                            type = MakePrimitiveType(JTokenType.Object);
+                            type = MakePrimitiveType(SchemaType.Object);
                             break;
 
                         }
-                        else if (inferredType == JTokenType.String)
+                        else if (inferredType == SchemaType.String)
                         {
                             comparisonKind = ComparisonKind.OperatorEquals;
                             hashKind = HashKind.ScalarReferenceType;
                             initializationKind = InitializationKind.SimpleAssign;
-                            type = MakePrimitiveType(JTokenType.String);
+                            type = MakePrimitiveType(SchemaType.String);
                             break;
                         }
                         else
@@ -386,9 +386,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                     entries.Count)));
         }
 
-        private TypeSyntax MakePrimitiveType(JTokenType JTokenType)
+        private TypeSyntax MakePrimitiveType(SchemaType schemaType)
         {
-            SyntaxKind typeKeyword = GetTypeKeywordFromJTokenType(JTokenType);
+            SyntaxKind typeKeyword = GetTypeKeywordFromSchemaType(schemaType);
             return SyntaxFactory.PredefinedType(SyntaxFactory.Token(typeKeyword));
         }
 
@@ -525,47 +525,47 @@ namespace Microsoft.Json.Schema.ToDotNet
                     && kvp.Value.Any(hint => hint is EnumHint));
         }
 
-        private JTokenType InferJTokenTypeFromEnumValues(IList<object> enumValues)
+        private SchemaType InferSchemaTypeFromEnumValues(IList<object> enumValues)
         {
-            JTokenType JTokenType = JTokenType.None;
+            SchemaType schemaType = SchemaType.None;
 
             if (enumValues != null && enumValues.Any())
             {
-                JTokenType = GetJTokenTypeFromObject(enumValues[0]);
+                schemaType = GetSchemaTypeFromObject(enumValues[0]);
                 for (int i = 1; i < enumValues.Count; ++i)
                 {
-                    if (GetJTokenTypeFromObject(enumValues[i]) != JTokenType)
+                    if (GetSchemaTypeFromObject(enumValues[i]) != schemaType)
                     {
-                        JTokenType = JTokenType.None;
+                        schemaType = SchemaType.None;
                         break;
                     }
                 }
             }
 
-            return JTokenType;
+            return schemaType;
         }
 
-        private static JTokenType GetJTokenTypeFromObject(object obj)
+        private static SchemaType GetSchemaTypeFromObject(object obj)
         {
             if (obj is string)
             {
-                return JTokenType.String;
+                return SchemaType.String;
             }
             else if (obj.IsIntegralType())
             {
-                return JTokenType.Integer;
+                return SchemaType.Integer;
             }
             else if (obj.IsFloatingType())
             {
-                return JTokenType.Float;
+                return SchemaType.Number;
             }
             else if (obj is bool)
             {
-                return JTokenType.Boolean;
+                return SchemaType.Boolean;
             }
             else
             {
-                return JTokenType.None;
+                return SchemaType.None;
             }
         }
 

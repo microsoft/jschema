@@ -16,19 +16,19 @@ namespace Microsoft.Json.Schema
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(JTokenType);
+            return objectType == typeof(SchemaType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             JToken jToken = JToken.Load(reader);
-            List<JTokenType> schemaTypes = new List<JTokenType>();
+            var schemaTypes = new List<SchemaType>();
 
             if (jToken.Type == JTokenType.String)
             {
                 string typeString = jToken.ToObject<string>();
-                JTokenType schemaType = SchemaTypeFromString(typeString);
-                if (schemaType != JTokenType.None)
+                SchemaType schemaType = SchemaTypeFromString(typeString);
+                if (schemaType != SchemaType.None)
                 {
                     schemaTypes.Add(schemaType);
                 }
@@ -46,8 +46,8 @@ namespace Microsoft.Json.Schema
                     if (elementToken.Type == JTokenType.String)
                     {
                         string typeString = elementToken.ToObject<string>();
-                        JTokenType schemaType = SchemaTypeFromString(typeString);
-                        if (schemaType != JTokenType.None)
+                        SchemaType schemaType = SchemaTypeFromString(typeString);
+                        if (schemaType != SchemaType.None)
                         {
                             schemaTypes.Add(schemaType);
                         }
@@ -80,7 +80,7 @@ namespace Microsoft.Json.Schema
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            string[] types = (value as JTokenType[]).Select(jtt => jtt.ToJsonSchemaName()).ToArray();
+            string[] types = (value as SchemaType[]).Select(st => st.ToString().ToLowerInvariant()).ToArray();
 
             if (types.Length == 1)
             {
@@ -96,40 +96,15 @@ namespace Microsoft.Json.Schema
             }
         }
 
-        private static JTokenType SchemaTypeFromString(string s)
+        private static SchemaType SchemaTypeFromString(string s)
         {
-            JTokenType schemaType = JTokenType.None;
+            s = s.Substring(0, 1).ToUpperInvariant() + s.Substring(1);
 
-            if (s == "number")
-            {
-                schemaType = JTokenType.Float;
-            }
-            else
-            {
-                s = s.Substring(0, 1).ToUpperInvariant() + s.Substring(1);
-
-                // Returns JTokenType.None if unrecognized.
-                if (Enum.TryParse(s, out schemaType) && !IsValidSchemaType(schemaType))
-                {
-                    schemaType = JTokenType.None;
-                }
-            }
+            // Returns SchemaType.None if unrecognized.
+            SchemaType schemaType;
+            Enum.TryParse(s, out schemaType);
 
             return schemaType;
-        }
-
-        // This won't be necessary once we address #77 and make JsonSchemaType its own type.
-        private static readonly ImmutableArray<JTokenType> s_validSchemaTypes = ImmutableArray.Create(
-            JTokenType.Array,
-            JTokenType.Boolean,
-            JTokenType.Float,
-            JTokenType.Integer,
-            JTokenType.Object,
-            JTokenType.String);
-
-        private static bool IsValidSchemaType(JTokenType schemaType)
-        {
-            return s_validSchemaTypes.Contains(schemaType);
         }
     }
 }

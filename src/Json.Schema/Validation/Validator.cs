@@ -127,29 +127,12 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
-        private static bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, IList<JTokenType> schemaTypes)
+        private static bool TokenTypeIsCompatibleWithSchema(JTokenType instanceType, IList<SchemaType> schemaTypes)
         {
-            if (schemaTypes == null || !schemaTypes.Any())
-            {
-                return true;
-            }
-
-            if (schemaTypes.Contains(instanceType))
-            {
-                return true;
-            }
-
-            if (instanceType == JTokenType.Integer && schemaTypes.Contains(JTokenType.Float))
-            {
-                return true;
-            }
-
-            if (instanceType == JTokenType.Date && schemaTypes.Contains(JTokenType.String))
-            {
-                return true;
-            }
-
-            return false;
+            return schemaTypes == null
+                || !schemaTypes.Any()
+                || schemaTypes.Contains(instanceType.ToSchemaType())
+                || (instanceType == JTokenType.Integer && schemaTypes.Contains(SchemaType.Number));
         }
 
         private void ValidateString(JValue jValue, JsonSchema schema)
@@ -505,7 +488,7 @@ namespace Microsoft.Json.Schema.Validation
             return @enum.Any(e => JTokenEqualityComparer.DeepEquals(jToken, e));
         }
 
-        private static string FormatSchemaTypes(IList<JTokenType> schemaTypes)
+        private static string FormatSchemaTypes(IList<SchemaType> schemaTypes)
         {
             return string.Join(", ", schemaTypes.Select(t => t.ToString()));
         }

@@ -249,7 +249,7 @@ namespace Microsoft.Json.Schema.UnitTests
                       ""type"": ""object""
                     },
                     ""b"": {
-                      ""type"": ""float""
+                      ""type"": ""number""
                     }
                   }
                 }",
@@ -265,7 +265,7 @@ namespace Microsoft.Json.Schema.UnitTests
                       ""type"": ""object""
                     },
                     ""b"": {
-                      ""type"": ""float""
+                      ""type"": ""number""
                     }
                   }
                 }",

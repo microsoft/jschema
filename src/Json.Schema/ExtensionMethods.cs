@@ -104,11 +104,11 @@ namespace Microsoft.Json.Schema
 
     public static class JsonSchemaExtensions
     {
-        public static JTokenType SafeGetType(this JsonSchema schema)
+        public static SchemaType SafeGetType(this JsonSchema schema)
         {
             return (schema.Type != null && schema.Type.Count > 0)
                 ? schema.Type[0]
-                : JTokenType.None;
+                : SchemaType.None;
         }
     }
 

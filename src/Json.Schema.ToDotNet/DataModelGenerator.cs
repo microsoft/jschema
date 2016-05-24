@@ -67,10 +67,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             _fileSystem.CreateDirectory(_settings.OutputDirectory);
 
-            JTokenType rootSchemaType = _rootSchema.SafeGetType();
-            if (rootSchemaType != JTokenType.Object)
+            SchemaType rootSchemaType = _rootSchema.SafeGetType();
+            if (rootSchemaType != SchemaType.Object)
             {
-                throw Error.CreateException(Resources.ErrorNotAnObject, rootSchemaType.ToJsonSchemaName());
+                throw Error.CreateException(Resources.ErrorNotAnObject, rootSchemaType.ToString().ToLowerInvariant());
             }
 
             string rootFileText = GenerateClass(_settings.RootClassName, _rootSchema, _settings.SealClasses);
@@ -130,7 +130,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private bool ShouldGenerateType(KeyValuePair<string, JsonSchema> definition)
         {
-            return definition.Value.SafeGetType() != JTokenType.Array;
+            return definition.Value.SafeGetType() != SchemaType.Array;
         }
 
         private void GenerateClassesForDefinitions(IEnumerable<KeyValuePair<string, JsonSchema>> definitions)

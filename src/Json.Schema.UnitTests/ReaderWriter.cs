@@ -25,7 +25,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     SchemaVersion = JsonSchema.V4Draft,
                     Title = "The title",
                     Description = "The description",
-                    Type = new JTokenType[] { JTokenType.Object }
+                    Type = new SchemaType[] { SchemaType.Object }
                 }
             },
 
@@ -38,7 +38,7 @@ namespace Microsoft.Json.Schema.UnitTests
                     SchemaVersion = JsonSchema.V4Draft,
                     Title = "The title",
                     Description = "The description",
-                    Type = new JTokenType[] { JTokenType.Object, JTokenType.String }
+                    Type = new SchemaType[] { SchemaType.Object, SchemaType.String }
                 }
             },
 
@@ -47,28 +47,28 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Properties",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["stringProp"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.String }
+                            Type = new SchemaType[] { SchemaType.String }
                         },
 
                         ["numberProp"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Float }
+                            Type = new SchemaType[] { SchemaType.Number }
                         },
 
                         ["booleanProp"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Boolean }
+                            Type = new SchemaType[] { SchemaType.Boolean }
                         },
 
                         ["integerProp"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Integer }
+                            Type = new SchemaType[] { SchemaType.Integer }
                         },
                     }
                 }
@@ -79,23 +79,23 @@ namespace Microsoft.Json.Schema.UnitTests
                 "RequiredProperties",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object }
+                    Type = new SchemaType[] { SchemaType.Object }
                     ,
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["prop1"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.String }
+                            Type = new SchemaType[] { SchemaType.String }
                         },
 
                         ["prop2"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Integer }
+                            Type = new SchemaType[] { SchemaType.Integer }
                         },
 
                         ["prop3"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Boolean }
+                            Type = new SchemaType[] { SchemaType.Boolean }
                         }
                     },
 
@@ -108,16 +108,16 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Array",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["arrayProp"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Array },
+                            Type = new SchemaType[] { SchemaType.Array },
                             Items = new Items(
                                 new JsonSchema
                                 {
-                                    Type = new JTokenType[] { JTokenType.Object }
+                                    Type = new SchemaType[] { SchemaType.Object }
                                 }
                             )
                         }
@@ -132,16 +132,16 @@ namespace Microsoft.Json.Schema.UnitTests
                 "IntegerArray",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["integerArrayProp"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Array },
+                            Type = new SchemaType[] { SchemaType.Array },
                             Items = new Items(
                                 new JsonSchema
                                 {
-                                    Type = new JTokenType[] { JTokenType.Integer }
+                                    Type = new SchemaType[] { SchemaType.Integer }
                                 }
                             )
                         }
@@ -154,13 +154,13 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Definitions",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
                         ["rootProp"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Boolean }
+                            Type = new SchemaType[] { SchemaType.Boolean }
                         }
                     },
 
@@ -168,25 +168,25 @@ namespace Microsoft.Json.Schema.UnitTests
                     {
                         ["def1"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Object },
+                            Type = new SchemaType[] { SchemaType.Object },
 
                             Properties = new Dictionary<string, JsonSchema>
                             {
                                 ["prop1"] = new JsonSchema
                                 {
-                                    Type = new JTokenType[] { JTokenType.String }
+                                    Type = new SchemaType[] { SchemaType.String }
                                 }
                             }
                         },
                         ["def2"] = new JsonSchema
                         {
-                            Type = new JTokenType[] { JTokenType.Object },
+                            Type = new SchemaType[] { SchemaType.Object },
 
                             Properties = new Dictionary<string, JsonSchema>
                             {
                                 ["prop2"] = new JsonSchema
                                 {
-                                    Type = new JTokenType[] { JTokenType.Integer }
+                                    Type = new SchemaType[] { SchemaType.Integer }
                                 }
                             }
                         }
@@ -199,7 +199,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "Reference",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
@@ -218,7 +218,7 @@ namespace Microsoft.Json.Schema.UnitTests
                             {
                                 ["prop1"] = new JsonSchema
                                 {
-                                    Type = new JTokenType[] { JTokenType.String }
+                                    Type = new SchemaType[] { SchemaType.String }
                                 }
                             }
                         }
@@ -231,13 +231,13 @@ namespace Microsoft.Json.Schema.UnitTests
                 "DateTime",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
 
                     Properties = new Dictionary<string, JsonSchema>
                     {
                          ["startTime"] = new JsonSchema
                          {
-                             Type = new JTokenType[] { JTokenType.String },
+                             Type = new SchemaType[] { SchemaType.String },
                              Format = FormatAttributes.DateTime
                          }
                     }
@@ -249,7 +249,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 "AdditionalPropertiesBoolean",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
                     AdditionalProperties = new AdditionalProperties(true)
                 }
             },
@@ -259,10 +259,10 @@ namespace Microsoft.Json.Schema.UnitTests
                 "AdditionalPropertiesSchema",
                 new JsonSchema
                 {
-                    Type = new JTokenType[] { JTokenType.Object },
+                    Type = new SchemaType[] { SchemaType.Object },
                     AdditionalProperties = new AdditionalProperties(new JsonSchema
                     {
-                        Type = new JTokenType[] { JTokenType.Float }
+                        Type = new SchemaType[] { SchemaType.Number }
                     })
                 }
             }

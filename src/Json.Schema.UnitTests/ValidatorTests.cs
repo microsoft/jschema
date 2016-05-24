@@ -523,7 +523,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": ""false""
 }",
-                Error.Format(3, 15, "b", ErrorNumber.WrongType, JTokenType.Boolean, JTokenType.String)
+                Error.Format(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -550,7 +550,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": ""false""
 }",
-                Error.Format(3, 15, "b", ErrorNumber.WrongType, JTokenType.Boolean, JTokenType.String)
+                Error.Format(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -574,7 +574,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
     ""x"": 3
   }
 }",
-                Error.Format(3, 11, "a.x", ErrorNumber.WrongType, JTokenType.Boolean, JTokenType.Integer)
+                Error.Format(3, 11, "a.x", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.Integer)
                 ),
 
             new TestCase(
@@ -619,7 +619,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a32&o"": ""foobar"",
   ""apple"": ""pie""
 }",
-                Error.Format(4, 20, "a32&o", ErrorNumber.WrongType, JTokenType.Integer, JTokenType.String)
+                Error.Format(4, 20, "a32&o", ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -714,7 +714,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "type: Non-integer instance does not match integer schema",
                 @"{ ""type"": ""integer"" }",
                 "\"s\"",
-                Error.Format(1, 3, string.Empty, ErrorNumber.WrongType, JTokenType.Integer, JTokenType.String)
+                Error.Format(1, 3, string.Empty, ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -727,7 +727,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "type: Non-array instance does not match array schema",
                  @"{ ""type"": ""array"" }",
                 "true",
-                Error.Format(1, 4, string.Empty, ErrorNumber.WrongType, JTokenType.Array, JTokenType.Boolean)
+                Error.Format(1, 4, string.Empty, ErrorNumber.WrongType, SchemaType.Array, JTokenType.Boolean)
                 ),
 
             new TestCase(
@@ -768,7 +768,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
   ""a"": ""true""
 }",
-                Error.Format(2, 14, "a", ErrorNumber.WrongType, JTokenType.Boolean, JTokenType.String)
+                Error.Format(2, 14, "a", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
@@ -44,7 +43,7 @@ namespace Microsoft.Json.Schema
 
             if (other.Type != null)
             {
-                Type = new List<JTokenType>(other.Type);
+                Type = new List<SchemaType>(other.Type);
             }
 
             if (other.Enum != null)
@@ -166,7 +165,7 @@ namespace Microsoft.Json.Schema
         public string Description { get; set; }
 
         [JsonConverter(typeof(SchemaTypeConverter))]
-        public IList<JTokenType> Type { get; set; }
+        public IList<SchemaType> Type { get; set; }
 
         /// <summary>
         /// Gets or sets an array containing the values that are valid for an object
@@ -179,7 +178,7 @@ namespace Microsoft.Json.Schema
         /// schema is of array type.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Array"/>.
         /// </remarks>
         public Items Items { get; set; }
 
@@ -187,7 +186,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the maximum valid number of properties.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Object"/>.
         /// </remarks>
         public int? MaxProperties { get; set; }
 
@@ -195,7 +194,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the maximum valid number of properties.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Object"/>.
         /// </remarks>
         public int? MinProperties { get; set; }
 
@@ -204,7 +203,7 @@ namespace Microsoft.Json.Schema
         /// required to be present.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Object"/>.
         /// </remarks>
         public IList<string> Required { get; set; }
 
@@ -219,7 +218,7 @@ namespace Microsoft.Json.Schema
         /// conform.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Object"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Object"/>.
         /// </remarks>
         public Dictionary<string, JsonSchema> Properties { get; set; }
 
@@ -233,7 +232,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the maximum length of a string schema instance.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.String"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.String"/>.
         /// </remarks>
         public int? MaxLength { get; set; }
 
@@ -241,7 +240,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the minimum length of a string schema instance.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.String"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.String"/>.
         /// </remarks>
         public int? MinLength { get; set; }
 
@@ -249,7 +248,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets a regular expression which a string schema instance must match.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.String"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.String"/>.
         /// </remarks>
         public string Pattern { get; set; }
 
@@ -257,8 +256,8 @@ namespace Microsoft.Json.Schema
         /// Gets or sets a value of which a numeric schema instance must be a multiple.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
-        /// or <see cref="JTokenType.Float"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Integer"/>
+        /// or <see cref="SchemaType.Number"/>.
         /// </remarks>
         public double? MultipleOf { get; set; }
 
@@ -266,8 +265,8 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the maximum valid value.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
-        /// or <see cref="JTokenType.Float"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Integer"/>
+        /// or <see cref="SchemaType.Number"/>.
         /// </remarks>
         public double? Maximum { get; set; }
 
@@ -276,8 +275,8 @@ namespace Microsoft.Json.Schema
         /// is an exclusive maximum.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
-        /// or <see cref="JTokenType.Float"/>. If not specified in the schema, the default
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Integer"/>
+        /// or <see cref="SchemaType.Number"/>. If not specified in the schema, the default
         /// value is <code>false</code>.
         /// </remarks>
         public bool? ExclusiveMaximum { get; set; }
@@ -286,8 +285,8 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the minimum valid value.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
-        /// or <see cref="JTokenType.Float"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Integer"/>
+        /// or <see cref="SchemaType.Number"/>.
         /// </remarks>
         public double? Minimum { get; set; }
 
@@ -296,8 +295,8 @@ namespace Microsoft.Json.Schema
         /// is an exclusive minimum.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Integer"/>
-        /// or <see cref="JTokenType.Float"/>. If not specified in the schema, the default
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Integer"/>
+        /// or <see cref="SchemaType.Number"/>. If not specified in the schema, the default
         /// value is <code>false</code>.
         /// </remarks>
         public bool? ExclusiveMinimum { get; set; }
@@ -312,7 +311,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the minimum valid number of elements in an array.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Array"/>.
         /// If this property is not specified, it is considered present with a value of 0.
         /// The type of this property is <code>int?</code>, rather than <code>int</code>
         /// with a default value of 0, so that a schema that does not specify this
@@ -324,7 +323,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets the maximum valid number of elements in an array.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Array"/>.
         /// If this property is not specified, any number of items is valid.
         /// The type of this property is <code>int?</code>, rather than <code>int</code>
         /// with a default value of <code>Int32.MaxValue</code>, so that a schema that
@@ -336,7 +335,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets a value that specifies whether array elements must be unique.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.Array"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Array"/>.
         /// If this property is not specified, the default value is <code>false</code>.
         /// The type of this property is <code>bool?</code>, rather than <code>bool</code>
         /// with a default value of <code>false</code>, so that a schema that does not specify
@@ -357,7 +356,7 @@ namespace Microsoft.Json.Schema
         /// Gets or sets a string specifying the required format of a string-valued property.
         /// </summary>
         /// <remarks>
-        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="JTokenType.String"/>.
+        /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.String"/>.
         /// </remarks>
         public string Format { get; set; }
 
@@ -479,7 +478,7 @@ namespace Microsoft.Json.Schema
 
                 if (referencedSchema.Type != null)
                 {
-                    collapsedSchema.Type = new List<JTokenType>(referencedSchema.Type);
+                    collapsedSchema.Type = new List<SchemaType>(referencedSchema.Type);
                 }
 
                 if (referencedSchema.Enum != null)
