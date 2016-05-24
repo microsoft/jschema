@@ -5,13 +5,13 @@
          https://social.msdn.microsoft.com/Forums/vstudio/en-US/c03febde-cf6d-478e-ac01-99102eb07f1b/the-language-c-is-not-supported-bug-on-newcompilationunitformat?forum=roslyn
       -->
     <PropertyGroup>
-      <JsonSchemaOutDir>$(OutputPath)..\..\Json.Schema\$(OutputSubDir)\</JsonSchemaOutDir>
+      <JsonSchemaToDotNetOutDir>$(OutputPath)..\..\Json.Schema.ToDotNet\$(OutputSubDir)\</JsonSchemaToDotNetOutDir>
     </PropertyGroup>
     <ItemGroup>
-      <RoslynImplementationAssembly Include="$(JsonSchemaOutDir)Microsoft.CodeAnalysis.CSharp.dll" />
-      <RoslynImplementationAssembly Include="$(JsonSchemaOutDir)Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
-      <RoslynImplementationAssembly Include="$(JsonSchemaOutDir)Microsoft.CodeAnalysis.VisualBasic.dll" />
-      <RoslynImplementationAssembly Include="$(JsonSchemaOutDir)Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
+      <RoslynImplementationAssembly Include="$(JsonSchemaToDotNetOutDir)Microsoft.CodeAnalysis.CSharp.dll" />
+      <RoslynImplementationAssembly Include="$(JsonSchemaToDotNetOutDir)Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
+      <RoslynImplementationAssembly Include="$(JsonSchemaToDotNetOutDir)Microsoft.CodeAnalysis.VisualBasic.dll" />
+      <RoslynImplementationAssembly Include="$(JsonSchemaToDotNetOutDir)Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
     </ItemGroup>
     <Message Importance="high"
              Text="Copying Roslyn implementation assemblies to output directory..." />
