@@ -46,11 +46,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src='Microsoft.Json.Schema.dll' target='lib\net40\Microsoft.Json.Schema.dll'/>
-    <file src='Microsoft.Json.Schema.pdb' target='lib\net40\Microsoft.Json.Schema.pdb'/>
-
-    <file src='Microsoft.Json.Schema.dll' target='lib\net45\Microsoft.Json.Schema.dll'/>
-    <file src='Microsoft.Json.Schema.pdb' target='lib\net45\Microsoft.Json.Schema.pdb'/>
+    <file src='Microsoft.Json.Schema.dll' target='lib\net451\Microsoft.Json.Schema.dll'/>
+    <file src='Microsoft.Json.Schema.pdb' target='lib\net451\Microsoft.Json.Schema.pdb'/>
 
     <file src='JsonSchemaValidator.exe' target='tools\JsonSchemaValidator.exe' />
     <file src='JsonSchemaValidator.pdb' target='tools\JsonSchemaValidator.pdb' />

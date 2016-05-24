@@ -47,11 +47,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src='Microsoft.Json.Schema.ToDotNet.dll' target='lib\net40\Microsoft.Json.Schema.ToDotNet.dll'/>
-    <file src='Microsoft.Json.Schema.ToDotNet.pdb' target='lib\net40\Microsoft.Json.Schema.ToDotNet.pdb'/>
-
-    <file src='Microsoft.Json.Schema.ToDotNet.dll' target='lib\net45\Microsoft.Json.Schema.ToDotNet.dll'/>
-    <file src='Microsoft.Json.Schema.ToDotNet.pdb' target='lib\net45\Microsoft.Json.Schema.ToDotNet.pdb'/>
+    <file src='Microsoft.Json.Schema.ToDotNet.dll' target='lib\net452\Microsoft.Json.Schema.ToDotNet.dll'/>
+    <file src='Microsoft.Json.Schema.ToDotNet.pdb' target='lib\net452\Microsoft.Json.Schema.ToDotNet.pdb'/>
 
     <file src='JsonSchemaToDotNet.exe' target='tools\JsonSchemaToDotNet.exe' />
     <file src='JsonSchemaToDotNet.pdb' target='tools\JsonSchemaToDotNet.pdb' />
