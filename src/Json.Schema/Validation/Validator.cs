@@ -144,6 +144,11 @@ namespace Microsoft.Json.Schema.Validation
                 return true;
             }
 
+            if (instanceType == JTokenType.Date && schemaTypes.Contains(JTokenType.String))
+            {
+                return true;
+            }
+
             return false;
         }
 

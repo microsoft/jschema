@@ -916,6 +916,18 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 
 "42",
                 Error.Format(1, 2, string.Empty, ErrorNumber.ValidatesAgainstNotSchema)
+                ),
+
+            // This test shows that the validator accepts a JTokenType of Date for
+            // an instance whose specified schema type is "string".
+            new TestCase(
+                "string: date-like string is valid",
+                
+@"{
+  ""type"": ""string""
+}",
+
+"\"2016-05-20T17:13:54.002Z\""
                 )
         };
 
