@@ -14,12 +14,10 @@ namespace Microsoft.Json.Schema
     {
         internal ErrorCapturingTraceWriter()
         {
-            Errors = new List<Error>();
-            Results = new List<Result>();
+            Errors = new List<Result>();
         }
 
-        internal List<Error> Errors;
-        internal List<Result> Results;
+        internal List<Result> Errors;
 
         #region ITraceWriter
 
@@ -28,10 +26,9 @@ namespace Microsoft.Json.Schema
         public void Trace(TraceLevel level, string message, Exception ex)
         {
             var invalidSchemaException = ex as InvalidSchemaException;
-            if (invalidSchemaException != null && invalidSchemaException.Errors.Any())
+            if (invalidSchemaException != null && invalidSchemaException.Results.Any())
             {
-                Errors.AddRange(invalidSchemaException.Errors);
-                Results.AddRange(invalidSchemaException.Results);
+                Errors.AddRange(invalidSchemaException.Results);
             }
         }
 

@@ -59,7 +59,7 @@ namespace Microsoft.Json.Schema
 
         public string Message { get; }
 
-        private static readonly ImmutableDictionary<ErrorNumber, string> s_errorNumberToMessageDictionary = ImmutableDictionary.CreateRange(
+        internal static readonly ImmutableDictionary<ErrorNumber, string> s_errorNumberToMessageDictionary = ImmutableDictionary.CreateRange(
             new Dictionary<ErrorNumber, string>
             {
                 [ErrorNumber.NotAString] = Resources.ErrorNotAString,
