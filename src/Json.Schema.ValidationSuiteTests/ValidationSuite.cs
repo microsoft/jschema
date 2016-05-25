@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
+using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.Json.Schema.Validation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -23,15 +24,15 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
 
             var validator = new Validator(testData.Schema);
 
-            string[] errorMessages = validator.Validate(testData.InstanceText);
+            Result[] results = validator.Validate(testData.InstanceText);
 
             if (testData.Valid)
             {
-                errorMessages.Should().BeEmpty($"test \"{testData.Description}\" should pass");
+                results.Should().BeEmpty($"test \"{testData.Description}\" should pass");
             }
             else
             {
-                errorMessages.Should().NotBeEmpty($"test \"{testData.Description}\" should pass");
+                results.Should().NotBeEmpty($"test \"{testData.Description}\" should pass");
             }
         }
     }

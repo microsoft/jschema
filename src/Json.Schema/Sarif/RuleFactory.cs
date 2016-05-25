@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Sarif;
 namespace Microsoft.Json.Schema.Sarif
 {
     // TODO Not best name. Maybe RuleDictionary.Instance and have it implement IDictionary.
-    internal static class RuleFactory
+    public static class RuleFactory
     {
         // TODO: Make list immutable
 
@@ -165,7 +165,7 @@ namespace Microsoft.Json.Schema.Sarif
                 Resources.ErrorValidatesAgainstNotSchema)
         };
 
-        internal static Rule GetRuleFromRuleId(string ruleId)
+        public static Rule GetRuleFromRuleId(string ruleId)
         {
             var errorNumber = (ErrorNumber)int.Parse(ruleId.Substring(2));
             return GetRuleFromErrorNumber(errorNumber);

@@ -21,7 +21,7 @@ namespace Microsoft.Json.Schema.Validation
         private const string Null = "null";
 
         private readonly Stack<JsonSchema> _schemas;
-        private List<string> _messages;
+        private List<Result> _results;
         private Dictionary<string, JsonSchema> _definitions;
 
         /// <summary>
@@ -41,15 +41,15 @@ namespace Microsoft.Json.Schema.Validation
 
             schema = Resolve(schema);
 
-            _messages = new List<string>();
+            _results = new List<Result>();
 
             _schemas = new Stack<JsonSchema>();
             _schemas.Push(schema);
         }
 
-        public string[] Validate(string instanceText)
+        public Result[] Validate(string instanceText)
         {
-            _messages = new List<string>();
+            _results = new List<Result>();
 
             using (var reader = new StringReader(instanceText))
             {
@@ -59,7 +59,7 @@ namespace Microsoft.Json.Schema.Validation
                 ValidateToken(token, schema);
             }
 
-            return _messages.ToArray();
+            return _results.ToArray();
         }
 
         private JsonSchema Resolve(JsonSchema schema)
@@ -76,7 +76,7 @@ namespace Microsoft.Json.Schema.Validation
         {
             if (!TokenTypeIsCompatibleWithSchema(jToken.Type, schema.Type))
             {
-                AddMessage(jToken, ErrorNumber.WrongType, FormatSchemaTypes(schema.Type), jToken.Type);
+                AddResult(jToken, ErrorNumber.WrongType, FormatSchemaTypes(schema.Type), jToken.Type);
                 return;
             }
 
@@ -145,7 +145,7 @@ namespace Microsoft.Json.Schema.Validation
 
                 if (value.Length > schema.MaxLength)
                 {
-                    AddMessage(jValue, ErrorNumber.StringTooLong, value, value.Length, schema.MaxLength);
+                    AddResult(jValue, ErrorNumber.StringTooLong, value, value.Length, schema.MaxLength);
                 }
             }
 
@@ -155,7 +155,7 @@ namespace Microsoft.Json.Schema.Validation
 
                 if (value.Length < schema.MinLength)
                 {
-                    AddMessage(jValue, ErrorNumber.StringTooShort, value, value.Length, schema.MinLength);
+                    AddResult(jValue, ErrorNumber.StringTooShort, value, value.Length, schema.MinLength);
                 }
             }
 
@@ -165,7 +165,7 @@ namespace Microsoft.Json.Schema.Validation
 
                 if (!Regex.IsMatch(value, schema.Pattern))
                 {
-                    AddMessage(jValue, ErrorNumber.StringDoesNotMatchPattern, value, schema.Pattern);
+                    AddResult(jValue, ErrorNumber.StringDoesNotMatchPattern, value, schema.Pattern);
                 }
             }
         }
@@ -181,11 +181,11 @@ namespace Microsoft.Json.Schema.Validation
 
                 if (schema.ExclusiveMaximum == true && value >= maximum)
                 {
-                    AddMessage(jValue, ErrorNumber.ValueTooLargeExclusive, value, maximum);
+                    AddResult(jValue, ErrorNumber.ValueTooLargeExclusive, value, maximum);
                 }
                 else if (value > maximum)
                 {
-                    AddMessage(jValue, ErrorNumber.ValueTooLarge, value, maximum);
+                    AddResult(jValue, ErrorNumber.ValueTooLarge, value, maximum);
                 }
             }
 
@@ -198,11 +198,11 @@ namespace Microsoft.Json.Schema.Validation
 
                 if (schema.ExclusiveMinimum == true && value <= minimum)
                 {
-                    AddMessage(jValue, ErrorNumber.ValueTooSmallExclusive, value, minimum);
+                    AddResult(jValue, ErrorNumber.ValueTooSmallExclusive, value, minimum);
                 }
                 else if (value < minimum)
                 {
-                    AddMessage(jValue, ErrorNumber.ValueTooSmall, value, minimum);
+                    AddResult(jValue, ErrorNumber.ValueTooSmall, value, minimum);
                 }
             }
 
@@ -215,7 +215,7 @@ namespace Microsoft.Json.Schema.Validation
 
                 if (value % factor != 0)
                 {
-                    AddMessage(jValue, ErrorNumber.NotAMultiple, value, factor);
+                    AddResult(jValue, ErrorNumber.NotAMultiple, value, factor);
                 }
             }
         }
@@ -225,12 +225,12 @@ namespace Microsoft.Json.Schema.Validation
             int numItems = jArray.Count;
             if (numItems < schema.MinItems)
             {
-                AddMessage(jArray, ErrorNumber.TooFewArrayItems, schema.MinItems, numItems);
+                AddResult(jArray, ErrorNumber.TooFewArrayItems, schema.MinItems, numItems);
             }
 
             if (numItems > schema.MaxItems)
             {
-                AddMessage(jArray, ErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
+                AddResult(jArray, ErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
             }
 
             if (schema.Items != null)
@@ -255,7 +255,7 @@ namespace Microsoft.Json.Schema.Validation
                     }
                     else
                     {
-                        AddMessage(jArray, ErrorNumber.TooFewItemSchemas, jArray.Count, schema.Items.Schemas.Count);
+                        AddResult(jArray, ErrorNumber.TooFewItemSchemas, jArray.Count, schema.Items.Schemas.Count);
                     }
                 }
             }
@@ -273,13 +273,13 @@ namespace Microsoft.Json.Schema.Validation
             if (schema.MaxProperties.HasValue &&
                 propertySet.Count > schema.MaxProperties.Value)
             {
-                AddMessage(jObject, ErrorNumber.TooManyProperties, schema.MaxProperties.Value, propertySet.Count);
+                AddResult(jObject, ErrorNumber.TooManyProperties, schema.MaxProperties.Value, propertySet.Count);
             }
 
             if (schema.MinProperties.HasValue &&
                 propertySet.Count < schema.MinProperties.Value)
             {
-                AddMessage(jObject, ErrorNumber.TooFewProperties, schema.MinProperties.Value, propertySet.Count);
+                AddResult(jObject, ErrorNumber.TooFewProperties, schema.MinProperties.Value, propertySet.Count);
             }
 
             // Ensure required properties are present.
@@ -288,7 +288,7 @@ namespace Microsoft.Json.Schema.Validation
                 IEnumerable<string> missingProperties = schema.Required.Except(propertySet);
                 foreach (string propertyName in missingProperties)
                 {
-                    AddMessage(jObject, ErrorNumber.RequiredPropertyMissing, propertyName);
+                    AddResult(jObject, ErrorNumber.RequiredPropertyMissing, propertyName);
                 }
             }
 
@@ -344,7 +344,7 @@ namespace Microsoft.Json.Schema.Validation
         {
             if (!TokenMatchesEnum(jToken, @enum))
             {
-                AddMessage(
+                AddResult(
                     jToken,
                     ErrorNumber.InvalidEnumValue,
                     FormatObject(jToken),
@@ -356,19 +356,19 @@ namespace Microsoft.Json.Schema.Validation
             JToken jToken,
             IList<JsonSchema> allOfSchemas)
         {
-            var allOfErrorMessages = new List<string>();
+            var allOfResults = new List<Result>();
 
             foreach (JsonSchema allOfSchema in allOfSchemas)
             {
                 JsonSchema schema = Resolve(allOfSchema);
                 var allOfValidator = new Validator(schema);
                 allOfValidator.ValidateToken(jToken, schema);
-                allOfErrorMessages.AddRange(allOfValidator._messages);
+                allOfResults.AddRange(allOfValidator._results);
             }
 
-            if (allOfErrorMessages.Any())
+            if (allOfResults.Any())
             {
-                AddMessage(jToken, ErrorNumber.NotAllOf, allOfSchemas.Count);
+                AddResult(jToken, ErrorNumber.NotAllOf, allOfSchemas.Count);
             }
         }
 
@@ -389,7 +389,7 @@ namespace Microsoft.Json.Schema.Validation
                 JsonSchema schema = Resolve(anyOfSchema);
                 var anyOfValidator = new Validator(schema);
                 anyOfValidator.ValidateToken(jToken, schema);
-                if (!anyOfValidator._messages.Any())
+                if (!anyOfValidator._results.Any())
                 {
                     valid = true;
                     break;
@@ -398,7 +398,7 @@ namespace Microsoft.Json.Schema.Validation
 
             if (!valid)
             {
-                AddMessage(jToken, ErrorNumber.NotAnyOf, anyOfSchemas.Count);
+                AddResult(jToken, ErrorNumber.NotAnyOf, anyOfSchemas.Count);
             }
         }
 
@@ -419,7 +419,7 @@ namespace Microsoft.Json.Schema.Validation
                 JsonSchema schema = Resolve(oneOfSchema);
                 var oneOfValidator = new Validator(schema);
                 oneOfValidator.ValidateToken(jToken, schema);
-                if (!oneOfValidator._messages.Any())
+                if (!oneOfValidator._results.Any())
                 {
                     ++numValid;
                 }
@@ -427,7 +427,7 @@ namespace Microsoft.Json.Schema.Validation
 
             if (numValid != 1)
             {
-                AddMessage(jToken, ErrorNumber.NotOneOf, numValid, oneOfSchemas.Count);
+                AddResult(jToken, ErrorNumber.NotOneOf, numValid, oneOfSchemas.Count);
             }
         }
 
@@ -442,9 +442,9 @@ namespace Microsoft.Json.Schema.Validation
             JsonSchema schema = Resolve(notSchema);
             var notValidator = new Validator(schema);
             notValidator.ValidateToken(jToken, schema);
-            if (!notValidator._messages.Any())
+            if (!notValidator._results.Any())
             {
-                AddMessage(jToken, ErrorNumber.ValidatesAgainstNotSchema);
+                AddResult(jToken, ErrorNumber.ValidatesAgainstNotSchema);
             }
         }
 
@@ -458,7 +458,7 @@ namespace Microsoft.Json.Schema.Validation
                 foreach (string propertyName in additionalPropertyNames)
                 {
                     JProperty property = jObject.Property(propertyName);
-                    AddMessage(property, ErrorNumber.AdditionalPropertiesProhibited, propertyName);
+                    AddResult(property, ErrorNumber.AdditionalPropertiesProhibited, propertyName);
                 }
             }
             else
@@ -481,7 +481,7 @@ namespace Microsoft.Json.Schema.Validation
         {
             if (jArray.Distinct(JTokenEqualityComparer.Instance).Count() != jArray.Count)
             {
-                AddMessage(jArray, ErrorNumber.NotUnique);
+                AddResult(jArray, ErrorNumber.NotUnique);
             }
         }
 
@@ -569,10 +569,9 @@ namespace Microsoft.Json.Schema.Validation
             return s;
         }
 
-        private void AddMessage(JToken jToken, ErrorNumber errorNumber, params object[] args)
+        private void AddResult(JToken jToken, ErrorNumber errorNumber, params object[] args)
         {
-            var error = ResultFactory.CreateResult(jToken, errorNumber, args);
-            _messages.Add(error.FormatForVisualStudio(RuleFactory.GetRuleFromErrorNumber(errorNumber)));
+            _results.Add(ResultFactory.CreateResult(jToken, errorNumber, args));
         }
     }
 }

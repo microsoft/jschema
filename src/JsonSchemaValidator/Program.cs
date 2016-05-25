@@ -7,6 +7,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.CodeAnalysis.Sarif;
+using Microsoft.Json.Schema.Sarif;
 using Microsoft.Json.Schema.Validation;
 using Newtonsoft.Json;
 
@@ -55,11 +57,11 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                 var validator = new Validator(schema);
 
                 string instanceText = File.ReadAllText(instanceFile);
-                string[] errorMessages = validator.Validate(instanceText);
+                Result[] results = validator.Validate(instanceText);
 
-                if (errorMessages.Any())
+                if (results.Any())
                 {
-                    ReportErrors(instanceFile, schemaFile, errorMessages);
+                    ReportResults(instanceFile, schemaFile, results);
                 }
                 else
                 {
@@ -84,15 +86,19 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             return returnCode;
         }
 
-        private static void ReportErrors(
+        private static void ReportResults(
             string instanceFile,
             string schemaFile,
-            string[] errorMessages)
+            Result[] results)
         {
             Console.Error.WriteLine($"Error: The file {instanceFile} is not valid according to the schema {schemaFile}.");
-            foreach (string errorMessage in errorMessages)
+            foreach (Result result in results)
             {
-                Console.Error.WriteLine(errorMessage);
+                result.Locations.First().ResultFile.Uri = new Uri(instanceFile, UriKind.RelativeOrAbsolute);
+
+                Console.Error.WriteLine(
+                    result.FormatForVisualStudio(
+                        RuleFactory.GetRuleFromRuleId(result.RuleId)));
             }
         }
 
