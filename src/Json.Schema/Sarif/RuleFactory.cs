@@ -17,7 +17,7 @@ namespace Microsoft.Json.Schema.Sarif
 
         private static Rule MakeRule(ErrorNumber errorNumber, string fullDescription, string messageFormat)
         {
-            string messageFormatWithPath = "at {0}" + messageFormat;
+            string messageFormatWithPath = string.Format(CultureInfo.CurrentCulture, Resources.ErrorMessageFormatWithPath, messageFormat);
 
             return new Rule
             {

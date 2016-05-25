@@ -292,4 +292,7 @@
   <data name="RuleDescriptionWrongType" xml:space="preserve">
     <value>An instance has a type that is not permitted by the schema's 'type' property.</value>
   </data>
+  <data name="ErrorMessageFormatWithPath" xml:space="preserve">
+    <value>at '{{0}}': {0}</value>
+  </data>
 </root>

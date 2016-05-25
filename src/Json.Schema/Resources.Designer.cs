@@ -124,6 +124,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to at &apos;{{0}}&apos;: {0}.
+        /// </summary>
+        internal static string ErrorMessageFormatWithPath {
+            get {
+                return ResourceManager.GetString("ErrorMessageFormatWithPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The instance does not validate successfully against all of the {1} schemas specified by &apos;allOf&apos;..
         /// </summary>
         internal static string ErrorNotAllOf {
