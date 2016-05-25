@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CommandLine;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.Json.Schema.Sarif;
 using Microsoft.Json.Schema.Validation;
@@ -20,25 +21,26 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
         {
             Banner();
 
+            return Parser.Default.ParseArguments<Options>(args)
+                .MapResult(
+                    options => Run(options),
+                    err => 1);
+        }
+
+        private static int Run(Options options)
+        {
             int exitCode = 1;
 
-            if (args.Length == 2)
-            {
-                DateTime start = DateTime.Now;
-                exitCode = Validate(args[0], args[1]);
+            DateTime start = DateTime.Now;
+            exitCode = Validate(options.InstanceFilePath, options.InstanceFilePath);
 
-                if (exitCode == 0)
-                {
-                    TimeSpan elapsedTime = DateTime.Now - start;
-
-                    // Tool notification
-                    Console.WriteLine(
-                        string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime));
-                }
-            }
-            else
+            if (exitCode == 0)
             {
-                Console.Error.WriteLine("usage: JsonSchemaValidator <instanceFile> <schemaFile>");
+                TimeSpan elapsedTime = DateTime.Now - start;
+
+                // Tool notification
+                Console.WriteLine(
+                    string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime));
             }
 
             return exitCode;
