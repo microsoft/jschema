@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.Json.Schema.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -569,7 +570,7 @@ namespace Microsoft.Json.Schema.Validation
 
         private void AddMessage(JToken jToken, ErrorNumber errorNumber, params object[] args)
         {
-            var error = new Error(jToken, errorNumber, args);
+            var error = ResultFactory.CreateResult(jToken, errorNumber, args);
             _messages.Add(error.Message);
         }
     }

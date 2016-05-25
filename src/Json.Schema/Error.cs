@@ -5,59 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
-    public class Error
+    public static class Error
     {
         internal const string RootTokenPath = "root";
         private const string ErrorCodeFormat = "JS{0:D4}";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Error"/> class.
-        /// </summary>
-        /// <param name="jToken">
-        /// The <see cref="JToken"/> on which the error was encountered.
-        /// </param>
-        /// <param name="errorNumber">
-        /// The error number.
-        /// </param>
-        /// <param name="args">
-        /// Arguments used in combination with the error number to produce a
-        /// formatted error message.
-        /// </param>
-        public Error(JToken jToken, ErrorNumber errorNumber, params object[] args)
-        {
-            IJsonLineInfo lineInfo = jToken;
-
-            RuleId = string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
-            StartLine = lineInfo.LineNumber;
-            StartColumn = lineInfo.LinePosition;
-            Path = jToken.Path;
-            ErrorNumber = errorNumber;
-
-            string messageFormat = s_errorNumberToMessageDictionary[errorNumber];
-            ResultMessage = string.Format(CultureInfo.CurrentCulture, messageFormat, args);
-
-            Message = Format(lineInfo.LineNumber, lineInfo.LinePosition, jToken.Path, errorNumber, args);
-        }
-
-        public string RuleId { get; }
-
-        public int StartLine { get; }
-
-        public int StartColumn { get; }
-
-        public string Path { get; }
-
-        public ErrorNumber ErrorNumber { get; }
-
-        // TODO: Get rid of Message, and rename this to Message.
-        public string ResultMessage { get; }
-
-        public string Message { get; }
 
         internal static readonly ImmutableDictionary<ErrorNumber, string> s_errorNumberToMessageDictionary = ImmutableDictionary.CreateRange(
             new Dictionary<ErrorNumber, string>

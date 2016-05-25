@@ -3,11 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.CodeAnalysis.Sarif;
-using Newtonsoft.Json;
+using Microsoft.Json.Schema.Sarif;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
@@ -17,8 +16,6 @@ namespace Microsoft.Json.Schema
     /// </summary>
     public class InvalidSchemaException : Exception
     {
-        private const string ErrorCodeFormat = "JS{0:D4}";
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidSchemaException"/> class.
         /// </summary>
@@ -83,7 +80,7 @@ namespace Microsoft.Json.Schema
         /// an error message.
         /// </param>
         public InvalidSchemaException(JToken jToken, ErrorNumber errorNumber, params object[] args)
-            : this(MakeResult(jToken, errorNumber, args))
+            : this(ResultFactory.CreateResult(jToken, errorNumber, args))
         {
         }
 
@@ -112,44 +109,6 @@ namespace Microsoft.Json.Schema
             Results = errors.ToList();
         }
 
-        private static Result MakeResult(JToken jToken, ErrorNumber errorNumber, object[] args)
-        {
-            IJsonLineInfo lineInfo = jToken;
-
-            string messageFormat = Error.s_errorNumberToMessageDictionary[errorNumber];
-
-            var result = new Result
-            {
-                RuleId = RuleIdFromErrorNumber(errorNumber),
-                Locations = new List<Location>
-                {
-                    new Location
-                    {
-                        ResultFile = new PhysicalLocation
-                        {
-                            Uri = new Uri("file:///C:/test", UriKind.Absolute),
-                            Region = new Region
-                            {
-                                StartLine = lineInfo.LineNumber,
-                                StartColumn = lineInfo.LinePosition
-                            }
-                        }
-                    }
-                },
-
-                Message = string.Format(CultureInfo.CurrentCulture, messageFormat, args)
-            };
-
-            result.SetProperty("jsonPath", jToken.Path);
-
-            return result;
-        }
-
-        private static string RuleIdFromErrorNumber(ErrorNumber errorNumber)
-        {
-            return string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
-        }
-
         /// <summary>
         /// Gets the list of errors encountered while reading a JSON schema.
         /// </summary>
@@ -167,10 +126,10 @@ namespace Microsoft.Json.Schema
 
         private static readonly Dictionary<string, Rule> s_ruleDictionary = new Dictionary<string, Rule>
         {
-            [RuleIdFromErrorNumber(ErrorNumber.NotAString)] =
+            [ResultFactory.RuleIdFromErrorNumber(ErrorNumber.NotAString)] =
             new Rule
             {
-                Id = RuleIdFromErrorNumber(ErrorNumber.NotAString),
+                Id = ResultFactory.RuleIdFromErrorNumber(ErrorNumber.NotAString),
                 DefaultLevel = ResultLevel.Error,
                 Name = "NotAString",
                 FullDescription = "A schema property that is required to be a string is not a string.",
@@ -180,10 +139,10 @@ namespace Microsoft.Json.Schema
                 }
             },
 
-            [RuleIdFromErrorNumber(ErrorNumber.InvalidAdditionalPropertiesType)] =
+            [ResultFactory.RuleIdFromErrorNumber(ErrorNumber.InvalidAdditionalPropertiesType)] =
             new Rule
             {
-                Id = RuleIdFromErrorNumber(ErrorNumber.NotAString),
+                Id = ResultFactory.RuleIdFromErrorNumber(ErrorNumber.NotAString),
                 DefaultLevel = ResultLevel.Error,
                 Name = "InvalidAdditionalPropertiesType",
                 FullDescription = "The value of the additionalProperties schema property is neither a boolean nor an object.",
@@ -193,10 +152,10 @@ namespace Microsoft.Json.Schema
                 }
             },
 
-            [RuleIdFromErrorNumber(ErrorNumber.InvalidTypeType)] =
+            [ResultFactory.RuleIdFromErrorNumber(ErrorNumber.InvalidTypeType)] =
             new Rule
             {
-                Id = RuleIdFromErrorNumber(ErrorNumber.InvalidTypeType),
+                Id = ResultFactory.RuleIdFromErrorNumber(ErrorNumber.InvalidTypeType),
                 DefaultLevel = ResultLevel.Error,
                 Name = "InvalidTypeType",
                 FullDescription = "The value of the type schema property is neither an object nor an array of objects.",

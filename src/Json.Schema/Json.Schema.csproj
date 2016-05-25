@@ -67,6 +67,7 @@
     <Compile Include="JsonSchema.cs" />
     <Compile Include="JsonSchemaContractResolver.cs" />
     <Compile Include="ErrorNumber.cs" />
+    <Compile Include="Sarif\ResultFactory.cs" />
     <Compile Include="SchemaType.cs" />
     <Compile Include="SchemaTypeConverter.cs" />
     <Compile Include="JTokenTypeExtensions.cs" />
