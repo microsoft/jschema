@@ -13,6 +13,7 @@ namespace Microsoft.Json.Schema
     public class Error
     {
         internal const string RootTokenPath = "root";
+        private const string ErrorCodeFormat = "JS{0:D4}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Error"/> class.
@@ -31,12 +32,32 @@ namespace Microsoft.Json.Schema
         {
             IJsonLineInfo lineInfo = jToken;
 
+            RuleId = string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
+            StartLine = lineInfo.LineNumber;
+            StartColumn = lineInfo.LinePosition;
+            Path = jToken.Path;
+            ErrorNumber = errorNumber;
+
+            string messageFormat = s_errorNumberToMessageDictionary[errorNumber];
+            ResultMessage = string.Format(CultureInfo.CurrentCulture, messageFormat, args);
+
             Message = Format(lineInfo.LineNumber, lineInfo.LinePosition, jToken.Path, errorNumber, args);
         }
 
-        public string Message { get; }
+        public string RuleId { get; }
 
-        private const string ErrorCodeFormat = "JS{0:D4}";
+        public int StartLine { get; }
+
+        public int StartColumn { get; }
+
+        public string Path { get; }
+
+        public ErrorNumber ErrorNumber { get; }
+
+        // TODO: Get rid of Message, and rename this to Message.
+        public string ResultMessage { get; }
+
+        public string Message { get; }
 
         private static readonly ImmutableDictionary<ErrorNumber, string> s_errorNumberToMessageDictionary = ImmutableDictionary.CreateRange(
             new Dictionary<ErrorNumber, string>
