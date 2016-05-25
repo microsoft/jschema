@@ -88,11 +88,11 @@ namespace Microsoft.Json.Schema
         /// Initializes a new instance of the <see cref="InvalidSchemaException"/> class
         /// with an error encountered while reading a JSON schema.
         /// </summary>
-        /// <param name="error">
+        /// <param name="result">
         /// An error encountered while reading a JSON schema.
         /// </param>
-        public InvalidSchemaException(Result error)
-            : this(new[] { error })
+        public InvalidSchemaException(Result result)
+            : this(new[] { result })
         {
         }
 
@@ -100,13 +100,13 @@ namespace Microsoft.Json.Schema
         /// Initializes a new instance of the <see cref="InvalidSchemaException"/> class
         /// with a list of errors encountered while reading a JSON schema.
         /// </summary>
-        /// <param name="errors">
+        /// <param name="results">
         /// The list of errors encountered while reading a JSON schema.
         /// </param>
-        public InvalidSchemaException(IEnumerable<Result> errors)
-            : base(FormatMessage(errors))
+        public InvalidSchemaException(IEnumerable<Result> results)
+            : base(FormatMessage(results))
         {
-            Results = errors.ToList();
+            Results = results.ToList();
         }
 
         /// <summary>
@@ -114,57 +114,12 @@ namespace Microsoft.Json.Schema
         /// </summary>
         public List<Result> Results { get; }
 
-        private static string FormatMessage(IEnumerable<Result> errors)
+        private static string FormatMessage(IEnumerable<Result> results)
         {
-            return string.Join("\n", errors.Select(e => e.FormatForVisualStudio(s_ruleDictionary[e.RuleId])));
+            return string.Join(
+                "\n",
+                results.Select(
+                    r => r.FormatForVisualStudio(RuleFactory.GetRuleFromRuleId(r.RuleId))));
         }
-
-        // TODO: Make list immutable
-        // TODO: Put strings in resources
-
-        private const string DefaultMessageFormatId = "default";
-
-        private static readonly Dictionary<string, Rule> s_ruleDictionary = new Dictionary<string, Rule>
-        {
-            [ResultFactory.RuleIdFromErrorNumber(ErrorNumber.NotAString)] =
-            new Rule
-            {
-                Id = ResultFactory.RuleIdFromErrorNumber(ErrorNumber.NotAString),
-                DefaultLevel = ResultLevel.Error,
-                Name = "NotAString",
-                FullDescription = "A schema property that is required to be a string is not a string.",
-                MessageFormats = new Dictionary<string, string>
-                {
-                    [DefaultMessageFormatId] = Resources.ErrorNotAString
-                }
-            },
-
-            [ResultFactory.RuleIdFromErrorNumber(ErrorNumber.InvalidAdditionalPropertiesType)] =
-            new Rule
-            {
-                Id = ResultFactory.RuleIdFromErrorNumber(ErrorNumber.NotAString),
-                DefaultLevel = ResultLevel.Error,
-                Name = "InvalidAdditionalPropertiesType",
-                FullDescription = "The value of the additionalProperties schema property is neither a boolean nor an object.",
-                MessageFormats = new Dictionary<string, string>
-                {
-                    [DefaultMessageFormatId] = Resources.ErrorInvalidAdditionalProperties
-                }
-            },
-
-            [ResultFactory.RuleIdFromErrorNumber(ErrorNumber.InvalidTypeType)] =
-            new Rule
-            {
-                Id = ResultFactory.RuleIdFromErrorNumber(ErrorNumber.InvalidTypeType),
-                DefaultLevel = ResultLevel.Error,
-                Name = "InvalidTypeType",
-                FullDescription = "The value of the type schema property is neither an object nor an array of objects.",
-                MessageFormats = new Dictionary<string, string>
-                {
-                    [DefaultMessageFormatId] = Resources.ErrorInvalidAdditionalProperties
-                }
-            },
-
-        };
     }
 }

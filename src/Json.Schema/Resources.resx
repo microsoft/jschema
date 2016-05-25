@@ -123,7 +123,7 @@
   <data name="ErrorDefinitionDoesNotExist" xml:space="preserve">
     <value>This schema does not contain the sub-schema definition referred to by the $ref value '{0}'.</value>
   </data>
-  <data name="ErrorInvalidAdditionalProperties" xml:space="preserve">
+  <data name="ErrorInvalidAdditionalPropertiesType" xml:space="preserve">
     <value>JSON schema requires the value of "additionalProperties" to be either a Boolean or a schema, but a token of type {0} was seen.</value>
   </data>
   <data name="ErrorNotAllOf" xml:space="preserve">

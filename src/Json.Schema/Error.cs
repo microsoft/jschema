@@ -17,7 +17,7 @@ namespace Microsoft.Json.Schema
             new Dictionary<ErrorNumber, string>
             {
                 [ErrorNumber.NotAString] = Resources.ErrorNotAString,
-                [ErrorNumber.InvalidAdditionalPropertiesType] = Resources.ErrorInvalidAdditionalProperties,
+                [ErrorNumber.InvalidAdditionalPropertiesType] = Resources.ErrorInvalidAdditionalPropertiesType,
                 [ErrorNumber.InvalidTypeType] = Resources.ErrorInvalidTypeType,
                 [ErrorNumber.InvalidTypeString] = Resources.ErrorInvalidTypeString,
                 [ErrorNumber.WrongType] = Resources.ErrorWrongType,

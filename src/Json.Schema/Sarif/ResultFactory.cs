@@ -10,11 +10,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.Sarif
 {
-    public partial class ResultFactory
+    internal partial class ResultFactory
     {
         private const string ErrorCodeFormat = "JS{0:D4}";
 
-        public static Result CreateResult(JToken jToken, ErrorNumber errorNumber, object[] args)
+        internal static Result CreateResult(JToken jToken, ErrorNumber errorNumber, object[] args)
         {
             IJsonLineInfo lineInfo = jToken;
 
