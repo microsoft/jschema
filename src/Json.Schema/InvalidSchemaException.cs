@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
@@ -105,12 +106,46 @@ namespace Microsoft.Json.Schema
             : base(FormatMessage(errors))
         {
             Errors = errors.ToList();
+            Results = errors.Select(ResultFromError).ToList();
+        }
+
+        private Result ResultFromError(Error error)
+        {
+            var result = new Result
+            {
+                RuleId = error.RuleId,
+                Locations = new List<Location>
+                {
+                    new Location
+                    {
+                        ResultFile = new PhysicalLocation
+                        {
+                            Region = new Region
+                            {
+                                StartLine = error.StartLine,
+                                StartColumn = error.StartColumn
+                            }
+                        }
+                    }
+                },
+
+                Message = error.ResultMessage,
+            };
+
+            result.SetProperty("jsonPath", error.Path);
+
+            return result;
         }
 
         /// <summary>
         /// Gets the list of errors encountered while reading a JSON schema.
         /// </summary>
         public List<Error> Errors { get; }
+
+        /// <summary>
+        /// Gets the list of errors encountered while reading a JSON schema.
+        /// </summary>
+        public List<Result> Results { get; }
 
         private static string FormatMessage(IEnumerable<Error> errors)
         {
