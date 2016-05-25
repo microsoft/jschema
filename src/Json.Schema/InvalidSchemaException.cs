@@ -153,11 +153,6 @@ namespace Microsoft.Json.Schema
         /// <summary>
         /// Gets the list of errors encountered while reading a JSON schema.
         /// </summary>
-        public List<Error> Errors { get; }
-
-        /// <summary>
-        /// Gets the list of errors encountered while reading a JSON schema.
-        /// </summary>
         public List<Result> Results { get; }
 
         private static string FormatMessage(IEnumerable<Result> errors)
