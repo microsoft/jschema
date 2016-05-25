@@ -954,34 +954,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             ErrorNumber errorNumber,
             params object[] args)
         {
-            var messageArguments = new List<string> { jsonPath };
-            messageArguments.AddRange(args.Select(a => a.ToString()));
-
-            var result = new Result
-            {
-                RuleId = ResultFactory.RuleIdFromErrorNumber(errorNumber),
-                Locations = new List<Location>
-                {
-                    new Location
-                    {
-                        AnalysisTarget = new PhysicalLocation
-                        {
-                            Uri = ResultFactory.TestFileUri,
-                            Region = new Region
-                            {
-                                StartLine = startLine,
-                                StartColumn = startColumn
-                            }
-                        }
-                    }
-                },
-
-                FormattedRuleMessage = new FormattedRuleMessage
-                {
-                    FormatId = RuleFactory.DefaultMessageFormatId,
-                    Arguments = messageArguments
-                }
-            };
+            var result = ResultFactory.CreateResult(startLine, startColumn, jsonPath, errorNumber, args);
 
             return result.FormatForVisualStudio(RuleFactory.GetRuleFromErrorNumber(errorNumber));
         }

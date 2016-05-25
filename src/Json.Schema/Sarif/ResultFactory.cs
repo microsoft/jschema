@@ -21,12 +21,30 @@ namespace Microsoft.Json.Schema.Sarif
         {
             IJsonLineInfo lineInfo = jToken;
 
-            var messageArguments = new List<string> { jToken.Path };
+            return CreateResult(
+                lineInfo.LineNumber,
+                lineInfo.LinePosition,
+                jToken.Path,
+                errorNumber,
+                args);
+        }
+
+        internal static Result CreateResult(
+            int startLine,
+            int startColumn,
+            string jsonPath,
+            ErrorNumber errorNumber,
+            params object[] args)
+        {
+            Rule rule = RuleFactory.GetRuleFromErrorNumber(errorNumber);
+
+            var messageArguments = new List<string> { jsonPath };
             messageArguments.AddRange(args.Select(a => a.ToString()));
 
             var result = new Result
             {
-                RuleId = RuleIdFromErrorNumber(errorNumber),
+                RuleId = rule.Id,
+                Level = rule.DefaultLevel,
                 Locations = new List<Location>
                 {
                     new Location
@@ -36,8 +54,8 @@ namespace Microsoft.Json.Schema.Sarif
                             Uri = TestFileUri,
                             Region = new Region
                             {
-                                StartLine = lineInfo.LineNumber,
-                                StartColumn = lineInfo.LinePosition
+                                StartLine = startLine,
+                                StartColumn = startColumn
                             }
                         }
                     }
@@ -50,7 +68,7 @@ namespace Microsoft.Json.Schema.Sarif
                 }
             };
 
-            result.SetProperty("jsonPath", jToken.Path);
+            result.SetProperty("jsonPath", jsonPath);
 
             return result;
         }
