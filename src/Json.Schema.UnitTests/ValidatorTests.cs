@@ -941,9 +941,14 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
         {
             JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
             var target = new Validator(schema);
-            Result[] actualMessages = target.Validate(test.InstanceText);
+            Result[] results = target.Validate(test.InstanceText);
 
-            actualMessages.Length.Should().Be(test.ExpectedMessages.Length);
+            results.Length.Should().Be(test.ExpectedMessages.Length);
+
+            List<string> actualMessages = results.Select(
+                r => r.FormatForVisualStudio(
+                    RuleFactory.GetRuleFromRuleId(r.RuleId))).ToList();
+            
             actualMessages.Should().ContainInOrder(test.ExpectedMessages);
         }
 
