@@ -1,7 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
+using Microsoft.CodeAnalysis.Sarif;
+using Microsoft.Json.Schema.Sarif;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;
@@ -87,7 +91,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maxItems"": 4
                 }",
                 "[ 1, 2, 3, 4, 5 ]",
-                Error.Format(1, 1, string.Empty, ErrorNumber.TooManyArrayItems, 4, 5)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.TooManyArrayItems, 4, 5)
                 ),
 
             new TestCase(
@@ -106,7 +110,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minItems"": 2
                 }",
                 "[ 1 ]",
-                Error.Format(1, 1, string.Empty, ErrorNumber.TooFewArrayItems, 2, 1)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.TooFewArrayItems, 2, 1)
                 ),
 
             new TestCase(
@@ -143,7 +147,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maxLength"": 2
                 }",
                 "\"abc\"",
-                Error.Format(1, 5, string.Empty, ErrorNumber.StringTooLong, "abc", 3, 2)
+                MakeErrorMessage(1, 5, string.Empty, ErrorNumber.StringTooLong, "abc", 3, 2)
                 ),
 
             new TestCase(
@@ -162,7 +166,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minLength"": 2
                 }",
                 "\"a\"",
-                Error.Format(1, 3, string.Empty, ErrorNumber.StringTooShort, "a", 1, 2)
+                MakeErrorMessage(1, 3, string.Empty, ErrorNumber.StringTooShort, "a", 1, 2)
                 ),
 
             new TestCase(
@@ -181,7 +185,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""pattern"": ""\\d{3}""
                 }",
                 "\"a12b\"",
-                Error.Format(1, 6, string.Empty, ErrorNumber.StringDoesNotMatchPattern, "a12b", @"\d{3}")
+                MakeErrorMessage(1, 6, string.Empty, ErrorNumber.StringDoesNotMatchPattern, "a12b", @"\d{3}")
                 ),
 
             new TestCase(
@@ -199,7 +203,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""multipleOf"": 2
                 }",
                 "5",
-                Error.Format(1, 1, string.Empty, ErrorNumber.NotAMultiple, 5, 2)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.NotAMultiple, 5, 2)
                 ),
 
             new TestCase(
@@ -217,7 +221,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""multipleOf"": 2.0
                 }",
                 "4.001",
-                Error.Format(1, 5, string.Empty, ErrorNumber.NotAMultiple, 4.001, 2.0)
+                MakeErrorMessage(1, 5, string.Empty, ErrorNumber.NotAMultiple, 4.001, 2.0)
                 ),
 
             new TestCase(
@@ -235,7 +239,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maximum"": 1
                 }",
                 "2",
-                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooLarge, 2, 1)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.ValueTooLarge, 2, 1)
                 ),
 
             new TestCase(
@@ -253,7 +257,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""maximum"": 3.14
                 }",
                 "3.2",
-                Error.Format(1, 3, string.Empty, ErrorNumber.ValueTooLarge, 3.2, 3.14)
+                MakeErrorMessage(1, 3, string.Empty, ErrorNumber.ValueTooLarge, 3.2, 3.14)
                 ),
 
             new TestCase(
@@ -273,7 +277,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMaximum"": true
                 }",
                 "1",
-                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooLargeExclusive, 1, 1)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.ValueTooLargeExclusive, 1, 1)
                 ),
 
             new TestCase(
@@ -293,7 +297,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMaximum"": true
                 }",
                 "3.14",
-                Error.Format(1, 4, string.Empty, ErrorNumber.ValueTooLargeExclusive, 3.14, 3.14)
+                MakeErrorMessage(1, 4, string.Empty, ErrorNumber.ValueTooLargeExclusive, 3.14, 3.14)
                 ),
 
             new TestCase(
@@ -311,7 +315,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minimum"": 1
                 }",
                 "0",
-                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooSmall, 0, 1)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.ValueTooSmall, 0, 1)
                 ),
 
             new TestCase(
@@ -329,7 +333,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""minimum"": 3.14
                 }",
                 "3.13",
-                Error.Format(1, 4, string.Empty, ErrorNumber.ValueTooSmall, 3.13, 3.14)
+                MakeErrorMessage(1, 4, string.Empty, ErrorNumber.ValueTooSmall, 3.13, 3.14)
                 ),
 
             new TestCase(
@@ -349,7 +353,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMinimum"": true
                 }",
                 "1",
-                Error.Format(1, 1, string.Empty, ErrorNumber.ValueTooSmallExclusive, 1, 1)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.ValueTooSmallExclusive, 1, 1)
                 ),
 
             new TestCase(
@@ -369,7 +373,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                   ""exclusiveMinimum"": true
                 }",
                 "3.14",
-                Error.Format(1, 4, string.Empty, ErrorNumber.ValueTooSmallExclusive, 3.14, 3.14)
+                MakeErrorMessage(1, 4, string.Empty, ErrorNumber.ValueTooSmallExclusive, 3.14, 3.14)
                 ),
 
             new TestCase(
@@ -396,7 +400,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 1,
   ""b"": 2
 }",
-                Error.Format(1, 1, string.Empty, ErrorNumber.TooManyProperties, 1, 2)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.TooManyProperties, 1, 2)
                 ),
 
             new TestCase(
@@ -423,7 +427,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
   ""a"": 1
 }",
-                Error.Format(1, 1, string.Empty, ErrorNumber.TooFewProperties, 2, 1)
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.TooFewProperties, 2, 1)
                 ),
 
             new TestCase(
@@ -462,7 +466,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": {}
 }",
-                Error.Format(3, 7, "b", ErrorNumber.AdditionalPropertiesProhibited, "b")
+                MakeErrorMessage(3, 7, "b", ErrorNumber.AdditionalPropertiesProhibited, "b")
                 ),
 
             new TestCase(
@@ -523,7 +527,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": ""false""
 }",
-                Error.Format(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
+                MakeErrorMessage(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -550,7 +554,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": ""false""
 }",
-                Error.Format(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
+                MakeErrorMessage(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -574,7 +578,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
     ""x"": 3
   }
 }",
-                Error.Format(3, 11, "a.x", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.Integer)
+                MakeErrorMessage(3, 11, "a.x", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.Integer)
                 ),
 
             new TestCase(
@@ -619,7 +623,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a32&o"": ""foobar"",
   ""apple"": ""pie""
 }",
-                Error.Format(4, 20, "a32&o", ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
+                MakeErrorMessage(4, 20, "a32&o", ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -644,8 +648,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""fiddle"": 42,
   ""apple"": ""pie""
 }",
-                Error.Format(5, 6, "", ErrorNumber.AdditionalPropertiesProhibited, ""),
-                Error.Format(6, 12, "fiddle", ErrorNumber.AdditionalPropertiesProhibited, "fiddle")
+                MakeErrorMessage(5, 6, "", ErrorNumber.AdditionalPropertiesProhibited, ""),
+                MakeErrorMessage(6, 12, "fiddle", ErrorNumber.AdditionalPropertiesProhibited, "fiddle")
                 ),
 
             new TestCase(
@@ -667,8 +671,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
     ""b"": true
 }",
-                Error.Format(1, 1, string.Empty, ErrorNumber.RequiredPropertyMissing, "a"),
-                Error.Format(1, 1, string.Empty, ErrorNumber.RequiredPropertyMissing, "c")
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.RequiredPropertyMissing, "a"),
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.RequiredPropertyMissing, "c")
                 ),
 
             new TestCase(
@@ -700,8 +704,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
     ""y"": 2
   }
 }",
-                Error.Format(2, 9, "a", ErrorNumber.RequiredPropertyMissing, "x"),
-                Error.Format(2, 9, "a", ErrorNumber.RequiredPropertyMissing, "z")
+                MakeErrorMessage(2, 9, "a", ErrorNumber.RequiredPropertyMissing, "x"),
+                MakeErrorMessage(2, 9, "a", ErrorNumber.RequiredPropertyMissing, "z")
                 ),
 
             new TestCase(
@@ -714,7 +718,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "type: Non-integer instance does not match integer schema",
                 @"{ ""type"": ""integer"" }",
                 "\"s\"",
-                Error.Format(1, 3, string.Empty, ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
+                MakeErrorMessage(1, 3, string.Empty, ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -727,7 +731,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "type: Non-array instance does not match array schema",
                  @"{ ""type"": ""array"" }",
                 "true",
-                Error.Format(1, 4, string.Empty, ErrorNumber.WrongType, SchemaType.Array, JTokenType.Boolean)
+                MakeErrorMessage(1, 4, string.Empty, ErrorNumber.WrongType, SchemaType.Array, JTokenType.Boolean)
                 ),
 
             new TestCase(
@@ -768,7 +772,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
   ""a"": ""true""
 }",
-                Error.Format(2, 14, "a", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
+                MakeErrorMessage(2, 14, "a", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -789,7 +793,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"4",
-                Error.Format(1, 1, string.Empty, ErrorNumber.InvalidEnumValue, "4", "1, 2, 3")
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.InvalidEnumValue, "4", "1, 2, 3")
                 ),
 
             // Anything from here on down is not covered by the JSON-Schema-Test-Suite.
@@ -814,7 +818,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"4.0",
-                Error.Format(1, 3, string.Empty, ErrorNumber.InvalidEnumValue, "4", "1.01, 2, 3")
+                MakeErrorMessage(1, 3, string.Empty, ErrorNumber.InvalidEnumValue, "4", "1.01, 2, 3")
                 ),
 
             new TestCase(
@@ -835,7 +839,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"false",
-                Error.Format(1, 5, string.Empty, ErrorNumber.InvalidEnumValue, "false", "true")
+                MakeErrorMessage(1, 5, string.Empty, ErrorNumber.InvalidEnumValue, "false", "true")
                 ),
 
             new TestCase(
@@ -856,7 +860,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"[3, 6]",
-                Error.Format(1, 1, string.Empty, ErrorNumber.InvalidEnumValue, "[3, 6]", "[1, 2], [3, 4], [5, 6]")
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.InvalidEnumValue, "[3, 6]", "[1, 2], [3, 4], [5, 6]")
                 ),
 
             new TestCase(
@@ -875,7 +879,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 @"null",
-                Error.Format(1, 4, string.Empty, ErrorNumber.InvalidEnumValue, "null", "1, 2")
+                MakeErrorMessage(1, 4, string.Empty, ErrorNumber.InvalidEnumValue, "null", "1, 2")
             ),
 
             new TestCase(
@@ -898,7 +902,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 "42",
-                Error.Format(1, 2, string.Empty, ErrorNumber.ValidatesAgainstNotSchema)
+                MakeErrorMessage(1, 2, string.Empty, ErrorNumber.ValidatesAgainstNotSchema)
                 ),
 
             new TestCase(
@@ -915,7 +919,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 "42",
-                Error.Format(1, 2, string.Empty, ErrorNumber.ValidatesAgainstNotSchema)
+                MakeErrorMessage(1, 2, string.Empty, ErrorNumber.ValidatesAgainstNotSchema)
                 ),
 
             // This test shows that the validator accepts a JTokenType of Date for
@@ -941,6 +945,45 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 
             actualMessages.Length.Should().Be(test.ExpectedMessages.Length);
             actualMessages.Should().ContainInOrder(test.ExpectedMessages);
+        }
+
+        private static string MakeErrorMessage(
+            int startLine,
+            int startColumn,
+            string jsonPath,
+            ErrorNumber errorNumber,
+            params object[] args)
+        {
+            var messageArguments = new List<string> { jsonPath };
+            messageArguments.AddRange(args.Select(a => a.ToString()));
+
+            var result = new Result
+            {
+                RuleId = ResultFactory.RuleIdFromErrorNumber(errorNumber),
+                Locations = new List<Location>
+                {
+                    new Location
+                    {
+                        AnalysisTarget = new PhysicalLocation
+                        {
+                            Uri = ResultFactory.TestFileUri,
+                            Region = new Region
+                            {
+                                StartLine = startLine,
+                                StartColumn = startColumn
+                            }
+                        }
+                    }
+                },
+
+                FormattedRuleMessage = new FormattedRuleMessage
+                {
+                    FormatId = RuleFactory.DefaultMessageFormatId,
+                    Arguments = messageArguments
+                }
+            };
+
+            return result.FormatForVisualStudio(RuleFactory.GetRuleFromErrorNumber(errorNumber));
         }
     }
 }

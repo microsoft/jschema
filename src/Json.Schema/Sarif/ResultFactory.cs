@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,11 +15,14 @@ namespace Microsoft.Json.Schema.Sarif
     {
         private const string ErrorCodeFormat = "JS{0:D4}";
 
+        internal static readonly Uri TestFileUri = new Uri("file:///C:/test", UriKind.Absolute);
+
         internal static Result CreateResult(JToken jToken, ErrorNumber errorNumber, object[] args)
         {
             IJsonLineInfo lineInfo = jToken;
 
-            string messageFormat = Error.s_errorNumberToMessageDictionary[errorNumber];
+            var messageArguments = new List<string> { jToken.Path };
+            messageArguments.AddRange(args.Select(a => a.ToString()));
 
             var result = new Result
             {
@@ -29,7 +33,7 @@ namespace Microsoft.Json.Schema.Sarif
                     {
                         ResultFile = new PhysicalLocation
                         {
-                            Uri = new Uri("file:///C:/test", UriKind.Absolute),
+                            Uri = TestFileUri,
                             Region = new Region
                             {
                                 StartLine = lineInfo.LineNumber,
@@ -39,7 +43,11 @@ namespace Microsoft.Json.Schema.Sarif
                     }
                 },
 
-                Message = string.Format(CultureInfo.CurrentCulture, messageFormat, args)
+                FormattedRuleMessage = new FormattedRuleMessage
+                {
+                    FormatId = RuleFactory.DefaultMessageFormatId,
+                    Arguments = messageArguments
+                }
             };
 
             result.SetProperty("jsonPath", jToken.Path);

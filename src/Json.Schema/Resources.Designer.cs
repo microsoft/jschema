@@ -61,7 +61,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema does not define a property named &apos;{0}&apos;, and the schema does not permit additional properties..
+        ///   Looks up a localized string similar to The schema does not define a property named &apos;{1}&apos;, and the schema does not permit additional properties..
         /// </summary>
         internal static string ErrorAdditionalPropertiesProhibited {
             get {
@@ -79,7 +79,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSON schema requires the value of &quot;additionalProperties&quot; to be either a Boolean or a schema, but a token of type {0} was seen..
+        ///   Looks up a localized string similar to JSON schema requires the value of &quot;additionalProperties&quot; to be either a Boolean or a schema, but a token of type {1} was seen..
         /// </summary>
         internal static string ErrorInvalidAdditionalPropertiesType {
             get {
@@ -88,7 +88,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match any of the enum values [{1}]..
+        ///   Looks up a localized string similar to The value &apos;{1}&apos; does not match any of the enum values [{2}]..
         /// </summary>
         internal static string ErrorInvalidEnumValue {
             get {
@@ -106,7 +106,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid schema type..
+        ///   Looks up a localized string similar to &apos;{1}&apos; is not a valid schema type..
         /// </summary>
         internal static string ErrorInvalidTypeString {
             get {
@@ -115,7 +115,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSON schema requires the value of &quot;type&quot; to be either a string or an array of strings, but a token of type {0} was seen..
+        ///   Looks up a localized string similar to JSON schema requires the value of &quot;type&quot; to be either a string or an array of strings, but a token of type {1} was seen..
         /// </summary>
         internal static string ErrorInvalidTypeType {
             get {
@@ -124,7 +124,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance does not validate successfully against all of the {0} schemas specified by &apos;allOf&apos;..
+        ///   Looks up a localized string similar to The instance does not validate successfully against all of the {1} schemas specified by &apos;allOf&apos;..
         /// </summary>
         internal static string ErrorNotAllOf {
             get {
@@ -133,7 +133,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is not a multiple of {1}..
+        ///   Looks up a localized string similar to The value {1} is not a multiple of {2}..
         /// </summary>
         internal static string ErrorNotAMultiple {
             get {
@@ -142,7 +142,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance does validate successfully against any of the {0} schemas specified by &apos;anyOf&apos;..
+        ///   Looks up a localized string similar to The instance does validate successfully against any of the {1} schemas specified by &apos;anyOf&apos;..
         /// </summary>
         internal static string ErrorNotAnyOf {
             get {
@@ -151,7 +151,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The property is required to be a string, but the token is of type {0}..
+        ///   Looks up a localized string similar to The property is required to be a string, but the token is of type {1}..
         /// </summary>
         internal static string ErrorNotAString {
             get {
@@ -160,7 +160,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance validates successfully against {0} of the {1} schemas specified by &apos;oneOf&apos;, instead of validating successfully against exactly one of them..
+        ///   Looks up a localized string similar to The instance validates successfully against {1} of the {2} schemas specified by &apos;oneOf&apos;, instead of validating successfully against exactly one of them..
         /// </summary>
         internal static string ErrorNotOneOf {
             get {
@@ -187,7 +187,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The required property &apos;{0}&apos; is missing..
+        ///   Looks up a localized string similar to The required property &apos;{1}&apos; is missing..
         /// </summary>
         internal static string ErrorRequiredPropertyMissing {
             get {
@@ -196,7 +196,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string &apos;{0}&apos; does not match the regular expression &apos;{1}&apos;..
+        ///   Looks up a localized string similar to The string &apos;{1}&apos; does not match the regular expression &apos;{2}&apos;..
         /// </summary>
         internal static string ErrorStringDoesNotMatchPattern {
             get {
@@ -205,7 +205,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is greater than the maximum length {2}.
+        ///   Looks up a localized string similar to The string &apos;{1}&apos; has length {2}, which is greater than the maximum length {3}.
         ///.
         /// </summary>
         internal static string ErrorStringTooLong {
@@ -215,7 +215,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The string &apos;{0}&apos; has length {1}, which is less than the minimum length {2}..
+        ///   Looks up a localized string similar to The string &apos;{1}&apos; has length {2}, which is less than the minimum length {3}..
         /// </summary>
         internal static string ErrorStringTooShort {
             get {
@@ -224,7 +224,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires at least {0} array items, but there are {1}..
+        ///   Looks up a localized string similar to The schema requires at least {1} array items, but there are {2}..
         /// </summary>
         internal static string ErrorTooFewArrayItems {
             get {
@@ -233,7 +233,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The array has {0} items, but the array of schemas specified by  &apos;items&apos; has only {1} items, and &apos;additionalItems&apos; is not specified to allow additional array items..
+        ///   Looks up a localized string similar to The array has {1} items, but the array of schemas specified by  &apos;items&apos; has only {2} items, and &apos;additionalItems&apos; is not specified to allow additional array items..
         /// </summary>
         internal static string ErrorTooFewItemSchemas {
             get {
@@ -242,7 +242,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires at least {0} object properties, but there are {1}..
+        ///   Looks up a localized string similar to The schema requires at least {1} object properties, but there are {2}..
         /// </summary>
         internal static string ErrorTooFewProperties {
             get {
@@ -251,7 +251,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema permits at most {0} array items, but there are {1}..
+        ///   Looks up a localized string similar to The schema permits at most {1} array items, but there are {2}..
         /// </summary>
         internal static string ErrorTooManyArrayItems {
             get {
@@ -260,7 +260,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema permits at most {0} object properties, but there are {1}..
+        ///   Looks up a localized string similar to The schema permits at most {1} object properties, but there are {2}..
         /// </summary>
         internal static string ErrorTooManyProperties {
             get {
@@ -278,7 +278,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is greater than the maximum value of {1}..
+        ///   Looks up a localized string similar to The value {1} is greater than the maximum value of {2}..
         /// </summary>
         internal static string ErrorValueTooLarge {
             get {
@@ -287,7 +287,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is greater than or equal to the exclusive maximum value of {1}..
+        ///   Looks up a localized string similar to The value {1} is greater than or equal to the exclusive maximum value of {2}..
         /// </summary>
         internal static string ErrorValueTooLargeExclusive {
             get {
@@ -296,7 +296,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is less than the minimum value of {1}..
+        ///   Looks up a localized string similar to The value {1} is less than the minimum value of {2}..
         /// </summary>
         internal static string ErrorValueTooSmall {
             get {
@@ -305,7 +305,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value {0} is less than or equal to the exclusive minimum value of {1}..
+        ///   Looks up a localized string similar to The value {1} is less than or equal to the exclusive minimum value of {2}..
         /// </summary>
         internal static string ErrorValueTooSmallExclusive {
             get {
@@ -332,7 +332,7 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The schema requires one of the types [{0}], but a token of type &apos;{1}&apos; was found..
+        ///   Looks up a localized string similar to The schema requires one of the types [{1}], but a token of type &apos;{2}&apos; was found..
         /// </summary>
         internal static string ErrorWrongType {
             get {
@@ -346,6 +346,240 @@ namespace Microsoft.Json.Schema {
         internal static string ExceptionNotASingleSchema {
             get {
                 return ResourceManager.GetString("ExceptionNotASingleSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An object contains a property not defined by the schema is present, and the schema does not permit additional properties..
+        /// </summary>
+        internal static string RuleDescriptionAdditionalPropertiesProhibited {
+            get {
+                return ResourceManager.GetString("RuleDescriptionAdditionalPropertiesProhibited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of the &apos;additionalProperties&apos; schema property is neither a boolean nor an object..
+        /// </summary>
+        internal static string RuleDescriptionInvalidAdditionalPropertiesType {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidAdditionalPropertiesType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A string does not match any of the values specified by the schema&apos;s &apos;enum&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionInvalidEnumValue {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidEnumValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The string value of the &apos;type&apos; schema property is not one of the valid values..
+        /// </summary>
+        internal static string RuleDescriptionInvalidTypeString {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidTypeString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of the &apos;type&apos; schema property is neither a string nor an array of strings..
+        /// </summary>
+        internal static string RuleDescriptionInvalidTypeType {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidTypeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to n instance does not successfully validate against all of the schemas by the schema&apos;s &apos;allOf&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionNotAllOf {
+            get {
+                return ResourceManager.GetString("RuleDescriptionNotAllOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A numeric value is not a multiple of the value specified by the schema&apos;s &apos;multipleOf&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionNotAMultiple {
+            get {
+                return ResourceManager.GetString("RuleDescriptionNotAMultiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An instance does not successfully validate against any of the schemas by the schema&apos;s &apos;anyOf&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionNotAnyOf {
+            get {
+                return ResourceManager.GetString("RuleDescriptionNotAnyOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A schema property that is required to be a string is not a string..
+        /// </summary>
+        internal static string RuleDescriptionNotAString {
+            get {
+                return ResourceManager.GetString("RuleDescriptionNotAString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An instance does not successfully validate against exactly one of the schemas by the schema&apos;s &apos;oneOf&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionNotOneOf {
+            get {
+                return ResourceManager.GetString("RuleDescriptionNotOneOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An array&apos;s elements are not unique, as required by the schema&apos;s &apos;uniqueItems&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionNotUnique {
+            get {
+                return ResourceManager.GetString("RuleDescriptionNotUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A property required by the schema&apos;s &apos;required&apos; property is missing..
+        /// </summary>
+        internal static string RuleDescriptionRequiredPropertyMissing {
+            get {
+                return ResourceManager.GetString("RuleDescriptionRequiredPropertyMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A string does not match the regular expression pattern specified by the schema&apos;s &apos;pattern&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionStringDoesNotMatchPattern {
+            get {
+                return ResourceManager.GetString("RuleDescriptionStringDoesNotMatchPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A string is longer than permitted by the schema&apos;s &apos;maxLength&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionStringTooLong {
+            get {
+                return ResourceManager.GetString("RuleDescriptionStringTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A string is shorter than permitted by the schema&apos;s &apos;minLength&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionStringTooShort {
+            get {
+                return ResourceManager.GetString("RuleDescriptionStringTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An array has fewer elements than permitted by the schema&apos;s &apos;minItems&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionTooFewArrayItems {
+            get {
+                return ResourceManager.GetString("RuleDescriptionTooFewArrayItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An array has more elements than the number of elements in the array specified by the schema&apos;s &apos;items&apos; property, and the schema does not permit additional array items..
+        /// </summary>
+        internal static string RuleDescriptionTooFewItemSchemas {
+            get {
+                return ResourceManager.GetString("RuleDescriptionTooFewItemSchemas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An object has fewer properties than permitted by the schema&apos;s &apos;minProperties&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionTooFewProperties {
+            get {
+                return ResourceManager.GetString("RuleDescriptionTooFewProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An array has more elements than permitted by the schema&apos;s &apos;maxItems&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionTooManyArrayItems {
+            get {
+                return ResourceManager.GetString("RuleDescriptionTooManyArrayItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An object has more properties than permitted by the schema&apos;s &apos;maxProperties&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionTooManyProperties {
+            get {
+                return ResourceManager.GetString("RuleDescriptionTooManyProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An instance successfully validates against the schema specified by the schema&apos;s &apos;not&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionValidatesAgainstNotSchema {
+            get {
+                return ResourceManager.GetString("RuleDescriptionValidatesAgainstNotSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A numeric value is greater than the maximum value permitted by the schema&apos;s &apos;maximum&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionValueTooLarge {
+            get {
+                return ResourceManager.GetString("RuleDescriptionValueTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A numeric value is greater than or equal to the exclusive maximum value permitted by the schema&apos;s &apos;maximum&apos; and &apos;exclusiveMaximum&apos; properties..
+        /// </summary>
+        internal static string RuleDescriptionValueTooLargeExclusive {
+            get {
+                return ResourceManager.GetString("RuleDescriptionValueTooLargeExclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A numeric value is less than the minimum value permitted by the schema&apos;s &apos;minimum&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionValueTooSmall {
+            get {
+                return ResourceManager.GetString("RuleDescriptionValueTooSmall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A numeric value is less than or equal to the exclusive minimum value permitted by the schema&apos;s &apos;minimum&apos; and &apos;exclusiveMinimum&apos; properties..
+        /// </summary>
+        internal static string RuleDescriptionValueTooSmallExclusive {
+            get {
+                return ResourceManager.GetString("RuleDescriptionValueTooSmallExclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An instance has a type that is not permitted by the schema&apos;s &apos;type&apos; property..
+        /// </summary>
+        internal static string RuleDescriptionWrongType {
+            get {
+                return ResourceManager.GetString("RuleDescriptionWrongType", resourceCulture);
             }
         }
     }
