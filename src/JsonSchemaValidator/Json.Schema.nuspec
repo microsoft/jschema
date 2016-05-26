@@ -54,6 +54,5 @@
     <file src='Microsoft.Json.Schema.dll' target='tools\Microsoft.Json.Schema.dll' />
     <file src='Microsoft.Json.Schema.pdb' target='tools\Microsoft.Json.Schema.pdb' />
     <file src='Newtonsoft.Json.dll' target='tools\Newtonsoft.Json.dll' />
-    <file src='System.Collections.Immutable.dll' target='tools\System.Collections.Immutable.dll' />
   </files>
 </package>
