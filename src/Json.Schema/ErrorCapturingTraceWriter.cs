@@ -25,10 +25,10 @@ namespace Microsoft.Json.Schema
 
         public void Trace(TraceLevel level, string message, Exception ex)
         {
-            var invalidSchemaException = ex as InvalidSchemaException;
-            if (invalidSchemaException != null && invalidSchemaException.Results.Any())
+            var schemaValidationException = ex as SchemaValidationException;
+            if (schemaValidationException != null && schemaValidationException.Results.Any())
             {
-                Errors.AddRange(invalidSchemaException.Results);
+                Errors.AddRange(schemaValidationException.Results);
             }
         }
 

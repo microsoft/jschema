@@ -75,7 +75,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             {
                 ReportSyntaxError(ex, schemaFile);
             }
-            catch (InvalidSchemaException ex)
+            catch (SchemaValidationException ex)
             {
                 ReportInvalidSchemaErrors(ex, schemaFile);
             }
@@ -125,7 +125,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             ReportResult(result);
         }
 
-        private static void ReportInvalidSchemaErrors(InvalidSchemaException ex, string schemaFile)
+        private static void ReportInvalidSchemaErrors(SchemaValidationException ex, string schemaFile)
         {
             Console.Error.WriteLine($"Error: The schema file {schemaFile} is not valid.");
             foreach (Result result in ex.Results)

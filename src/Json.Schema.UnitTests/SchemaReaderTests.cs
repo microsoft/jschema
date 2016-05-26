@@ -188,7 +188,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 }
             };
 
-            action.ShouldThrow<InvalidSchemaException>()
+            action.ShouldThrow<SchemaValidationException>()
                 .Where(ex => ex.Results.Count == test.NumErrors);
         }
     }

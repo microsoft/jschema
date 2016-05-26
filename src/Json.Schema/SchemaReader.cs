@@ -35,7 +35,7 @@ namespace Microsoft.Json.Schema
 
             if (traceWriter.Errors.Any())
             {
-                throw new InvalidSchemaException(traceWriter.Errors);
+                throw new SchemaValidationException(traceWriter.Errors);
             }
 
             return schema;
