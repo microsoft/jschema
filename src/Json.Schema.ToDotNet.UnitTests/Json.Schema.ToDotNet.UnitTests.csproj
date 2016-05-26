@@ -79,9 +79,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="TestSettings.cs" />
-    <Compile Include="TestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj">
+      <Project>{6d6133a4-8098-4210-99be-5ca01eb833b1}</Project>
+      <Name>Json.Schema.TestUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj">
       <Project>{d9489164-0b7d-4f90-9e3e-339238a86542}</Project>
       <Name>Json.Schema.ToDotNet</Name>

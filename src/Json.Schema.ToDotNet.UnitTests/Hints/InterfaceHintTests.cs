@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using FluentAssertions;
+using Microsoft.Json.Schema.TestUtilities;
 using Microsoft.Json.Schema.ToDotNet.UnitTests;
 using Xunit;
 

@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
+using Microsoft.Json.Schema.TestUtilities;
 using Newtonsoft.Json;
 using Xunit;
 

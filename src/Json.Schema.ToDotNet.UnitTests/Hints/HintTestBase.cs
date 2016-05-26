@@ -3,6 +3,7 @@
 
 using System;
 using FluentAssertions;
+using Microsoft.Json.Schema.TestUtilities;
 using Microsoft.Json.Schema.ToDotNet.UnitTests;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests

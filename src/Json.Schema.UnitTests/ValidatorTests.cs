@@ -1,13 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.Json.Schema.Sarif;
-using Microsoft.Json.Schema.UnitTests;
+using Microsoft.Json.Schema.TestUtilities;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;

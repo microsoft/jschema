@@ -3,13 +3,13 @@
 
 using System.IO;
 
-namespace Microsoft.Json.Schema.ToDotNet.UnitTests
+namespace Microsoft.Json.Schema.TestUtilities
 {
-    internal static class TestUtil
+    public static class TestUtil
     {
-        internal const string TestFilePath = @"C:\test.json";
+        public const string TestFilePath = @"C:\test.json";
 
-        internal static string ReadTestDataFile(string fileNameStem)
+        public static string ReadTestDataFile(string fileNameStem)
         {
             using (var reader = new StreamReader(GetTestDataStream(fileNameStem)))
             {
@@ -17,17 +17,17 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             }
         }
 
-        internal static string GetTestDataFilePath(string fileNameStem)
+        public static string GetTestDataFilePath(string fileNameStem)
         {
             return $"TestData\\{fileNameStem}.schema.json";
         }
 
-        internal static Stream GetTestDataStream(string fileNameStem)
+        public static Stream GetTestDataStream(string fileNameStem)
         {
             return new FileStream(GetTestDataFilePath(fileNameStem), FileMode.Open, FileAccess.Read);
         }
 
-        internal static JsonSchema CreateSchemaFromTestDataFile(string fileNameStem)
+        public static JsonSchema CreateSchemaFromTestDataFile(string fileNameStem)
         {
             string jsonText = ReadTestDataFile(fileNameStem);
             return SchemaReader.ReadSchema(jsonText, GetTestDataFilePath(fileNameStem));
@@ -37,7 +37,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         private static readonly string TestResultFilesDirectory = "TestResultFiles";
 #endif
 
-        internal static void WriteTestResultFiles(string expected, string actual, string testName)
+        public static void WriteTestResultFiles(string expected, string actual, string testName)
         {
 #if SHOULD_WRITE_TEST_RESULT_FILES
             Directory.CreateDirectory(TestResultFilesDirectory);

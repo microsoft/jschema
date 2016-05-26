@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
-using Newtonsoft.Json;
+using Microsoft.Json.Schema.TestUtilities;
 using Xunit;
 using Xunit.Abstractions;
 
