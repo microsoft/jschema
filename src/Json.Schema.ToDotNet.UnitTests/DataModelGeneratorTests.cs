@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.Json.Schema.ToDotNet.Hints;
-using Microsoft.Json.Schema.UnitTests;
 using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.UnitTests
@@ -343,7 +342,7 @@ namespace N
     }
   },
 }";
-            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
@@ -368,7 +367,7 @@ namespace N
     }
   }
 }";
-            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
@@ -393,7 +392,7 @@ namespace N
     }
   }
 }";
-            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             Action action = () => generator.Generate(schema);
@@ -802,7 +801,7 @@ namespace N
             _settings.GenerateEqualityComparers = true;
             _settings.RootClassName = "ConsoleWindow";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -957,7 +956,7 @@ namespace N
       ""type"": ""object""
     }
   }
-}");
+}", TestUtil.TestFilePath);
 
             const string HintsText =
 @"{
@@ -1906,7 +1905,7 @@ namespace N
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -2016,7 +2015,7 @@ namespace N
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
             generator.Generate(schema);
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
@@ -2125,7 +2124,7 @@ namespace N
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -2165,7 +2164,7 @@ namespace N
       }
     }
   }
-}");
+}", TestUtil.TestFilePath);
 
             const string ExpectedClass =
 @"using System;
@@ -2426,7 +2425,7 @@ namespace N
 }";
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
             string actual = generator.Generate(schema);
 
@@ -2593,7 +2592,7 @@ namespace N
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
             string actual = generator.Generate(schema);
 
@@ -2764,7 +2763,7 @@ namespace N
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
             string actual = generator.Generate(schema);
 
@@ -2799,7 +2798,7 @@ namespace N
       ]
     }
   }
-}");
+}", TestUtil.TestFilePath);
 
             const string Expected =
 @"using System;
@@ -2840,7 +2839,7 @@ namespace N
     }
   },
   ""required"": [ ""requiredProp1"", ""requiredProp2"" ]
-}");
+}", TestUtil.TestFilePath);
 
             const string Expected =
 @"using System;
@@ -2875,7 +2874,7 @@ namespace N
             JsonSchema schema = SchemaReader.ReadSchema(
 @"{
   ""type"": ""object"",
-}");
+}", TestUtil.TestFilePath);
 
             const string Expected =
 @"using System;

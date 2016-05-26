@@ -24,7 +24,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
 
             var validator = new Validator(testData.Schema);
 
-            Result[] results = validator.Validate(testData.InstanceText);
+            Result[] results = validator.Validate(testData.InstanceText, testData.FileName);
 
             if (testData.Valid)
             {

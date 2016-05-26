@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.Json.Schema.Sarif;
+using Microsoft.Json.Schema.UnitTests;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;
@@ -939,9 +941,9 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
         [MemberData(nameof(TestCases))]
         public void Tests(TestCase test)
         {
-            JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(test.SchemaText, TestUtil.TestFilePath);
             var target = new Validator(schema);
-            Result[] results = target.Validate(test.InstanceText);
+            Result[] results = target.Validate(test.InstanceText, TestUtil.TestFilePath);
 
             results.Length.Should().Be(test.ExpectedMessages.Length);
 
@@ -960,6 +962,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             params object[] args)
         {
             var result = ResultFactory.CreateResult(startLine, startColumn, jsonPath, errorNumber, args);
+            result.Locations.First().AnalysisTarget.Uri = new Uri(TestUtil.TestFilePath, UriKind.RelativeOrAbsolute);
 
             return result.FormatForVisualStudio(RuleFactory.GetRuleFromErrorNumber(errorNumber));
         }

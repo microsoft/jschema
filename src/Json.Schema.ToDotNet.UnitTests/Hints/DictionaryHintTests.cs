@@ -1077,7 +1077,7 @@ namespace N
             Settings.HintDictionary = new HintDictionary(testCase.HintsText);
             var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -1219,7 +1219,7 @@ namespace N
             Settings.HintDictionary = new HintDictionary(HintsText);
             var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(SchemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(SchemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 

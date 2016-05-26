@@ -108,7 +108,7 @@ namespace N
             Settings.HintDictionary = new HintDictionary(hintsText);
             var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 

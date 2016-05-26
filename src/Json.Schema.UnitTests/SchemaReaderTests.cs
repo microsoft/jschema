@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
@@ -22,7 +23,7 @@ namespace Microsoft.Json.Schema.UnitTests
             JsonSchema actual;
             using (var reader = new StreamReader(TestUtil.GetTestDataStream(fileNameStem)))
             {
-                actual = SchemaReader.ReadSchema(reader);
+                actual = SchemaReader.ReadSchema(reader, TestUtil.GetTestDataFilePath(fileNameStem));
             }
 
             actual.Should().Be(expected);
@@ -46,12 +47,13 @@ namespace Microsoft.Json.Schema.UnitTests
             {
                 using (var reader = new StringReader(jsonText))
                 {
-                    SchemaReader.ReadSchema(reader);
+                    SchemaReader.ReadSchema(reader, TestUtil.TestFilePath);
                 }
             };
 
-            action.ShouldThrow<JsonReaderException>()
-                .Where(ex => ex.LineNumber == 2 && ex.LinePosition == 10);
+            action.ShouldThrow<JsonSyntaxException>()
+                .Where(ex => ex.Result.Locations.First().AnalysisTarget.Region.StartLine == 2
+                    && ex.Result.Locations.First().AnalysisTarget.Region.StartColumn == 10);
         }
 
         public class LogicallyInvalidSchemaTestCase : IXunitSerializable
@@ -184,7 +186,7 @@ namespace Microsoft.Json.Schema.UnitTests
             {
                 using (var reader = new StringReader(test.SchemaText))
                 {
-                    SchemaReader.ReadSchema(reader);
+                    SchemaReader.ReadSchema(reader, TestUtil.TestFilePath);
                 }
             };
 

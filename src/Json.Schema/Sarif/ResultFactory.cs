@@ -15,8 +15,6 @@ namespace Microsoft.Json.Schema.Sarif
     {
         private const string ErrorCodeFormat = "JS{0:D4}";
 
-        internal static readonly Uri TestFileUri = new Uri("file:///C:/test", UriKind.Absolute);
-
         internal static Result CreateResult(JToken jToken, ErrorNumber errorNumber, object[] args)
         {
             IJsonLineInfo lineInfo = jToken;
@@ -49,9 +47,8 @@ namespace Microsoft.Json.Schema.Sarif
                 {
                     new Location
                     {
-                        ResultFile = new PhysicalLocation
+                        AnalysisTarget = new PhysicalLocation
                         {
-                            Uri = TestFileUri,
                             Region = new Region
                             {
                                 StartLine = startLine,

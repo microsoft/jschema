@@ -17,7 +17,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
                 Settings.HintDictionary = new HintDictionary(testCase.HintsText);
                 var generator = new DataModelGenerator(Settings, TestFileSystem.FileSystem);
 
-                JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText);
+                JsonSchema schema = SchemaReader.ReadSchema(testCase.SchemaText, TestUtil.TestFilePath);
 
                 actual = generator.Generate(schema);
             };

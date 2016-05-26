@@ -47,16 +47,30 @@ namespace Microsoft.Json.Schema.Validation
             _schemas.Push(schema);
         }
 
-        public Result[] Validate(string instanceText)
+        public Result[] Validate(string instanceText, string instanceFilePath)
         {
             _results = new List<Result>();
 
             using (var reader = new StringReader(instanceText))
             {
-                JToken token = JToken.ReadFrom(new JsonTextReader(reader));
+                JToken token;
+                try
+                {
+                    token = JToken.ReadFrom(new JsonTextReader(reader));
+                }
+                catch (JsonReaderException ex)
+                {
+                    throw new JsonSyntaxException(instanceFilePath, ex);
+                }
+
                 JsonSchema schema = _schemas.Peek();
 
                 ValidateToken(token, schema);
+            }
+
+            foreach (Result result in _results)
+            {
+                result.Locations.First().AnalysisTarget.Uri = new Uri(instanceFilePath);
             }
 
             return _results.ToArray();

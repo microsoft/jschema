@@ -104,7 +104,6 @@ namespace Microsoft.Json.Schema
         /// The list of errors encountered while reading a JSON schema.
         /// </param>
         public SchemaValidationException(IEnumerable<Result> results)
-            : base(FormatMessage(results))
         {
             Results = results.ToList();
         }

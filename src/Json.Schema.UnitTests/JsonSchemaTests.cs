@@ -659,8 +659,8 @@ namespace Microsoft.Json.Schema.UnitTests
         [MemberData(nameof(EqualityTestCases))]
         public void EqualityTests(EqualityTestCase test)
         {
-            JsonSchema left = SchemaReader.ReadSchema(test.Left);
-            JsonSchema right = SchemaReader.ReadSchema(test.Right);
+            JsonSchema left = SchemaReader.ReadSchema(test.Left, TestUtil.TestFilePath + ".left");
+            JsonSchema right = SchemaReader.ReadSchema(test.Right, TestUtil.TestFilePath + ".right");
 
             left.Equals(right).Should().Be(test.ShouldBeEqual);
             (left == right).Should().Be(test.ShouldBeEqual);

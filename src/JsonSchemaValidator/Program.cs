@@ -54,12 +54,12 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             {
                 string schemaText = File.ReadAllText(schemaFile);
 
-                JsonSchema schema = SchemaReader.ReadSchema(schemaText);
+                JsonSchema schema = SchemaReader.ReadSchema(schemaText, schemaFile);
 
                 var validator = new Validator(schema);
 
                 string instanceText = File.ReadAllText(instanceFile);
-                Result[] results = validator.Validate(instanceText);
+                Result[] results = validator.Validate(instanceText, instanceFile);
 
                 if (results.Any())
                 {
@@ -71,9 +71,9 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                     returnCode = 0;
                 }
             }
-            catch (JsonReaderException ex)
+            catch (JsonSyntaxException ex)
             {
-                ReportSyntaxError(ex, schemaFile);
+                ReportResult(ex.Result);
             }
             catch (SchemaValidationException ex)
             {
@@ -88,48 +88,11 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             return returnCode;
         }
 
-        private static void ReportSyntaxError(JsonReaderException ex, string schemaFile)
-        {
-            Rule rule = RuleFactory.GetRuleFromErrorNumber(ErrorNumber.SyntaxError);
-            var result = new Result
-            {
-                RuleId = rule.Id,
-                Level = ResultLevel.Error,
-                Locations = new List<Location>
-                {
-                    new Location
-                    {
-                        AnalysisTarget = new PhysicalLocation
-                        {
-                            Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute),
-                            Region = new Region
-                            {
-                                StartLine = ex.LineNumber,
-                                StartColumn = ex.LinePosition
-                            }
-                        }
-                    }
-                },
-
-                FormattedRuleMessage = new FormattedRuleMessage
-                {
-                    FormatId = RuleFactory.DefaultMessageFormatId,
-                    Arguments = new List<string>
-                    {
-                        ex.Path,
-                        ex.Message
-                    }
-                }
-            };
-
-            ReportResult(result);
-        }
-
         private static void ReportInvalidSchemaErrors(SchemaValidationException ex, string schemaFile)
         {
             foreach (Result result in ex.Results)
             {
-                result.Locations.First().ResultFile.Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute);
+                result.Locations.First().AnalysisTarget.Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute);
 
                 ReportResult(result);
             }
@@ -142,7 +105,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
         {
             foreach (Result result in results)
             {
-                result.Locations.First().ResultFile.Uri = new Uri(instanceFile, UriKind.RelativeOrAbsolute);
+                result.Locations.First().AnalysisTarget.Uri = new Uri(instanceFile, UriKind.RelativeOrAbsolute);
 
                 ReportResult(result);
             }

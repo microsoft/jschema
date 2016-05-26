@@ -61,6 +61,7 @@
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Hash.cs" />
+    <Compile Include="JsonSyntaxException.cs" />
     <Compile Include="SchemaValidationException.cs" />
     <Compile Include="Items.cs" />
     <Compile Include="ItemsConverter.cs" />

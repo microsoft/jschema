@@ -31,7 +31,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
             try
             {
                 string jsonText = File.ReadAllText(options.SchemaFilePath);
-                JsonSchema schema = SchemaReader.ReadSchema(jsonText);
+                JsonSchema schema = SchemaReader.ReadSchema(jsonText, options.SchemaFilePath);
 
                 HintDictionary hintDictionary = null;
                 if (options.CodeGenHintsPath != null)
