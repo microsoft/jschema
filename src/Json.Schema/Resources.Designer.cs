@@ -233,6 +233,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JSON syntax error: {1}.
+        /// </summary>
+        internal static string ErrorSyntaxError {
+            get {
+                return ResourceManager.GetString("ErrorSyntaxError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The schema requires at least {1} array items, but there are {2}..
         /// </summary>
         internal static string ErrorTooFewArrayItems {
@@ -490,6 +499,15 @@ namespace Microsoft.Json.Schema {
         internal static string RuleDescriptionStringTooShort {
             get {
                 return ResourceManager.GetString("RuleDescriptionStringTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The schema is not a valid JSON document..
+        /// </summary>
+        internal static string RuleDescriptionSyntaxError {
+            get {
+                return ResourceManager.GetString("RuleDescriptionSyntaxError", resourceCulture);
             }
         }
         

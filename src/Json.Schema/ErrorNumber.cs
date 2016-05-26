@@ -20,6 +20,11 @@ namespace Microsoft.Json.Schema
         #region Errors in schema document
 
         /// <summary>
+        /// The schema is not a valid JSON document.
+        /// </summary>
+        SyntaxError = 1,
+
+        /// <summary>
         /// In the schema, a property that is required to be a string is not a string.
         /// </summary>
         /// <example>
@@ -29,7 +34,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        NotAString = 1,
+        NotAString = 2,
 
         /// <summary>
         /// In the schema, the <code>additionalProperties</code> property is neither a Boolean
@@ -42,7 +47,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        InvalidAdditionalPropertiesType = 2,
+        InvalidAdditionalPropertiesType = 3,
 
         /// <summary>
         /// In the schema, the <code>items</code> property is neither an object nor an array.
@@ -54,7 +59,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        InvalidItemsType = 3,
+        InvalidItemsType = 4,
 
         /// <summary>
         /// In the schema, the <code>type</code> property is neither a string nor an array of strings.
@@ -66,7 +71,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        InvalidTypeType = 4,
+        InvalidTypeType = 5,
 
         /// <summary>
         /// In the schema, the <code>type</code> property contains an invalid type string.
@@ -78,7 +83,7 @@ namespace Microsoft.Json.Schema
         /// }
         /// </code>
         /// </example>
-        InvalidTypeString = 5,
+        InvalidTypeString = 6,
 
         #endregion Errors in schema document
 

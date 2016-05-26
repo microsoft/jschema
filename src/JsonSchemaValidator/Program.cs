@@ -73,11 +73,11 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             }
             catch (JsonReaderException ex)
             {
-                Console.Error.WriteLine(ex.Message);
+                ReportSyntaxError(ex, schemaFile);
             }
             catch (InvalidSchemaException ex)
             {
-                ReportSchemaErrors(ex, schemaFile);
+                ReportInvalidSchemaErrors(ex, schemaFile);
             }
             catch (Exception ex)
             {
@@ -88,16 +88,51 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             return returnCode;
         }
 
-        private static void ReportSchemaErrors(InvalidSchemaException ex, string schemaFile)
+        private static void ReportSyntaxError(JsonReaderException ex, string schemaFile)
+        {
+            Rule rule = RuleFactory.GetRuleFromErrorNumber(ErrorNumber.SyntaxError);
+            var result = new Result
+            {
+                RuleId = rule.Id,
+                Level = ResultLevel.Error,
+                Locations = new List<Location>
+                {
+                    new Location
+                    {
+                        AnalysisTarget = new PhysicalLocation
+                        {
+                            Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute),
+                            Region = new Region
+                            {
+                                StartLine = ex.LineNumber,
+                                StartColumn = ex.LinePosition
+                            }
+                        }
+                    }
+                },
+
+                FormattedRuleMessage = new FormattedRuleMessage
+                {
+                    FormatId = RuleFactory.DefaultMessageFormatId,
+                    Arguments = new List<string>
+                    {
+                        ex.Path,
+                        ex.Message
+                    }
+                }
+            };
+
+            ReportResult(result);
+        }
+
+        private static void ReportInvalidSchemaErrors(InvalidSchemaException ex, string schemaFile)
         {
             Console.Error.WriteLine($"Error: The schema file {schemaFile} is not valid.");
             foreach (Result result in ex.Results)
             {
                 result.Locations.First().ResultFile.Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute);
 
-                Console.Error.WriteLine(
-                    result.FormatForVisualStudio(
-                        RuleFactory.GetRuleFromRuleId(result.RuleId)));
+                ReportResult(result);
             }
         }
 
@@ -111,10 +146,15 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             {
                 result.Locations.First().ResultFile.Uri = new Uri(instanceFile, UriKind.RelativeOrAbsolute);
 
-                Console.Error.WriteLine(
-                    result.FormatForVisualStudio(
-                        RuleFactory.GetRuleFromRuleId(result.RuleId)));
+                ReportResult(result);
             }
+        }
+
+        private static void ReportResult(Result result)
+        {
+            Console.Error.WriteLine(
+                result.FormatForVisualStudio(
+                    RuleFactory.GetRuleFromRuleId(result.RuleId)));
         }
 
         private static void Banner()

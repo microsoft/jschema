@@ -295,4 +295,10 @@
   <data name="ErrorMessageFormatWithPath" xml:space="preserve">
     <value>at '{{0}}': {0}</value>
   </data>
+  <data name="ErrorSyntaxError" xml:space="preserve">
+    <value>JSON syntax error: {1}</value>
+  </data>
+  <data name="RuleDescriptionSyntaxError" xml:space="preserve">
+    <value>The schema is not a valid JSON document.</value>
+  </data>
 </root>

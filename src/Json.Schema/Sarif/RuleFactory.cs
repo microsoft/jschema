@@ -12,7 +12,7 @@ namespace Microsoft.Json.Schema.Sarif
     {
         // TODO: Make list immutable
 
-        internal const string DefaultMessageFormatId = "default";
+        public const string DefaultMessageFormatId = "default";
         private const string ErrorCodeFormat = "JS{0:D4}";
 
         private static Rule MakeRule(ErrorNumber errorNumber, string fullDescription, string messageFormat)
@@ -34,6 +34,11 @@ namespace Microsoft.Json.Schema.Sarif
 
         private static readonly Dictionary<ErrorNumber, Rule> s_ruleDictionary = new Dictionary<ErrorNumber, Rule>
         {
+            [ErrorNumber.SyntaxError] = MakeRule(
+                ErrorNumber.SyntaxError,
+                Resources.RuleDescriptionSyntaxError,
+                Resources.ErrorSyntaxError),
+
             [ErrorNumber.NotAString] = MakeRule(
                 ErrorNumber.NotAString,
                 Resources.RuleDescriptionNotAString,
@@ -171,7 +176,7 @@ namespace Microsoft.Json.Schema.Sarif
             return GetRuleFromErrorNumber(errorNumber);
         }
 
-        internal static Rule GetRuleFromErrorNumber(ErrorNumber errorNumber)
+        public static Rule GetRuleFromErrorNumber(ErrorNumber errorNumber)
         {
             return s_ruleDictionary[errorNumber];
         }
