@@ -961,8 +961,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             ErrorNumber errorNumber,
             params object[] args)
         {
-            var result = ResultFactory.CreateResult(startLine, startColumn, jsonPath, errorNumber, args);
-            result.Locations.First().AnalysisTarget.Uri = new Uri(TestUtil.TestFilePath, UriKind.RelativeOrAbsolute);
+            var result = ResultFactory.CreateResult(startLine, startColumn, jsonPath, errorNumber, args)
+                            .SetAnalysisTargetUri(TestUtil.TestFilePath);
 
             return result.FormatForVisualStudio(RuleFactory.GetRuleFromErrorNumber(errorNumber));
         }

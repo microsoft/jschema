@@ -92,7 +92,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
         {
             foreach (Result result in ex.Results)
             {
-                result.Locations.First().AnalysisTarget.Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute);
+                result.SetAnalysisTargetUri(schemaFile);
 
                 ReportResult(result);
             }
@@ -105,7 +105,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
         {
             foreach (Result result in results)
             {
-                result.Locations.First().AnalysisTarget.Uri = new Uri(instanceFile, UriKind.RelativeOrAbsolute);
+                result.SetAnalysisTargetUri(instanceFile);
 
                 ReportResult(result);
             }
