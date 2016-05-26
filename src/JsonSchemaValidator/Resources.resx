@@ -123,4 +123,7 @@
   <data name="ElapsedTime" xml:space="preserve">
     <value>Validation time: {0}</value>
   </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success: The file is valid according to the schema.</value>
+  </data>
 </root>

@@ -77,5 +77,14 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator {
                 return ResourceManager.GetString("ElapsedTime", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success: The file is valid according to the schema..
+        /// </summary>
+        internal static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
     }
 }

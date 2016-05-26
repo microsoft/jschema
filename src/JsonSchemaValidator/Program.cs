@@ -67,7 +67,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                 }
                 else
                 {
-                    Console.WriteLine($"Success: The file {instanceFile} is valid according to the schema {schemaFile}.");
+                    Console.WriteLine(Resources.Success);
                     returnCode = 0;
                 }
             }
@@ -127,7 +127,6 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
 
         private static void ReportInvalidSchemaErrors(SchemaValidationException ex, string schemaFile)
         {
-            Console.Error.WriteLine($"Error: The schema file {schemaFile} is not valid.");
             foreach (Result result in ex.Results)
             {
                 result.Locations.First().ResultFile.Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute);
@@ -141,7 +140,6 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             string schemaFile,
             Result[] results)
         {
-            Console.Error.WriteLine($"Error: The file {instanceFile} is not valid according to the schema {schemaFile}.");
             foreach (Result result in results)
             {
                 result.Locations.First().ResultFile.Uri = new Uri(instanceFile, UriKind.RelativeOrAbsolute);
