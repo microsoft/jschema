@@ -7,9 +7,15 @@ Publish the JSchema NuGet packages and immediately delist them.
 #>
 
 param(
-    [Parameter(Mandatory=$true)] $ApiKey,
     [Parameter(Mandatory=$false)] $PackageSource = "https://nuget.org"
 )
+
+function Get-ApiKey {
+    $apiKeyFilePath = Resolve-Path "$PSScriptRoot\..\..\..\SetNuGetJSchemaApiKey.cmd"
+    $apiSettingCommand = Get-Content $apiKeyFilePath
+    $apiSettingCommand -match "set API_KEY=`"([^`"]+)`"" | Out-Null
+    $Matches[1]
+}
 
 function Prompt-Publish($packageName) {
     $title = "Publish Package $packageName"
@@ -23,11 +29,11 @@ function Prompt-Publish($packageName) {
     $Host.UI.PromptForChoice($title, $message, $options, 0)
 }
 
-function Publish-Package($packageName) {
+function Publish-Package($packageName, $packageVersion, $apiKey) {
     $result = Prompt-Publish $packageName
     if ($result -eq 0) {
         $nupkg = "$packageName.$packageVersion.nupkg"
-        & $nugetExe push $packagesDirectory\$nupkg $ApiKey -Source $PackageSource
+        & $nugetExe push $packagesDirectory\$nupkg $apiKey -Source $PackageSource
         if (!$?) {
             Write-Host -ForegroundColor Red "Error: failed to push $nupkg to $PackageSource"
             exit 1;
@@ -56,7 +62,8 @@ $nugetExe = "$nugetDirectory\nuget.exe"
 $major, $minor, $patch, $preRelease = & "$PSScriptRoot\Get-VersionConstants.ps1"
 
 $packageVersion = "$major.$minor.$patch$preRelease"
+$apiKey = Get-ApiKey
 
 $packages = "Microsoft.Json.Schema", "Microsoft.Json.Schema.ToDotNet"
 
-$packages | ForEach-Object { Publish-Package $_ }
+$packages | ForEach-Object { Publish-Package $_ $packageVersion $apiKey }
