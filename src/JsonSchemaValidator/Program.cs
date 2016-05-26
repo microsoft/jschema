@@ -32,7 +32,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             int exitCode = 1;
 
             DateTime start = DateTime.Now;
-            exitCode = Validate(options.InstanceFilePath, options.InstanceFilePath);
+            exitCode = Validate(options.InstanceFilePath, options.SchemaFilePath);
 
             if (exitCode == 0)
             {
@@ -77,7 +77,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             }
             catch (InvalidSchemaException ex)
             {
-                Console.Error.WriteLine(ex.Message);
+                ReportSchemaErrors(ex, schemaFile);
             }
             catch (Exception ex)
             {
@@ -86,6 +86,19 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             }
 
             return returnCode;
+        }
+
+        private static void ReportSchemaErrors(InvalidSchemaException ex, string schemaFile)
+        {
+            Console.Error.WriteLine($"Error: The schema file {schemaFile} is not valid.");
+            foreach (Result result in ex.Results)
+            {
+                result.Locations.First().ResultFile.Uri = new Uri(schemaFile, UriKind.RelativeOrAbsolute);
+
+                Console.Error.WriteLine(
+                    result.FormatForVisualStudio(
+                        RuleFactory.GetRuleFromRuleId(result.RuleId)));
+            }
         }
 
         private static void ReportResults(
