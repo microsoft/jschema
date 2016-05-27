@@ -234,7 +234,8 @@ namespace Microsoft.Json.Schema.Validation
                     ? (double)jValue.Value
                     : (long)jValue.Value;
 
-                if (value % factor != 0)
+                double quotient = value / factor;
+                if (quotient != (int)quotient)
                 {
                     AddResult(jValue, ErrorNumber.NotAMultiple, value, factor);
                 }
