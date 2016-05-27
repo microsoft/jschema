@@ -19,8 +19,6 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
     {
         private static int Main(string[] args)
         {
-            Banner();
-
             return Parser.Default.ParseArguments<Options>(args)
                 .MapResult(
                     options => Run(options),
@@ -29,6 +27,8 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
 
         private static int Run(Options options)
         {
+            Banner();
+
             int exitCode = 1;
 
             DateTime start = DateTime.Now;

@@ -17,8 +17,15 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
         [Option(
             'i',
             "instance-file-path",
-            HelpText = "Path to instance file to validate.",
+            HelpText = "Path to the instance file to validate.",
             Required = true)]
         public string InstanceFilePath { get; set; }
+
+        [Option(
+            'l',
+            "log-file-path",
+            HelpText = "Path to the log file.",
+            Required = true)]
+        public string LogFilePath { get; set; }
     }
 }
