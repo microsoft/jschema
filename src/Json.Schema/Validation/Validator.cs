@@ -157,7 +157,7 @@ namespace Microsoft.Json.Schema.Validation
             {
                 string value = jValue.Value<string>();
 
-                if (value.Length > schema.MaxLength)
+                if (UnicodeLength(value) > schema.MaxLength)
                 {
                     AddResult(jValue, ErrorNumber.StringTooLong, value, value.Length, schema.MaxLength);
                 }
@@ -167,7 +167,7 @@ namespace Microsoft.Json.Schema.Validation
             {
                 string value = jValue.Value<string>();
 
-                if (value.Length < schema.MinLength)
+                if (UnicodeLength(value) < schema.MinLength)
                 {
                     AddResult(jValue, ErrorNumber.StringTooShort, value, value.Length, schema.MinLength);
                 }
@@ -182,6 +182,13 @@ namespace Microsoft.Json.Schema.Validation
                     AddResult(jValue, ErrorNumber.StringDoesNotMatchPattern, value, schema.Pattern);
                 }
             }
+        }
+
+        // Compute the length of a string, counting surrogate pairs as one
+        // character (String.Length counts them as two characters).
+        private int UnicodeLength(string value)
+        {
+            return value.Where(c => !char.IsLowSurrogate(c)).Count();
         }
 
         private void ValidateNumber(JValue jValue, JsonSchema schema)
