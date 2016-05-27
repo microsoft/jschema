@@ -9,9 +9,9 @@ using System.Linq;
 using System.Reflection;
 using CommandLine;
 using Microsoft.CodeAnalysis.Sarif;
+using Microsoft.CodeAnalysis.Sarif.Writers;
 using Microsoft.Json.Schema.Sarif;
 using Microsoft.Json.Schema.Validation;
-using Newtonsoft.Json;
 
 namespace Microsoft.Json.Schema.JsonSchemaValidator
 {
@@ -31,22 +31,31 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
 
             int exitCode = 1;
 
-            DateTime start = DateTime.Now;
-            exitCode = Validate(options.InstanceFilePath, options.SchemaFilePath);
-
-            if (exitCode == 0)
+            using (var logger = new SarifLogger(
+                                        options.LogFilePath,
+                                        analysisTargets: new[]
+                                        {
+                                            options.InstanceFilePath,
+                                            options.SchemaFilePath
+                                        },
+                                        verbose: true,
+                                        computeTargetsHash: false,
+                                        logEnvironment: false,
+                                        prereleaseInfo: null,
+                                        invocationTokensToRedact: null))
             {
+                DateTime start = DateTime.Now;
+                exitCode = Validate(options.InstanceFilePath, options.SchemaFilePath, logger);
                 TimeSpan elapsedTime = DateTime.Now - start;
 
-                // Tool notification
-                Console.WriteLine(
-                    string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime));
+                string message = string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime);
+                LogToolNotification(logger, message);
             }
 
             return exitCode;
         }
 
-        private static int Validate(string instanceFile, string schemaFile)
+        private static int Validate(string instanceFile, string schemaFile, SarifLogger logger)
         {
             int returnCode = 1;
 
@@ -63,59 +72,75 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
 
                 if (results.Any())
                 {
-                    ReportResults(instanceFile, schemaFile, results);
+                    ReportResults(results, logger);
                 }
                 else
                 {
-                    Console.WriteLine(Resources.Success);
+                    LogToolNotification(logger, Resources.Success);
                     returnCode = 0;
                 }
             }
             catch (JsonSyntaxException ex)
             {
-                ReportResult(ex.Result);
+                ReportResult(ex.Result, logger);
             }
             catch (SchemaValidationException ex)
             {
-                ReportInvalidSchemaErrors(ex, schemaFile);
+                ReportInvalidSchemaErrors(ex, schemaFile, logger);
             }
             catch (Exception ex)
             {
-                // Tool notification
-                Console.Error.WriteLine(ex.Message);
+                LogToolNotification(logger, ex.Message, NotificationLevel.Error);
             }
 
             return returnCode;
         }
 
-        private static void ReportInvalidSchemaErrors(SchemaValidationException ex, string schemaFile)
+        private static void ReportInvalidSchemaErrors(
+            SchemaValidationException ex,
+            string schemaFile,
+            SarifLogger logger)
         {
             foreach (Result result in ex.Results)
             {
                 result.SetAnalysisTargetUri(schemaFile);
 
-                ReportResult(result);
+                ReportResult(result, logger);
             }
         }
 
         private static void ReportResults(
-            string instanceFile,
-            string schemaFile,
-            Result[] results)
+            Result[] results,
+            SarifLogger logger)
         {
             foreach (Result result in results)
             {
-                result.SetAnalysisTargetUri(instanceFile);
-
-                ReportResult(result);
+                ReportResult(result, logger);
             }
         }
 
-        private static void ReportResult(Result result)
+        private static void ReportResult(Result result, SarifLogger logger)
         {
+            Rule rule = RuleFactory.GetRuleFromRuleId(result.RuleId);
+
             Console.Error.WriteLine(
-                result.FormatForVisualStudio(
-                    RuleFactory.GetRuleFromRuleId(result.RuleId)));
+                result.FormatForVisualStudio(rule));
+
+            logger.Log(rule, result);
+        }
+
+        private static void LogToolNotification(
+            SarifLogger logger,
+            string message,
+            NotificationLevel level = NotificationLevel.Note)
+        {
+            TextWriter writer = level == NotificationLevel.Error ? Console.Error : Console.Out;
+            writer.WriteLine(message);
+            logger.LogToolNotification(new Notification
+            {
+                Level = level,
+                Message = message
+            });
         }
 
         private static void Banner()
