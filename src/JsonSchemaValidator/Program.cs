@@ -90,7 +90,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             }
             catch (Exception ex)
             {
-                LogToolNotification(logger, ex.Message, NotificationLevel.Error);
+                LogToolNotification(logger, ex.Message, NotificationLevel.Error, ex);
             }
 
             return returnCode;
@@ -132,14 +132,27 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
         private static void LogToolNotification(
             SarifLogger logger,
             string message,
-            NotificationLevel level = NotificationLevel.Note)
+            NotificationLevel level = NotificationLevel.Note,
+            Exception ex = null)
         {
+            ExceptionData exceptionData = null;
+            if (ex != null)
+            {
+                exceptionData = new ExceptionData
+                {
+                    Kind = ex.GetType().FullName,
+                    Message = ex.Message,
+                    Stack = Stack.CreateStacks(ex).FirstOrDefault()
+                };
+            }
+
             TextWriter writer = level == NotificationLevel.Error ? Console.Error : Console.Out;
             writer.WriteLine(message);
             logger.LogToolNotification(new Notification
             {
                 Level = level,
-                Message = message
+                Message = message,
+                Exception = exceptionData
             });
         }
 
