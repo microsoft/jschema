@@ -218,6 +218,52 @@ namespace N
     }
 }"
             ),
+
+            new HintTestCase(
+                "Multiple attributes",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""theProperty"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""C.TheProperty"": [
+    {
+      ""kind"": ""AttributeHint"",
+      ""arguments"": {
+        ""typeName"": ""Test1""
+      }
+    },
+    {
+      ""kind"": ""AttributeHint"",
+      ""arguments"": {
+        ""typeName"": ""Test2""
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [Test1]
+        [Test2]
+        public int TheProperty { get; set; }
+    }
+}"
+            ),
         };
 
         [Theory(DisplayName = nameof(AttributeHint))]

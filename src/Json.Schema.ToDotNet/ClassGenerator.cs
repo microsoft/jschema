@@ -279,33 +279,36 @@ namespace Microsoft.Json.Schema.ToDotNet
             attributes.Add(dataMemberAttribute);
 
             string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
-            AttributeHint attributeHint = HintDictionary?.GetHint<AttributeHint>(hintDictionaryKey);
-            if (attributeHint != null)
+            AttributeHint[] attributeHints = HintDictionary?.GetHints<AttributeHint>(hintDictionaryKey);
+            if (attributeHints != null)
             {
-                AttributeSyntax hintedAttribute =
-                    SyntaxFactory.Attribute(
-                        SyntaxFactory.IdentifierName(attributeHint.TypeName));
-
-                if (attributeHint.Arguments?.Count > 0)
+                foreach (AttributeHint attributeHint in attributeHints)
                 {
-                    hintedAttribute = hintedAttribute
-                        .AddArgumentListArguments(
-                            attributeHint.Arguments.Select(
-                                arg => SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression(arg))).ToArray());
-                }
+                    AttributeSyntax hintedAttribute =
+                        SyntaxFactory.Attribute(
+                            SyntaxFactory.IdentifierName(attributeHint.TypeName));
 
-                if (attributeHint.Properties?.Count > 0)
-                {
-                    hintedAttribute = hintedAttribute
-                        .AddArgumentListArguments(
-                            attributeHint.Properties.Select(
-                                prop => SyntaxFactory.AttributeArgument(
-                                    SyntaxFactory.NameEquals(prop.Key),
-                                    default(NameColonSyntax),
-                                    SyntaxFactory.ParseExpression(prop.Value))).ToArray());
-                }
+                    if (attributeHint.Arguments?.Count > 0)
+                    {
+                        hintedAttribute = hintedAttribute
+                            .AddArgumentListArguments(
+                                attributeHint.Arguments.Select(
+                                    arg => SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression(arg))).ToArray());
+                    }
 
-                attributes.Add(hintedAttribute);
+                    if (attributeHint.Properties?.Count > 0)
+                    {
+                        hintedAttribute = hintedAttribute
+                            .AddArgumentListArguments(
+                                attributeHint.Properties.Select(
+                                    prop => SyntaxFactory.AttributeArgument(
+                                        SyntaxFactory.NameEquals(prop.Key),
+                                        default(NameColonSyntax),
+                                        SyntaxFactory.ParseExpression(prop.Value))).ToArray());
+                    }
+
+                    attributes.Add(hintedAttribute);
+                }
             }
 
             return attributes.ToArray();

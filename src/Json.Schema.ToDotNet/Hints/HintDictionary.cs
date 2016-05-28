@@ -28,15 +28,21 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
 
         public T GetHint<T>(string key) where T : CodeGenHint
         {
-            T hint = null;
+            T[] hints = GetHints<T>(key);
+            return hints?.Length > 0 ? hints[0] : null;
+        }
 
-            CodeGenHint[] hints;
-            if (TryGetValue(key, out hints))
+        public T[] GetHints<T>(string key) where T : CodeGenHint
+        {
+            CodeGenHint[] allHints = null;
+            T[] hints = null;
+
+            if (TryGetValue(key, out allHints))
             {
-                hint = hints.FirstOrDefault(h => h is T) as T;
+                hints = allHints.Where(h => h is T).Cast<T>().ToArray();
             }
 
-            return hint;
+            return hints;
         }
 
         public T GetPropertyHint<T>(string typeName, string propertyName)
