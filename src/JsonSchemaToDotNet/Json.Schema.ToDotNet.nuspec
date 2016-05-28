@@ -57,6 +57,7 @@
     <file src='Microsoft.Json.Schema.dll' target='tools\Microsoft.Json.Schema.dll' />
     <file src='Microsoft.Json.Schema.pdb' target='tools\Microsoft.Json.Schema.pdb' />
     <file src='CommandLine.dll' target='tools\CommandLine.dll' />
+    <file src='FSharp.Core.dll' target='tools\FSharp.Core.dll' />
     <file src='Microsoft.CodeAnalysis.CSharp.dll' target='tools\Microsoft.CodeAnalysis.CSharp.dll' />
     <file src='Microsoft.CodeAnalysis.CSharp.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.CSharp.Workspaces.dll' />
     <file src='Microsoft.CodeAnalysis.dll' target='tools\Microsoft.CodeAnalysis.dll' />
@@ -64,6 +65,7 @@
     <file src='Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll' />
     <file src='Microsoft.CodeAnalysis.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.Workspaces.dll' />
     <file src='Newtonsoft.Json.dll' target='tools\Newtonsoft.Json.dll' />
+    <file src='Sarif.dll' target='tools\Sarif.dll' />
     <file src='System.Collections.Immutable.dll' target='tools\System.Collections.Immutable.dll' />
     <file src='System.Composition.AttributedModel.dll' target='tools\System.Composition.AttributedModel.dll' />
     <file src='System.Composition.Hosting.dll' target='tools\System.Composition.Hosting.dll' />
