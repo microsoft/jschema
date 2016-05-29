@@ -288,10 +288,10 @@ namespace N
   ]
 }",
 
-@"using N2;
-using System;
+@"using System;
 using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
+using N2;
 
 namespace N
 {

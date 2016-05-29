@@ -83,7 +83,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             UsingDirectiveSyntax[] usingDirectives = usings
                 .Distinct()
-                .OrderBy(u => u)
+                .OrderBy(u => u, UsingComparer.Instance)
                 .Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)))
                 .ToArray();
 
