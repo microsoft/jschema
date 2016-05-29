@@ -288,6 +288,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Attribute(
                             SyntaxFactory.IdentifierName(attributeHint.TypeName));
 
+                    if (attributeHint.NamespaceName != null)
+                    {
+                        AddUsing(attributeHint.NamespaceName);
+                    }
+
                     if (attributeHint.Arguments?.Count > 0)
                     {
                         hintedAttribute = hintedAttribute

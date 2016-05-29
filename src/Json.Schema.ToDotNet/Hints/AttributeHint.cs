@@ -19,6 +19,11 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// The fully qualified type name of the attribute to generate, without
         /// the "Attribute" suffix.
         /// </param>
+        /// <param name="namespaceName">
+        /// The namespace in which the type specified by <paramref name="typeName"/>
+        /// resides. Can be <code>null</code> if <code>typeName</code> specifies a
+        /// fully qualified type name.
+        /// </param>
         /// <param name="arguments">
         /// Arguments to the attribute's constructor.
         /// </param>
@@ -27,10 +32,12 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// </param>
         public AttributeHint(
             string typeName,
+            string namespaceName,
             IEnumerable<string> arguments,
             IDictionary<string, string> properties)
         {
             TypeName = typeName;
+            NamespaceName = namespaceName;
             Arguments = arguments != null ? arguments.ToList() : new List<string>();
             Properties = properties != null ? properties : new Dictionary<string, string>();
         }
@@ -40,6 +47,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// the "Attribute" suffix.
         /// </summary>
         public string TypeName { get; }
+
+        /// <summary>
+        /// Gets the namespace in which the type specified by <paramref name="typeName"/>
+        /// resides. Can be <code>null</code> if <code>typeName</code> specifies a
+        /// fully qualified type name.
+        /// </summary>
+        public string NamespaceName { get; }
 
         /// <summary>
         /// Gets the arguments to the attribute's constructor.

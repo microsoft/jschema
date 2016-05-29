@@ -130,10 +130,11 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         private static CodeGenHint CreateAttributeHint(JObject arguments)
         {
             string typeName = GetArgument<string>(arguments, nameof(AttributeHint.TypeName));
+            string namespaceName = GetArgument<string>(arguments, nameof(AttributeHint.NamespaceName));
             string[] attributeArguments = GetArrayArgument<string>(arguments, nameof(AttributeHint.Arguments));
             IDictionary<string, string> attributeProperties = GetObjectArgument(arguments, nameof(AttributeHint.Properties));
 
-            return new AttributeHint(typeName, attributeArguments, attributeProperties);
+            return new AttributeHint(typeName, namespaceName, attributeArguments, attributeProperties);
         }
 
         private static CodeGenHint CreateBaseTypeNameHint(JObject arguments)
