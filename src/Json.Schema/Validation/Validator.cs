@@ -290,75 +290,150 @@ namespace Microsoft.Json.Schema.Validation
 
         private void ValidateObject(JObject jObject, JsonSchema schema)
         {
-            List<string> propertySet = jObject.Properties().Select(p => p.Name).ToList();
+            List<string> instancePropertySet = GetPropertyNames(jObject);
 
             if (schema.MaxProperties.HasValue &&
-                propertySet.Count > schema.MaxProperties.Value)
+                instancePropertySet.Count > schema.MaxProperties.Value)
             {
-                AddResult(jObject, ErrorNumber.TooManyProperties, schema.MaxProperties.Value, propertySet.Count);
+                AddResult(jObject, ErrorNumber.TooManyProperties, schema.MaxProperties.Value, instancePropertySet.Count);
             }
 
             if (schema.MinProperties.HasValue &&
-                propertySet.Count < schema.MinProperties.Value)
+                instancePropertySet.Count < schema.MinProperties.Value)
             {
-                AddResult(jObject, ErrorNumber.TooFewProperties, schema.MinProperties.Value, propertySet.Count);
+                AddResult(jObject, ErrorNumber.TooFewProperties, schema.MinProperties.Value, instancePropertySet.Count);
             }
 
             // Ensure required properties are present.
             if (schema.Required != null)
             {
-                IEnumerable<string> missingProperties = schema.Required.Except(propertySet);
+                IEnumerable<string> missingProperties = schema.Required.Except(instancePropertySet);
                 foreach (string propertyName in missingProperties)
                 {
                     AddResult(jObject, ErrorNumber.RequiredPropertyMissing, propertyName);
                 }
             }
 
-            // Ensure each property matches its schema.
-            if (schema.Properties != null)
+            List<string> propertiesPropertySet = schema.Properties != null
+                ? schema.Properties.Keys.ToList()
+                : new List<string>();
+
+            ValidateObjectPropertyNames(jObject, instancePropertySet, propertiesPropertySet, schema);
+
+            ValidateObjectPropertyValues(jObject, instancePropertySet, propertiesPropertySet, schema);
+        }
+
+        private List<string> GetPropertyNames(JObject jObject)
+        {
+            return jObject.Properties().Select(p => p.Name).ToList();
+        }
+
+        // Validate the set of property names on an object.
+        // 5.4.4. additionalProperties, properties, and patternProperties
+        private void ValidateObjectPropertyNames(
+            JObject jObject,
+            List<string> instancePropertySet,
+            List<string> propertiesPropertySet,
+            JsonSchema schema)
+        {
+            // 5.4.4.2 If "additionalProperties" is boolean true or a schema, validation
+            // succeeds.
+            //
+            // In the object model, AdditionalProperties.Allowed will be true if and only
+            // if either
+            // (a) "additionalProperties" was boolean true, or
+            // (b) "additionalProperties" was a schema.
+            // ... which is exactly what 5.4.4.2 requires.
+            //
+            // 5.4.4.3 If "additionalProperties" is absent, it may be considered present
+            // with an empty schema as a value [in which case, validation succeeds].
+            if (schema.AdditionalProperties == null ||
+                schema.AdditionalProperties.Allowed == true)
             {
-                foreach (string propertyName in propertySet)
-                {
-                    JsonSchema propertySchema;
-                    if (schema.Properties.TryGetValue(propertyName, out propertySchema))
-                    {
-                        propertySchema = Resolve(propertySchema);
-                        JProperty property = jObject.Property(propertyName);
-                        ValidateToken(property.Value, propertySchema);
-                    }
-                }
+                return;
             }
 
-            // Does the object contain any properties not specified by the schema?
-            List<string> additionalPropertyNames = schema.Properties == null
-                ? propertySet
-                : propertySet.Except(schema.Properties.Keys).ToList();
+            // From the property set of the instance to validate, remove all elements
+            // of the property set from "properties".
+            IEnumerable<string> unexpectedPropertySet = instancePropertySet.Except(propertiesPropertySet);
 
+            // For each regex in "patternProperties", remove all elements which this
+            // regex matches.
             if (schema.PatternProperties != null)
             {
                 foreach (string patternRegEx in schema.PatternProperties.Keys)
                 {
-                    List<string> matchingPropertyNames = additionalPropertyNames.Where(p => Regex.IsMatch(p, patternRegEx)).ToList();
-
-                    if (matchingPropertyNames.Any())
-                    {
-                        JsonSchema propertySchema = schema.PatternProperties[patternRegEx];
-                        foreach (string matchingProperty in matchingPropertyNames)
-                        {
-                            JProperty property = jObject.Property(matchingProperty);
-                            ValidateToken(property.Value, propertySchema);
-                        }
-                    }
-
-                    additionalPropertyNames = additionalPropertyNames.Except(matchingPropertyNames).ToList();
+                    unexpectedPropertySet = unexpectedPropertySet.Where(p => !Regex.IsMatch(p, patternRegEx));
                 }
             }
 
-            // If additional properties are not allowed, ensure there are none.
-            // Additional properties are allowed by default.
-            if (schema.AdditionalProperties != null)
+            // Validation of the instance succeeds if, after these steps, no elements remain.
+            foreach (string unexpectedPropertyName in unexpectedPropertySet)
             {
-                ValidateAdditionalProperties(jObject, additionalPropertyNames, schema.AdditionalProperties);
+                AddResult(
+                    jObject.Property(unexpectedPropertyName),
+                    ErrorNumber.AdditionalPropertiesProhibited,
+                    unexpectedPropertyName);
+            }
+        }
+
+        // Validate the set of members of an object.
+        // 8.3 Object members.
+        private void ValidateObjectPropertyValues(
+            JObject jObject,
+            List<string> instancePropertySet,
+            List<string> propertiesPropertySet,
+            JsonSchema schema)
+        {
+            foreach (string instancePropertyName in instancePropertySet)
+            {
+                ValidateObjectPropertyValue(jObject, instancePropertyName, propertiesPropertySet, schema);
+            }
+        }
+
+        private void ValidateObjectPropertyValue(
+            JObject jObject,
+            string instancePropertyName,
+            List<string> propertiesPropertySet,
+            JsonSchema schema)
+        {
+            // First ascertain the set of schemas against which this property must validate
+            // successfully.
+            var applicableSchemas = new List<JsonSchema>();
+
+            // 8.3.3.2 If the property name appears in "properties", add the corresponding schema.
+            if (propertiesPropertySet.Contains(instancePropertyName))
+            {
+                applicableSchemas.Add(Resolve(schema.Properties[instancePropertyName]));
+            }
+
+            // 8.3.3.3 For each regex in "patternProperties", if it matches the property
+            // name, add the corresponding schema.
+            if (schema.PatternProperties != null)
+            {
+                foreach (string regex in schema.PatternProperties.Keys)
+                {
+                    if (Regex.IsMatch(instancePropertyName, regex))
+                    {
+                        applicableSchemas.Add(Resolve(schema.PatternProperties[regex]));
+                    }
+                }
+            }
+
+            // 8.3.3.4 Add the schema defined by "additionalProperties" if and only if
+            // there are not yet any applicable schemas.
+            if (!applicableSchemas.Any())
+            {
+                if (schema.AdditionalProperties?.Schema != null)
+                {
+                    applicableSchemas.Add(Resolve(schema.AdditionalProperties.Schema));
+                }
+            }
+
+            // Now validate the property against all applicable schemas.
+            foreach (JsonSchema applicableSchema in applicableSchemas)
+            {
+                ValidateToken(jObject.Property(instancePropertyName).Value, applicableSchema);
             }
         }
 

@@ -624,6 +624,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a32&o"": ""foobar"",
   ""apple"": ""pie""
 }",
+                MakeErrorMessage(2, 13, "p1",    ErrorNumber.WrongType, SchemaType.Integer, JTokenType.Boolean),
+                MakeErrorMessage(3, 13, "p2",    ErrorNumber.WrongType, SchemaType.Integer, JTokenType.Null),
                 MakeErrorMessage(4, 20, "a32&o", ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
                 ),
 
