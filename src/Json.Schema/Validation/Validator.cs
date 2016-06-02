@@ -255,39 +255,64 @@ namespace Microsoft.Json.Schema.Validation
                 AddResult(jArray, ErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
             }
 
-            // 5.3.1.3 The only case where the array itself can fail to validate (as
-            // opposed to the array elements) is if "additionalItems" is false and
-            // "items" is an array.
-            if (schema.Items != null)
-            {
-                if (schema.Items.SingleSchema)
-                {
-                    foreach (JToken jToken in jArray)
-                    {
-                        ValidateToken(jToken, Resolve(schema.Items.Schema));
-                    }
-                }
-                else
-                {
-                    // TODO: Use additionalItems if available.
-                    if (schema.Items.Schemas.Count >= jArray.Count)
-                    {
-                        int i = 0;
-                        foreach (JToken jToken in jArray)
-                        {
-                            ValidateToken(jToken, Resolve(schema.Items.Schemas[i++]));
-                        }
-                    }
-                    else
-                    {
-                        AddResult(jArray, ErrorNumber.TooFewItemSchemas, jArray.Count, schema.Items.Schemas.Count);
-                    }
-                }
-            }
-
             if (schema.UniqueItems == true)
             {
                 ValidateUnique(jArray);
+            }
+
+            // 5.3.1.3 The only case where the array itself can fail to validate (as
+            // opposed to the array elements) is if "additionalItems" is false and
+            // "items" is an array.
+            if (schema.Items != null &&
+                !schema.Items.SingleSchema &&
+                schema.AdditionalItems != null &&
+                !schema.AdditionalItems.Allowed &&
+                jArray.Count > schema.Items.Schemas.Count)
+            {
+                AddResult(jArray, ErrorNumber.TooFewItemSchemas);
+            }
+
+            ValidateArrayItems(jArray, schema);
+        }
+
+        private void ValidateArrayItems(JArray jArray, JsonSchema schema)
+        {
+            if (schema.Items == null)
+            {
+                return;
+            }
+
+            JToken[] arrayElements = jArray.ToArray();
+
+            if (schema.Items.SingleSchema == true)
+            {
+                // 8.2.3.1 If "items" is a schema, then each element must be valid against
+                // this schema, regardless of its index, and regardless of the value of
+                // "additionalItems".
+                foreach (JToken jToken in jArray)
+                {
+                    ValidateToken(jToken, Resolve(schema.Items.Schema));
+                }
+            }
+            else if (schema.Items != null)
+            {
+                // 8.2.3.2 If "items" is an array, then:
+                JsonSchema[] arrayElementSchemas = schema.Items.Schemas
+                    .Select(s => Resolve(s))
+                    .ToArray();
+
+                for (int i = 0; i < arrayElementSchemas.Length; ++i)
+                {
+                    ValidateToken(arrayElements[i], arrayElementSchemas[i]);
+                }
+
+                if (schema.AdditionalItems?.Schema != null)
+                {
+                    for (int i = arrayElementSchemas.Length; i < arrayElements.Length; ++i)
+                    {
+                        ValidateToken(arrayElements[i], schema.AdditionalItems.Schema);
+                    }
+                }
             }
         }
 
