@@ -82,6 +82,11 @@ namespace Microsoft.Json.Schema
                 }
             }
 
+            if (other.AdditionalItems != null)
+            {
+                AdditionalItems = new AdditionalItems(other.AdditionalItems);
+            }
+
             if (other.AdditionalProperties != null)
             {
                 AdditionalProperties = new AdditionalProperties(other.AdditionalProperties);
@@ -206,6 +211,12 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Object"/>.
         /// </remarks>
         public IList<string> Required { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value describing any additional array items allowed by the
+        /// schema.
+        /// </summary>
+        public AdditionalItems AdditionalItems { get; set; }
 
         /// <summary>
         /// Gets or sets a value describing any additional properties allowed by the
@@ -421,6 +432,12 @@ namespace Microsoft.Json.Schema
                 }
             }
 
+            if (schema.AdditionalItems?.Schema != null)
+            {
+                collapsedSchema.AdditionalItems = new AdditionalItems(
+                    Collapse(schema.AdditionalItems?.Schema, rootSchema));
+            }
+
             if (schema.AdditionalProperties?.Schema != null)
             {
                 collapsedSchema.AdditionalProperties = new AdditionalProperties(
@@ -579,6 +596,9 @@ namespace Microsoft.Json.Schema
                         : Properties.HasSameElementsAs(other.Properties))
                 && Required.HasSameElementsAs(other.Required)
                 && Definitions.HasSameElementsAs(other.Definitions)
+                && (AdditionalItems == null
+                        ? other.AdditionalItems == null
+                        : AdditionalItems.Equals(other.AdditionalItems))
                 && (AdditionalProperties == null
                         ? other.AdditionalProperties == null
                         : AdditionalProperties.Equals(other.AdditionalProperties))

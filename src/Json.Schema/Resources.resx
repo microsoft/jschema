@@ -301,4 +301,7 @@
   <data name="RuleDescriptionSyntaxError" xml:space="preserve">
     <value>The schema is not a valid JSON document.</value>
   </data>
+  <data name="ErrorInvalidAdditionalItemsType" xml:space="preserve">
+    <value>JSON schema requires the value of "additionalItems" to be either a Boolean or a schema, but a token of type {1} was seen.</value>
+  </data>
 </root>

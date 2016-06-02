@@ -14,6 +14,7 @@ namespace Microsoft.Json.Schema
             new Dictionary<Type, JsonConverter>
             {
                 [typeof(UriOrFragment)] = UriOrFragmentConverter.Instance,
+                [typeof(AdditionalItems)] = AdditionalItemsConverter.Instance,
                 [typeof(AdditionalProperties)] = AdditionalPropertiesConverter.Instance,
                 [typeof(Items)] = ItemsConverter.Instance
             };

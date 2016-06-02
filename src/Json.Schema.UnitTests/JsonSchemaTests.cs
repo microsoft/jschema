@@ -53,6 +53,9 @@ namespace Microsoft.Json.Schema.UnitTests
                         ""type"": ""boolean""
                       }
                     },
+                    ""additionalItems"": {
+                      ""type"": ""integer""
+                    },
                     ""additionalProperties"": true,
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""maxLength"": 2,
@@ -98,6 +101,9 @@ namespace Microsoft.Json.Schema.UnitTests
                       ""d"": {
                         ""type"": ""boolean""
                       }
+                    },
+                    ""additionalItems"": {
+                      ""type"": ""integer""
                     },
                     ""additionalProperties"": true,
                     ""$ref"": ""http://www.example.com/schema/#"",
@@ -460,7 +466,51 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
 
             new EqualityTestCase(
-                "Null and non-null additional properties",
+                "Null and non-null additionalItems",
+                @"{}",
+                @"{
+                  ""additionalItems"": true
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "additionalItems with Boolean value and schema",
+                @"{
+                  ""additionalItems"": true
+                }",
+                @"{
+                  ""additionalItems"": {}
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "additionalItems with different Boolean values",
+                @"{
+                  ""additionalItems"": true
+                }",
+                @"{
+                  ""additionalItems"": false
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "additionalItems with different schemas",
+                @"{
+                  ""additionalItems"": {
+                    ""format"": ""date-time""
+                  }
+                }",
+                @"{
+                  ""additionalItems"": {}
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Null and non-null additionalProperties",
                 @"{}",
                 @"{
                   ""additionalProperties"": true
@@ -469,7 +519,7 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
 
             new EqualityTestCase(
-                "Additional properties with Boolean value and schema",
+                "additionalProperties with Boolean value and schema",
                 @"{
                   ""additionalProperties"": true
                 }",
@@ -480,7 +530,7 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
 
             new EqualityTestCase(
-                "Additional properties with different Boolean values",
+                "additionalProperties with different Boolean values",
                 @"{
                   ""additionalProperties"": true
                 }",
@@ -491,7 +541,7 @@ namespace Microsoft.Json.Schema.UnitTests
             ),
 
             new EqualityTestCase(
-                "Additional properties with different schemas",
+                "additionalProperties with different schemas",
                 @"{
                   ""additionalProperties"": {
                     ""format"": ""date-time""

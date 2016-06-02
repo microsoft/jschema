@@ -85,6 +85,19 @@ namespace Microsoft.Json.Schema
         /// </example>
         InvalidTypeString = 6,
 
+        /// <summary>
+        /// In the schema, the <code>additionalItems</code> property is neither a Boolean
+        /// nor an object.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "additionalItems": 2
+        /// }
+        /// </code>
+        /// </example>
+        InvalidAdditionalItemsType = 7,
+
         #endregion Errors in schema document
 
         #region Errors in instance document

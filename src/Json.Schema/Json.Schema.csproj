@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdditionalItems.cs" />
+    <Compile Include="AdditionalItemsConverter.cs" />
     <Compile Include="AdditionalProperties.cs" />
     <Compile Include="AdditionalPropertiesConverter.cs" />
     <Compile Include="Error.cs" />

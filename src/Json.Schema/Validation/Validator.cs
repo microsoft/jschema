@@ -255,6 +255,9 @@ namespace Microsoft.Json.Schema.Validation
                 AddResult(jArray, ErrorNumber.TooManyArrayItems, schema.MaxItems, numItems);
             }
 
+            // 5.3.1.3 The only case where the array itself can fail to validate (as
+            // opposed to the array elements) is if "additionalItems" is false and
+            // "items" is an array.
             if (schema.Items != null)
             {
                 if (schema.Items.SingleSchema)

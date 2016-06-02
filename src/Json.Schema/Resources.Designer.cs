@@ -79,6 +79,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JSON schema requires the value of &quot;additionalItems&quot; to be either a Boolean or a schema, but a token of type {1} was seen..
+        /// </summary>
+        internal static string ErrorInvalidAdditionalItemsType {
+            get {
+                return ResourceManager.GetString("ErrorInvalidAdditionalItemsType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JSON schema requires the value of &quot;additionalProperties&quot; to be either a Boolean or a schema, but a token of type {1} was seen..
         /// </summary>
         internal static string ErrorInvalidAdditionalPropertiesType {
