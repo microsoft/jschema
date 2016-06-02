@@ -92,6 +92,11 @@ namespace Microsoft.Json.Schema
                 AdditionalProperties = new AdditionalProperties(other.AdditionalProperties);
             }
 
+            if (other.Dependencies != null)
+            {
+                Dependencies = new Dictionary<string, Dependency>(other.Dependencies);
+            }
+
             if (other.PatternProperties != null)
             {
                 PatternProperties = new Dictionary<string, JsonSchema>(other.PatternProperties);
@@ -225,8 +230,14 @@ namespace Microsoft.Json.Schema
         public AdditionalProperties AdditionalProperties { get; set; }
 
         /// <summary>
-        /// Dictionary mapping valid property names to the sub-schemas to which they must
-        /// conform.
+        /// Gets or sets a dictionary that maps property names to the conditions
+        /// that an instance containing those property names must satisfy.
+        /// </summary>
+        public Dictionary<string, Dependency> Dependencies { get; set; }
+
+        /// <summary>
+        /// Gets or sets a dictionary that maps property names to the sub-schemas against
+        /// which the values of those properties must validate successfully.
         /// </summary>
         /// <remarks>
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.Object"/>.
@@ -444,6 +455,30 @@ namespace Microsoft.Json.Schema
                     Collapse(schema.AdditionalProperties?.Schema, rootSchema));
             }
 
+            if (schema.Dependencies != null)
+            {
+                collapsedSchema.Dependencies = new Dictionary<string, Dependency>();
+                foreach (string key in schema.Dependencies.Keys)
+                {
+                    Dependency collapsedDependency;
+                    if (schema.Dependencies[key].SchemaDependency != null)
+                    {
+                        collapsedDependency = new Dependency(
+                            Collapse(
+                                schema.Dependencies[key].SchemaDependency,
+                                rootSchema));
+                    }
+                    else
+                    {
+                        collapsedDependency = new Dependency(
+                            new List<string>(
+                                schema.Dependencies[key].PropertyDependencies));
+                    }
+
+                    collapsedSchema.Dependencies.Add(key, collapsedDependency);
+                }
+            }
+
             if (schema.PatternProperties != null)
             {
                 collapsedSchema.PatternProperties = new Dictionary<string, JsonSchema>();
@@ -602,6 +637,9 @@ namespace Microsoft.Json.Schema
                 && (AdditionalProperties == null
                         ? other.AdditionalProperties == null
                         : AdditionalProperties.Equals(other.AdditionalProperties))
+                && (Dependencies == null
+                        ? other.Dependencies == null
+                        : Dependencies.HasSameElementsAs(other.Dependencies))
                 && (PatternProperties == null
                         ? other.PatternProperties == null
                         : PatternProperties.HasSameElementsAs(other.PatternProperties))

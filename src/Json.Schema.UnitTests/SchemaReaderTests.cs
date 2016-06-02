@@ -175,7 +175,15 @@ namespace Microsoft.Json.Schema.UnitTests
 @"{
   ""type"": [ ""string"", false ]
 }"
-                    )
+                    ),
+
+                new LogicallyInvalidSchemaTestCase(
+                    "dependency is neither an object nor an array",
+@"{
+  ""dependencies"": {
+    ""a"": 2
+  }
+}")
         };
 
         [Theory(DisplayName = "SchemaReader throws on logically invalid schema")]

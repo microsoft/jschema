@@ -49,6 +49,11 @@ namespace Microsoft.Json.Schema.Sarif
                 Resources.RuleDescriptionInvalidAdditionalPropertiesType,
                 Resources.ErrorInvalidAdditionalPropertiesType),
 
+            [ErrorNumber.InvalidItemsType] = MakeRule(
+                ErrorNumber.InvalidItemsType,
+                Resources.RuleDescriptionInvalidItemsType,
+                Resources.ErrorInvalidItemsType),
+
             [ErrorNumber.InvalidTypeType] = MakeRule(
                 ErrorNumber.InvalidTypeType,
                 Resources.RuleDescriptionInvalidTypeType,
@@ -58,6 +63,21 @@ namespace Microsoft.Json.Schema.Sarif
                 ErrorNumber.InvalidTypeString,
                 Resources.RuleDescriptionInvalidTypeString,
                 Resources.ErrorInvalidTypeString),
+
+            [ErrorNumber.InvalidAdditionalItemsType] = MakeRule(
+                ErrorNumber.InvalidAdditionalItemsType,
+                Resources.RuleDescriptionInvalidAdditionalItemsType,
+                Resources.ErrorInvalidAdditionalItemsType),
+
+            [ErrorNumber.InvalidDependencyType] = MakeRule(
+                ErrorNumber.InvalidDependencyType,
+                Resources.RuleDescriptionInvalidDependencyType,
+                Resources.ErrorInvalidDependencyType),
+
+            [ErrorNumber.InvalidPropertyDependencyType] = MakeRule(
+                ErrorNumber.InvalidPropertyDependencyType,
+                Resources.RuleDescriptionInvalidPropertyDependencyType,
+                Resources.ErrorInvalidPropertyDependencyType),
 
             [ErrorNumber.WrongType] = MakeRule(
                 ErrorNumber.WrongType,

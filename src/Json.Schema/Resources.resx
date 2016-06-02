@@ -194,7 +194,7 @@
     <value>The elements of the array are not unique.</value>
   </data>
   <data name="ErrorInvalidItemsType" xml:space="preserve">
-    <value>JSON schema requires the value of "items" to be either a schema or an array of schemas, but a token of type {0} was seen.</value>
+    <value>JSON schema requires the value of 'items' to be either a schema or an array of schemas, but a token of type {1} was seen.</value>
   </data>
   <data name="ErrorTooFewItemSchemas" xml:space="preserve">
     <value>The array has {1} items, but the array of schemas specified by  'items' has only {2} items, and 'additionalItems' is not specified to allow additional array items.</value>
@@ -303,5 +303,23 @@
   </data>
   <data name="ErrorInvalidAdditionalItemsType" xml:space="preserve">
     <value>JSON schema requires the value of "additionalItems" to be either a Boolean or a schema, but a token of type {1} was seen.</value>
+  </data>
+  <data name="ErrorInvalidDependencyType" xml:space="preserve">
+    <value>JSON schema requires the value of each property of the "dependencies"  object, to be either an schema or an array of strings, but a token of type '{1}' was seen.</value>
+  </data>
+  <data name="ErrorInvalidPropertyDependencyType" xml:space="preserve">
+    <value>JSON requires that if the value of a property of the "dependencies" object is an array, then every element of the array must be a string, but a token of type '{1}' was seen.</value>
+  </data>
+  <data name="RuleDescriptionInvalidAdditionalItemsType" xml:space="preserve">
+    <value>The value of the 'additionalItems' schema property is neither a Boolean nor a schema.</value>
+  </data>
+  <data name="RuleDescriptionInvalidDependencyType" xml:space="preserve">
+    <value>The value of one of the properties of the 'dependencies' schema property is either a schema nor an array of strings.</value>
+  </data>
+  <data name="RuleDescriptionInvalidItemsType" xml:space="preserve">
+    <value>The value of the 'items' property is neither a schema nor an array of schemas.</value>
+  </data>
+  <data name="RuleDescriptionInvalidPropertyDependencyType" xml:space="preserve">
+    <value>The value of one of the properties of the 'dependencies' schema property is an array which contains an element which is not a string.</value>
   </data>
 </root>

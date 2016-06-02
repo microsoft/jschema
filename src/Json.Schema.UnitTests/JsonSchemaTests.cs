@@ -57,6 +57,12 @@ namespace Microsoft.Json.Schema.UnitTests
                       ""type"": ""integer""
                     },
                     ""additionalProperties"": true,
+                    ""dependencies"": {
+                      ""a"": {
+                        ""type"": ""string""
+                      },
+                      ""b"": [ ""c"", ""d"" ]
+                    },
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""maxLength"": 2,
                     ""minLength"": 2,
@@ -106,6 +112,12 @@ namespace Microsoft.Json.Schema.UnitTests
                       ""type"": ""integer""
                     },
                     ""additionalProperties"": true,
+                    ""dependencies"": {
+                      ""a"": {
+                        ""type"": ""string""
+                      },
+                      ""b"": [ ""c"", ""d"" ]
+                    },
                     ""$ref"": ""http://www.example.com/schema/#"",
                     ""maxLength"": 2,
                     ""minLength"": 2,
@@ -549,6 +561,63 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 @"{
                   ""additionalProperties"": {}
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "Null and non-null dependencies",
+                @"{}",
+                @"{
+                  ""dependencies"": {
+                  }
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "dependencies with property dependency and schema dependency",
+                @"{
+                  ""dependencies"": {
+                    ""a"": [ ""b"" ]
+                  }
+                }",
+                @"{
+                  ""dependencies"": {
+                    ""a"": {}
+                  }
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "dependencies with different property dependencies",
+                @"{
+                  ""dependencies"": {
+                    ""a"": [ ""b"" ]
+                  }
+                }",
+                @"{
+                  ""dependencies"": {
+                    ""a"": [ ""b"", ""c"" ]
+                  }
+                }",
+                false
+            ),
+
+            new EqualityTestCase(
+                "dependencies with different schema dependencies",
+                @"{
+                  ""dependencies"": {
+                    ""a"": {
+                      ""type"": ""integer""
+                    }
+                  }
+                }",
+                @"{
+                    ""a"": {
+                      ""type"": ""number""
+                    }
                 }",
                 false
             ),

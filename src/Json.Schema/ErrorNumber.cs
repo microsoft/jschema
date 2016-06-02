@@ -87,7 +87,7 @@ namespace Microsoft.Json.Schema
 
         /// <summary>
         /// In the schema, the <code>additionalItems</code> property is neither a Boolean
-        /// nor an object.
+        /// nor a schema.
         /// </summary>
         /// <example>
         /// <code>
@@ -97,6 +97,36 @@ namespace Microsoft.Json.Schema
         /// </code>
         /// </example>
         InvalidAdditionalItemsType = 7,
+
+        /// <summary>
+        /// In the schema, one of the properties of the <code>dependencies</code> property
+        /// is either an object nor an array.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "dependencies": {
+        ///     "a": 2
+        ///   }
+        /// }
+        /// </code>
+        /// </example>
+        InvalidDependencyType = 8,
+
+        /// <summary>
+        /// In the schema, one of the properties of the <code>dependencies</code> property
+        /// is an array which contains an element which is not a string.
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// {
+        ///   "dependencies": {
+        ///     "a": [ "good", 42 ]
+        ///   }
+        /// }
+        /// </code>
+        /// </example>
+        InvalidPropertyDependencyType = 9,
 
         #endregion Errors in schema document
 

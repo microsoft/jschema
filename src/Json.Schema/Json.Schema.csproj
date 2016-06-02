@@ -58,6 +58,8 @@
     <Compile Include="AdditionalItemsConverter.cs" />
     <Compile Include="AdditionalProperties.cs" />
     <Compile Include="AdditionalPropertiesConverter.cs" />
+    <Compile Include="Dependency.cs" />
+    <Compile Include="DependencyConverter.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="ErrorCapturingTraceWriter.cs" />
     <Compile Include="FormatAttributes.cs" />
@@ -99,6 +101,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

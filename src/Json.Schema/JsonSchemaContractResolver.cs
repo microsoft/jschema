@@ -16,7 +16,8 @@ namespace Microsoft.Json.Schema
                 [typeof(UriOrFragment)] = UriOrFragmentConverter.Instance,
                 [typeof(AdditionalItems)] = AdditionalItemsConverter.Instance,
                 [typeof(AdditionalProperties)] = AdditionalPropertiesConverter.Instance,
-                [typeof(Items)] = ItemsConverter.Instance
+                [typeof(Items)] = ItemsConverter.Instance,
+                [typeof(Dependency)] = DependencyConverter.Instance
             };
 
         public override JsonContract ResolveContract(Type objectType)

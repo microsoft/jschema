@@ -97,6 +97,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JSON schema requires the value of each property of the &quot;dependencies&quot;  object, to be either an schema or an array of strings, but a token of type &apos;{1}&apos; was seen..
+        /// </summary>
+        internal static string ErrorInvalidDependencyType {
+            get {
+                return ResourceManager.GetString("ErrorInvalidDependencyType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value &apos;{1}&apos; does not match any of the enum values [{2}]..
         /// </summary>
         internal static string ErrorInvalidEnumValue {
@@ -106,11 +115,20 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSON schema requires the value of &quot;items&quot; to be either a schema or an array of schemas, but a token of type {0} was seen..
+        ///   Looks up a localized string similar to JSON schema requires the value of &apos;items&apos; to be either a schema or an array of schemas, but a token of type {1} was seen..
         /// </summary>
         internal static string ErrorInvalidItemsType {
             get {
                 return ResourceManager.GetString("ErrorInvalidItemsType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JSON requires that if the value of a property of the &quot;dependencies&quot; object is an array, then every element of the array must be a string, but a token of type &apos;{1}&apos; was seen..
+        /// </summary>
+        internal static string ErrorInvalidPropertyDependencyType {
+            get {
+                return ResourceManager.GetString("ErrorInvalidPropertyDependencyType", resourceCulture);
             }
         }
         
@@ -386,6 +404,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value of the &apos;additionalItems&apos; schema property is neither a Boolean nor a schema..
+        /// </summary>
+        internal static string RuleDescriptionInvalidAdditionalItemsType {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidAdditionalItemsType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value of the &apos;additionalProperties&apos; schema property is neither a boolean nor an object..
         /// </summary>
         internal static string RuleDescriptionInvalidAdditionalPropertiesType {
@@ -395,11 +422,38 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value of one of the properties of the &apos;dependencies&apos; schema property is either a schema nor an array of strings..
+        /// </summary>
+        internal static string RuleDescriptionInvalidDependencyType {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidDependencyType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A string does not match any of the values specified by the schema&apos;s &apos;enum&apos; property..
         /// </summary>
         internal static string RuleDescriptionInvalidEnumValue {
             get {
                 return ResourceManager.GetString("RuleDescriptionInvalidEnumValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of the &apos;items&apos; property is neither a schema nor an array of schemas..
+        /// </summary>
+        internal static string RuleDescriptionInvalidItemsType {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidItemsType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of one of the properties of the &apos;dependencies&apos; schema property is an array which contains an element which is not a string..
+        /// </summary>
+        internal static string RuleDescriptionInvalidPropertyDependencyType {
+            get {
+                return ResourceManager.GetString("RuleDescriptionInvalidPropertyDependencyType", resourceCulture);
             }
         }
         
