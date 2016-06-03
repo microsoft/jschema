@@ -349,6 +349,8 @@ namespace Microsoft.Json.Schema.Validation
             ValidateObjectPropertyNames(jObject, instancePropertySet, propertiesPropertySet, schema);
 
             ValidateObjectPropertyValues(jObject, instancePropertySet, propertiesPropertySet, schema);
+
+            ValidateDependencies(jObject, schema, instancePropertySet);
         }
 
         private List<string> GetPropertyNames(JObject jObject)
@@ -465,6 +467,76 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
+        private void ValidateDependencies(
+            JObject jObject,
+            JsonSchema schema,
+            IList<string> instancePropertySet)
+        {
+            if (schema.Dependencies == null)
+            {
+                return;
+            }
+
+            foreach (string key in schema.Dependencies.Keys)
+            {
+                Dependency dependency = schema.Dependencies[key];
+                ValidateDependency(jObject, key, dependency, instancePropertySet);
+            }
+        }
+
+        private void ValidateDependency(
+            JObject jObject,
+            string propertyName,
+            Dependency dependency,
+            IList<string> instancePropertySet)
+        {
+            if (dependency.SchemaDependency != null)
+            {
+                ValidateSchemaDependency(jObject, propertyName, dependency.SchemaDependency, instancePropertySet);
+            }
+
+            if (dependency.PropertyDependencies != null)
+            {
+                ValidatePropertyDependencies(jObject, propertyName, dependency.PropertyDependencies, instancePropertySet);
+            }
+        }
+
+        private void ValidateSchemaDependency(
+            JObject jObject,
+            string propertyName,
+            JsonSchema schemaDependency,
+            IList<string> instancePropertySet)
+        {
+            if (instancePropertySet.Contains(propertyName))
+            {
+                // TODO: Be more specific: Report the error that a dependency
+                // was violated.
+                ValidateObject(jObject, schemaDependency);
+            } 
+        }
+
+        private void ValidatePropertyDependencies(
+            JObject jObject,
+            string propertyName,
+            List<string> propertyDependencies,
+            IList<string> instancePropertySet)
+        {
+            if (instancePropertySet.Contains(propertyName))
+            {
+                List<string> missingDependencies = propertyDependencies
+                    .Except(instancePropertySet)
+                    .ToList();
+
+                if (missingDependencies.Any())
+                {
+                    AddResult(
+                        jObject,
+                        ErrorNumber.DependentPropertyMissing,
+                        FormatList(missingDependencies.Cast<object>().ToList()));
+                }
+            }
+        }
+
         private void ValidateEnum(JToken jToken, IList<object> @enum)
         {
             if (!TokenMatchesEnum(jToken, @enum))
@@ -473,7 +545,7 @@ namespace Microsoft.Json.Schema.Validation
                     jToken,
                     ErrorNumber.InvalidEnumValue,
                     FormatObject(jToken),
-                    string.Join(", ", @enum.Select(e => FormatObject(e))));
+                    FormatList(@enum));
             }
         }
 
@@ -610,6 +682,11 @@ namespace Microsoft.Json.Schema.Validation
             }
         }
 
+        private void AddResult(JToken jToken, ErrorNumber errorNumber, params object[] args)
+        {
+            _results.Add(ResultFactory.CreateResult(jToken, errorNumber, args));
+        }
+
         private bool TokenMatchesEnum(JToken jToken, IList<object> @enum)
         {
             return @enum.Any(e => JTokenEqualityComparer.DeepEquals(jToken, e));
@@ -618,6 +695,11 @@ namespace Microsoft.Json.Schema.Validation
         private static string FormatSchemaTypes(IList<SchemaType> schemaTypes)
         {
             return string.Join(", ", schemaTypes.Select(t => t.ToString()));
+        }
+
+        private static string FormatList(IList<object> objects)
+        {
+            return string.Join(", ", objects.Select(e => FormatObject(e)));
         }
 
         private static string FormatObject(object obj)
@@ -692,11 +774,6 @@ namespace Microsoft.Json.Schema.Validation
             s = Regex.Replace(s, @"\s+\]", "]");
 
             return s;
-        }
-
-        private void AddResult(JToken jToken, ErrorNumber errorNumber, params object[] args)
-        {
-            _results.Add(ResultFactory.CreateResult(jToken, errorNumber, args));
         }
     }
 }

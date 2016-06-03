@@ -79,6 +79,15 @@ namespace Microsoft.Json.Schema {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The schema requires that when property &apos;{0}&apos; is present, properties [{1}] are also present, but properties [{2}] are missing..
+        /// </summary>
+        internal static string ErrorDependentPropertyMissing {
+            get {
+                return ResourceManager.GetString("ErrorDependentPropertyMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JSON schema requires the value of &quot;additionalItems&quot; to be either a Boolean or a schema, but a token of type {1} was seen..
         /// </summary>
         internal static string ErrorInvalidAdditionalItemsType {
@@ -400,6 +409,15 @@ namespace Microsoft.Json.Schema {
         internal static string RuleDescriptionAdditionalPropertiesProhibited {
             get {
                 return ResourceManager.GetString("RuleDescriptionAdditionalPropertiesProhibited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An instance does not have all the properties specified in the schema by a property dependency..
+        /// </summary>
+        internal static string RuleDescriptionDependentPropertyMissing {
+            get {
+                return ResourceManager.GetString("RuleDescriptionDependentPropertyMissing", resourceCulture);
             }
         }
         

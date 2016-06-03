@@ -304,11 +304,17 @@
   <data name="ErrorInvalidAdditionalItemsType" xml:space="preserve">
     <value>JSON schema requires the value of "additionalItems" to be either a Boolean or a schema, but a token of type {1} was seen.</value>
   </data>
+  <data name="ErrorDependentPropertyMissing" xml:space="preserve">
+    <value>The schema requires that when property '{0}' is present, properties [{1}] are also present, but properties [{2}] are missing.</value>
+  </data>
   <data name="ErrorInvalidDependencyType" xml:space="preserve">
     <value>JSON schema requires the value of each property of the "dependencies"  object, to be either an schema or an array of strings, but a token of type '{1}' was seen.</value>
   </data>
   <data name="ErrorInvalidPropertyDependencyType" xml:space="preserve">
     <value>JSON requires that if the value of a property of the "dependencies" object is an array, then every element of the array must be a string, but a token of type '{1}' was seen.</value>
+  </data>
+  <data name="RuleDescriptionDependentPropertyMissing" xml:space="preserve">
+    <value>An instance does not have all the properties specified in the schema by a property dependency.</value>
   </data>
   <data name="RuleDescriptionInvalidAdditionalItemsType" xml:space="preserve">
     <value>The value of the 'additionalItems' schema property is neither a Boolean nor a schema.</value>

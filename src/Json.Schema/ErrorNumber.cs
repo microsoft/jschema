@@ -468,7 +468,13 @@ namespace Microsoft.Json.Schema
         /// <summary>
         /// An instance validates successfully agains the schema specified by "not".
         /// </summary>
-        ValidatesAgainstNotSchema
+        ValidatesAgainstNotSchema = 1022,
+
+        /// <summary>
+        /// The instance contains a property specified by "dependencies", but it does
+        /// not contain all the properties specified by the corresponding property dependency.
+        /// </summary>
+        DependentPropertyMissing = 1023
 
         #endregion Errors in instance document
     }

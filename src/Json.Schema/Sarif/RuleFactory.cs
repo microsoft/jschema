@@ -187,7 +187,12 @@ namespace Microsoft.Json.Schema.Sarif
             [ErrorNumber.ValidatesAgainstNotSchema] = MakeRule(
                 ErrorNumber.ValidatesAgainstNotSchema,
                 Resources.RuleDescriptionValidatesAgainstNotSchema,
-                Resources.ErrorValidatesAgainstNotSchema)
+                Resources.ErrorValidatesAgainstNotSchema),
+
+            [ErrorNumber.DependentPropertyMissing] = MakeRule(
+                ErrorNumber.DependentPropertyMissing,
+                Resources.RuleDescriptionDependentPropertyMissing,
+                Resources.ErrorDependentPropertyMissing)
         };
 
         public static Rule GetRuleFromRuleId(string ruleId)
