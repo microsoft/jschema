@@ -935,6 +935,37 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 }",
 
 "\"2016-05-20T17:13:54.002Z\""
+                ),
+
+            // This case is not covered by the JSON Schema Test Suite
+            new TestCase(
+                "object: dependencies on an object whose instance schema references a definition",
+
+@"{
+  ""properties"": {
+    ""a"": {
+      ""$ref"": ""#/definitions/a""
+    }
+  },
+  ""definitions"": {
+    ""a"": {
+      ""properties"": {
+        ""x"": {},
+        ""y"": {}
+      },
+      ""dependencies"": {
+        ""x"": [ ""y"" ]
+      }
+    }
+  }
+})",
+
+@"{
+  ""a"": {
+    ""x"": 1
+  }
+}",
+                MakeErrorMessage(2, 9, "a", ErrorNumber.DependentPropertyMissing, "x", "\"y\"", "\"y\"")
                 )
         };
 

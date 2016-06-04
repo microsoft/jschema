@@ -511,7 +511,7 @@ namespace Microsoft.Json.Schema.Validation
             {
                 // TODO: Be more specific: Report the error that a dependency
                 // was violated.
-                ValidateObject(jObject, schemaDependency);
+                ValidateObject(jObject, Resolve(schemaDependency));
             } 
         }
 
@@ -532,6 +532,8 @@ namespace Microsoft.Json.Schema.Validation
                     AddResult(
                         jObject,
                         ErrorNumber.DependentPropertyMissing,
+                        propertyName,
+                        FormatList(propertyDependencies.Cast<object>().ToList()),
                         FormatList(missingDependencies.Cast<object>().ToList()));
                 }
             }
