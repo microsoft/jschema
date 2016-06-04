@@ -5,7 +5,7 @@
     <version>$major$.$minor$.$patch$$prerelease$</version>
     <title>JSON Schema To .NET Library</title>
     <authors>Larry Golding</authors>
-    <owners>Larry Golding, Michael C. Fanning</owners>
+    <owners>Larry Golding</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Classes and tools for generating .NET classes from a JSON Schema.</description>
     <releaseNotes>Pre-release version. AttributeHint supports namespace; sort System usings first.</releaseNotes>
