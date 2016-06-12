@@ -8,8 +8,16 @@ namespace Json.Pointer.UnitTests
 {
     public class ValidityTests
     {
-        [Fact(DisplayName = "JsonPointer validity")]
-        public void RunValidityTests()
+        public static readonly TheoryData<ValidityTestCase> ValidityTestCases = new TheoryData<ValidityTestCase>
+        {
+            new ValidityTestCase(
+                "Empty pointer"
+            ),
+        };
+
+        [Theory(DisplayName = "JsonPointer validity")]
+        [MemberData(nameof(ValidityTestCases))]
+        public void RunValidityTests(ValidityTestCase test)
         {
             true.Should().BeTrue();
         }
