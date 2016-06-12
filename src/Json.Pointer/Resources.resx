@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorArrayIndexOutOfRange" xml:space="preserve">
+    <value>Cannot evaluate JSON pointer "{0}" because the array index "{1}" is out of range of the array at "{2}".</value>
+  </data>
   <data name="ErrorInvalidArrayIndex" xml:space="preserve">
     <value>Cannot evaluate JSON pointer "{0}" because "{1}" is not a valid array index.</value>
   </data>
@@ -124,6 +127,9 @@
     <value>"{0} is not a valid JSON pointer.</value>
   </data>
   <data name="ErrorMissingProperty" xml:space="preserve">
-    <value>Cannot evaluate JSON pointer "{0}" because the object at the specified location does not contain a property named "{1}".</value>
+    <value>Cannot evaluate JSON pointer "{0}" because the object at "{1}" does not contain a property named "{2}".</value>
+  </data>
+  <data name="ErrorNeitherObjectNorArray" xml:space="preserve">
+    <value>Cannot evaluate JSON pointer "{0}" because the value at "{1}" is neither an object nor an array.</value>
   </data>
 </root>

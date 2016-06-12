@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
@@ -16,6 +17,9 @@ namespace Microsoft.Json.Pointer
     /// </summary>
     public class JsonPointer
     {
+        private const string TokenSeparator = "/";
+        private const string EscapeCharacter = "~";
+
         private readonly string _value;
 
         /// <summary>
@@ -36,10 +40,12 @@ namespace Microsoft.Json.Pointer
         public JToken Evaluate(JToken document)
         {
             JToken result = document;
+            StringBuilder pathBuilder = new StringBuilder();
             foreach (string referenceToken in ReferenceTokens)
             {
                 string unescapedToken = Unescape(referenceToken);
-                result = Evaluate(unescapedToken, result);
+                result = Evaluate(unescapedToken, pathBuilder, result);
+                pathBuilder.Append(TokenSeparator + referenceToken);
             }
 
             return result;
@@ -49,27 +55,33 @@ namespace Microsoft.Json.Pointer
         // correctly becomes "~1" rather than "/".
         private string Unescape(string referenceToken)
         {
-            return referenceToken.Replace("~1", "/").Replace("~0", "~");
+            return referenceToken.Replace("~1", TokenSeparator).Replace("~0", EscapeCharacter);
         }
 
-        private JToken Evaluate(string referenceToken, JToken current)
+        private JToken Evaluate(string referenceToken, StringBuilder pathBuilder, JToken current)
         {
             JObject jObject = current as JObject;
             if (jObject != null)
             {
-                return EvaluateObjectReference(referenceToken, jObject);
+                return EvaluateObjectReference(referenceToken, pathBuilder, jObject);
             }
 
             JArray jArray = current as JArray;
             if (jArray != null)
             {
-                return EvaluateArrayReference(referenceToken, jArray);
+                return EvaluateArrayReference(referenceToken, pathBuilder, jArray);
             }
 
-            return null;
+            throw new ArgumentException(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    Resources.ErrorNeitherObjectNorArray,
+                    _value,
+                    pathBuilder),
+                nameof(referenceToken));
         }
 
-        private JToken EvaluateObjectReference(string referenceToken, JObject current)
+        private JToken EvaluateObjectReference(string referenceToken, StringBuilder pathBuilder, JObject current)
         {
             IEnumerable<string> propertyNames = current.Properties().Select(p => p.Name);
             if (propertyNames.Contains(referenceToken))
@@ -83,6 +95,7 @@ namespace Microsoft.Json.Pointer
                         CultureInfo.InvariantCulture,
                         Resources.ErrorMissingProperty,
                         _value,
+                        pathBuilder,
                         referenceToken),
                     nameof(referenceToken));
             }
@@ -91,11 +104,23 @@ namespace Microsoft.Json.Pointer
         private static readonly Regex s_indexPattern =
             new Regex(@"^(0|[1-9][0-9]*)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private JToken EvaluateArrayReference(string referenceToken, JArray jArray)
+        private JToken EvaluateArrayReference(string referenceToken, StringBuilder pathBuilder, JArray jArray)
         {
             if (s_indexPattern.IsMatch(referenceToken))
             {
                 int index = int.Parse(referenceToken, NumberStyles.None, CultureInfo.InvariantCulture);
+                if (index >= jArray.Count)
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.ErrorArrayIndexOutOfRange,
+                            _value,
+                            referenceToken,
+                            pathBuilder),
+                        nameof(referenceToken));
+                }
+
                 return jArray[index];
             }
             else

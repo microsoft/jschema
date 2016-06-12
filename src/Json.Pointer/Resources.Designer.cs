@@ -61,6 +61,15 @@ namespace Microsoft.Json.Pointer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot evaluate JSON pointer &quot;{0}&quot; because the array index &quot;{1}&quot; is out of range of the array at &quot;{2}&quot;..
+        /// </summary>
+        internal static string ErrorArrayIndexOutOfRange {
+            get {
+                return ResourceManager.GetString("ErrorArrayIndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot evaluate JSON pointer &quot;{0}&quot; because &quot;{1}&quot; is not a valid array index..
         /// </summary>
         internal static string ErrorInvalidArrayIndex {
@@ -79,11 +88,20 @@ namespace Microsoft.Json.Pointer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot evaluate JSON pointer &quot;{0}&quot; because the object at the specified location does not contain a property named &quot;{1}&quot;..
+        ///   Looks up a localized string similar to Cannot evaluate JSON pointer &quot;{0}&quot; because the object at &quot;{1}&quot; does not contain a property named &quot;{2}&quot;..
         /// </summary>
         internal static string ErrorMissingProperty {
             get {
                 return ResourceManager.GetString("ErrorMissingProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot evaluate JSON pointer &quot;{0}&quot; because the value at &quot;{1}&quot; is neither an object nor an array..
+        /// </summary>
+        internal static string ErrorNeitherObjectNorArray {
+            get {
+                return ResourceManager.GetString("ErrorNeitherObjectNorArray", resourceCulture);
             }
         }
     }

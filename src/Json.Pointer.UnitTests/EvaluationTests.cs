@@ -119,10 +119,20 @@ namespace Microsoft.Json.Pointer.UnitTests
                 "Invalid array index: trailing non-digit",
                 TestDocument,
                 "/arr1/1x",
-                false)
+                false),
 
-            // TODO: out of range index
-            // TOOD: neither array nor object
+            new EvaluationTestCase(
+                "Invalid array index: out of range",
+                TestDocument,
+                "/arr1/3",
+                false),
+
+
+            new EvaluationTestCase(
+                "Neither object nor array",
+                TestDocument,
+                "/arr1/0/1",
+                false),
         };
 
         private static readonly JTokenEqualityComparer s_comparer = new JTokenEqualityComparer();
@@ -145,7 +155,7 @@ namespace Microsoft.Json.Pointer.UnitTests
             }
             else
             {
-                action.ShouldThrow<ArgumentException>();
+                action.ShouldThrow<ArgumentException>().WithMessage($"*{test.Pointer}*");
             }
         }
     }
