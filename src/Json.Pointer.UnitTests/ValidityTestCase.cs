@@ -9,10 +9,12 @@ namespace Microsoft.Json.Pointer.UnitTests
     {
         public ValidityTestCase(
             string name,
-            string value)
+            string value,
+            bool valid)
         {
             Name = name;
             Value = value;
+            Valid = valid;
         }
 
         public ValidityTestCase()
@@ -22,17 +24,20 @@ namespace Microsoft.Json.Pointer.UnitTests
 
         public string Name { get; private set; }
         public string Value { get; private set; }
+        public bool Valid { get; private set; }
 
         public void Deserialize(IXunitSerializationInfo info)
         {
             Name = info.GetValue<string>(nameof(Name));
             Value = info.GetValue<string>(nameof(Value));
+            Valid = info.GetValue<bool>(nameof(Valid));
         }
 
         public void Serialize(IXunitSerializationInfo info)
         {
             info.AddValue(nameof(Name), Name);
             info.AddValue(nameof(Value), Value);
+            info.AddValue(nameof(Valid), Valid);
         }
 
         public override string ToString()

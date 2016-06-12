@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using FluentAssertions;
 using Xunit;
 
@@ -12,7 +13,8 @@ namespace Microsoft.Json.Pointer.UnitTests
         {
             new ValidityTestCase(
                 "Empty pointer",
-                string.Empty
+                string.Empty,
+                true
             ),
         };
 
@@ -20,8 +22,19 @@ namespace Microsoft.Json.Pointer.UnitTests
         [MemberData(nameof(ValidityTestCases))]
         public void RunValidityTests(ValidityTestCase test)
         {
-            JsonPointer jPointer = new JsonPointer(test.Value);
-            jPointer.ReferenceTokens.Should().BeEmpty();
+            JsonPointer jPointer = null;
+            
+            Action action = () => jPointer = new JsonPointer(test.Value);
+
+            if (test.Valid)
+            {
+                action.ShouldNotThrow();
+                jPointer.ReferenceTokens.Should().BeEmpty();
+            }
+            else
+            {
+                action.ShouldThrow<ArgumentException>();
+            }
         }
     }
 }
