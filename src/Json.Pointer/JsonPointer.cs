@@ -38,10 +38,18 @@ namespace Microsoft.Json.Pointer
             JToken result = document;
             foreach (string referenceToken in ReferenceTokens)
             {
-                result = Evaluate(referenceToken, result);
+                string unescapedToken = Unescape(referenceToken);
+                result = Evaluate(unescapedToken, result);
             }
 
             return result;
+        }
+
+        // Per RFC 6901 Sec. 4, "~1" is evaluated before "~0", so that "~01"
+        // correctly becomes "~1" rather than "/".
+        private string Unescape(string referenceToken)
+        {
+            return referenceToken.Replace("~1", "/").Replace("~0", "~");
         }
 
         private JToken Evaluate(string referenceToken, JToken current)
@@ -79,9 +87,11 @@ namespace Microsoft.Json.Pointer
     (
         /
         (?<referenceToken>
-            [^~/]*
-            | ~0
-            | ~1
+            (
+                [^~/]
+                | ~0
+                | ~1
+             )*
         )?
     )*
 $",

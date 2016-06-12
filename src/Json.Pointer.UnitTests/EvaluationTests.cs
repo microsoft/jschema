@@ -16,7 +16,10 @@ namespace Microsoft.Json.Pointer.UnitTests
   ""a"": true,
   ""b"": {
     ""c"": [ 3, 2 ]
-  }
+  },
+  ""~"": ""abc"",
+  ""/"": ""de"",
+  ""~1"": ""fg""
 }";
 
         public static readonly TheoryData<EvaluationTestCase> EvaluationTestCases = new TheoryData<EvaluationTestCase>
@@ -54,9 +57,28 @@ namespace Microsoft.Json.Pointer.UnitTests
                 TestDocument,
                 "/b/c",
                 true,
-                "[ 3, 2]")
+                "[ 3, 2]"),
 
-            // TODO Escaped character tests.
+            new EvaluationTestCase(
+                "Escaped tilde",
+                TestDocument,
+                "/~0",
+                true,
+                "\"abc\""),
+
+            new EvaluationTestCase(
+                "Escaped solidus",
+                TestDocument,
+                "/~1",
+                true,
+                "\"de\""),
+
+            new EvaluationTestCase(
+                "Evaluate ~1 before ~0",
+                TestDocument,
+                "/~01",
+                true,
+                "\"fg\"")
         };
 
         private static readonly JTokenEqualityComparer s_comparer = new JTokenEqualityComparer();
