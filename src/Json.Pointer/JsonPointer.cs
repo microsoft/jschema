@@ -7,6 +7,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Pointer
 {
@@ -25,6 +26,13 @@ namespace Microsoft.Json.Pointer
         public JsonPointer(string value)
         {
             ReferenceTokens = ImmutableArray.CreateRange(Parse(value));
+        }
+
+        public ImmutableArray<string> ReferenceTokens { get; }
+
+        public JToken Evaluate(JToken document)
+        {
+            return document;
         }
 
         private static readonly Regex s_pointerPattern = new Regex(
@@ -60,7 +68,5 @@ $",
                     nameof(value));
             }
         }
-
-        public ImmutableArray<string> ReferenceTokens { get; }
     }
 }
