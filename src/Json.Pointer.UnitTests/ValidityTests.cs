@@ -21,7 +21,7 @@ namespace Microsoft.Json.Pointer.UnitTests
         public void RunValidityTests(ValidityTestCase test)
         {
             JsonPointer jPointer = new JsonPointer(test.Value);
-            true.Should().BeTrue();
+            jPointer.ReferenceTokens.Should().BeEmpty();
         }
     }
 }

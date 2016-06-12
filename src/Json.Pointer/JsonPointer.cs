@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Microsoft.Json.Pointer
 {
@@ -19,9 +20,9 @@ namespace Microsoft.Json.Pointer
         /// </param>
         public JsonPointer(string value)
         {
-            ReferenceTokens = new List<string>();
+            ReferenceTokens = ImmutableArray.CreateRange(new List<string>());
         }
 
-        public List<string> ReferenceTokens { get; }
+        public ImmutableArray<string> ReferenceTokens { get; }
     }
 }
