@@ -29,7 +29,8 @@ namespace Microsoft.Json.Pointer.UnitTests
             if (test.Valid)
             {
                 action.ShouldNotThrow();
-                jPointer.ReferenceTokens.Should().BeEmpty();
+                jPointer.ReferenceTokens.Should().ContainInOrder(test.ReferenceTokens);
+                jPointer.ReferenceTokens.Length.Should().Be(test.ReferenceTokens.Length);
             }
             else
             {

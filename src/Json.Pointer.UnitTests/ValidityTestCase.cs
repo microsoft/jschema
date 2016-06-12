@@ -10,11 +10,13 @@ namespace Microsoft.Json.Pointer.UnitTests
         public ValidityTestCase(
             string name,
             string value,
-            bool valid)
+            bool valid,
+            params string[] referenceTokens)
         {
             Name = name;
             Value = value;
             Valid = valid;
+            ReferenceTokens = referenceTokens;
         }
 
         public ValidityTestCase()
@@ -25,12 +27,14 @@ namespace Microsoft.Json.Pointer.UnitTests
         public string Name { get; private set; }
         public string Value { get; private set; }
         public bool Valid { get; private set; }
+        public string[] ReferenceTokens { get; private set; }
 
         public void Deserialize(IXunitSerializationInfo info)
         {
             Name = info.GetValue<string>(nameof(Name));
             Value = info.GetValue<string>(nameof(Value));
             Valid = info.GetValue<bool>(nameof(Valid));
+            ReferenceTokens = info.GetValue<string[]>(nameof(ReferenceTokens));
         }
 
         public void Serialize(IXunitSerializationInfo info)
@@ -38,6 +42,7 @@ namespace Microsoft.Json.Pointer.UnitTests
             info.AddValue(nameof(Name), Name);
             info.AddValue(nameof(Value), Value);
             info.AddValue(nameof(Valid), Valid);
+            info.AddValue(nameof(ReferenceTokens), ReferenceTokens);
         }
 
         public override string ToString()
