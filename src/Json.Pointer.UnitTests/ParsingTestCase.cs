@@ -5,9 +5,9 @@ using Xunit.Abstractions;
 
 namespace Microsoft.Json.Pointer.UnitTests
 {
-    public class ValidityTestCase : IXunitSerializable
+    public class ParsingTestCase : IXunitSerializable
     {
-        public ValidityTestCase(
+        public ParsingTestCase(
             string name,
             string value,
             bool valid,
@@ -19,7 +19,7 @@ namespace Microsoft.Json.Pointer.UnitTests
             ReferenceTokens = referenceTokens;
         }
 
-        public ValidityTestCase()
+        public ParsingTestCase()
         {
             // Needed for deserialization
         }
