@@ -20,5 +20,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Json.Pointer\Json.Pointer.csproj">
+      <Project>{b365c6dc-e3fd-4f9e-b069-c3bd99d2098d}</Project>
+      <Name>Json.Pointer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
