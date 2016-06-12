@@ -60,6 +60,12 @@ namespace Microsoft.Json.Pointer
                 return EvaluateObjectReference(referenceToken, jObject);
             }
 
+            JArray jArray = current as JArray;
+            if (jArray != null)
+            {
+                return EvaluateArrayReference(referenceToken, jArray);
+            }
+
             return null;
         }
 
@@ -80,6 +86,20 @@ namespace Microsoft.Json.Pointer
                         referenceToken),
                     nameof(referenceToken));
             }
+        }
+
+        private static readonly Regex s_indexPattern =
+            new Regex(@"^(0|[1-9][0-9]*)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+        private JToken EvaluateArrayReference(string referenceToken, JArray jArray)
+        {
+            if (s_indexPattern.IsMatch(referenceToken))
+            {
+                int index = int.Parse(referenceToken, NumberStyles.None, CultureInfo.InvariantCulture);
+                return jArray[index];
+            }
+
+            return null;
         }
 
         private static readonly Regex s_pointerPattern = new Regex(

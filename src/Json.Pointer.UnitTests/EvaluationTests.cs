@@ -19,7 +19,16 @@ namespace Microsoft.Json.Pointer.UnitTests
   },
   ""~"": ""abc"",
   ""/"": ""de"",
-  ""~1"": ""fg""
+  ""~1"": ""fg"",
+  ""arr1"": [
+    ""el0"",
+    {
+      ""el2"": {
+        ""xy"": ""z"",
+        ""arr2"": [ 42, 54, 96 ]
+      }
+    }
+  ]
 }";
 
         public static readonly TheoryData<EvaluationTestCase> EvaluationTestCases = new TheoryData<EvaluationTestCase>
@@ -78,7 +87,25 @@ namespace Microsoft.Json.Pointer.UnitTests
                 TestDocument,
                 "/~01",
                 true,
-                "\"fg\"")
+                "\"fg\""),
+
+            new EvaluationTestCase(
+                "Simple array element",
+                TestDocument,
+                "/arr1/0",
+                true,
+                "\"el0\""),
+
+            new EvaluationTestCase(
+                "Complex nested path",
+                TestDocument,
+                "/arr1/1/el2/arr2/2",
+                true,
+                "96")
+
+            // TODO: invalid index
+            // TODO: out of range index
+            // TOOD: neither array nor object
         };
 
         private static readonly JTokenEqualityComparer s_comparer = new JTokenEqualityComparer();
