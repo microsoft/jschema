@@ -13,7 +13,10 @@ namespace Microsoft.Json.Pointer.UnitTests
         private const string TestDocument =
 @"{
   """": 1,
-  ""a"": true
+  ""a"": true,
+  ""b"": {
+    ""c"": [ 3, 2 ]
+  }
 }";
 
         public static readonly TheoryData<EvaluationTestCase> EvaluationTestCases = new TheoryData<EvaluationTestCase>
@@ -25,28 +28,35 @@ namespace Microsoft.Json.Pointer.UnitTests
                 true,
                 TestDocument
             ),
-#if BLEAH
 
             new EvaluationTestCase(
-                "Empty token",
+                "Existing property",
+                TestDocument,
+                "/a",
+                true,
+                "true"),
+
+            new EvaluationTestCase(
+                "Empty property name",
                 TestDocument,
                 "/",
                 true,
                 "1"),
-            new EvaluationTestCase(
-                "Single token",
-                TestDocument,
-                "/a",
-                true,
-                "a"),
 
             new EvaluationTestCase(
-                "Multiple tokens",
+                "Missing property",
                 TestDocument,
-                "/a/12/bc",
+                "/x",
+                false),
+
+            new EvaluationTestCase(
+                "Nested property",
+                TestDocument,
+                "/b/c",
                 true,
-                "a", "12", "bc"),
-#endif
+                "[ 3, 2]")
+
+            // TODO Escaped character tests.
         };
 
         private static readonly JTokenEqualityComparer s_comparer = new JTokenEqualityComparer();

@@ -68,5 +68,14 @@ namespace Microsoft.Json.Pointer {
                 return ResourceManager.GetString("ErrorInvalidJsonPointer", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot evaluate JSON pointer &quot;{0}&quot; because the object at the specified location does not contain a property named &quot;{1}&quot;..
+        /// </summary>
+        internal static string ErrorMissingProperty {
+            get {
+                return ResourceManager.GetString("ErrorMissingProperty", resourceCulture);
+            }
+        }
     }
 }

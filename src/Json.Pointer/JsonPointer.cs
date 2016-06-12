@@ -16,6 +16,8 @@ namespace Microsoft.Json.Pointer
     /// </summary>
     public class JsonPointer
     {
+        private readonly string _value;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPointer"/> class with the
         /// specified string value.
@@ -25,6 +27,7 @@ namespace Microsoft.Json.Pointer
         /// </param>
         public JsonPointer(string value)
         {
+            _value = value;
             ReferenceTokens = ImmutableArray.CreateRange(Parse(value));
         }
 
@@ -32,7 +35,43 @@ namespace Microsoft.Json.Pointer
 
         public JToken Evaluate(JToken document)
         {
-            return document;
+            JToken result = document;
+            foreach (string referenceToken in ReferenceTokens)
+            {
+                result = Evaluate(referenceToken, result);
+            }
+
+            return result;
+        }
+
+        private JToken Evaluate(string referenceToken, JToken current)
+        {
+            JObject jObject = current as JObject;
+            if (jObject != null)
+            {
+                return EvaluateObjectReference(referenceToken, jObject);
+            }
+
+            return null;
+        }
+
+        private JToken EvaluateObjectReference(string referenceToken, JObject current)
+        {
+            IEnumerable<string> propertyNames = current.Properties().Select(p => p.Name);
+            if (propertyNames.Contains(referenceToken))
+            {
+                return current.Property(referenceToken).Value;
+            }
+            else
+            {
+                throw new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.ErrorMissingProperty,
+                        _value,
+                        referenceToken),
+                    nameof(referenceToken));
+            }
         }
 
         private static readonly Regex s_pointerPattern = new Regex(

@@ -120,4 +120,7 @@
   <data name="ErrorInvalidJsonPointer" xml:space="preserve">
     <value>"{0} is not a valid JSON pointer.</value>
   </data>
+  <data name="ErrorMissingProperty" xml:space="preserve">
+    <value>Cannot evaluate JSON pointer "{0}" because the object at the specified location does not contain a property named "{1}".</value>
+  </data>
 </root>
