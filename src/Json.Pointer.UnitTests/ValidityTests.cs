@@ -16,6 +16,11 @@ namespace Microsoft.Json.Pointer.UnitTests
                 string.Empty,
                 true
             ),
+
+            new ValidityTestCase(
+                "Does not start with '/'",
+                "a",
+                false)
         };
 
         [Theory(DisplayName = "JsonPointer validity")]
