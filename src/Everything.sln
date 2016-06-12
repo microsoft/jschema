@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.PerformanceTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.TestUtilities", "Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj", "{6D6133A4-8098-4210-99BE-5CA01EB833B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Pointer", "Json.Pointer\Json.Pointer.csproj", "{B365C6DC-E3FD-4F9E-B069-C3BD99D2098D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{6D6133A4-8098-4210-99BE-5CA01EB833B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D6133A4-8098-4210-99BE-5CA01EB833B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D6133A4-8098-4210-99BE-5CA01EB833B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B365C6DC-E3FD-4F9E-B069-C3BD99D2098D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B365C6DC-E3FD-4F9E-B069-C3BD99D2098D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B365C6DC-E3FD-4F9E-B069-C3BD99D2098D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B365C6DC-E3FD-4F9E-B069-C3BD99D2098D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
