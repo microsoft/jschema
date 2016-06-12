@@ -3,14 +3,16 @@
 
 using Xunit.Abstractions;
 
-namespace Json.Pointer.UnitTests
+namespace Microsoft.Json.Pointer.UnitTests
 {
     public class ValidityTestCase : IXunitSerializable
     {
         public ValidityTestCase(
-            string name)
+            string name,
+            string value)
         {
             Name = name;
+            Value = value;
         }
 
         public ValidityTestCase()
@@ -19,15 +21,18 @@ namespace Json.Pointer.UnitTests
         }
 
         public string Name { get; private set; }
+        public string Value { get; private set; }
 
         public void Deserialize(IXunitSerializationInfo info)
         {
             Name = info.GetValue<string>(nameof(Name));
+            Value = info.GetValue<string>(nameof(Value));
         }
 
         public void Serialize(IXunitSerializationInfo info)
         {
             info.AddValue(nameof(Name), Name);
+            info.AddValue(nameof(Value), Value);
         }
 
         public override string ToString()

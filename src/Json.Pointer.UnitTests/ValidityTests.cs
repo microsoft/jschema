@@ -4,14 +4,15 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Json.Pointer.UnitTests
+namespace Microsoft.Json.Pointer.UnitTests
 {
     public class ValidityTests
     {
         public static readonly TheoryData<ValidityTestCase> ValidityTestCases = new TheoryData<ValidityTestCase>
         {
             new ValidityTestCase(
-                "Empty pointer"
+                "Empty pointer",
+                string.Empty
             ),
         };
 
@@ -19,6 +20,7 @@ namespace Json.Pointer.UnitTests
         [MemberData(nameof(ValidityTestCases))]
         public void RunValidityTests(ValidityTestCase test)
         {
+            JsonPointer jPointer = new JsonPointer(test.Value);
             true.Should().BeTrue();
         }
     }

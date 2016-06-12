@@ -4,8 +4,8 @@
   <PropertyGroup>
     <ProjectGuid>{BEF9C2E2-FC05-4D1D-944E-5A7E8F94F250}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Json.Pointer.UnitTests</RootNamespace>
-    <AssemblyName>Json.Pointer.UnitTests</AssemblyName>
+    <RootNamespace>Microsoft.Json.Pointer.UnitTests</RootNamespace>
+    <AssemblyName>Microsoft.Json.Pointer.UnitTests</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
