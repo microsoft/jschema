@@ -98,8 +98,16 @@ namespace Microsoft.Json.Pointer
                 int index = int.Parse(referenceToken, NumberStyles.None, CultureInfo.InvariantCulture);
                 return jArray[index];
             }
-
-            return null;
+            else
+            {
+                throw new ArgumentException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        Resources.ErrorInvalidArrayIndex,
+                        _value,
+                        referenceToken),
+                    nameof(referenceToken));
+            }
         }
 
         private static readonly Regex s_pointerPattern = new Regex(

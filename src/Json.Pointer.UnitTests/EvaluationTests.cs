@@ -101,9 +101,26 @@ namespace Microsoft.Json.Pointer.UnitTests
                 TestDocument,
                 "/arr1/1/el2/arr2/2",
                 true,
-                "96")
+                "96"),
 
-            // TODO: invalid index
+            new EvaluationTestCase(
+                "Invalid array index: leading 0",
+                TestDocument,
+                "/arr1/01",
+                false),
+
+            new EvaluationTestCase(
+                "Invalid array index: leading non-digit",
+                TestDocument,
+                "/arr1/-1",
+                false),
+
+            new EvaluationTestCase(
+                "Invalid array index: trailing non-digit",
+                TestDocument,
+                "/arr1/1x",
+                false)
+
             // TODO: out of range index
             // TOOD: neither array nor object
         };

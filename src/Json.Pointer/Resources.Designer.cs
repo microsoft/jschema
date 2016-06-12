@@ -61,6 +61,15 @@ namespace Microsoft.Json.Pointer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot evaluate JSON pointer &quot;{0}&quot; because &quot;{1}&quot; is not a valid array index..
+        /// </summary>
+        internal static string ErrorInvalidArrayIndex {
+            get {
+                return ResourceManager.GetString("ErrorInvalidArrayIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;{0} is not a valid JSON pointer..
         /// </summary>
         internal static string ErrorInvalidJsonPointer {
