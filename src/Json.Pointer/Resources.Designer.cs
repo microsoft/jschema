@@ -79,6 +79,15 @@ namespace Microsoft.Json.Pointer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The string &quot;{0}&quot; is not a valid JSON pointer in URI fragment format because it does not start with &apos;#&apos;..
+        /// </summary>
+        internal static string ErrorInvalidFragmentStartCharacter {
+            get {
+                return ResourceManager.GetString("ErrorInvalidFragmentStartCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;{0} is not a valid JSON pointer..
         /// </summary>
         internal static string ErrorInvalidJsonPointer {

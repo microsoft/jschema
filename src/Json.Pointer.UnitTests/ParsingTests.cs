@@ -60,16 +60,77 @@ namespace Microsoft.Json.Pointer.UnitTests
             new ParsingTestCase(
                 "Invalid escape sequence ~~",
                 "/~2",
-                false)
+                false),
         };
 
         [Theory(DisplayName = "JsonPointer parsing")]
         [MemberData(nameof(ParsingTestCases))]
         public void RunParsingTests(ParsingTestCase test)
         {
+            RunTestCase(test, JsonPointerFormat.Normal);
+        }
+
+        public static readonly TheoryData<ParsingTestCase> UriFragmentParsingTestCases = new TheoryData<ParsingTestCase>
+        {
+            new ParsingTestCase(
+                "Fragment: does not start with '#'",
+                "/a",
+                false),
+
+            new ParsingTestCase(
+                "Fragment: empty pointer",
+                "#",
+                true
+            ),
+
+            new ParsingTestCase(
+                "Fragment: empty token",
+                "#/",
+                true,
+                string.Empty),
+
+            new ParsingTestCase(
+                "Fragment: single token",
+                "#/a",
+                true,
+                "a"),
+
+            new ParsingTestCase(
+                "Fragment: multiple tokens with empty token",
+                "#/a//bc",
+                true,
+                "a", string.Empty, "bc"),
+
+            new ParsingTestCase(
+                "Fragment: escaped characters",
+                "#/~0/~1",
+                true,
+                "~0", "~1"),
+
+            new ParsingTestCase(
+                "Fragment: pointer does not start with '/'",
+                "#a",
+                false),
+
+            new ParsingTestCase(
+                "Fragment: contains percent-encoded characters",
+                "#/%20ab/c%25d/ef%5E/g%7Ch/i%5Cj/%22%22",
+                true,
+                " ab", "c%d", "ef^", "g|h", @"i\j", "\"\"")
+        };
+
+        [Theory(DisplayName = "JsonPointer fragment parsing")]
+        [MemberData(nameof(UriFragmentParsingTestCases))]
+        public void RunUriFragmentParsingTests(ParsingTestCase test)
+        {
+            RunTestCase(test, JsonPointerFormat.UriFragment);
+        }
+
+        private void RunTestCase(ParsingTestCase test, JsonPointerFormat format)
+        {
             JsonPointer jPointer = null;
-            
-            Action action = () => jPointer = new JsonPointer(test.Value);
+
+            Action action = () => jPointer = new JsonPointer(test.Value, format);
 
             if (test.Valid)
             {

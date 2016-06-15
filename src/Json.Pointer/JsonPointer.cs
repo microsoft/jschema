@@ -19,8 +19,10 @@ namespace Microsoft.Json.Pointer
     {
         private const string TokenSeparator = "/";
         private const string EscapeCharacter = "~";
+        private const char UriFragmentDelimiter = '#';
 
         private readonly string _value;
+        private readonly JsonPointerFormat _format;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPointer"/> class with the
@@ -30,8 +32,27 @@ namespace Microsoft.Json.Pointer
         /// The string value of the JSON Pointer.
         /// </param>
         public JsonPointer(string value)
+            : this(value, JsonPointerFormat.Normal)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonPointer"/> class with the
+        /// specified string value.
+        /// </summary>
+        /// <param name="value">
+        /// The string value of the JSON Pointer.
+        /// </param>
+        /// <param name="format">
+        /// A value that specifies the textual format of the JON Pointer.
+        /// </param>
+        public JsonPointer(
+            string value,
+            JsonPointerFormat format = JsonPointerFormat.Normal)
         {
             _value = value;
+            _format = format;
+
             ReferenceTokens = ImmutableArray.CreateRange(Parse(value));
         }
 
@@ -152,6 +173,21 @@ $",
 
         private IEnumerable<string> Parse(string value)
         {
+            if (_format == JsonPointerFormat.UriFragment)
+            {
+                if (value[0] != UriFragmentDelimiter)
+                {
+                    throw new ArgumentException(
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            Resources.ErrorInvalidFragmentStartCharacter,
+                            value),
+                        nameof(value));
+                }
+
+                value = Uri.UnescapeDataString(value.Substring(1));
+            }
+
             Match match = s_pointerPattern.Match(value);
             if (match.Success)
             {

@@ -123,6 +123,9 @@
   <data name="ErrorInvalidArrayIndex" xml:space="preserve">
     <value>Cannot evaluate JSON pointer "{0}" because "{1}" is not a valid array index.</value>
   </data>
+  <data name="ErrorInvalidFragmentStartCharacter" xml:space="preserve">
+    <value>The string "{0}" is not a valid JSON pointer in URI fragment format because it does not start with '#'.</value>
+  </data>
   <data name="ErrorInvalidJsonPointer" xml:space="preserve">
     <value>"{0} is not a valid JSON pointer.</value>
   </data>
