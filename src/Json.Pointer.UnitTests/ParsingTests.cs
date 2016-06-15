@@ -67,48 +67,48 @@ namespace Microsoft.Json.Pointer.UnitTests
         [MemberData(nameof(ParsingTestCases))]
         public void RunParsingTests(ParsingTestCase test)
         {
-            RunTestCase(test, JsonPointerFormat.Normal);
+            RunTestCase(test, JsonPointerRepresentation.Normal);
         }
 
         public static readonly TheoryData<ParsingTestCase> UriFragmentParsingTestCases = new TheoryData<ParsingTestCase>
         {
             new ParsingTestCase(
-                "Fragment: does not start with '#'",
+                "Does not start with '#'",
                 "/a",
                 false),
 
             new ParsingTestCase(
-                "Fragment: empty pointer",
+                "Empty pointer",
                 "#",
                 true
             ),
 
             new ParsingTestCase(
-                "Fragment: empty token",
+                "Empty token",
                 "#/",
                 true,
                 string.Empty),
 
             new ParsingTestCase(
-                "Fragment: single token",
+                "Single token",
                 "#/a",
                 true,
                 "a"),
 
             new ParsingTestCase(
-                "Fragment: multiple tokens with empty token",
+                "Multiple tokens with empty token",
                 "#/a//bc",
                 true,
                 "a", string.Empty, "bc"),
 
             new ParsingTestCase(
-                "Fragment: escaped characters",
+                "Escaped characters",
                 "#/~0/~1",
                 true,
                 "~0", "~1"),
 
             new ParsingTestCase(
-                "Fragment: pointer does not start with '/'",
+                "Pointer does not start with '/'",
                 "#a",
                 false),
 
@@ -123,10 +123,26 @@ namespace Microsoft.Json.Pointer.UnitTests
         [MemberData(nameof(UriFragmentParsingTestCases))]
         public void RunUriFragmentParsingTests(ParsingTestCase test)
         {
-            RunTestCase(test, JsonPointerFormat.UriFragment);
+            RunTestCase(test, JsonPointerRepresentation.UriFragment);
         }
 
-        private void RunTestCase(ParsingTestCase test, JsonPointerFormat format)
+        public static readonly TheoryData<ParsingTestCase> JsonStringParsingTestCases = new TheoryData<ParsingTestCase>
+        {
+            new ParsingTestCase(
+                "Escaped characters",
+                @"/\\\""/a",
+                true,
+                @"\""", "a"),
+        };
+
+        [Theory(DisplayName = "JsonPointer JSON string parsing")]
+        [MemberData(nameof(JsonStringParsingTestCases))]
+        public void RunJsonStringParsingTests(ParsingTestCase test)
+        {
+            RunTestCase(test, JsonPointerRepresentation.JsonString);
+        }
+
+        private void RunTestCase(ParsingTestCase test, JsonPointerRepresentation format)
         {
             JsonPointer jPointer = null;
 

@@ -22,7 +22,7 @@ namespace Microsoft.Json.Pointer
         private const char UriFragmentDelimiter = '#';
 
         private readonly string _value;
-        private readonly JsonPointerFormat _format;
+        private readonly JsonPointerRepresentation _representation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPointer"/> class with the
@@ -32,7 +32,7 @@ namespace Microsoft.Json.Pointer
         /// The string value of the JSON Pointer.
         /// </param>
         public JsonPointer(string value)
-            : this(value, JsonPointerFormat.Normal)
+            : this(value, JsonPointerRepresentation.Normal)
         {
         }
 
@@ -43,15 +43,15 @@ namespace Microsoft.Json.Pointer
         /// <param name="value">
         /// The string value of the JSON Pointer.
         /// </param>
-        /// <param name="format">
-        /// A value that specifies the textual format of the JON Pointer.
+        /// <param name="representation">
+        /// A value that specifies the representation of the JON Pointer.
         /// </param>
         public JsonPointer(
             string value,
-            JsonPointerFormat format = JsonPointerFormat.Normal)
+            JsonPointerRepresentation representation = JsonPointerRepresentation.Normal)
         {
             _value = value;
-            _format = format;
+            _representation = representation;
 
             ReferenceTokens = ImmutableArray.CreateRange(Parse(value));
         }
@@ -173,7 +173,12 @@ $",
 
         private IEnumerable<string> Parse(string value)
         {
-            if (_format == JsonPointerFormat.UriFragment)
+            if (_representation == JsonPointerRepresentation.JsonString)
+            {
+                // TODO: Handle control characters 0x00-0x1F.
+                value = value.Replace(@"\\", @"\").Replace(@"\""", @"""");
+            }
+            else if (_representation == JsonPointerRepresentation.UriFragment)
             {
                 if (value[0] != UriFragmentDelimiter)
                 {

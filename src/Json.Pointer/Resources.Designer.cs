@@ -88,7 +88,7 @@ namespace Microsoft.Json.Pointer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;{0} is not a valid JSON pointer..
+        ///   Looks up a localized string similar to &quot;{0}&quot; is not a valid JSON pointer..
         /// </summary>
         internal static string ErrorInvalidJsonPointer {
             get {

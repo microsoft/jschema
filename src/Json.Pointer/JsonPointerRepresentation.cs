@@ -4,18 +4,23 @@
 namespace Microsoft.Json.Pointer
 {
     /// <summary>
-    /// Values that specify the textual format of a JSON pointer.
+    /// Values that specify the representation of a JSON pointer.
     /// </summary>
-    public enum JsonPointerFormat
+    public enum JsonPointerRepresentation
     {
         /// <summary>
-        /// The syntax specified in RFC 6901, Sec. 3.
+        /// The representation specified in RFC 6901, Sec. 3.
         /// </summary>
         Normal = 0,
 
         /// <summary>
+        /// The JSON string representation specified in RFC 6901, Sec. 5.
+        /// </summary>
+        JsonString,
+
+        /// <summary>
         /// The URI fragment identifier representation specified in RFC 6901, Sec. 6.
         /// </summary>
-        UriFragment = 1
+        UriFragment
     }
 }

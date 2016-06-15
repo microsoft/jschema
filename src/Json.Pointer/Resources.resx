@@ -127,7 +127,7 @@
     <value>The string "{0}" is not a valid JSON pointer in URI fragment format because it does not start with '#'.</value>
   </data>
   <data name="ErrorInvalidJsonPointer" xml:space="preserve">
-    <value>"{0} is not a valid JSON pointer.</value>
+    <value>"{0}" is not a valid JSON pointer.</value>
   </data>
   <data name="ErrorMissingProperty" xml:space="preserve">
     <value>Cannot evaluate JSON pointer "{0}" because the object at "{1}" does not contain a property named "{2}".</value>

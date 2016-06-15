@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JsonPointer.cs" />
-    <Compile Include="JsonPointerFormat.cs" />
+    <Compile Include="JsonPointerRepresentation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
