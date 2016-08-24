@@ -18,7 +18,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Sarif, Version=1.5.27.0, Culture=neutral, PublicKeyToken=a567ef0185dba9aa, processorArchitecture=MSIL">
-      <HintPath>..\packages\Sarif.Sdk.1.5.27-beta\lib\net45\Sarif.dll</HintPath>
+      <HintPath>..\packages\Sarif.Sdk.1.5.27\lib\net45\Sarif.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
