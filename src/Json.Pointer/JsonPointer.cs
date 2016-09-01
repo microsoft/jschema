@@ -64,19 +64,12 @@ namespace Microsoft.Json.Pointer
             StringBuilder pathBuilder = new StringBuilder();
             foreach (string referenceToken in ReferenceTokens)
             {
-                string unescapedToken = Unescape(referenceToken);
+                string unescapedToken = referenceToken.UnescapeJsonPointer();
                 result = Evaluate(unescapedToken, pathBuilder, result);
                 pathBuilder.Append(TokenSeparator + referenceToken);
             }
 
             return result;
-        }
-
-        // Per RFC 6901 Sec. 4, "~1" is evaluated before "~0", so that "~01"
-        // correctly becomes "~1" rather than "/".
-        private string Unescape(string referenceToken)
-        {
-            return referenceToken.Replace("~1", TokenSeparator).Replace("~0", EscapeCharacter);
         }
 
         private JToken Evaluate(string referenceToken, StringBuilder pathBuilder, JToken current)
