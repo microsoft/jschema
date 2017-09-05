@@ -11,7 +11,7 @@ using Microsoft.Json.Schema.JsonSchemaValidator.Sarif;
 using Newtonsoft.Json;
 
 namespace Microsoft.Json.Schema.JsonSchemaValidator
-{
+{    
     public static class RuleExtensions
     {
         public static Result SetAnalysisTargetUri(this Result result, string filePath)

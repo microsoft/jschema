@@ -100,7 +100,9 @@ namespace Microsoft.Json.Schema
         public SchemaValidationException(IEnumerable<SchemaValidationException> wrappedExceptions)
             : this()
         {
+            WrappedExceptions = wrappedExceptions;
         }
+        
 
         /// <summary>
         /// One or more SchemaValidationExceptions that have been bundled into 

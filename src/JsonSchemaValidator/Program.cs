@@ -38,9 +38,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                                             options.InstanceFilePath,
                                             options.SchemaFilePath
                                         },
-                                        verbose: true,
-                                        computeTargetsHash: false,
-                                        logEnvironment: false,
+                                        loggingOptions: LoggingOptions.Verbose,
                                         prereleaseInfo: null,
                                         invocationTokensToRedact: null))
             {

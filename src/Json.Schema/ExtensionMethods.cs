@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
-    internal static class DictionaryExtensions
+    public static class DictionaryExtensions
     {
         internal static bool HasSameElementsAs<K, V>(this Dictionary<K, V> left, Dictionary<K, V> right)
         {
@@ -30,9 +30,9 @@ namespace Microsoft.Json.Schema
         }
     }
 
-    internal static class IEnumerableExtensions
+    public static class IEnumerableExtensions
     {
-        internal static bool HasSameElementsAs<T>(this IEnumerable<T> left, IEnumerable<T> right)
+        public static bool HasSameElementsAs<T>(this IEnumerable<T> left, IEnumerable<T> right)
         {
             if (left == null && right == null)
             {

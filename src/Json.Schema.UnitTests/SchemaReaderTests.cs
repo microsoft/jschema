@@ -199,7 +199,7 @@ namespace Microsoft.Json.Schema.UnitTests
             };
 
             action.ShouldThrow<SchemaValidationException>()
-                .Where(ex => ex.WrappedExceptions.Count() == test.NumErrors);
+                .Where(ex => (ex.WrappedExceptions != null ? ex.WrappedExceptions.Count() == test.NumErrors : 1 == test.NumErrors));
         }
     }
 }

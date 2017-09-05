@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.Sarif;
+using Microsoft.Json.Schema.JsonSchemaValidator.Validation;
 using Microsoft.Json.Schema.Validation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
