@@ -4,20 +4,18 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Json.Schema
 {
-    internal class ErrorCapturingTraceWriter : ITraceWriter
+    internal class SchemaValidationExceptionCapturingTraceWriter : ITraceWriter
     {
-        internal ErrorCapturingTraceWriter()
+        internal SchemaValidationExceptionCapturingTraceWriter()
         {
-            Errors = new List<Result>();
+            SchemaValidationExceptions = new List<SchemaValidationException>();
         }
 
-        internal List<Result> Errors;
+        internal List<SchemaValidationException> SchemaValidationExceptions;
 
         #region ITraceWriter
 
@@ -26,9 +24,10 @@ namespace Microsoft.Json.Schema
         public void Trace(TraceLevel level, string message, Exception ex)
         {
             var schemaValidationException = ex as SchemaValidationException;
-            if (schemaValidationException != null && schemaValidationException.Results.Any())
+
+            if (schemaValidationException != null)
             {
-                Errors.AddRange(schemaValidationException.Results);
+                SchemaValidationExceptions.Add(schemaValidationException);
             }
         }
 

@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Microsoft.CodeAnalysis.Sarif;
-using Microsoft.Json.Schema.Sarif;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
@@ -80,45 +78,50 @@ namespace Microsoft.Json.Schema
         /// an error message.
         /// </param>
         public SchemaValidationException(JToken jToken, ErrorNumber errorNumber, params object[] args)
-            : this(ResultFactory.CreateResult(jToken, errorNumber, args))
+            : this()
         {
         }
 
+        /// <summ
         /// <summary>
         /// Initializes a new instance of the <see cref="SchemaValidationException"/> class
-        /// with an error encountered while reading a JSON schema.
+        /// with information describing an error encountered while reading a JSON schema.
         /// </summary>
-        /// <param name="result">
-        /// An error encountered while reading a JSON schema.
+        /// <param name="jToken">
+        /// The token on which the error was encountered.
         /// </param>
-        public SchemaValidationException(Result result)
-            : this(new[] { result })
+        /// <param name="errorNumber">
+        /// The error number.
+        /// </param>
+        /// <param name="args">
+        /// A set of values which are to be formatted along with the error number to construct
+        /// an error message.
+        /// </param>
+        public SchemaValidationException(IEnumerable<SchemaValidationException> wrappedExceptions)
+            : this()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SchemaValidationException"/> class
-        /// with a list of errors encountered while reading a JSON schema.
+        /// One or more SchemaValidationExceptions that have been bundled into 
+        /// this exception instance.
         /// </summary>
-        /// <param name="results">
-        /// The list of errors encountered while reading a JSON schema.
-        /// </param>
-        public SchemaValidationException(IEnumerable<Result> results)
-        {
-            Results = results.ToList();
-        }
+        public IEnumerable<SchemaValidationException> WrappedExceptions { get; private set; }
 
         /// <summary>
-        /// Gets the list of errors encountered while reading a JSON schema.
+        /// The token on which the error was encountered
         /// </summary>
-        public List<Result> Results { get; }
+        public JToken JToken { get; private set; }
 
-        private static string FormatMessage(IEnumerable<Result> results)
-        {
-            return string.Join(
-                "\n",
-                results.Select(
-                    r => r.FormatForVisualStudio(RuleFactory.GetRuleFromRuleId(r.RuleId))));
-        }
+        /// <summary>
+        /// The error number that identifies the validation issue.
+        /// </summary>
+        public ErrorNumber ErrorNumber { get; private set; }
+
+        /// <summary>
+        /// An argument list that parameterizes the validation issue.
+        /// </summary>
+        public object[] Args { get; private set; }
+
     }
 }

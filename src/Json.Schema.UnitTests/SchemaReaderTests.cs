@@ -52,8 +52,8 @@ namespace Microsoft.Json.Schema.UnitTests
             };
 
             action.ShouldThrow<JsonSyntaxException>()
-                .Where(ex => ex.Result.Locations.First().AnalysisTarget.Region.StartLine == 2
-                    && ex.Result.Locations.First().AnalysisTarget.Region.StartColumn == 10);
+                .Where(ex => ex.JsonReaderException.LineNumber == 2
+                    && ex.JsonReaderException.LinePosition == 10);
         }
 
         public class LogicallyInvalidSchemaTestCase : IXunitSerializable
@@ -199,7 +199,7 @@ namespace Microsoft.Json.Schema.UnitTests
             };
 
             action.ShouldThrow<SchemaValidationException>()
-                .Where(ex => ex.Results.Count == test.NumErrors);
+                .Where(ex => ex.WrappedExceptions.Count() == test.NumErrors);
         }
     }
 }

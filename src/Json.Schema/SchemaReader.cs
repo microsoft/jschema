@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Json.Schema
 {
@@ -21,7 +22,8 @@ namespace Microsoft.Json.Schema
             // because Json.NET treats "$ref" specially.
             jsonText = RefProperty.ConvertFromInput(jsonText);
 
-            var traceWriter = new ErrorCapturingTraceWriter(); 
+            var traceWriter = new SchemaValidationExceptionCapturingTraceWriter();
+
             var serializer = new JsonSerializer
             {
                 ContractResolver = new JsonSchemaContractResolver(),
@@ -41,9 +43,10 @@ namespace Microsoft.Json.Schema
                 }
             }
 
-            if (traceWriter.Errors.Any())
+
+            if (traceWriter.SchemaValidationExceptions.Any())
             {
-                throw new SchemaValidationException(traceWriter.Errors);
+                throw new SchemaValidationException(traceWriter.SchemaValidationExceptions);
             }
 
             return schema;

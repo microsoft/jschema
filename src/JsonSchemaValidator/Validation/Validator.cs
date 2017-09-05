@@ -7,11 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.Sarif;
-using Microsoft.Json.Schema.Sarif;
+using Microsoft.Json.Schema.JsonSchemaValidator.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Json.Schema.Validation
+namespace Microsoft.Json.Schema.JsonSchemaValidator.Validation
 {
     /// <summary>
     /// Validates a JSON instance against a schema.

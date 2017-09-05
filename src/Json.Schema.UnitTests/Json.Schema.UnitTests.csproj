@@ -67,7 +67,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchemaWriterTests.cs" />
     <Compile Include="UriOrFragmentTests.cs" />
-    <Compile Include="ValidatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj">

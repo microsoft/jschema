@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.Sarif;
-using Microsoft.Json.Schema.Sarif;
 using Microsoft.Json.Schema.TestUtilities;
 using Newtonsoft.Json.Linq;
 using Xunit;

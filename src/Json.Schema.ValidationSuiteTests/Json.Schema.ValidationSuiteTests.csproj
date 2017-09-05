@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="ValidationSuite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValidatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

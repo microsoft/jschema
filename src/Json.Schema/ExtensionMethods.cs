@@ -4,10 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -124,26 +122,6 @@ namespace Microsoft.Json.Schema
         {
             var exception = new SchemaValidationException(jToken, errorNumber, args);
             serializer.TraceWriter.Trace(TraceLevel.Error, exception.Message, exception);
-        }
-    }
-
-    public static class RuleExtensions
-    {
-        public static Result SetAnalysisTargetUri(this Result result, string filePath)
-        {
-            // For now, I have to make the URI absolute. Once https://github.com/Microsoft/sarif-sdk/issues/308
-            // is fixed, I won't have to do this. I'll just set uriKind appropriately,
-            // according to IsPathRooted.
-            UriKind uriKind = UriKind.Absolute;
-            if (!Path.IsPathRooted(filePath))
-            {
-                uriKind = UriKind.Relative;
-                filePath = Path.Combine(Environment.CurrentDirectory, filePath);
-            }
-
-            result.Locations.First().AnalysisTarget.Uri = new Uri(filePath, uriKind);
-
-            return result;
         }
     }
 }

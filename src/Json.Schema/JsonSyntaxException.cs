@@ -2,10 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Microsoft.CodeAnalysis.Sarif;
-using Microsoft.Json.Schema.Sarif;
 using Newtonsoft.Json;
 
 namespace Microsoft.Json.Schema
@@ -70,40 +67,12 @@ namespace Microsoft.Json.Schema
         /// </summary>
         public JsonSyntaxException(string fileName, JsonReaderException ex)
         {
-            Rule rule = RuleFactory.GetRuleFromErrorNumber(ErrorNumber.SyntaxError);
-
-            Result = new Result
-            {
-                RuleId = rule.Id,
-                Level = rule.DefaultLevel,
-                Locations = new List<Location>
-                {
-                    new Location
-                    {
-                        AnalysisTarget = new PhysicalLocation
-                        {
-                            Uri = new Uri(fileName, UriKind.RelativeOrAbsolute),
-                            Region = new Region
-                            {
-                                StartLine = ex.LineNumber,
-                                StartColumn = ex.LinePosition
-                            }
-                        }
-                    }
-                },
-
-                FormattedRuleMessage = new FormattedRuleMessage
-                {
-                    FormatId = RuleFactory.DefaultMessageFormatId,
-                    Arguments = new List<string>
-                    {
-                        ex.Path,
-                        ex.Message
-                    }
-                }
-            };
+            FileName = fileName;
+            JsonReaderException = ex;
         }
 
-        public Result Result { get; }
+        public string FileName { get; internal set; }
+
+        public JsonReaderException JsonReaderException { get; internal set; }
     }
 }
