@@ -80,6 +80,9 @@ namespace Microsoft.Json.Schema
         public SchemaValidationException(JToken jToken, ErrorNumber errorNumber, params object[] args)
             : this()
         {
+            JToken = jToken;
+            ErrorNumber = errorNumber;
+            Args = args;
         }
 
         /// <summ
