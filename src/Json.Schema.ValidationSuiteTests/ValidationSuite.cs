@@ -95,6 +95,17 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
             }
         }
 
+        [Fact]
+        public void MyTest()
+        {
+            string filePath = @"E:\src\JSON-Schema-Test-Suite\tests\draft4\definitions.json";
+            List<TestSuite> testSuites = JsonConvert.DeserializeObject<List<TestSuite>>(File.ReadAllText(filePath));
+            foreach (TestSuite suite in testSuites)
+            {
+                suite.Schema.Should().NotBeNull();
+            }
+        }
+
         public IEnumerator<object[]> GetEnumerator()
         {
             return _data.GetEnumerator();

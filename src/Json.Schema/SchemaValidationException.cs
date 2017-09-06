@@ -85,24 +85,16 @@ namespace Microsoft.Json.Schema
         /// <summ
         /// <summary>
         /// Initializes a new instance of the <see cref="SchemaValidationException"/> class
-        /// with information describing an error encountered while reading a JSON schema.
+        /// with one or more SchemaValidationException instances
         /// </summary>
-        /// <param name="jToken">
-        /// The token on which the error was encountered.
-        /// </param>
-        /// <param name="errorNumber">
-        /// The error number.
-        /// </param>
-        /// <param name="args">
-        /// A set of values which are to be formatted along with the error number to construct
-        /// an error message.
+        /// <param name="wrappedExceptions">
+        /// One or more schema validation exceptions that are aggregated by this instance
         /// </param>
         public SchemaValidationException(IEnumerable<SchemaValidationException> wrappedExceptions)
             : this()
         {
             WrappedExceptions = wrappedExceptions;
-        }
-        
+        }        
 
         /// <summary>
         /// One or more SchemaValidationExceptions that have been bundled into 
@@ -124,6 +116,5 @@ namespace Microsoft.Json.Schema
         /// An argument list that parameterizes the validation issue.
         /// </summary>
         public object[] Args { get; private set; }
-
     }
 }
