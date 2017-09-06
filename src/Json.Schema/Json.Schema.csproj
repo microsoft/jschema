@@ -12,10 +12,6 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Sarif, Version=1.5.31.0, Culture=neutral, PublicKeyToken=a567ef0185dba9aa, processorArchitecture=MSIL">
-      <HintPath>..\packages\Sarif.Sdk.1.5.31\lib\net45\Sarif.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
@@ -61,36 +57,32 @@
     <Compile Include="Dependency.cs" />
     <Compile Include="DependencyConverter.cs" />
     <Compile Include="Error.cs" />
-    <Compile Include="ErrorCapturingTraceWriter.cs" />
+    <Compile Include="ExceptionCapturingTraceWriter.cs" />
     <Compile Include="FormatAttributes.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="JsonSyntaxException.cs" />
-    <Compile Include="SchemaValidationException.cs" />
     <Compile Include="Items.cs" />
     <Compile Include="ItemsConverter.cs" />
     <Compile Include="JsonSchema.cs" />
     <Compile Include="JsonSchemaContractResolver.cs" />
     <Compile Include="ErrorNumber.cs" />
-    <Compile Include="Sarif\ResultFactory.cs" />
-    <Compile Include="Sarif\RuleFactory.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SchemaType.cs" />
     <Compile Include="SchemaTypeConverter.cs" />
     <Compile Include="JTokenTypeExtensions.cs" />
     <Compile Include="MustBeStringConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RefProperty.cs" />
-    <Compile Include="Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="SchemaReader.cs" />
+    <Compile Include="SchemaValidationException.cs" />
     <Compile Include="SchemaWriter.cs" />
     <Compile Include="UriOrFragmentConverter.cs" />
     <Compile Include="UriOrFragment.cs" />
-    <Compile Include="Validation\JTokenEqualityComparer.cs" />
-    <Compile Include="Validation\Validator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -101,7 +93,6 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

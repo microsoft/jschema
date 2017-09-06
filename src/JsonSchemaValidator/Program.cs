@@ -10,8 +10,8 @@ using System.Reflection;
 using CommandLine;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.CodeAnalysis.Sarif.Writers;
-using Microsoft.Json.Schema.Sarif;
-using Microsoft.Json.Schema.Validation;
+using Microsoft.Json.Schema.JsonSchemaValidator.Sarif;
+using Microsoft.Json.Schema.JsonSchemaValidator.Validation;
 
 namespace Microsoft.Json.Schema.JsonSchemaValidator
 {
@@ -38,9 +38,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                                             options.InstanceFilePath,
                                             options.SchemaFilePath
                                         },
-                                        verbose: true,
-                                        computeTargetsHash: false,
-                                        logEnvironment: false,
+                                        loggingOptions: LoggingOptions.Verbose,
                                         prereleaseInfo: null,
                                         invocationTokensToRedact: null))
             {
@@ -48,7 +46,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                 exitCode = Validate(options.InstanceFilePath, options.SchemaFilePath, logger);
                 TimeSpan elapsedTime = DateTime.Now - start;
 
-                string message = string.Format(CultureInfo.CurrentCulture, Resources.ElapsedTime, elapsedTime);
+                string message = string.Format(CultureInfo.CurrentCulture, ValidatorResources.ElapsedTime, elapsedTime);
                 LogToolNotification(logger, message);
             }
 
@@ -76,13 +74,13 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                 }
                 else
                 {
-                    LogToolNotification(logger, Resources.Success);
+                    LogToolNotification(logger, ValidatorResources.Success);
                     returnCode = 0;
                 }
             }
             catch (JsonSyntaxException ex)
-            {
-                ReportResult(ex.Result, logger);
+            {                
+                ReportResult(ex.ToSarifResult(), logger);
             }
             catch (SchemaValidationException ex)
             {
@@ -101,10 +99,10 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             string schemaFile,
             SarifLogger logger)
         {
-            foreach (Result result in ex.Results)
+            foreach (SchemaValidationException wrappedException in ex.WrappedExceptions)
             {
+                Result result = ResultFactory.CreateResult(wrappedException.JToken, wrappedException.ErrorNumber, wrappedException.Args);
                 result.SetAnalysisTargetUri(schemaFile);
-
                 ReportResult(result, logger);
             }
         }
@@ -169,7 +167,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             var copyrightAttribute = attributes.Single(a => a is AssemblyCopyrightAttribute) as AssemblyCopyrightAttribute;
             string copyright = copyrightAttribute.Copyright;
 
-            Console.WriteLine(string.Format(CultureInfo.CurrentCulture, Resources.Banner, programName, version));
+            Console.WriteLine(string.Format(CultureInfo.CurrentCulture, ValidatorResources.Banner, programName, version));
             Console.WriteLine(copyright);
             Console.WriteLine();
         }

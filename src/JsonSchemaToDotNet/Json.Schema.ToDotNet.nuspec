@@ -65,7 +65,6 @@
     <file src='Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll' />
     <file src='Microsoft.CodeAnalysis.Workspaces.dll' target='tools\Microsoft.CodeAnalysis.Workspaces.dll' />
     <file src='Newtonsoft.Json.dll' target='tools\Newtonsoft.Json.dll' />
-    <file src='Sarif.dll' target='tools\Sarif.dll' />
     <file src='System.Collections.Immutable.dll' target='tools\System.Collections.Immutable.dll' />
     <file src='System.Composition.AttributedModel.dll' target='tools\System.Composition.AttributedModel.dll' />
     <file src='System.Composition.Hosting.dll' target='tools\System.Composition.Hosting.dll' />

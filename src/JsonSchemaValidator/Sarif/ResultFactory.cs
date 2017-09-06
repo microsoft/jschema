@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Json.Schema.Sarif
+namespace Microsoft.Json.Schema.JsonSchemaValidator.Sarif
 {
     internal partial class ResultFactory
     {

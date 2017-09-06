@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Json.Schema.Validation
+namespace Microsoft.Json.Schema.JsonSchemaValidator.Validation
 {
     internal class JTokenEqualityComparer : IEqualityComparer<JToken>
     {
