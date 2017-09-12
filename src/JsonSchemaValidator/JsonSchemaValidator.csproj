@@ -17,8 +17,7 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Sarif, Version=1.6.0.0, Culture=neutral, PublicKeyToken=6eeb4570dcdece70, processorArchitecture=MSIL">
-      <HintPath>..\packages\Sarif.Sdk.1.6.0\lib\net45\Sarif.dll</HintPath>
+    <Reference Include="$(MSBuildThisFileDirectory)..\..\fcib\Microsoft.Json.Schema.Sarif.dll">
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

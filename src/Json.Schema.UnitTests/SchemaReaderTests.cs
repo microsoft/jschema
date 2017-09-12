@@ -199,12 +199,14 @@ namespace Microsoft.Json.Schema.UnitTests
             };
 
             action.ShouldThrow<SchemaValidationException>()
-                .Where(ex => (ex.WrappedExceptions != null 
-                                ? ex.WrappedExceptions.Count() == test.NumErrors 
-                                : 1 == test.NumErrors) &&
-                                ex.JToken != null &&
-                                ex.ErrorNumber > 0 &&
-                                ex.Args != null);
+                .Where(ex => LogicallyInvalidSchemaExceptionPredicate(ex, test));
+        }
+
+        private bool LogicallyInvalidSchemaExceptionPredicate(SchemaValidationException ex, LogicallyInvalidSchemaTestCase test)
+        {
+            return ex.WrappedExceptions != null
+                ? ex.WrappedExceptions.All(we => we.Args != null && we.JToken != null && we.ErrorNumber > 0)
+                : ex.Args != null && ex.JToken != null && ex.ErrorNumber > 0;
         }
     }
 }
