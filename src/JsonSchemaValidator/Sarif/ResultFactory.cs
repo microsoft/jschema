@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.JsonSchemaValidator.Sarif
 {
-    internal partial class ResultFactory
+    public partial class ResultFactory
     {
         private const string ErrorCodeFormat = "JS{0:D4}";
 
