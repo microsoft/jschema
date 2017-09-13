@@ -54,8 +54,7 @@
     <file src='Microsoft.Json.Schema.dll' target='tools\Microsoft.Json.Schema.dll' />
     <file src='Microsoft.Json.Schema.pdb' target='tools\Microsoft.Json.Schema.pdb' />
     <file src='CommandLine.dll' target='tools\CommandLine.dll' />
-    <file src='FSharp.Core.dll' target='tools\FSharp.Core.dll' />
     <file src='Newtonsoft.Json.dll' target='tools\Newtonsoft.Json.dll' />
-    <file src='Sarif.dll' target='tools\Sarif.dll' />
+    <file src='Microsoft.Json.Schema.Sarif.dll' target='tools\Sarif.dll' />
   </files>
 </package>
