@@ -7,5 +7,5 @@ as its output format, so the Microsoft.Json.Schema package depends on the
 Sarif.Sdk package.
 
 It would be possible to refactor the packages to avoid the circular dependency,
-but for now, for expediency, we use the FCIB (foreign checked-in binary) approach.
+but for now, for expediency, we use the direct reference check-in approach.
 
