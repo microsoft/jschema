@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.CodeAnalysis.Sarif;
 
-namespace Microsoft.Json.Schema.JsonSchemaValidator.Sarif
+namespace Microsoft.Json.Schema.Validation
 {
     // TODO Not best name. Maybe RuleDictionary.Instance and have it implement IDictionary.
     public static class RuleFactory
@@ -17,7 +17,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator.Sarif
 
         private static Rule MakeRule(ErrorNumber errorNumber, string fullDescription, string messageFormat)
         {
-            string messageFormatWithPath = string.Format(CultureInfo.CurrentCulture, ValidatorResources.ErrorMessageFormatWithPath, messageFormat);
+            string messageFormatWithPath = string.Format(CultureInfo.CurrentCulture, RuleResources.ErrorMessageFormatWithPath, messageFormat);
 
             return new Rule
             {
@@ -36,163 +36,163 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator.Sarif
         {
             [ErrorNumber.SyntaxError] = MakeRule(
                 ErrorNumber.SyntaxError,
-                ValidatorResources.RuleDescriptionSyntaxError,
-                ValidatorResources.ErrorSyntaxError),
+                RuleResources.RuleDescriptionSyntaxError,
+                RuleResources.ErrorSyntaxError),
 
             [ErrorNumber.NotAString] = MakeRule(
                 ErrorNumber.NotAString,
-                ValidatorResources.RuleDescriptionNotAString,
-                ValidatorResources.ErrorNotAString),
+                RuleResources.RuleDescriptionNotAString,
+                RuleResources.ErrorNotAString),
 
             [ErrorNumber.InvalidAdditionalPropertiesType] = MakeRule(
                 ErrorNumber.InvalidAdditionalPropertiesType,
-                ValidatorResources.RuleDescriptionInvalidAdditionalPropertiesType,
-                ValidatorResources.ErrorInvalidAdditionalPropertiesType),
+                RuleResources.RuleDescriptionInvalidAdditionalPropertiesType,
+                RuleResources.ErrorInvalidAdditionalPropertiesType),
 
             [ErrorNumber.InvalidItemsType] = MakeRule(
                 ErrorNumber.InvalidItemsType,
-                ValidatorResources.RuleDescriptionInvalidItemsType,
-                ValidatorResources.ErrorInvalidItemsType),
+                RuleResources.RuleDescriptionInvalidItemsType,
+                RuleResources.ErrorInvalidItemsType),
 
             [ErrorNumber.InvalidTypeType] = MakeRule(
                 ErrorNumber.InvalidTypeType,
-                ValidatorResources.RuleDescriptionInvalidTypeType,
-                ValidatorResources.ErrorInvalidTypeType),
+                RuleResources.RuleDescriptionInvalidTypeType,
+                RuleResources.ErrorInvalidTypeType),
 
             [ErrorNumber.InvalidTypeString] = MakeRule(
                 ErrorNumber.InvalidTypeString,
-                ValidatorResources.RuleDescriptionInvalidTypeString,
-                ValidatorResources.ErrorInvalidTypeString),
+                RuleResources.RuleDescriptionInvalidTypeString,
+                RuleResources.ErrorInvalidTypeString),
 
             [ErrorNumber.InvalidAdditionalItemsType] = MakeRule(
                 ErrorNumber.InvalidAdditionalItemsType,
-                ValidatorResources.RuleDescriptionInvalidAdditionalItemsType,
-                ValidatorResources.ErrorInvalidAdditionalItemsType),
+                RuleResources.RuleDescriptionInvalidAdditionalItemsType,
+                RuleResources.ErrorInvalidAdditionalItemsType),
 
             [ErrorNumber.InvalidDependencyType] = MakeRule(
                 ErrorNumber.InvalidDependencyType,
-                ValidatorResources.RuleDescriptionInvalidDependencyType,
-                ValidatorResources.ErrorInvalidDependencyType),
+                RuleResources.RuleDescriptionInvalidDependencyType,
+                RuleResources.ErrorInvalidDependencyType),
 
             [ErrorNumber.InvalidPropertyDependencyType] = MakeRule(
                 ErrorNumber.InvalidPropertyDependencyType,
-                ValidatorResources.RuleDescriptionInvalidPropertyDependencyType,
-                ValidatorResources.ErrorInvalidPropertyDependencyType),
+                RuleResources.RuleDescriptionInvalidPropertyDependencyType,
+                RuleResources.ErrorInvalidPropertyDependencyType),
 
             [ErrorNumber.WrongType] = MakeRule(
                 ErrorNumber.WrongType,
-                ValidatorResources.RuleDescriptionWrongType,
-                ValidatorResources.ErrorWrongType),
+                RuleResources.RuleDescriptionWrongType,
+                RuleResources.ErrorWrongType),
 
             [ErrorNumber.RequiredPropertyMissing] = MakeRule(
                 ErrorNumber.RequiredPropertyMissing,
-                ValidatorResources.RuleDescriptionRequiredPropertyMissing,
-                ValidatorResources.ErrorRequiredPropertyMissing),
+                RuleResources.RuleDescriptionRequiredPropertyMissing,
+                RuleResources.ErrorRequiredPropertyMissing),
 
             [ErrorNumber.TooFewArrayItems] = MakeRule(
                 ErrorNumber.TooFewArrayItems,
-                ValidatorResources.RuleDescriptionTooFewArrayItems,
-                ValidatorResources.ErrorTooFewArrayItems),
+                RuleResources.RuleDescriptionTooFewArrayItems,
+                RuleResources.ErrorTooFewArrayItems),
 
             [ErrorNumber.TooManyArrayItems] = MakeRule(
                 ErrorNumber.TooManyArrayItems,
-                ValidatorResources.RuleDescriptionTooManyArrayItems,
-                ValidatorResources.ErrorTooManyArrayItems),
+                RuleResources.RuleDescriptionTooManyArrayItems,
+                RuleResources.ErrorTooManyArrayItems),
 
             [ErrorNumber.AdditionalPropertiesProhibited] = MakeRule(
                 ErrorNumber.AdditionalPropertiesProhibited,
-                ValidatorResources.RuleDescriptionAdditionalPropertiesProhibited,
-                ValidatorResources.ErrorAdditionalPropertiesProhibited),
+                RuleResources.RuleDescriptionAdditionalPropertiesProhibited,
+                RuleResources.ErrorAdditionalPropertiesProhibited),
 
             [ErrorNumber.ValueTooLarge] = MakeRule(
                 ErrorNumber.ValueTooLarge,
-                ValidatorResources.RuleDescriptionValueTooLarge,
-                ValidatorResources.ErrorValueTooLarge),
+                RuleResources.RuleDescriptionValueTooLarge,
+                RuleResources.ErrorValueTooLarge),
 
             [ErrorNumber.ValueTooLargeExclusive] = MakeRule(
                 ErrorNumber.ValueTooLargeExclusive,
-                ValidatorResources.RuleDescriptionValueTooLargeExclusive,
-                ValidatorResources.ErrorValueTooLargeExclusive),
+                RuleResources.RuleDescriptionValueTooLargeExclusive,
+                RuleResources.ErrorValueTooLargeExclusive),
 
             [ErrorNumber.ValueTooSmall] = MakeRule(
                 ErrorNumber.ValueTooSmall,
-                ValidatorResources.RuleDescriptionValueTooSmall,
-                ValidatorResources.ErrorValueTooSmall),
+                RuleResources.RuleDescriptionValueTooSmall,
+                RuleResources.ErrorValueTooSmall),
 
             [ErrorNumber.ValueTooSmallExclusive] = MakeRule(
                 ErrorNumber.ValueTooSmallExclusive,
-                ValidatorResources.RuleDescriptionValueTooSmallExclusive,
-                ValidatorResources.ErrorValueTooSmallExclusive),
+                RuleResources.RuleDescriptionValueTooSmallExclusive,
+                RuleResources.ErrorValueTooSmallExclusive),
 
             [ErrorNumber.TooManyProperties] = MakeRule(
                 ErrorNumber.TooManyProperties,
-                ValidatorResources.RuleDescriptionTooManyProperties,
-                ValidatorResources.ErrorTooManyProperties),
+                RuleResources.RuleDescriptionTooManyProperties,
+                RuleResources.ErrorTooManyProperties),
 
             [ErrorNumber.TooFewProperties] = MakeRule(
                 ErrorNumber.TooFewProperties,
-                ValidatorResources.RuleDescriptionTooFewProperties,
-                ValidatorResources.ErrorTooFewProperties),
+                RuleResources.RuleDescriptionTooFewProperties,
+                RuleResources.ErrorTooFewProperties),
 
             [ErrorNumber.NotAMultiple] = MakeRule(
                 ErrorNumber.NotAMultiple,
-                ValidatorResources.RuleDescriptionNotAMultiple,
-                ValidatorResources.ErrorNotAMultiple),
+                RuleResources.RuleDescriptionNotAMultiple,
+                RuleResources.ErrorNotAMultiple),
 
             [ErrorNumber.StringTooLong] = MakeRule(
                 ErrorNumber.StringTooLong,
-                ValidatorResources.RuleDescriptionStringTooLong,
-                ValidatorResources.ErrorStringTooLong),
+                RuleResources.RuleDescriptionStringTooLong,
+                RuleResources.ErrorStringTooLong),
 
             [ErrorNumber.StringTooShort] = MakeRule(
                 ErrorNumber.StringTooShort,
-                ValidatorResources.RuleDescriptionStringTooShort,
-                ValidatorResources.ErrorStringTooShort),
+                RuleResources.RuleDescriptionStringTooShort,
+                RuleResources.ErrorStringTooShort),
 
             [ErrorNumber.StringDoesNotMatchPattern] = MakeRule(
                 ErrorNumber.StringDoesNotMatchPattern,
-                ValidatorResources.RuleDescriptionStringDoesNotMatchPattern,
-                ValidatorResources.ErrorStringDoesNotMatchPattern),
+                RuleResources.RuleDescriptionStringDoesNotMatchPattern,
+                RuleResources.ErrorStringDoesNotMatchPattern),
 
             [ErrorNumber.NotAllOf] = MakeRule(
                 ErrorNumber.NotAllOf,
-                ValidatorResources.RuleDescriptionNotAllOf,
-                ValidatorResources.ErrorNotAllOf),
+                RuleResources.RuleDescriptionNotAllOf,
+                RuleResources.ErrorNotAllOf),
 
             [ErrorNumber.NotAnyOf] = MakeRule(
                 ErrorNumber.NotAnyOf,
-                ValidatorResources.RuleDescriptionNotAnyOf,
-                ValidatorResources.ErrorNotAnyOf),
+                RuleResources.RuleDescriptionNotAnyOf,
+                RuleResources.ErrorNotAnyOf),
 
             [ErrorNumber.NotOneOf] = MakeRule(
                 ErrorNumber.NotOneOf,
-                ValidatorResources.RuleDescriptionNotOneOf,
-                ValidatorResources.ErrorNotOneOf),
+                RuleResources.RuleDescriptionNotOneOf,
+                RuleResources.ErrorNotOneOf),
 
             [ErrorNumber.InvalidEnumValue] = MakeRule(
                 ErrorNumber.InvalidEnumValue,
-                ValidatorResources.RuleDescriptionInvalidEnumValue,
-                ValidatorResources.ErrorInvalidEnumValue),
+                RuleResources.RuleDescriptionInvalidEnumValue,
+                RuleResources.ErrorInvalidEnumValue),
 
             [ErrorNumber.NotUnique] = MakeRule(
                 ErrorNumber.NotUnique,
-                ValidatorResources.RuleDescriptionNotUnique,
-                ValidatorResources.ErrorNotUnique),
+                RuleResources.RuleDescriptionNotUnique,
+                RuleResources.ErrorNotUnique),
 
             [ErrorNumber.TooFewItemSchemas] = MakeRule(
                 ErrorNumber.TooFewItemSchemas,
-                ValidatorResources.RuleDescriptionTooFewItemSchemas,
-                ValidatorResources.ErrorTooFewItemSchemas),
+                RuleResources.RuleDescriptionTooFewItemSchemas,
+                RuleResources.ErrorTooFewItemSchemas),
 
             [ErrorNumber.ValidatesAgainstNotSchema] = MakeRule(
                 ErrorNumber.ValidatesAgainstNotSchema,
-                ValidatorResources.RuleDescriptionValidatesAgainstNotSchema,
-                ValidatorResources.ErrorValidatesAgainstNotSchema),
+                RuleResources.RuleDescriptionValidatesAgainstNotSchema,
+                RuleResources.ErrorValidatesAgainstNotSchema),
 
             [ErrorNumber.DependentPropertyMissing] = MakeRule(
                 ErrorNumber.DependentPropertyMissing,
-                ValidatorResources.RuleDescriptionDependentPropertyMissing,
-                ValidatorResources.ErrorDependentPropertyMissing)
+                RuleResources.RuleDescriptionDependentPropertyMissing,
+                RuleResources.ErrorDependentPropertyMissing)
         };
 
         public static Rule GetRuleFromRuleId(string ruleId)

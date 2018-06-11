@@ -10,8 +10,7 @@ using System.Reflection;
 using CommandLine;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.CodeAnalysis.Sarif.Writers;
-using Microsoft.Json.Schema.JsonSchemaValidator.Sarif;
-using Microsoft.Json.Schema.JsonSchemaValidator.Validation;
+using Microsoft.Json.Schema.Validation;
 
 namespace Microsoft.Json.Schema.JsonSchemaValidator
 {

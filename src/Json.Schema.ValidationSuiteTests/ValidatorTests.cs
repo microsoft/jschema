@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.Sarif;
-using Microsoft.Json.Schema.JsonSchemaValidator;
-using Microsoft.Json.Schema.JsonSchemaValidator.Sarif;
-using Microsoft.Json.Schema.JsonSchemaValidator.Validation;
 using Microsoft.Json.Schema.TestUtilities;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -469,7 +466,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": {}
 }",
-                MakeErrorMessage(3, 7, "b", ErrorNumber.AdditionalPropertiesProhibited, "b")
+                MakeErrorMessage(3, 6, "b", ErrorNumber.AdditionalPropertiesProhibited, "b")
                 ),
 
             new TestCase(
@@ -530,7 +527,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": ""false""
 }",
-                MakeErrorMessage(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
+                MakeErrorMessage(3, 14, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -557,7 +554,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a"": 2,
   ""b"": ""false""
 }",
-                MakeErrorMessage(3, 15, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
+                MakeErrorMessage(3, 14, "b", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -581,7 +578,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
     ""x"": 3
   }
 }",
-                MakeErrorMessage(3, 11, "a.x", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.Integer)
+                MakeErrorMessage(3, 10, "a.x", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.Integer)
                 ),
 
             new TestCase(
@@ -626,9 +623,9 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""a32&o"": ""foobar"",
   ""apple"": ""pie""
 }",
-                MakeErrorMessage(2, 13, "p1",    ErrorNumber.WrongType, SchemaType.Integer, JTokenType.Boolean),
-                MakeErrorMessage(3, 13, "p2",    ErrorNumber.WrongType, SchemaType.Integer, JTokenType.Null),
-                MakeErrorMessage(4, 20, "a32&o", ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
+                MakeErrorMessage(2, 12, "p1",    ErrorNumber.WrongType, SchemaType.Integer, JTokenType.Boolean),
+                MakeErrorMessage(3, 12, "p2",    ErrorNumber.WrongType, SchemaType.Integer, JTokenType.Null),
+                MakeErrorMessage(4, 19, "a32&o", ErrorNumber.WrongType, SchemaType.Integer, JTokenType.String)
                 ),
 
             new TestCase(
@@ -653,8 +650,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   ""fiddle"": 42,
   ""apple"": ""pie""
 }",
-                MakeErrorMessage(5, 6, "", ErrorNumber.AdditionalPropertiesProhibited, ""),
-                MakeErrorMessage(6, 12, "fiddle", ErrorNumber.AdditionalPropertiesProhibited, "fiddle")
+                MakeErrorMessage(5, 5, "", ErrorNumber.AdditionalPropertiesProhibited, ""),
+                MakeErrorMessage(6, 11, "fiddle", ErrorNumber.AdditionalPropertiesProhibited, "fiddle")
                 ),
 
             new TestCase(
@@ -709,8 +706,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
     ""y"": 2
   }
 }",
-                MakeErrorMessage(2, 9, "a", ErrorNumber.RequiredPropertyMissing, "x"),
-                MakeErrorMessage(2, 9, "a", ErrorNumber.RequiredPropertyMissing, "z")
+                MakeErrorMessage(2, 8, "a", ErrorNumber.RequiredPropertyMissing, "x"),
+                MakeErrorMessage(2, 8, "a", ErrorNumber.RequiredPropertyMissing, "z")
                 ),
 
             new TestCase(
@@ -777,7 +774,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 @"{
   ""a"": ""true""
 }",
-                MakeErrorMessage(2, 14, "a", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
+                MakeErrorMessage(2, 13, "a", ErrorNumber.WrongType, SchemaType.Boolean, JTokenType.String)
                 ),
 
             new TestCase(
@@ -967,7 +964,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
     ""x"": 1
   }
 }",
-                MakeErrorMessage(2, 9, "a", ErrorNumber.DependentPropertyMissing, "x", "\"y\"", "\"y\"")
+                MakeErrorMessage(2, 8, "a", ErrorNumber.DependentPropertyMissing, "x", "\"y\"", "\"y\"")
                 )
         };
 

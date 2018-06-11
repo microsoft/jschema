@@ -4,16 +4,13 @@ setlocal
 if exist bld rmdir /s /q bld
 
 set Configuration=Release
-
-if NOT exist "GeneratedKey.snk" (
-sn -k GeneratedKey.snk
-)
+set Platform=Any CPU
 
 REM Restore NuGet packages.
 .nuget\NuGet.exe restore src\Everything.sln -ConfigFile .nuget\NuGet.Config
 
 REM Build solution, including NuGet packages.
-msbuild /verbosity:minimal /target:rebuild src\Everything.sln /p:Configuration=%Configuration% /filelogger /fileloggerparameters:Verbosity=detailed
+msbuild /verbosity:minimal /target:rebuild src\Everything.sln /p:Configuration=%Configuration%,Platform="%Platform%" /filelogger /fileloggerparameters:Verbosity=detailed
 if "%ERRORLEVEL%" NEQ "0" (
 goto ExitFailed
 )

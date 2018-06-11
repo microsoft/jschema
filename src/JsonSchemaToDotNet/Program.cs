@@ -46,7 +46,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     }
 
                     string hintDictionaryText = File.ReadAllText(options.CodeGenHintsPath);
-                    hintDictionary = new HintDictionary(hintDictionaryText);
+                    hintDictionary = new HintDictionary(hintDictionaryText, options.TypeNameSuffix);
                 }
 
                 string copyrightNotice = null;
@@ -67,6 +67,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                 DataModelGeneratorSettings settings = new DataModelGeneratorSettings
                 {
                     OutputDirectory = options.OutputDirectory,
+                    TypeNameSuffix = options.TypeNameSuffix,
                     ForceOverwrite = options.ForceOverwrite,
                     NamespaceName = options.NamespaceName,
                     RootClassName = options.RootClassName,

@@ -19,14 +19,15 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public EnumGenerator(
             JsonSchema schema,
+            string typeNameSuffix,
             HintDictionary hintDictionary)
-            : base(schema, hintDictionary)
+            : base(schema, typeNameSuffix, hintDictionary)
         {
         }
 
         public override BaseTypeDeclarationSyntax GenerateTypeDeclaration()
         {
-            var enumDeclaration = SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(TypeName))
+            var enumDeclaration = SyntaxFactory.EnumDeclaration(SyntaxFactory.Identifier(SuffixedTypeName))
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
             EnumHint enumHint = GetEnumHintForType(TypeName);

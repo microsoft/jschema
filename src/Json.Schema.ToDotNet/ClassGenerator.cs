@@ -56,8 +56,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             bool generateCloningCode,
             bool sealClasses,
             string syntaxInterfaceName,
-            string kindEnumName)
-            : base(propertyInfoDictionary, schema, hintDictionary)
+            string kindEnumName,
+            string typeNameSuffix)
+            : base(propertyInfoDictionary, schema, typeNameSuffix, hintDictionary)
         {
             _baseInterfaceName = interfaceName;
             _generateEqualityComparers = generateEqualityComparers;
@@ -75,7 +76,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 ? SyntaxKind.SealedKeyword
                 : SyntaxKind.PartialKeyword;
 
-            var classDeclaration = SyntaxFactory.ClassDeclaration(TypeName)
+            var classDeclaration = SyntaxFactory.ClassDeclaration(SuffixedTypeName)
                 .AddAttributeLists(new AttributeListSyntax[]
                     {
                         SyntaxFactory.AttributeList(
@@ -174,7 +175,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.PropertyDeclaration(
                 SyntaxFactory.ParseTypeName(
-                    EqualityComparerGenerator.GetComparerBaseType(TypeName).ToString()),
+                    EqualityComparerGenerator.GetComparerBaseType(SuffixedTypeName).ToString()),
                 ValueComparerPropertyName)
                 .WithModifiers(
                     SyntaxFactory.TokenList(
@@ -185,7 +186,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.IdentifierName(
-                                EqualityComparerGenerator.GetEqualityComparerClassName(TypeName)),
+                                EqualityComparerGenerator.GetEqualityComparerClassName(SuffixedTypeName)),
                             SyntaxFactory.IdentifierName(
                                 EqualityComparerGenerator.InstancePropertyName))))
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -201,7 +202,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.Parameter(
                                 SyntaxFactory.Identifier(OtherParameterName))
-                                .WithType(SyntaxFactory.ParseTypeName(TypeName)))))
+                                .WithType(SyntaxFactory.ParseTypeName(SuffixedTypeName)))))
                 .WithModifiers(
                     SyntaxFactory.TokenList(
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
@@ -361,7 +362,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(_kindEnumName),
-                                        SyntaxFactory.IdentifierName(TypeName))))))
+                                        SyntaxFactory.IdentifierName(SuffixedTypeName))))))
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(CultureInfo.CurrentCulture, Resources.SyntaxInterfaceKindDescription, _syntaxInterfaceName)));
@@ -369,7 +370,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private ConstructorDeclarationSyntax GenerateDefaultConstructor()
         {
-            return SyntaxFactory.ConstructorDeclaration(TypeName)
+            return SyntaxFactory.ConstructorDeclaration(SuffixedTypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddBodyStatements()
                 .WithLeadingTrivia(
@@ -377,7 +378,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.DefaultCtorSummary,
-                            TypeName)));
+                            SuffixedTypeName)));
         }
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
@@ -388,7 +389,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .Select(name =>  SyntaxFactory.IdentifierName(name.ToCamelCase()))
                 .ToArray();
 
-            return SyntaxFactory.ConstructorDeclaration(TypeName)
+            return SyntaxFactory.ConstructorDeclaration(SuffixedTypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
                     // This ctor takes the same parameters as the Init method, so use the
@@ -404,7 +405,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.PropertyCtorSummary,
-                            TypeName),
+                            SuffixedTypeName),
                         paramDescriptionDictionary: MakePropertyCtorParamDescriptions()));
         }
 
@@ -460,11 +461,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IdentifierName(name)))
                     .ToArray();
 
-            return SyntaxFactory.ConstructorDeclaration(TypeName)
+            return SyntaxFactory.ConstructorDeclaration(SuffixedTypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
                         SyntaxFactory.Parameter(SyntaxFactory.Identifier(OtherParameterName))
-                            .WithType(SyntaxFactory.ParseTypeName(TypeName)))
+                            .WithType(SyntaxFactory.ParseTypeName(SuffixedTypeName)))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(OtherParameterName),
@@ -487,7 +488,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     string.Format(
                         CultureInfo.CurrentCulture,
                         Resources.CopyCtorSummary,
-                        TypeName),
+                        SuffixedTypeName),
                     returns: null,
                     paramDescriptionDictionary: new Dictionary<string, string>
                     {
@@ -521,13 +522,13 @@ namespace Microsoft.Json.Schema.ToDotNet
         private MethodDeclarationSyntax GenerateDeepClone()
         {
             return SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.ParseTypeName(TypeName),
+                SyntaxFactory.ParseTypeName(SuffixedTypeName),
                 DeepCloneMethodName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
-                            SyntaxFactory.ParseTypeName(TypeName),
+                            SyntaxFactory.ParseTypeName(SuffixedTypeName),
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(DeepCloneCoreMethodName),
                                 SyntaxHelper.ArgumentList()))))
@@ -543,7 +544,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.ObjectCreationExpression(
-                            SyntaxFactory.ParseTypeName(TypeName),
+                            SyntaxFactory.ParseTypeName(SuffixedTypeName),
                             SyntaxHelper.ArgumentList(SyntaxFactory.ThisExpression()),
                             default(InitializerExpressionSyntax))));
         }

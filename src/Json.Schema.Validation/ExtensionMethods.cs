@@ -3,14 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis.Sarif;
-using Microsoft.Json.Schema.JsonSchemaValidator.Sarif;
 using Newtonsoft.Json;
 
-namespace Microsoft.Json.Schema.JsonSchemaValidator
+namespace Microsoft.Json.Schema.Validation
 {    
     public static class RuleExtensions
     {

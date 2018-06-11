@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -9,13 +8,13 @@ using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Json.Schema.JsonSchemaValidator.Sarif
+namespace Microsoft.Json.Schema.Validation
 {
     public partial class ResultFactory
     {
         private const string ErrorCodeFormat = "JS{0:D4}";
 
-        internal static Result CreateResult(JToken jToken, ErrorNumber errorNumber, object[] args)
+        public static Result CreateResult(JToken jToken, ErrorNumber errorNumber, object[] args)
         {
             IJsonLineInfo lineInfo = jToken;
 
@@ -27,7 +26,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator.Sarif
                 args);
         }
 
-        internal static Result CreateResult(
+        public static Result CreateResult(
             int startLine,
             int startColumn,
             string jsonPath,

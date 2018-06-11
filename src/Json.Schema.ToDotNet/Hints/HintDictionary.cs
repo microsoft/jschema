@@ -16,13 +16,37 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
     public class HintDictionary : Dictionary<string, CodeGenHint[]>
     {
         private const string WildCard = "*";
+        private readonly string _typeNameSuffix;
+
+        /// <summary>
+        /// Dictionary that maps each kind of code generation hint to a method that
+        /// instantiates it from a set of arguments.
+        /// </summary>
+        private readonly IDictionary<HintKind, HintCreator> _hintCreatorDictionary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HintDictionary"/> class.
         /// </summary>
-        public HintDictionary(string dictionaryText)
+        public HintDictionary(string dictionaryText, string typeNameSuffix = null)
         {
-            var infoDictionary = HintInstantiationInfoDictionary.Deserialize(dictionaryText);
+            _typeNameSuffix = string.IsNullOrWhiteSpace(typeNameSuffix)
+                ? string.Empty
+                : typeNameSuffix.Trim();
+
+            _hintCreatorDictionary = ImmutableDictionary.CreateRange(
+                new Dictionary<HintKind, HintCreator>
+                {
+                    [HintKind.AttributeHint] = CreateAttributeHint,
+                    [HintKind.BaseTypeHint] = CreateBaseTypeNameHint,
+                    [HintKind.ClassNameHint] = CreateClassNameHint,
+                    [HintKind.DictionaryHint] = CreateDictionaryHint,
+                    [HintKind.EnumHint] = CreateEnumHint,
+                    [HintKind.InterfaceHint] = CreateInterfaceHint,
+                    [HintKind.PropertyModifiersHint] = CreatePropertyModifiersHint,
+                    [HintKind.PropertyNameHint] = CreatePropertyNameHint
+                });
+
+        var infoDictionary = HintInstantiationInfoDictionary.Deserialize(dictionaryText);
             InstantiateHints(infoDictionary);
         }
 
@@ -96,30 +120,12 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// An instantiated code generation hint.
         /// </returns>
         private delegate CodeGenHint HintCreator(JObject arguments);
-
-        /// <summary>
-        /// Dictionary that maps each kind of code generation hint to a method that
-        /// instantiates it from a set of arguments.
-        /// </summary>
-        private static readonly IDictionary<HintKind, HintCreator> s_hintCreatorDictionary = ImmutableDictionary.CreateRange(
-            new Dictionary<HintKind, HintCreator>
-            {
-                [HintKind.AttributeHint] = CreateAttributeHint,
-                [HintKind.BaseTypeHint] = CreateBaseTypeNameHint,
-                [HintKind.ClassNameHint] = CreateClassNameHint,
-                [HintKind.DictionaryHint] = CreateDictionaryHint,
-                [HintKind.EnumHint] = CreateEnumHint,
-                [HintKind.InterfaceHint] = CreateInterfaceHint,
-                [HintKind.PropertyModifiersHint] = CreatePropertyModifiersHint,
-                [HintKind.PropertyNameHint] = CreatePropertyNameHint
-            });
-
         private CodeGenHint CreateHintFromInfo(HintInstantiationInfo info)
         {
             CodeGenHint hint = null;
 
             HintCreator hintCreator;
-            if (s_hintCreatorDictionary.TryGetValue(info.Kind, out hintCreator))
+            if (_hintCreatorDictionary.TryGetValue(info.Kind, out hintCreator))
             {
                 hint = hintCreator(info.Arguments);
             }
@@ -137,9 +143,12 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             return new AttributeHint(typeName, namespaceName, attributeArguments, attributeProperties);
         }
 
-        private static CodeGenHint CreateBaseTypeNameHint(JObject arguments)
+        private CodeGenHint CreateBaseTypeNameHint(JObject arguments)
         {
-            string[] baseTypeNames = GetArrayArgument<string>(arguments, nameof(BaseTypeHint.BaseTypeNames));
+
+            string[] baseTypeNames = GetArrayArgument<string>(arguments, nameof(BaseTypeHint.BaseTypeNames))
+                .Select(btn => btn + _typeNameSuffix)
+                .ToArray();
 
             return new BaseTypeHint(baseTypeNames);
         }

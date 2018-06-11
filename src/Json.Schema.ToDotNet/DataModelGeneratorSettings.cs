@@ -24,9 +24,20 @@ namespace Microsoft.Json.Schema.ToDotNet
         public bool ForceOverwrite { get; set; }
 
         /// <summary>
+        /// Gets or sets a string that is used as a suffix to every generated type name.
+        /// </summary>
+        public string TypeNameSuffix { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the namespace in which the classes will be generated.
         /// </summary>
         public string NamespaceName { get; set; }
+
+        /// <summary>
+        /// Gets the name of the namespace in which the classes will be generated, including
+        /// any specified suffix.
+        /// </summary>
+        public string SuffixedNamespaceName => Utilities.QualifyNameWithSuffix(NamespaceName, TypeNameSuffix);
 
         /// <summary>
         /// Gets or sets the name of the class at the root of the generated object model

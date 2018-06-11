@@ -9,15 +9,24 @@ namespace Microsoft.Json.Schema.ToDotNet
 {
     public abstract class TypeGenerator
     {
+        private string _typeNameSuffix;
+
         protected TypeGenerator(
             JsonSchema schema,
+            string typeNameSuffix,
             HintDictionary hintDictionary)
         {
             Schema = schema;
             HintDictionary = hintDictionary;
+            _typeNameSuffix = typeNameSuffix;
         }
 
         protected string TypeName { get; private set; }
+
+        public string SuffixedTypeName
+        {
+            get { return TypeName + _typeNameSuffix; }
+        }
 
         protected HintDictionary HintDictionary { get; }
 

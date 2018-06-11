@@ -64,6 +64,6 @@ $major, $minor, $patch, $preRelease = & "$PSScriptRoot\Get-VersionConstants.ps1"
 $packageVersion = "$major.$minor.$patch$preRelease"
 $apiKey = Get-ApiKey
 
-$packages = "Microsoft.Json.Pointer", "Microsoft.Json.Schema", "Microsoft.Json.Schema.ToDotNet"
+$packages = "Microsoft.Json.Pointer", "Microsoft.Json.Schema", "Microsoft.Json.Schema.ToDotNet", "Microsoft.Json.Schema.Validation"
 
 $packages | ForEach-Object { Publish-Package $_ $packageVersion $apiKey }
