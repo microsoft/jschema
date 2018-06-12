@@ -8,6 +8,12 @@
     <VersionSuffix></VersionSuffix>
   </PropertyGroup>
 
+  <PropertyGroup Label="Build">
+    <OutputSubDir>$(Platform)_$(Configuration)</OutputSubDir>
+    <IntermediateOutputPath>$(MsBuildThisFileDirectory)..\bld\obj\$(MSBuildProjectName)\$(OutputSubDir)\</IntermediateOutputPath>
+    <OutputPath>$(MsBuildThisFileDirectory)..\bld\bin\$(MSBuildProjectName)\$(OutputSubDir)\</OutputPath>
+  </PropertyGroup>
+
   <PropertyGroup Label="Package">
     <PackageId Condition=" '$(PackageId)' == '' ">$(MSBuildProjectName)</PackageId>
     <Authors Condition=" '$(Authors)' == '' ">$(Company)</Authors>
