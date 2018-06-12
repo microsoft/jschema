@@ -18,8 +18,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         public ClassOrInterfaceGenerator(
             PropertyInfoDictionary propertyInfoDictionary,
             JsonSchema schema,
+            string typeNameSuffix,
             HintDictionary hintDictionary)
-            : base(schema, hintDictionary)
+            : base(schema, typeNameSuffix, hintDictionary)
         {
             PropInfoDictionary = propertyInfoDictionary;
         }

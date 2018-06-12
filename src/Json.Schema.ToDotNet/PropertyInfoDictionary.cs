@@ -58,6 +58,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public delegate void AdditionalTypeRequiredDelegate(AdditionalTypeRequiredInfo additionalTypeRequiredInfo);
 
         private AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
+        private string _typeNameSuffix;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyInfoDictionary"/> class.
@@ -73,11 +74,13 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </param>
         public PropertyInfoDictionary(
             string typeName,
+            string typeNameSuffix,
             JsonSchema schema,
             HintDictionary hintDictionary,
             AdditionalTypeRequiredDelegate additionalTypeRequiredDelegate)
         {
             _typeName = typeName;
+            _typeNameSuffix = typeNameSuffix;
             _schema = schema;
             _hintDictionary = hintDictionary;
             _additionalTypeRequiredDelegate = additionalTypeRequiredDelegate;
@@ -569,19 +572,21 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
         }
 
-        private static string GetUnqualifiedTypeName(string typeName, out string namespaceName)
+        private string GetUnqualifiedTypeName(string typeName, out string namespaceName)
         {
             string unqualifiedTypeName;
 
             int index = typeName.LastIndexOf('.');
             if (index != -1)
             {
+                // We have a namespaced .NET type
                 unqualifiedTypeName = typeName.Substring(index + 1);
                 namespaceName = typeName.Substring(0, index);
             }
             else
             {
-                unqualifiedTypeName = typeName;
+                // One of our schema types, add the type name suffix, if specified
+                unqualifiedTypeName = typeName + _typeNameSuffix;
                 namespaceName = null;
             }
 

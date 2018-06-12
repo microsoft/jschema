@@ -21,14 +21,15 @@ namespace Microsoft.Json.Schema.ToDotNet
         public InterfaceGenerator(
             PropertyInfoDictionary propertyInfoDictionary,
             JsonSchema schema,
+            string typeNameSuffix, 
             HintDictionary hintDictionary)
-            : base(propertyInfoDictionary, schema, hintDictionary)
+            : base(propertyInfoDictionary, schema, typeNameSuffix, hintDictionary)
         {
         }
 
         public override BaseTypeDeclarationSyntax GenerateTypeDeclaration()
         {
-            return SyntaxFactory.InterfaceDeclaration(TypeName)
+            return SyntaxFactory.InterfaceDeclaration(SuffixedTypeName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.PartialKeyword));

@@ -3,5 +3,5 @@
 
 using System.Reflection;
 
-[assembly: AssemblyTitle("JSON Pointer Library")]
-[assembly: AssemblyDescription("Classes for working with JSON Pointer")]
+[assembly: AssemblyTitle("JSON Schema Validation Library")]
+[assembly: AssemblyDescription("Classes for validating JSON instances against a JSON schema")]

@@ -22,6 +22,12 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         public string OutputDirectory { get; set; }
 
         [Option(
+            "suffix",
+            HelpText = "A string to be appended to every generated type name.",
+            Default = "")]
+        public string TypeNameSuffix { get; set; }
+
+        [Option(
             'f',
             "force-overwrite",
             HelpText = "Overwrite files in the output directory",

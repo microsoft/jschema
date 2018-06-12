@@ -53,7 +53,7 @@ namespace Microsoft.Json.Schema.UnitTests
 
             action.ShouldThrow<JsonSyntaxException>()
                 .Where(ex => ex.JsonReaderException.LineNumber == 2
-                    && ex.JsonReaderException.LinePosition == 10);
+                    && ex.JsonReaderException.LinePosition == 9);
         }
 
         public class LogicallyInvalidSchemaTestCase : IXunitSerializable

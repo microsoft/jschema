@@ -9,7 +9,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Json.Schema.ToDotNet.Hints;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -54,8 +53,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_settings.GenerateCloningCode)
             {
-                _kindEnumName = _settings.SchemaName + "NodeKind";
-                _nodeInterfaceName = "I" + _settings.SchemaName + "Node";
+                _kindEnumName = _settings.SchemaName + "NodeKind" + _settings.TypeNameSuffix;
+                _nodeInterfaceName = "I" + _settings.SchemaName + "Node" + _settings.TypeNameSuffix;
             }
 
             _rootSchema = JsonSchema.Collapse(rootSchema);
@@ -73,7 +72,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 throw Error.CreateException(Resources.ErrorNotAnObject, rootSchemaType.ToString().ToLowerInvariant());
             }
 
-            string rootFileText = GenerateClass(_settings.RootClassName, _rootSchema, _settings.SealClasses);
+            string rootFileText = GenerateClass(_settings.RootClassName, _rootSchema, _settings.SealClasses, _settings.TypeNameSuffix);
 
             if (_settings.GenerateEqualityComparers)
             {
@@ -98,18 +97,18 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_settings.GenerateCloningCode)
             {
-                _pathToFileContentsDictionary[_nodeInterfaceName] =
+                _pathToFileContentsDictionary[_nodeInterfaceName + _settings.TypeNameSuffix] =
                     GenerateSyntaxInterface(_settings.SchemaName, _kindEnumName, _nodeInterfaceName);
 
-                _pathToFileContentsDictionary[_kindEnumName] =
+                _pathToFileContentsDictionary[_kindEnumName + _settings.TypeNameSuffix] =
                     GenerateKindEnum(_kindEnumName);
 
-                string rewritingVisitorClassName = _settings.SchemaName + "RewritingVisitor";
+                string rewritingVisitorClassName = _settings.SchemaName + "RewritingVisitor" + _settings.TypeNameSuffix;
                 _pathToFileContentsDictionary[rewritingVisitorClassName] =
                     new RewritingVisitorGenerator(
                         _classInfoDictionary,
                         _settings.CopyrightNotice,
-                        _settings.NamespaceName,                        
+                        _settings.SuffixedNamespaceName,
                         rewritingVisitorClassName,
                         _settings.SchemaName,
                         _kindEnumName,
@@ -137,7 +136,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             foreach (KeyValuePair<string, JsonSchema> definition in definitions)
             {
-                GenerateClass(definition.Key, definition.Value, _settings.SealClasses);
+                GenerateClass(definition.Key, definition.Value, _settings.SealClasses, _settings.TypeNameSuffix);
             }
         }
 
@@ -162,11 +161,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private void GenerateEqualityComparer(string className, JsonSchema schema)
         {
-            className = GetHintedClassName(className).ToPascalCase();
+            className = GetHintedClassName(className).ToPascalCase() + _settings.TypeNameSuffix;
 
-            var equalityComparerGenerator = new EqualityComparerGenerator(
-                _settings.CopyrightNotice,
-                _settings.NamespaceName);
+            var equalityComparerGenerator = new EqualityComparerGenerator(_settings.CopyrightNotice, _settings.SuffixedNamespaceName);
 
             string equalityComparerText = equalityComparerGenerator.Generate(
                 className,
@@ -210,7 +207,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return interfaceDeclaration.Format(
                 _settings.CopyrightNotice,
                 null, // usings
-                _settings.NamespaceName,
+                _settings.SuffixedNamespaceName,
                 summaryComment);
         }
 
@@ -234,7 +231,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return enumDeclaration.Format(
                 _settings.CopyrightNotice,
                 null, // usings
-                _settings.NamespaceName,
+                _settings.SuffixedNamespaceName,
                 summaryComment);
         }
 
@@ -254,17 +251,20 @@ namespace Microsoft.Json.Schema.ToDotNet
         internal string GenerateClass(
             string className,
             JsonSchema schema,
-            bool sealClasses)
+            bool sealClasses,
+            string classNameSuffix)
         {
             className = GetHintedClassName(className).ToPascalCase();
+            string suffixedClassName = className + classNameSuffix;
 
             var propertyInfoDictionary = new PropertyInfoDictionary(
                 className,
+                _settings.TypeNameSuffix,
                 schema,
                 _settings.HintDictionary,
                 OnAdditionalTypeRequired);
 
-            _classInfoDictionary.Add(className, propertyInfoDictionary);
+            _classInfoDictionary.Add(suffixedClassName, propertyInfoDictionary);
 
             EnumHint enumHint = null;
             InterfaceHint interfaceHint = null;
@@ -278,7 +278,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string baseInterfaceName = null;
             if (interfaceHint != null)
             {
-                baseInterfaceName = "I" + className;
+                baseInterfaceName = "I" + suffixedClassName;
             }
 
             TypeGenerator typeGenerator;
@@ -293,22 +293,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                     _settings.GenerateCloningCode,
                     _settings.SealClasses,
                     _nodeInterfaceName,
-                    _kindEnumName);
+                    _kindEnumName,
+                    _settings.TypeNameSuffix);
 
                 if (_settings.GenerateCloningCode)
                 {
                     // The cloning code includes an enumeration with one member for each
                     // generated class, so keep track of the class names.
-                    _generatedClassNames.Add(className);
+                    _generatedClassNames.Add(suffixedClassName);
                 }
             }
             else
             {
-                typeGenerator = new EnumGenerator(schema, _settings.HintDictionary);
+                typeGenerator = new EnumGenerator(schema, _settings.TypeNameSuffix, _settings.HintDictionary);
             }
         
-            _pathToFileContentsDictionary[className] = typeGenerator.Generate(
-                _settings.NamespaceName,
+            _pathToFileContentsDictionary[suffixedClassName] = typeGenerator.Generate(
+                _settings.SuffixedNamespaceName,
                 className,
                 _settings.CopyrightNotice,
                 schema.Description);
@@ -318,17 +319,18 @@ namespace Microsoft.Json.Schema.ToDotNet
                 typeGenerator = new InterfaceGenerator(
                     propertyInfoDictionary,
                     schema,
+                    _settings.TypeNameSuffix,
                     _settings.HintDictionary);
                 string description = interfaceHint.Description ?? schema.Description;
 
-                _pathToFileContentsDictionary[baseInterfaceName] = typeGenerator.Generate(
-                    _settings.NamespaceName,
+                _pathToFileContentsDictionary[baseInterfaceName + _settings.TypeNameSuffix] = typeGenerator.Generate(
+                    _settings.SuffixedNamespaceName,
                     baseInterfaceName,
                     _settings.CopyrightNotice,
                     description);
             }
 
-            return _pathToFileContentsDictionary[className];
+            return _pathToFileContentsDictionary[suffixedClassName];
         }
 
         private void OnAdditionalTypeRequired(AdditionalTypeRequiredInfo e)
@@ -391,10 +393,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 Enum = enumNames.Cast<object>().ToList()
             };
 
-            var generator = new EnumGenerator(enumTypeSchema, _settings.HintDictionary);
-            _pathToFileContentsDictionary[enumHint.TypeName] =
+            var generator = new EnumGenerator(enumTypeSchema, _settings.TypeNameSuffix, _settings.HintDictionary);
+            _pathToFileContentsDictionary[enumHint.TypeName + _settings.TypeNameSuffix] =
                 generator.Generate(
-                    _settings.NamespaceName,
+                    _settings.SuffixedNamespaceName,
                     enumHint.TypeName,
                     _settings.CopyrightNotice,
                     enumTypeSchema.Description);

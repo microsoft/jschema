@@ -26,7 +26,7 @@ namespace Microsoft.Json.Pointer
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPointer"/> class with the
-        /// specified string value.
+        /// specified string.
         /// </summary>
         /// <param name="value">
         /// The string value of the JSON Pointer.
@@ -38,7 +38,7 @@ namespace Microsoft.Json.Pointer
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonPointer"/> class with the
-        /// specified string value.
+        /// specified string.
         /// </summary>
         /// <param name="value">
         /// The string value of the JSON Pointer.
