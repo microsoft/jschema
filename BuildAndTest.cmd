@@ -1,55 +1,47 @@
 @echo off
 setlocal
 
+set Configuration=Release
+set SolutionFile=src\Everything.sln
+
+:NextArg
+if "%1" == "" goto :EndArgs
+if "%1" == "/config" (
+    if not "%2" == "Debug" if not "%2" == "Release" echo error: /config must be either Debug or Release && goto :ExitFailed
+    set Configuration=%2&& shift && shift && goto :NextArg
+)
+
+echo Unrecognized option "%1" && goto :ExitFailed
+
+:EndArgs
+
 if exist bld rmdir /s /q bld
 
-set Configuration=Release
-set Platform=Any CPU
-
-REM Restore NuGet packages.
-.nuget\NuGet.exe restore src\Everything.sln -ConfigFile .nuget\NuGet.Config
-
-REM Build solution, including NuGet packages.
-msbuild /verbosity:minimal /target:rebuild src\Everything.sln /p:Configuration=%Configuration%,Platform="%Platform%" /filelogger /fileloggerparameters:Verbosity=detailed
+dotnet build --no-incremental --configuration %Configuration% %SolutionFile%
 if "%ERRORLEVEL%" NEQ "0" (
-goto ExitFailed
+    echo Build failed.
+    goto ExitFailed
 )
 
-REM Run tests.
-set XUNIT=src\packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe
-
-%XUNIT% bld\bin\Json.Pointer.UnitTests\AnyCPU_%Configuration%\Microsoft.Json.Pointer.UnitTests.dll
+dotnet test --no-build --no-restore src\Json.Pointer.UnitTests\Json.Pointer.UnitTests.csproj
 if "%ERRORLEVEL%" NEQ "0" (
-goto ExitFailed
+    echo Unit tests failed.
+    goto ExitFailed
 )
 
-%XUNIT% bld\bin\Json.Schema.UnitTests\AnyCPU_%Configuration%\Microsoft.Json.Schema.UnitTests.dll
+dotnet pack --no-build --no-restore %SolutionFile%
 if "%ERRORLEVEL%" NEQ "0" (
-goto ExitFailed
+    echo Package creation failed.
+    goto ExitFailed
 )
 
-%XUNIT% bld\bin\Json.Schema.ToDotNet.UnitTests\AnyCPU_%Configuration%\Microsoft.Json.Schema.ToDotNet.UnitTests.dll
-if "%ERRORLEVEL%" NEQ "0" (
-goto ExitFailed
-)
-
-set JSON_SCHEMA_TEST_SUITE_PATH=..\JSON-Schema-Test-Suite
-set JSON_SCHEMA_TEST_SUITE_URI=https://github.com/json-schema-org/JSON-Schema-Test-Suite
-if not exist %JSON_SCHEMA_TEST_SUITE_PATH% (
-git clone %JSON_SCHEMA_TEST_SUITE_URI% %JSON_SCHEMA_TEST_SUITE_PATH%
-)
-
-%XUNIT% bld\bin\Json.Schema.ValidationSuiteTests\AnyCPU_%Configuration%\Microsoft.Json.Schema.ValidationSuiteTests.dll
-if "%ERRORLEVEL%" NEQ "0" (
-goto ExitFailed
-)
+echo SUCCESS!
 
 goto Exit
 
 :ExitFailed
-@echo .
-@echo SCRIPT FAILED
+echo.
+echo SCRIPT FAILED.
 
 :Exit
-
 endlocal && exit /b %ERRORLEVEL%
