@@ -29,7 +29,7 @@ if "%ERRORLEVEL%" NEQ "0" (
     goto ExitFailed
 )
 
-dotnet pack --no-build --no-restore %SolutionFile%
+dotnet pack --no-build --no-restore --include-symbols %SolutionFile%
 if "%ERRORLEVEL%" NEQ "0" (
     echo Package creation failed.
     goto ExitFailed
