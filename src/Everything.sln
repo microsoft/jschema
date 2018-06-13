@@ -6,6 +6,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Json.Pointer", "Json.Pointe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Json.Pointer.UnitTests", "Json.Pointer.UnitTests\Json.Pointer.UnitTests.csproj", "{59351D9B-AAD3-4412-824B-63F3A6FFB33A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema", "Json.Schema\Json.Schema.csproj", "{9140ED9D-1A2F-428F-89B4-23B24B545749}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,18 @@ Global
 		{59351D9B-AAD3-4412-824B-63F3A6FFB33A}.Release|x64.Build.0 = Release|Any CPU
 		{59351D9B-AAD3-4412-824B-63F3A6FFB33A}.Release|x86.ActiveCfg = Release|Any CPU
 		{59351D9B-AAD3-4412-824B-63F3A6FFB33A}.Release|x86.Build.0 = Release|Any CPU
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Debug|x64.ActiveCfg = Debug|x64
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Debug|x64.Build.0 = Debug|x64
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Debug|x86.ActiveCfg = Debug|x86
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Debug|x86.Build.0 = Debug|x86
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Release|x64.ActiveCfg = Release|x64
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Release|x64.Build.0 = Release|x64
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Release|x86.ActiveCfg = Release|x86
+		{9140ED9D-1A2F-428F-89B4-23B24B545749}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
