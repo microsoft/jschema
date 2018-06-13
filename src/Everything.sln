@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.UnitTests", "Js
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.PerformanceTests", "Json.Schema.PerformanceTests\Json.Schema.PerformanceTests.csproj", "{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.ToDotNet", "Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj", "{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,18 @@ Global
 		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|x64.Build.0 = Release|x64
 		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|x86.ActiveCfg = Release|x86
 		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|x86.Build.0 = Release|x86
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Debug|x64.ActiveCfg = Debug|x64
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Debug|x64.Build.0 = Debug|x64
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Debug|x86.ActiveCfg = Debug|x86
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Debug|x86.Build.0 = Debug|x86
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Release|x64.ActiveCfg = Release|x64
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Release|x64.Build.0 = Release|x64
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Release|x86.ActiveCfg = Release|x86
+		{ABB9FFB4-01DB-4B88-854F-A6D62E5CBA57}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
