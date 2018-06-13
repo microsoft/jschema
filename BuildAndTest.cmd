@@ -35,6 +35,7 @@ if "%ERRORLEVEL%" NEQ "0" (
     goto ExitFailed
 )
 
+echo.
 echo SUCCESS!
 
 goto Exit
