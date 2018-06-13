@@ -16,7 +16,6 @@ namespace Microsoft.Json.Schema
     /// after we ask Json.NET to serialize the schema to a string, and before we write
     /// that string to the output stream. The regexes account for the quotes surrounding the
     /// property name and the colon that follows it.
-    /// See https://github.com/lgolding/jschema/issues/20
     /// </remarks>
     internal static class RefProperty
     {
