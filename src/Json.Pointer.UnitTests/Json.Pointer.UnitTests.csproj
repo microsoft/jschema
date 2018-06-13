@@ -5,6 +5,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
+
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.3.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
