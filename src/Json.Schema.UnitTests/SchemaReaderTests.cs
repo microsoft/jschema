@@ -29,7 +29,7 @@ namespace Microsoft.Json.Schema.UnitTests
             actual.Should().Be(expected);
         }
 
-        public static object[] SyntacticallyInvalidSchemaTestCases => new[]
+        public static List<object[]> SyntacticallyInvalidSchemaTestCases => new List<object[]>
         {
             new object[]
             {
@@ -51,7 +51,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 }
             };
 
-            action.ShouldThrow<JsonSyntaxException>()
+            action.Should().Throw<JsonSyntaxException>()
                 .Where(ex => ex.JsonReaderException.LineNumber == 2
                     && ex.JsonReaderException.LinePosition == 9);
         }
@@ -198,7 +198,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 }
             };
 
-            action.ShouldThrow<SchemaValidationException>()
+            action.Should().Throw<SchemaValidationException>()
                 .Where(ex => LogicallyInvalidSchemaExceptionPredicate(ex, test));
         }
 

@@ -29,6 +29,12 @@ if "%ERRORLEVEL%" NEQ "0" (
     goto ExitFailed
 )
 
+dotnet test --no-build --no-restore src\Json.Schema.UnitTests\Json.Schema.UnitTests.csproj
+if "%ERRORLEVEL%" NEQ "0" (
+    echo Unit tests failed.
+    goto ExitFailed
+)
+
 dotnet pack --no-build --no-restore --include-symbols %SolutionFile%
 if "%ERRORLEVEL%" NEQ "0" (
     echo Package creation failed.
