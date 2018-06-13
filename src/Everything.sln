@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.TestUtilities",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.UnitTests", "Json.Schema.UnitTests\Json.Schema.UnitTests.csproj", "{5AEBA68C-21F8-42D4-923A-3E0D4926377B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.PerformanceTests", "Json.Schema.PerformanceTests\Json.Schema.PerformanceTests.csproj", "{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,18 @@ Global
 		{5AEBA68C-21F8-42D4-923A-3E0D4926377B}.Release|x64.Build.0 = Release|x64
 		{5AEBA68C-21F8-42D4-923A-3E0D4926377B}.Release|x86.ActiveCfg = Release|x86
 		{5AEBA68C-21F8-42D4-923A-3E0D4926377B}.Release|x86.Build.0 = Release|x86
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Debug|x64.ActiveCfg = Debug|x64
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Debug|x64.Build.0 = Debug|x64
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Debug|x86.ActiveCfg = Debug|x86
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Debug|x86.Build.0 = Debug|x86
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|x64.ActiveCfg = Release|x64
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|x64.Build.0 = Release|x64
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|x86.ActiveCfg = Release|x86
+		{DDBF3382-BE3E-4E09-832B-1D32C9FEBBF0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
