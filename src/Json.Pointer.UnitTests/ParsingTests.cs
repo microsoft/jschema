@@ -150,13 +150,13 @@ namespace Microsoft.Json.Pointer.UnitTests
 
             if (test.Valid)
             {
-                action.ShouldNotThrow();
+                action.Should().NotThrow();
                 jPointer.ReferenceTokens.Should().ContainInOrder(test.ReferenceTokens);
                 jPointer.ReferenceTokens.Length.Should().Be(test.ReferenceTokens.Length);
             }
             else
             {
-                action.ShouldThrow<ArgumentException>();
+                action.Should().Throw<ArgumentException>();
             }
         }
     }

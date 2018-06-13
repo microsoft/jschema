@@ -9,6 +9,10 @@
     <Description>Classes for working with JSON Pointer</Description>
   </PropertyGroup>
 
+  <PropertyGroup Label="Package">
+    <PackageReleaseNotes>Pre-release version. Does not yet support fragment syntax.</PackageReleaseNotes>
+  </PropertyGroup>
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
 
   <ItemGroup>

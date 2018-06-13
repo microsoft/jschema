@@ -149,13 +149,13 @@ namespace Microsoft.Json.Pointer.UnitTests
 
             if (test.Valid)
             {
-                action.ShouldNotThrow();
+                action.Should().NotThrow();
                 JToken expectedResult = JToken.Parse(test.Result);
                 s_comparer.Equals(expectedResult, actualResult).Should().BeTrue();
             }
             else
             {
-                action.ShouldThrow<ArgumentException>().WithMessage($"*{test.Pointer}*");
+                action.Should().Throw<ArgumentException>().WithMessage($"*{test.Pointer}*");
             }
         }
     }

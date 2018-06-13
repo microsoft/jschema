@@ -26,7 +26,7 @@ namespace Microsoft.Json.Pointer.UnitTests
         {
             Action action = () => "/object".AtProperty(null);
 
-            action.ShouldThrow<ArgumentNullException>();
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact(DisplayName = nameof(AtIndex_AppendsZeroIndex))]
@@ -46,7 +46,7 @@ namespace Microsoft.Json.Pointer.UnitTests
         {
             Action action = () => "/array".AtIndex(-1);
 
-            action.ShouldThrow<ArgumentOutOfRangeException>();
+            action.Should().Throw<ArgumentOutOfRangeException>();
         }
     }
 }
