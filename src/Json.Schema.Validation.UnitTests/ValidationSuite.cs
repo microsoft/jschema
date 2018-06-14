@@ -12,18 +12,20 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Microsoft.Json.Schema.ValidationSuiteTests
+namespace Microsoft.Json.Schema.Validation.UnitTests
 {
     public class ValidationSuiteTests
     {
-        // This test runs the JSON Schema Test Suite. Since this implementation
-        // of JSON Schema is not quite complete, a few of the tests in the suite
-        // fail. If you want to fill in some of the missing pieces, uncomment
-        // this test to verify your changes. When you're done, if the
-        // implementation is still incomplete, comment it out again.
+        // This test runs the official JSON Schema Test Suite. Since this
+        // implementation of JSON Schema is not quite complete, a few of the tests
+        // in the suite fail. If you want to fill in some of the missing pieces,
+        // uncomment the next two lines, and then run BuildAndTest.cmd with the
+        // /run-json-schema-test-suite option to verify your changes.
+        //  When you're done, if the implementation is still incomplete, comment
+        // these two lines out again.
         //
         //[Theory(DisplayName = nameof(ValidationSuite))]
-        [ClassData(typeof(ValidationData))]
+        //[ClassData(typeof(ValidationData))]
         public void ValidationSuite(TestData testData)
         {
             testData.ErrorMessage.Should().BeNull();
@@ -48,7 +50,7 @@ namespace Microsoft.Json.Schema.ValidationSuiteTests
         // This assumes that we are building, or have built at least once, from
         // the command line by using the script BuildAndTest.cmd, which clones
         // the JSON-Schema-Test-Suite repo into a location adjacent to the JSchema repo.
-        private const string TestSuitePath = @"..\..\..\..\..\JSON-Schema-Test-Suite\tests\draft4";
+        private const string TestSuitePath = @"..\..\..\..\..\..\JSON-Schema-Test-Suite\tests\draft4";
 
         private readonly List<object[]> _data;
 
