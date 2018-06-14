@@ -23,22 +23,12 @@ if "%ERRORLEVEL%" NEQ "0" (
     goto ExitFailed
 )
 
-dotnet test --no-build --no-restore src\Json.Pointer.UnitTests\Json.Pointer.UnitTests.csproj
-if "%ERRORLEVEL%" NEQ "0" (
-    echo Json.Pointer unit tests failed.
-    goto ExitFailed
-)
-
-dotnet test --no-build --no-restore src\Json.Schema.UnitTests\Json.Schema.UnitTests.csproj
-if "%ERRORLEVEL%" NEQ "0" (
-    echo Json.Schema unit tests failed.
-    goto ExitFailed
-)
-
-dotnet test --no-build --no-restore src\Json.Schema.ToDotNet.UnitTests\Json.Schema.ToDotNet.UnitTests.csproj
-if "%ERRORLEVEL%" NEQ "0" (
-    echo Json.Schema.ToDotNet unit tests failed.
-    goto ExitFailed
+for %%i in (Json.Pointer, Json.Schema, Json.Schema.ToDotNet) DO (
+    dotnet test --no-build --no-restore src\%%i.UnitTests\%%i.UnitTests.csproj
+    if "%ERRORLEVEL%" NEQ "0" (
+        echo %%i unit tests failed.
+        goto ExitFailed
+    )
 )
 
 dotnet pack --no-build --no-restore --include-symbols %SolutionFile%
