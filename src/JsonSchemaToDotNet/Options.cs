@@ -86,7 +86,6 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         public bool GenerateCloningCode { get; set; }
 
         [Option(
-            's',
             "seal-classes",
             HelpText = "Seal generated classes.",
             Default = false,

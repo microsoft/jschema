@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.Validation", "J
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json.Schema.Validation.UnitTests", "Json.Schema.Validation.UnitTests\Json.Schema.Validation.UnitTests.csproj", "{873E9120-AC3D-470A-9C44-54553FF6D7FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSchemaToDotNet", "JsonSchemaToDotNet\JsonSchemaToDotNet.csproj", "{40F48D6B-E93E-49E0-8728-5570C900D52F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -152,6 +154,18 @@ Global
 		{873E9120-AC3D-470A-9C44-54553FF6D7FB}.Release|x64.Build.0 = Release|x64
 		{873E9120-AC3D-470A-9C44-54553FF6D7FB}.Release|x86.ActiveCfg = Release|x86
 		{873E9120-AC3D-470A-9C44-54553FF6D7FB}.Release|x86.Build.0 = Release|x86
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Debug|x64.ActiveCfg = Debug|x64
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Debug|x64.Build.0 = Debug|x64
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Debug|x86.ActiveCfg = Debug|x86
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Debug|x86.Build.0 = Debug|x86
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Release|x64.ActiveCfg = Release|x64
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Release|x64.Build.0 = Release|x64
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Release|x86.ActiveCfg = Release|x86
+		{40F48D6B-E93E-49E0-8728-5570C900D52F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

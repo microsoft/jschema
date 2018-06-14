@@ -5,12 +5,14 @@
     <Product Condition=" '$(Product)' == '' ">JSON Schema</Product>
     <Copyright Condition=" '$(Copyright)' == '' ">Copyright (c) Microsoft. All Rights Reserved.</Copyright>
     <VersionPrefix>0.53.0</VersionPrefix>
-    <VersionSuffix>beta1</VersionSuffix>
+    <VersionSuffix></VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup Label="Build">
     <AssemblyName>Microsoft.$(MSBuildProjectName)</AssemblyName>
+    <AssemblyName Condition=" '$(AssemblyNameOverride)' != '' ">$(AssemblyNameOverride)</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
+    <RootNamespace Condition=" '$(RootNamespaceOverride)' != '' ">$(RootNamespaceOverride)</RootNamespace>
     <OutputSubDir>$(Platform)_$(Configuration)</OutputSubDir>
     <IntermediateOutputPath>$(MsBuildThisFileDirectory)..\bld\obj\$(MSBuildProjectName)\$(OutputSubDir)\</IntermediateOutputPath>
     <OutputPath>$(MsBuildThisFileDirectory)..\bld\bin\$(MSBuildProjectName)\$(OutputSubDir)\</OutputPath>
