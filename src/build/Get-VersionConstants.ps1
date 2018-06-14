@@ -1,10 +1,19 @@
 <#
 .SYNOPSIS
-Read the contents of CurrentVersion.xml and return the individual version number components.
+Extract the version number from build.props.
 #>
 
-$currentVersionXmlFile = "$PSScriptRoot\CurrentVersion.xml"
-[xml]$currentVersionInfo = Get-Content $currentVersionXmlFile
+$buildPropsPath = "$PSScriptRoot\..\build.props"
+$namespace = @{ msbuild = "http://schemas.microsoft.com/developer/msbuild/2003" }
+$assemblyAttributesXPath = "/msbuild:Project/msbuild:PropertyGroup[@Label='AssemblyAttributes']"
 
-$currentVersion = $currentVersionInfo.CurrentVersion
-$currentVersion.Major, $currentVersion.Minor, $currentVersion.Patch, $currentVersion.PreRelease
+function Get-VersionComponent($componentName) {
+    $xPath = "$assemblyAttributesXPath/msbuild:$componentName"
+    $xml = Select-Xml -Path $buildPropsPath -Namespace $namespace -XPath $xPath
+    $xml.Node.InnerText
+}
+
+$versionPrefix = Get-VersionComponent VersionPrefix
+$versionSuffix = Get-VersionComponent VersionSuffix
+
+$versionPrefix, $versionSuffix

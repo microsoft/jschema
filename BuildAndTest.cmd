@@ -25,13 +25,19 @@ if "%ERRORLEVEL%" NEQ "0" (
 
 dotnet test --no-build --no-restore src\Json.Pointer.UnitTests\Json.Pointer.UnitTests.csproj
 if "%ERRORLEVEL%" NEQ "0" (
-    echo Unit tests failed.
+    echo Json.Pointer unit tests failed.
     goto ExitFailed
 )
 
 dotnet test --no-build --no-restore src\Json.Schema.UnitTests\Json.Schema.UnitTests.csproj
 if "%ERRORLEVEL%" NEQ "0" (
-    echo Unit tests failed.
+    echo Json.Schema unit tests failed.
+    goto ExitFailed
+)
+
+dotnet test --no-build --no-restore src\Json.Schema.ToDotNet.UnitTests\Json.Schema.ToDotNet.UnitTests.csproj
+if "%ERRORLEVEL%" NEQ "0" (
+    echo Json.Schema.ToDotNet unit tests failed.
     goto ExitFailed
 )
 

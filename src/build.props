@@ -5,11 +5,12 @@
     <Product Condition=" '$(Product)' == '' ">JSON Schema</Product>
     <Copyright Condition=" '$(Copyright)' == '' ">Copyright (c) Microsoft. All Rights Reserved.</Copyright>
     <VersionPrefix>0.53.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionSuffix>beta1</VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup Label="Build">
-    <RootNamespace>Microsoft.$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>Microsoft.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
     <OutputSubDir>$(Platform)_$(Configuration)</OutputSubDir>
     <IntermediateOutputPath>$(MsBuildThisFileDirectory)..\bld\obj\$(MSBuildProjectName)\$(OutputSubDir)\</IntermediateOutputPath>
     <OutputPath>$(MsBuildThisFileDirectory)..\bld\bin\$(MSBuildProjectName)\$(OutputSubDir)\</OutputPath>
@@ -31,4 +32,11 @@
   <ItemGroup>
     <Compile Include="$(MsBuildThisFileDirectory)build\CommonAssemblyInfo.cs" />
   </ItemGroup>
+
+  <Target BeforeTargets="PrepareForBuild" Name="CreateVersionConstantsFile">
+    <Exec Command="powershell -ExecutionPolicy RemoteSigned $(MsBuildThisFileDirectory)build\New-VersionConstantsFile.ps1 $(IntermediateOutputPath) $(AssemblyName)" />
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)VersionConstants.cs" />
+    </ItemGroup>
+  </Target>
 </Project>

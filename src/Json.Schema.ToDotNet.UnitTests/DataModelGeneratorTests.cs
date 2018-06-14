@@ -33,7 +33,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             Action action = () => generator.Generate(new JsonSchema());
 
             // ... and the message should mention the output directory.
-            action.ShouldThrow<ApplicationException>().WithMessage($"*{TestFileSystem.OutputDirectory}*");
+            action.Should().Throw<ApplicationException>().WithMessage($"*{TestFileSystem.OutputDirectory}*");
         }
 
         [Fact(DisplayName = "DataModelGenerator does not throw if output directory does not exist")]
@@ -49,7 +49,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
 
         [Fact(DisplayName = "DataModelGenerator does not throw if ForceOverwrite setting is set")]
@@ -64,7 +64,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if root schema is not of type 'object'")]
@@ -77,7 +77,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             Action action = () => generator.Generate(schema);
 
             // ... and the message should mention what the root type actually was.
-            action.ShouldThrow<ApplicationException>().WithMessage("*number*");
+            action.Should().Throw<ApplicationException>().WithMessage("*number*");
         }
 
         [Fact(DisplayName = "DataModelGenerator generates class description")]
@@ -348,7 +348,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldThrow<ApplicationException>()
+            action.Should().Throw<ApplicationException>()
                 .WithMessage("*https://example.com/pschema.schema.json/#*");
         }
 
@@ -373,7 +373,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldThrow<ApplicationException>()
+            action.Should().Throw<ApplicationException>()
                 .WithMessage("*#/notDefinitions/p*");
         }
 
@@ -398,7 +398,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldThrow<ApplicationException>()
+            action.Should().Throw<ApplicationException>()
                 .WithMessage("*nonExistentDefinition*");
         }
 

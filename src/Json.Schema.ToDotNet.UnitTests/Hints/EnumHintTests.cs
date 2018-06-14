@@ -598,7 +598,7 @@ namespace N
 
             if (test.ShouldThrow)
             {
-                action.ShouldThrow<Exception>();
+                action.Should().Throw<Exception>();
             }
             else
             {
@@ -790,7 +790,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldThrow<Exception>().WithMessage("*Color*");
+            action.Should().Throw<Exception>().WithMessage("*Color*");
         }
 
         [Fact]
@@ -827,7 +827,7 @@ namespace N
 
             Action action = () => generator.Generate(schema);
 
-            action.ShouldNotThrow();
+            action.Should().NotThrow();
         }
     }
 }

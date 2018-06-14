@@ -9,6 +9,8 @@
     <Description>Classes for generating .NET classes from a JSON Schema</Description>
   </PropertyGroup>
 
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis" Version="2.8.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
