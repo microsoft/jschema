@@ -23,7 +23,7 @@ if "%ERRORLEVEL%" NEQ "0" (
     goto ExitFailed
 )
 
-for %%i in (Json.Pointer, Json.Schema, Json.Schema.ToDotNet) DO (
+for %%i in (Json.Pointer, Json.Schema, Json.Schema.ToDotNet, Json.Schema.Validation) DO (
     dotnet test --no-build --no-restore src\%%i.UnitTests\%%i.UnitTests.csproj
     if "%ERRORLEVEL%" NEQ "0" (
         echo %%i unit tests failed.
