@@ -4,6 +4,7 @@ setlocal EnableDelayedExpansion
 set Configuration=Release
 set SolutionFile=src\Everything.sln
 set RunJsonSchemaTestSuite=false
+set PackageOutputDirectory=%cd%\bld\bin\NuGet\%Configuration%
 
 :NextArg
 if "%1" == "" goto :EndArgs
@@ -45,7 +46,7 @@ for %%i in (Json.Pointer, Json.Schema, Json.Schema.ToDotNet, Json.Schema.Validat
     )
 )
 
-dotnet pack --no-build --no-restore --include-symbols %SolutionFile%
+dotnet pack --no-build --no-restore --include-symbols -o %PackageOutputDirectory% %SolutionFile%
 if "%ERRORLEVEL%" NEQ "0" (
     echo Package creation failed.
     goto ExitFailed
