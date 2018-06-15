@@ -9,6 +9,8 @@ param(
     [Parameter(Mandatory=$true)] $namespace
 )
 
+$ErrorActionPreference = "Stop"
+
 $versionPrefix, $versionSuffix = & "$PSScriptRoot\Get-VersionConstants.ps1"
 
 $versionConstantsFileContents =

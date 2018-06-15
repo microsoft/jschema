@@ -3,6 +3,8 @@
 Extract the version number from build.props.
 #>
 
+$ErrorActionPreference = "Stop"
+
 $buildPropsPath = "$PSScriptRoot\..\build.props"
 $namespace = @{ msbuild = "http://schemas.microsoft.com/developer/msbuild/2003" }
 $assemblyAttributesXPath = "/msbuild:Project/msbuild:PropertyGroup[@Label='AssemblyAttributes']"

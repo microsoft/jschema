@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Package">
-    <PackageId Condition=" '$(PackageId)' == '' ">$(MSBuildProjectName)</PackageId>
+    <PackageId Condition=" '$(PackageId)' == '' ">$(AssemblyName)</PackageId>
     <Authors Condition=" '$(Authors)' == '' ">$(Company)</Authors>
     <PackageRequireLicenseAcceptance Condition=" '$(PackageRequireLicenseAcceptance)' == '' ">false</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/Microsoft/jschema/blob/master/License.txt</PackageLicenseUrl>
