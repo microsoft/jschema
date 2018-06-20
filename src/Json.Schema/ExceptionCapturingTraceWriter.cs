@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Json.Schema
