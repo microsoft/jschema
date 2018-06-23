@@ -41,12 +41,12 @@ namespace Microsoft.Json.Schema.Validation
             var result = new Result
             {
                 RuleId = rule.Id,
-                Level = rule.DefaultLevel,
+                Level = rule.Configuration.DefaultLevel.ToLevel(),
                 Locations = new List<Location>
                 {
                     new Location
                     {
-                        AnalysisTarget = new PhysicalLocation
+                        PhysicalLocation = new PhysicalLocation
                         {
                             Region = new Region
                             {
@@ -57,11 +57,12 @@ namespace Microsoft.Json.Schema.Validation
                     }
                 },
 
-                FormattedRuleMessage = new FormattedRuleMessage
+                Message = new Message
                 {
-                    FormatId = RuleFactory.DefaultMessageFormatId,
                     Arguments = messageArguments
-                }
+                },
+
+                RuleMessageId = RuleFactory.DefaultRuleMessageId
             };
 
             result.SetProperty("jsonPath", jsonPath);

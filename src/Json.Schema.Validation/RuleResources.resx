@@ -147,7 +147,7 @@
   <data name="ErrorInvalidTypeType" xml:space="preserve">
     <value>JSON schema requires the value of "type" to be either a string or an array of strings, but a token of type "{1}" was seen.</value>
   </data>
-  <data name="ErrorMessageFormatWithPath" xml:space="preserve">
+  <data name="ErrorMessageStringWithPath" xml:space="preserve">
     <value>at "{{0}}": {0}</value>
   </data>
   <data name="ErrorNotAllOf" xml:space="preserve">

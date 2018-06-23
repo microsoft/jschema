@@ -12,22 +12,31 @@ namespace Microsoft.Json.Schema.Validation
     {
         // TODO: Make list immutable
 
-        public const string DefaultMessageFormatId = "default";
+        public const string DefaultRuleMessageId = "default";
         private const string ErrorCodeFormat = "JS{0:D4}";
 
         private static Rule MakeRule(ErrorNumber errorNumber, string fullDescription, string messageFormat)
         {
-            string messageFormatWithPath = string.Format(CultureInfo.CurrentCulture, RuleResources.ErrorMessageFormatWithPath, messageFormat);
+            string messageStringWithPath = string.Format(CultureInfo.CurrentCulture, RuleResources.ErrorMessageStringWithPath, messageFormat);
 
             return new Rule
             {
                 Id = ResultFactory.RuleIdFromErrorNumber(errorNumber),
-                DefaultLevel = ResultLevel.Error,
-                Name = errorNumber.ToString(),
-                FullDescription = fullDescription,
-                MessageFormats = new Dictionary<string, string>
+                Configuration = new RuleConfiguration
                 {
-                    [DefaultMessageFormatId] = messageFormatWithPath
+                    DefaultLevel = RuleConfigurationDefaultLevel.Error
+                },
+                Name = new Message
+                {
+                    Text = errorNumber.ToString()
+                },
+                FullDescription = new Message
+                {
+                    Text = fullDescription
+                },
+                MessageStrings = new Dictionary<string, string>
+                {
+                    [DefaultRuleMessageId] = messageStringWithPath
                 }
             };
         }

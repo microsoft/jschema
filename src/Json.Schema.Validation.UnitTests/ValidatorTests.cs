@@ -993,7 +993,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             params object[] args)
         {
             var result = ResultFactory.CreateResult(startLine, startColumn, jsonPath, errorNumber, args)
-                            .SetAnalysisTargetUri(TestUtil.TestFilePath);
+                            .SetResultFile(TestUtil.TestFilePath);
 
             return result.FormatForVisualStudio(RuleFactory.GetRuleFromErrorNumber(errorNumber));
         }

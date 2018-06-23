@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
 
@@ -12,7 +11,7 @@ namespace Microsoft.Json.Schema.Validation
 {    
     public static class RuleExtensions
     {
-        public static Result SetAnalysisTargetUri(this Result result, string filePath)
+        public static Result SetResultFile(this Result result, string filePath)
         {
             // For now, I have to make the URI absolute. Once https://github.com/Microsoft/sarif-sdk/issues/308
             // is fixed, I won't have to do this. I'll just set uriKind appropriately,
@@ -24,7 +23,18 @@ namespace Microsoft.Json.Schema.Validation
                 filePath = Path.Combine(Environment.CurrentDirectory, filePath);
             }
 
-            result.Locations.First().AnalysisTarget.Uri = new Uri(filePath, uriKind);
+            foreach (Location location in result.Locations)
+            {
+                if (location.PhysicalLocation == null)
+                {
+                    location.PhysicalLocation = new PhysicalLocation();
+                }
+
+                location.PhysicalLocation.FileLocation = new FileLocation
+                {
+                    Uri = new Uri(filePath, uriKind)
+                };
+            }
 
             return result;
         }
@@ -42,14 +52,17 @@ namespace Microsoft.Json.Schema.Validation
             return new Result
             {
                 RuleId = rule.Id,
-                Level = rule.DefaultLevel,
+                Level = rule.Configuration.DefaultLevel.ToLevel(),
                 Locations = new List<Location>
                 {
                     new Location
                     {
-                        AnalysisTarget = new PhysicalLocation
+                        PhysicalLocation = new PhysicalLocation
                         {
-                            Uri = new Uri(fileName, UriKind.RelativeOrAbsolute),
+                            FileLocation = new FileLocation
+                            {
+                                Uri = new Uri(fileName, UriKind.RelativeOrAbsolute)
+                            },
                             Region = new Region
                             {
                                 StartLine = jsonReaderException.LineNumber,
@@ -59,16 +72,42 @@ namespace Microsoft.Json.Schema.Validation
                     }
                 },
 
-                FormattedRuleMessage = new FormattedRuleMessage
+                Message = new Message
                 {
-                    FormatId = RuleFactory.DefaultMessageFormatId,
                     Arguments = new List<string>
                     {
                         jsonReaderException.Path,
                         jsonReaderException.Message
                     }
-                }
+                },
+
+                RuleMessageId = RuleFactory.DefaultRuleMessageId,
             };
+        }
+    }
+
+    public static class RuleConfigurationDefaultLevelExtensions
+    {
+        public static ResultLevel ToLevel(this RuleConfigurationDefaultLevel ruleConfigurationDefaultLevel)
+        {
+            switch (ruleConfigurationDefaultLevel)
+            {
+                case RuleConfigurationDefaultLevel.None:
+                case RuleConfigurationDefaultLevel.Note:
+                    return ResultLevel.Note;
+
+                case RuleConfigurationDefaultLevel.Warning:
+                    return ResultLevel.Warning;
+
+                case RuleConfigurationDefaultLevel.Error:
+                    return ResultLevel.Error;
+
+                case RuleConfigurationDefaultLevel.Open:
+                    return ResultLevel.Open;
+
+                default:
+                    throw new ArgumentException("Invalid value: " + ruleConfigurationDefaultLevel, nameof(ruleConfigurationDefaultLevel));
+            }
         }
     }
 }
