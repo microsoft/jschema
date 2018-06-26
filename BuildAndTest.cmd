@@ -21,7 +21,7 @@ echo Unrecognized option "%1" && goto :ExitFailed
 
 if exist bld rmdir /s /q bld
 
-dotnet build --no-incremental --configuration %Configuration% %SolutionFile%
+dotnet build --no-incremental --configuration %Configuration% /fileloggerparameters:Verbosity=detailed %SolutionFile% 
 if "%ERRORLEVEL%" NEQ "0" (
     echo Build failed.
     goto ExitFailed

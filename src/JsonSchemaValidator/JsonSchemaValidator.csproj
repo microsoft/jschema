@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
     <AssemblyNameOverride>JsonSchemaValidator</AssemblyNameOverride>
     <RootNamespaceOverride>Microsoft.Json.Schema.Validation.CommandLine</RootNamespaceOverride>
   </PropertyGroup>
@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="..\..\fcib\Sarif.dll" />
+    <Reference Include="..\..\fcib\$(TargetFramework)\Sarif.dll" />
   </ItemGroup>
 
 </Project>

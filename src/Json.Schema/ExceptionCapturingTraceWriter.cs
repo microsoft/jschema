@@ -3,8 +3,15 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
+// Newtonsoft defines TraceLevel inconsistently between .NET Framework and .NET Standard.
+// This fixes the problem. See https://github.com/JamesNK/Newtonsoft.Json/issues/1616.
+#if NET461
+using TraceLevel = System.Diagnostics.TraceLevel;
+#else
+using TraceLevel = Newtonsoft.Json.TraceLevel;
+#endif
 
 namespace Microsoft.Json.Schema
 {
@@ -17,7 +24,7 @@ namespace Microsoft.Json.Schema
 
         internal List<SchemaValidationException> SchemaValidationExceptions;
 
-        #region ITraceWriter
+#region ITraceWriter
 
         public TraceLevel LevelFilter => TraceLevel.Error;
 
@@ -31,6 +38,6 @@ namespace Microsoft.Json.Schema
             }
         }
 
-        #endregion ITraceWriter
+#endregion ITraceWriter
     }
 }

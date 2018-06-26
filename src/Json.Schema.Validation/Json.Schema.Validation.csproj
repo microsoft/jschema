@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Label="AssemblyAttributes">
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="..\..\fcib\Sarif.dll" />
+    <Reference Include="..\..\fcib\$(TargetFramework)\Sarif.dll" />
   </ItemGroup>
 
 </Project>

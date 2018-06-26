@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
     <AssemblyNameOverride>JsonSchemaToDotNet</AssemblyNameOverride>
     <RootNamespaceOverride>Microsoft.Json.Schema.ToDotNet.CommandLine</RootNamespaceOverride>
   </PropertyGroup>
