@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="..\..\fcib\$(TargetFramework)\Sarif.dll" />
+    <Reference Include="..\..\refs\$(TargetFramework)\Sarif.dll" />
   </ItemGroup>
 
 </Project>
