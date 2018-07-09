@@ -92,10 +92,10 @@ namespace Microsoft.Json.Schema.Validation
         {
             switch (ruleConfigurationDefaultLevel)
             {
-                case RuleConfigurationDefaultLevel.None:
                 case RuleConfigurationDefaultLevel.Note:
                     return ResultLevel.Note;
 
+                case RuleConfigurationDefaultLevel.None:
                 case RuleConfigurationDefaultLevel.Warning:
                     return ResultLevel.Warning;
 
