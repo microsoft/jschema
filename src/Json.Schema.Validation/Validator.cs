@@ -69,7 +69,7 @@ namespace Microsoft.Json.Schema.Validation
 
             foreach (Result result in _results)
             {
-                result.SetAnalysisTargetUri(instanceFilePath);
+                result.SetResultFile(instanceFilePath);
             }
 
             return _results.ToArray();

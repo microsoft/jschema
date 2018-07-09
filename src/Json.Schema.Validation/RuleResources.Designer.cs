@@ -153,9 +153,9 @@ namespace Microsoft.Json.Schema.Validation {
         /// <summary>
         ///   Looks up a localized string similar to at &quot;{{0}}&quot;: {0}.
         /// </summary>
-        internal static string ErrorMessageFormatWithPath {
+        internal static string ErrorMessageStringWithPath {
             get {
-                return ResourceManager.GetString("ErrorMessageFormatWithPath", resourceCulture);
+                return ResourceManager.GetString("ErrorMessageStringWithPath", resourceCulture);
             }
         }
         

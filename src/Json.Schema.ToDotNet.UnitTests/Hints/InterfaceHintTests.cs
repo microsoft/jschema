@@ -11,7 +11,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
     public class InterfaceHintTests : CodeGenerationTestBase
     {
-        public static readonly object[] TestCases = new object[]
+        public static readonly List<object[]> TestCases = new List<object[]>
         {
             // We give the
             new object[]

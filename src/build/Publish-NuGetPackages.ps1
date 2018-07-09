@@ -10,6 +10,8 @@ param(
     [Parameter(Mandatory=$false)] $PackageSource = "https://nuget.org"
 )
 
+$ErrorActionPreference = "Stop"
+
 function Get-ApiKey {
     $apiKeyFilePath = Resolve-Path "$PSScriptRoot\..\..\..\SetNuGetJSchemaApiKey.cmd"
     $apiSettingCommand = Get-Content $apiKeyFilePath
@@ -33,12 +35,12 @@ function Publish-Package($packageName, $packageVersion, $apiKey) {
     $result = Prompt-Publish $packageName
     if ($result -eq 0) {
         $nupkg = "$packageName.$packageVersion.nupkg"
-        & $nugetExe push $packagesDirectory\$nupkg $apiKey -Source $PackageSource
+        dotnet nuget push $packagesDirectory\$nupkg --source $PackageSource --api-key $apiKey
         if (!$?) {
             Write-Host -ForegroundColor Red "Error: failed to push $nupkg to $PackageSource"
             exit 1;
         }
-        & $nugetExe delete $packageName $packageVersion $ApiKey -Source $PackageSource
+        dotnet nuget delete $packageName $packageVersion --source $PackageSource --api-key $apiKey
         if (!$?) {
             Write-Host -ForegroundColor Red "Error: failed to delist $nupkg from $PackageSource"
             exit 1;
@@ -56,12 +58,9 @@ if (-not (Test-Path $packagesDirectory)) {
 
 $packagesDirectory = Resolve-Path $packagesDirectory
 
-$nugetDirectory = Resolve-Path "$PSScriptRoot\..\..\.nuget"
-$nugetExe = "$nugetDirectory\nuget.exe"
+$versionPrefix, $versionSuffix = & "$PSScriptRoot\Get-VersionConstants.ps1"
 
-$major, $minor, $patch, $preRelease = & "$PSScriptRoot\Get-VersionConstants.ps1"
-
-$packageVersion = "$major.$minor.$patch$preRelease"
+$packageVersion = "$versionPrefix$versionSuffix"
 $apiKey = Get-ApiKey
 
 $packages = "Microsoft.Json.Pointer", "Microsoft.Json.Schema", "Microsoft.Json.Schema.ToDotNet", "Microsoft.Json.Schema.Validation"

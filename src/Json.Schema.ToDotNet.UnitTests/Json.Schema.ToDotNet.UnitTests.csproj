@@ -1,150 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <ProjectGuid>{1B28A331-1C49-41EC-976A-8D3B8F232ED1}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Microsoft.Json.Schema.ToDotNet.UnitTests</RootNamespace>
-    <AssemblyName>Microsoft.Json.Schema.ToDotNet.UnitTests</AssemblyName>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;SHOULD_WRITE_TEST_RESULT_FILES</DefineConstants>
+
+  <PropertyGroup Label="AssemblyAttributes">
+    <AssemblyTitle>JSON Schema Unit Tests</AssemblyTitle>
+    <Description>Unit tests for the JSON schema library</Description>
   </PropertyGroup>
+
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
-  <PropertyGroup>
-    <!-- Override the TargetFrameworkVersion specified in build.props. This project must target
-         .NET 4.5.2 because Json.Schema.ToDotNet, upon which this project depends, targets that version
-         (and ToDotNet targets that version because it depends on Roslyn). -->
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="FluentAssertions, Version=4.6.1.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.6.1\lib\net45\FluentAssertions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FluentAssertions.Core, Version=4.6.1.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.4.6.1\lib\net45\FluentAssertions.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.assert, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.assert.2.1.0\lib\dotnet\xunit.assert.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.core, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.core.2.1.0\lib\dotnet\xunit.core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.execution.desktop, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Assert.cs" />
-    <Compile Include="CodeGenerationTestBase.cs" />
-    <Compile Include="DataModelGeneratorTests.cs" />
-    <Compile Include="ExpectedContents.cs" />
-    <Compile Include="Hints\AttributeHintTests.cs" />
-    <Compile Include="Hints\BaseTypeHintTests.cs" />
-    <Compile Include="Hints\ClassNameHintTests.cs" />
-    <Compile Include="Hints\DictionaryHintTests.cs" />
-    <Compile Include="Hints\EnumHintTests.cs" />
-    <Compile Include="Hints\HintTestCase.cs" />
-    <Compile Include="Hints\HintTestBase.cs" />
-    <Compile Include="Hints\InterfaceHintTests.cs" />
-    <Compile Include="Hints\PropertyModifiersHintTests.cs" />
-    <Compile Include="Hints\PropertyNameHintTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestFileSystem.cs" />
-    <Compile Include="TestSettings.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj">
-      <Project>{6d6133a4-8098-4210-99be-5ca01eb833b1}</Project>
-      <Name>Json.Schema.TestUtilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj">
-      <Project>{d9489164-0b7d-4f90-9e3e-339238a86542}</Project>
-      <Name>Json.Schema.ToDotNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Json.Schema\Json.Schema.csproj">
-      <Project>{4da17661-563a-45ee-9731-eea9360f6c5d}</Project>
-      <Name>Json.Schema</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="TestData\Array.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Definitions.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Empty.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Basic.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\DateTime.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\IntegerArray.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\NotAnObject.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Object.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Properties.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\PropertyDescription.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\Reference.schema.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\RequiredProperties.schema.json">
+    <None Include="TestData\*.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <PackageReference Include="FluentAssertions" Version="5.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="Moq" Version="4.8.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
-  </Target>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build\CopyRoslynImplementationAssemblies.targets" />
-  <ProjectExtensions />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
+    <ProjectReference Include="..\Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj" />
+    <ProjectReference Include="..\Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj" />
+  </ItemGroup>
+
 </Project>

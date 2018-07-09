@@ -357,13 +357,13 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
-                "Numeric: maximum and exclusiveMaximum: valid number",
+                "Numeric: minimum and exclusiveMinimum: valid number",
                 @"{
                   ""type"": ""number"",
-                  ""maximum"": 3.14,
-                  ""exclusiveMaximum"": true
+                  ""minimum"": 3.14,
+                  ""exclusiveMinimum"": true
                 }",
-                "3.13"),
+                "3.15"),
 
             new TestCase(
                 "Numeric: minimum and exclusiveMinimum: invalid number",
@@ -993,7 +993,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             params object[] args)
         {
             var result = ResultFactory.CreateResult(startLine, startColumn, jsonPath, errorNumber, args)
-                            .SetAnalysisTargetUri(TestUtil.TestFilePath);
+                            .SetResultFile(TestUtil.TestFilePath);
 
             return result.FormatForVisualStudio(RuleFactory.GetRuleFromErrorNumber(errorNumber));
         }

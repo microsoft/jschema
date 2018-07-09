@@ -101,7 +101,7 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             foreach (SchemaValidationException wrappedException in ex.WrappedExceptions)
             {
                 Result result = ResultFactory.CreateResult(wrappedException.JToken, wrappedException.ErrorNumber, wrappedException.Args);
-                result.SetAnalysisTargetUri(schemaFile);
+                result.SetResultFile(schemaFile);
                 ReportResult(result, logger);
             }
         }
@@ -148,7 +148,10 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
             logger.LogToolNotification(new Notification
             {
                 Level = level,
-                Message = message,
+                Message = new Message
+                {
+                    Text = message
+                },
                 Exception = exceptionData
             });
         }

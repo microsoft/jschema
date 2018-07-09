@@ -88,7 +88,7 @@ namespace Microsoft.Json.Schema.UnitTests
                 target = new UriOrFragment(@"http://www.example.com:80y/products.html");
             };
 
-            action.ShouldThrow<UriFormatException>();
+            action.Should().Throw<UriFormatException>();
         }
 
         public static readonly TheoryData<EqualityTestCase> EqualityTestCases = new TheoryData<EqualityTestCase>

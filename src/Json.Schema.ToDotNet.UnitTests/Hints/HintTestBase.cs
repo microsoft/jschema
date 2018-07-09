@@ -25,7 +25,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 
             if (testCase.ShouldThrow)
             {
-                action.ShouldThrow<Exception>()
+                action.Should().Throw<Exception>()
                     .WithMessage('*' + (testCase.ExpectedErrorMessage ?? string.Empty) + '*');
             }
             else

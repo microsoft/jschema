@@ -9,7 +9,9 @@ param(
     [Parameter(Mandatory=$true)] $namespace
 )
 
-$major, $minor, $patch, $preRelease = & "$PSScriptRoot\Get-VersionConstants.ps1"
+$ErrorActionPreference = "Stop"
+
+$versionPrefix, $versionSuffix = & "$PSScriptRoot\Get-VersionConstants.ps1"
 
 $versionConstantsFileContents =
 @"
@@ -18,15 +20,12 @@ $versionConstantsFileContents =
 
 using System.Reflection;
 
-[assembly: AssemblyVersion(${namespace}.VersionConstants.AssemblyVersion)]
-[assembly: AssemblyFileVersion(${namespace}.VersionConstants.FileVersion)]
-
 namespace $namespace
 {
     public static class VersionConstants
     {
-        public const string PreRelease = "$preRelease";
-        public const string AssemblyVersion = "$major.$minor.$patch";
+        public const string PreRelease = "$versionSuffix";
+        public const string AssemblyVersion = "$versionPrefix";
         public const string FileVersion = AssemblyVersion + ".0";
         public const string Version = AssemblyVersion + PreRelease;
     }

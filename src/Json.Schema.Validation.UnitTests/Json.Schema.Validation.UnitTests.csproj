@@ -6,26 +6,29 @@
   </PropertyGroup>
 
   <PropertyGroup Label="AssemblyAttributes">
-    <AssemblyTitle>JSON Schema Performance Tests</AssemblyTitle>
-    <Description>Performance tests for the JSON schema library</Description>
+    <AssemblyTitle>JSON Schema Validation Tests</AssemblyTitle>
+    <Description>Runs the official JSON Schema validation suite from https://github.com/json-schema-org/JSON-Schema-Test-Suite</Description>
   </PropertyGroup>
 
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="README.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
+    <ProjectReference Include="..\Json.Schema.Validation\Json.Schema.Validation.csproj" />
+    <ProjectReference Include="..\Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="..\..\refs\$(TargetFramework)\Sarif.dll" />
   </ItemGroup>
 
 </Project>
