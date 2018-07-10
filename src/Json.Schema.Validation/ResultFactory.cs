@@ -12,8 +12,6 @@ namespace Microsoft.Json.Schema.Validation
 {
     public partial class ResultFactory
     {
-        private const string ErrorCodeFormat = "JS{0:D4}";
-
         public static Result CreateResult(JToken jToken, ErrorNumber errorNumber, object[] args)
         {
             IJsonLineInfo lineInfo = jToken;
@@ -72,7 +70,7 @@ namespace Microsoft.Json.Schema.Validation
 
         internal static string RuleIdFromErrorNumber(ErrorNumber errorNumber)
         {
-            return string.Format(CultureInfo.InvariantCulture, ErrorCodeFormat, (int)errorNumber);
+            return string.Format(CultureInfo.InvariantCulture, RuleFactory.ErrorCodeFormat, (int)errorNumber);
         }
     }
 }

@@ -13,7 +13,8 @@ namespace Microsoft.Json.Schema.Validation
         // TODO: Make list immutable
 
         public const string DefaultRuleMessageId = "default";
-        private const string ErrorCodeFormat = "JS{0:D4}";
+        private const string ErrorCodePrefix = "JSON";
+        internal static readonly string ErrorCodeFormat = ErrorCodePrefix + "{0:D4}";
 
         private static Rule MakeRule(ErrorNumber errorNumber, string fullDescription, string messageFormat)
         {
@@ -206,7 +207,7 @@ namespace Microsoft.Json.Schema.Validation
 
         public static Rule GetRuleFromRuleId(string ruleId)
         {
-            var errorNumber = (ErrorNumber)int.Parse(ruleId.Substring(2));
+            var errorNumber = (ErrorNumber)int.Parse(ruleId.Substring(ErrorCodePrefix.Length));
             return GetRuleFromErrorNumber(errorNumber);
         }
 
