@@ -468,7 +468,7 @@ namespace N
             ),
 
             new TestCase(
-                "Flags",
+                "Flags without values",
                 false,
 @"{
   ""type"": ""object"",
@@ -518,15 +518,15 @@ namespace N
     public enum AccessModes
     {
         None,
-        Read,
-        Write,
-        Execute
+        Read = 1,
+        Write = 2,
+        Execute = 4
     }
 }"
             ),
 
             new TestCase(
-                "Values",
+                "Flags with values",
                 false,
 @"{
   ""type"": ""object"",
@@ -545,7 +545,7 @@ namespace N
         ""typeName"": ""AccessModes"",
         ""flags"": true,
         ""zeroValueName"": ""none"",
-        ""memberValues"": [1, 2, 4]
+        ""memberValues"": [4, 16, 32]
       }
     }
   ]
@@ -577,9 +577,9 @@ namespace N
     public enum AccessModes
     {
         None,
-        Read = 1,
-        Write = 2,
-        Execute = 4
+        Read = 4,
+        Write = 16,
+        Execute = 32
     }
 }"
             ),
