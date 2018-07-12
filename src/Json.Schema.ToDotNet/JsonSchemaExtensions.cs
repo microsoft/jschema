@@ -15,7 +15,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         internal static bool IsUri(this JsonSchema schema)
         {
-            return schema.IsStringWithFormat(FormatAttributes.Uri);
+            return
+                schema.IsStringWithFormat(FormatAttributes.Uri) ||
+                schema.IsStringWithFormat(FormatAttributes.UriReference);
         }
 
         private static bool IsStringWithFormat(this JsonSchema schema, string format)

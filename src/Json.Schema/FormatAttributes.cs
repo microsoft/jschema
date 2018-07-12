@@ -21,9 +21,15 @@ namespace Microsoft.Json.Schema
         public const string DateTime = "date-time";
 
         /// <summary>
-        /// Format attribute specifying that the string instance must be a valid URI
-        /// representation as defined by RFC 3986.
+        /// Format attribute specifying that the string instance must be a valid
+        /// absolute URI as defined by RFC 3986.
         /// </summary>
         public const string Uri = "uri";
+
+        /// <summary>
+        /// Format attribute specifying that the string instance must be a valid
+        /// URI references as defined by RFC 3986.
+        /// </summary>
+        public const string UriReference = "uri-reference";
     }
 }
