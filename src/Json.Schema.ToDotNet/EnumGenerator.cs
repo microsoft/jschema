@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -46,6 +47,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 EnumHint enumHint = GetEnumHintForType(TypeName);
                 int[] enumValues = enumHint?.MemberValues;
+                bool isFlagsEnum = enumHint?.Flags == true;
 
                 var enumDeclaration = TypeDeclaration as EnumDeclarationSyntax;
 
@@ -57,12 +59,25 @@ namespace Microsoft.Json.Schema.ToDotNet
                 for (int i = 0; i < Schema.Enum.Count; ++i)
                 {
                     EqualsValueClauseSyntax equalsValueClause = null;
-                    if (enumValues != null && ShouldSupplyValueFor(i, enumHint.HasZeroValue))
+                    int? enumValue = null;
+                    if (ShouldSupplyValueFor(i, enumHint?.HasZeroValue == true))
+                    {
+                        if (enumValues != null)
+                        {
+                            enumValue = enumValues[i - enumValueIndexOffset];
+                        }
+                        else if (isFlagsEnum)
+                        {
+                            enumValue = (int)Math.Pow(2, i - 1);
+                        }
+                    }
+
+                    if (enumValue.HasValue)
                     {
                         equalsValueClause = SyntaxFactory.EqualsValueClause(
                             SyntaxFactory.LiteralExpression(
                                 SyntaxKind.NumericLiteralExpression,
-                                SyntaxFactory.Literal(enumValues[i - enumValueIndexOffset])));
+                                SyntaxFactory.Literal(enumValue.Value)));
                     }
 
                     string enumName = Schema.Enum[i].ToString().ToPascalCase();
