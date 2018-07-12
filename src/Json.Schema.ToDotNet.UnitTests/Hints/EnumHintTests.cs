@@ -468,7 +468,7 @@ namespace N
             ),
 
             new TestCase(
-                "Flags",
+                "Flags without values",
                 false,
 @"{
   ""type"": ""object"",
@@ -526,7 +526,7 @@ namespace N
             ),
 
             new TestCase(
-                "Values",
+                "Flags with values",
                 false,
 @"{
   ""type"": ""object"",
@@ -582,66 +582,6 @@ namespace N
         Execute = 32
     }
 }"
-            ),
-
-            new TestCase(
-                "Flags without values",
-                false,
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""permissions"": {
-      ""enum"": [""read"", ""write"", ""execute""]
-    }
-  }
-}",
-
-@"{
-  ""C.Permissions"": [
-    {
-      ""kind"": ""EnumHint"",
-      ""arguments"": {
-        ""typeName"": ""AccessModes"",
-        ""flags"": true,
-        ""zeroValueName"": ""none""
-      }
-    }
-  ]
-}",
-
-
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        [DataMember(Name = ""permissions"", IsRequired = false, EmitDefaultValue = false)]
-        public AccessModes Permissions { get; set; }
-    }
-}",
-                "AccessModes",
-
-@"using System;
-using System.CodeDom.Compiler;
-
-namespace N
-{
-    [Flags]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public enum AccessModes
-    {
-        None,
-        Read = 1,
-        Write = 2,
-        Execute = 4
-    }
-}"
-
             ),
         };
 
