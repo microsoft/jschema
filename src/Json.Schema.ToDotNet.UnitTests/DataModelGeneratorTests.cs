@@ -2597,7 +2597,7 @@ namespace N
     /// <summary>
     /// An interface for all types generated from the S schema.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.55.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public interface ISNode
     {
         /// <summary>
@@ -2620,7 +2620,7 @@ namespace N
     /// <summary>
     /// A set of values for all the types that implement <see cref=""ISNode"" />.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.55.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public enum SNodeKind
     {
         /// <summary>
@@ -2645,7 +2645,7 @@ namespace N
     /// <summary>
     /// Rewriting visitor for the S object model.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.55.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public abstract class SRewritingVisitor
     {
         /// <summary>

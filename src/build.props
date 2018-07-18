@@ -13,7 +13,7 @@
     <Company Condition=" '$(Company)' == '' ">Microsoft Corporation</Company>
     <Product Condition=" '$(Product)' == '' ">JSON Schema</Product>
     <Copyright Condition=" '$(Copyright)' == '' ">Copyright (c) Microsoft. All Rights Reserved.</Copyright>
-    <VersionPrefix>0.55.0</VersionPrefix>
+    <VersionPrefix>0.56.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
   </PropertyGroup>
 
