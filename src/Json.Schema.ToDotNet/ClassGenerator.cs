@@ -864,6 +864,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             switch (PropInfoDictionary[elementInfoKey].InitializationKind)
             {
                 case InitializationKind.SimpleAssign:
+                case InitializationKind.Uri:
                     return GenerateSimpleElementInitialization(destinationVariableName, sourceVariableName);
 
                 case InitializationKind.Clone:

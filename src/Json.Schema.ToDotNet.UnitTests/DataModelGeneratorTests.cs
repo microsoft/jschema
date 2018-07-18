@@ -2391,6 +2391,353 @@ namespace N
             Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates array of uri-formatted strings")]
+        public void GeneratesArrayOfUriFormattedStrings()
+        {
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""uriFormattedStrings"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""type"": ""string"",
+        ""format"": ""uri""
+      }
+    }
+  }
+}", TestUtil.TestFilePath);
+
+            const string ExpectedClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C : ISNode
+    {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        /// <summary>
+        /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
+        /// </summary>
+        public SNodeKind SNodeKind
+        {
+            get
+            {
+                return SNodeKind.C;
+            }
+        }
+
+        [DataMember(Name = ""uriFormattedStrings"", IsRequired = false, EmitDefaultValue = false)]
+        public IList<Uri> UriFormattedStrings { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class.
+        /// </summary>
+        public C()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
+        /// </summary>
+        /// <param name=""uriFormattedStrings"">
+        /// An initialization value for the <see cref=""P: UriFormattedStrings"" /> property.
+        /// </param>
+        public C(IEnumerable<Uri> uriFormattedStrings)
+        {
+            Init(uriFormattedStrings);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the specified instance.
+        /// </summary>
+        /// <param name=""other"">
+        /// The instance from which the new instance is to be initialized.
+        /// </param>
+        /// <exception cref=""ArgumentNullException"">
+        /// Thrown if <paramref name=""other"" /> is null.
+        /// </exception>
+        public C(C other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            Init(other.UriFormattedStrings);
+        }
+
+        ISNode ISNode.DeepClone()
+        {
+            return DeepCloneCore();
+        }
+
+        /// <summary>
+        /// Creates a deep copy of this instance.
+        /// </summary>
+        public C DeepClone()
+        {
+            return (C)DeepCloneCore();
+        }
+
+        private ISNode DeepCloneCore()
+        {
+            return new C(this);
+        }
+
+        private void Init(IEnumerable<Uri> uriFormattedStrings)
+        {
+            if (uriFormattedStrings != null)
+            {
+                var destination_0 = new List<Uri>();
+                foreach (var value_0 in uriFormattedStrings)
+                {
+                    destination_0.Add(value_0);
+                }
+
+                UriFormattedStrings = destination_0;
+            }
+        }
+    }
+}";
+
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (!object.ReferenceEquals(left.UriFormattedStrings, right.UriFormattedStrings))
+            {
+                if (left.UriFormattedStrings == null || right.UriFormattedStrings == null)
+                {
+                    return false;
+                }
+
+                if (left.UriFormattedStrings.Count != right.UriFormattedStrings.Count)
+                {
+                    return false;
+                }
+
+                for (int index_0 = 0; index_0 < left.UriFormattedStrings.Count; ++index_0)
+                {
+                    if (left.UriFormattedStrings[index_0] != right.UriFormattedStrings[index_0])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.UriFormattedStrings != null)
+                {
+                    foreach (var value_0 in obj.UriFormattedStrings)
+                    {
+                        result = result * 31;
+                        if (value_0 != null)
+                        {
+                            result = (result * 31) + value_0.GetHashCode();
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
+}";
+
+            const string ExpectedSyntaxInterface =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// An interface for all types generated from the S schema.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.55.0.0"")]
+    public interface ISNode
+    {
+        /// <summary>
+        /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
+        /// </summary>
+        SNodeKind SNodeKind { get; }
+
+        /// <summary>
+        /// Makes a deep copy of this instance.
+        /// </summary>
+        ISNode DeepClone();
+    }
+}";
+
+            const string ExpectedKindEnum =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// A set of values for all the types that implement <see cref=""ISNode"" />.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.55.0.0"")]
+    public enum SNodeKind
+    {
+        /// <summary>
+        /// An uninitialized kind.
+        /// </summary>
+        None,
+        /// <summary>
+        /// A value indicating that the <see cref=""ISNode"" /> object is of type <see cref=""C"" />.
+        /// </summary>
+        C
+    }
+}";
+
+            const string ExpectedRewritingVisitor =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace N
+{
+    /// <summary>
+    /// Rewriting visitor for the S object model.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.55.0.0"")]
+    public abstract class SRewritingVisitor
+    {
+        /// <summary>
+        /// Starts a rewriting visit of a node in the S object model.
+        /// </summary>
+        /// <param name=""node"">
+        /// The node to rewrite.
+        /// </param>
+        /// <returns>
+        /// A rewritten instance of the node.
+        /// </returns>
+        public virtual object Visit(ISNode node)
+        {
+            return this.VisitActual(node);
+        }
+
+        /// <summary>
+        /// Visits and rewrites a node in the S object model.
+        /// </summary>
+        /// <param name=""node"">
+        /// The node to rewrite.
+        /// </param>
+        /// <returns>
+        /// A rewritten instance of the node.
+        /// </returns>
+        public virtual object VisitActual(ISNode node)
+        {
+            if (node == null)
+            {
+                throw new ArgumentNullException(""node"");
+            }
+
+            switch (node.SNodeKind)
+            {
+                case SNodeKind.C:
+                    return VisitC((C)node);
+                default:
+                    return node;
+            }
+        }
+
+        private T VisitNullChecked<T>(T node) where T : class, ISNode
+        {
+            if (node == null)
+            {
+                return null;
+            }
+
+            return (T)Visit(node);
+        }
+
+        public virtual C VisitC(C node)
+        {
+            if (node != null)
+            {
+            }
+
+            return node;
+        }
+    }
+}";
+
+            _settings.GenerateEqualityComparers = true;
+            _settings.GenerateCloningCode = true;
+
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            generator.Generate(schema);
+
+            string equalityComparerOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName + "EqualityComparer");
+            string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISNode");
+            string kindEnumPath = TestFileSystem.MakeOutputFilePath("SNodeKind");
+            string rewritingVisitorClassPath = TestFileSystem.MakeOutputFilePath("SRewritingVisitor");
+
+            var expectedOutputFiles = new List<string>
+            {
+                PrimaryOutputFilePath,
+                equalityComparerOutputFilePath,
+                syntaxInterfacePath,
+                kindEnumPath,
+                rewritingVisitorClassPath,
+            };
+
+            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
+
+            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
+            _testFileSystem[equalityComparerOutputFilePath].Should().Be(ExpectedComparerClass);
+            _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
+            _testFileSystem[kindEnumPath].Should().Be(ExpectedKindEnum);
+            _testFileSystem[rewritingVisitorClassPath].Should().Be(ExpectedRewritingVisitor);
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of primitive type")]
         public void GeneratesArrayOfArraysOfPrimitiveType()
         {
