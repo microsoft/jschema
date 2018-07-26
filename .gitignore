@@ -216,3 +216,6 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+# Visual Studio 2017 F5 settings file.
+launchSettings.json
