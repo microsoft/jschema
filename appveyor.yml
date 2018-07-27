@@ -15,8 +15,8 @@ platform: Any CPU
 configuration:
   - Release
 
-build_script:
-  - dotnet build src\Everything.sln
+build:
+  project: src\Everything.sln
 
 test:
   assemblies: '**\*.UnitTests.dll'
