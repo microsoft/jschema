@@ -34,4 +34,8 @@ namespace $namespace
 
 $outputFile = "$outputDirectory\VersionConstants.cs"
 
+if (-not (Test-Path $outputDirectory)) {
+    New-Item -Type Directory $outputDirectory | Out-Null
+}
+
 Set-Content $outputFile $versionConstantsFileContents
