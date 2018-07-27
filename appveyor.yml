@@ -1,0 +1,34 @@
+image: Visual Studio 2017
+
+init:
+  - git config --global core.autocrlf true
+
+branches:
+  only:
+    - master
+
+before_build:
+  - '"%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat"'
+  - dotnet restore src\Everything.sln
+
+platform: Any CPU
+
+configuration:
+  - Release
+
+build_script:
+  - dotnet build src\Everything.sln
+
+test:
+  - dotnet test src\Everything.sln
+
+notifications:
+  - provider: Email
+    to:
+     - vsarcplat@microsoft.com
+    subject: '{{projectName}} Build {{status}}: Version: {{buildVersion}}'
+    on_build_status_changed: true
+
+cache:
+  - packages -> **\packages.config
+  - '%LocalAppData%\NuGet\Cache'
