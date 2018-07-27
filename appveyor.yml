@@ -20,7 +20,7 @@ build_script:
   - dotnet build src\Everything.sln
 
 test:
-  - dotnet test src\Everything.sln
+  assemblies: '**\*.UnitTests.dll'
 
 notifications:
   - provider: Email
