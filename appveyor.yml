@@ -7,16 +7,13 @@ branches:
   only:
     - master
 
-before_build:
-  - '"%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat"'
-
 platform: Any CPU
 
 configuration:
   - Release
 
-build:
-  project: src\Everything.sln
+build_script:
+  - dotnet build src\Everything.sln
 
 test:
   assemblies: '**\*.UnitTests.dll'
