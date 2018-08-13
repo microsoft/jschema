@@ -19,11 +19,11 @@ set Platform=AnyCPU
 )
 
 set BinaryOutputDirectory=%BinaryOutputDirectory%\%Platform%_%Configuration%\
-set LayoutForSigningDirectory=%BinaryOutputDirectory%\..\LayoutForSigning
+set SigningDirectory=%BinaryOutputDirectory%\..\Signing
 
-call :CreateDirIfNotExist %LayoutForSigningDirectory%
-call :CreateDirIfNotExist %LayoutForSigningDirectory%\net461\
-call :CreateDirIfNotExist %LayoutForSigningDirectory%\netcoreapp2.0
+call :CreateDirIfNotExist %SigningDirectory%
+call :CreateDirIfNotExist %SigningDirectory%\net461\
+call :CreateDirIfNotExist %SigningDirectory%\netcoreapp2.0
 
 call :CopyFilesForMultitargeting Json.Schema.dll            || goto :ExitFailed
 call :CopyFilesForMultitargeting Json.Pointer.dll           || goto :ExitFailed
@@ -33,14 +33,11 @@ call :CopyFilesForMultitargeting Json.Schema.Validation.dll || goto :ExitFailed
 goto :Exit
 
 :CopyFilesForMultitargeting
-echo xcopy /Y %BinaryOutputDirectory%\%~n1\netstandard2.0\%1  %LayoutForSigningDirectory%\netcoreapp2.0\
-xcopy /Y %BinaryOutputDirectory%\%~n1\netstandard2.0\Microsoft.%1  %LayoutForSigningDirectory%\netcoreapp2.0\
+xcopy /Y %BinaryOutputDirectory%\%~n1\netstandard2.0\Microsoft.%1  %SigningDirectory%\netcoreapp2.0\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
 
-echo xcopy /Y %BinaryOutputDirectory%\%~n1\net461\Microsoft.%1  %LayoutForSigningDirectory%\netcoreapp2.0\
-xcopy /Y %BinaryOutputDirectory%\%~n1\net461\Microsoft.%1  %LayoutForSigningDirectory%\netcoreapp2.0\
+xcopy /Y %BinaryOutputDirectory%\%~n1\net461\Microsoft.%1  %SigningDirectory%\net461\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
-
 
 :CopyFilesExit
 Exit /B %ERRORLEVEL%
