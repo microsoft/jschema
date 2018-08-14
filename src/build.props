@@ -12,7 +12,7 @@
   <PropertyGroup Label="AssemblyAttributes">
     <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
     <Product Condition=" '$(Product)' == '' ">JSON Schema</Product>
-    <Copyright Condition=" '$(Copyright)' == '' ">© Microsoft Corporation. All rights reserved.</Copyright>
+    <Copyright Condition=" '$(Copyright)' == '' ">Â© Microsoft Corporation. All rights reserved.</Copyright>
     <VersionPrefix>0.56.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
   </PropertyGroup>
