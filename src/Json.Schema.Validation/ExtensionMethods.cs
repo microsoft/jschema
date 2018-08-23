@@ -74,14 +74,13 @@ namespace Microsoft.Json.Schema.Validation
 
                 Message = new Message
                 {
+                    MessageId = RuleFactory.DefaultRuleMessageId,
                     Arguments = new List<string>
                     {
                         jsonReaderException.Path,
                         jsonReaderException.Message
                     }
                 },
-
-                RuleMessageId = RuleFactory.DefaultRuleMessageId,
             };
         }
     }
