@@ -57,10 +57,9 @@ namespace Microsoft.Json.Schema.Validation
 
                 Message = new Message
                 {
+                    MessageId = RuleFactory.DefaultRuleMessageId,
                     Arguments = messageArguments
                 },
-
-                RuleMessageId = RuleFactory.DefaultRuleMessageId
             };
 
             result.SetProperty("jsonPath", jsonPath);
