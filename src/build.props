@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
@@ -13,7 +13,7 @@
     <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
     <Product Condition=" '$(Product)' == '' ">JSON Schema</Product>
     <Copyright Condition=" '$(Copyright)' == '' ">© Microsoft Corporation. All rights reserved.</Copyright>
-    <VersionPrefix>0.56.0</VersionPrefix>
+    <VersionPrefix>0.57.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
   </PropertyGroup>
 
