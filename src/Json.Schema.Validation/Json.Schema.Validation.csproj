@@ -13,14 +13,11 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="..\..\refs\$(TargetFramework)\Sarif.dll" />
   </ItemGroup>
 
 </Project>

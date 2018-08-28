@@ -38,4 +38,6 @@ if (-not (Test-Path $outputDirectory)) {
     New-Item -Type Directory $outputDirectory | Out-Null
 }
 
-Set-Content $outputFile $versionConstantsFileContents
+# We use .NET rather than the PowerShell Set-Content cmdlet because Set-Content
+# intermittently fails with "Stream was not readable".
+[System.IO.File]::WriteAllText($outputFile, $versionConstantsFileContents)
