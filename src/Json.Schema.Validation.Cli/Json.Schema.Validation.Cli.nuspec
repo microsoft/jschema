@@ -8,7 +8,7 @@
     <owners>microsoft,tse-securitytools</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A utility that validates files according to a JSON schema.</description>
-    <releaseNotes>Version $version$ of the JSON validation utility (for SARIF v2.0.0)</releaseNotes>
+    <releaseNotes>Version $version$ of the JSON validation utility.</releaseNotes>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
     <licenseUrl>https://github.com/Microsoft/jschema/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/microsoft/jschema</projectUrl>

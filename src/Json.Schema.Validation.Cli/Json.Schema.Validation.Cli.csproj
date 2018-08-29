@@ -3,9 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
-    <AssemblyNameOverride>Microsoft.Json.Schema.Validation.Cli</AssemblyNameOverride>
     <RootNamespaceOverride>Microsoft.Json.Schema.Validation.CommandLine</RootNamespaceOverride>
-    <AssemblyName>Microsoft.Json.Schema.Validator.Cli</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Label="AssemblyAttributes">

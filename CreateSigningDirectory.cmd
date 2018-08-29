@@ -25,32 +25,32 @@ call :CreateDirIfNotExist %SigningDirectory%
 call :CreateDirIfNotExist %SigningDirectory%\net461\
 call :CreateDirIfNotExist %SigningDirectory%\netcoreapp2.0
 
-call :CopyDllForMultitargeting Json.Schema.dll            || goto :ExitFailed
-call :CopyDllForMultitargeting Json.Pointer.dll           || goto :ExitFailed
-call :CopyDllForMultitargeting Json.Schema.ToDotNet.dll   || goto :ExitFailed
-call :CopyDllForMultitargeting Json.Schema.Validation.dll || goto :ExitFailed
+call :CopyUnsignedLibraryToSigningDirectory Json.Schema.dll            || goto :ExitFailed
+call :CopyUnsignedLibraryToSigningDirectory Json.Pointer.dll           || goto :ExitFailed
+call :CopyUnsignedLibraryToSigningDirectory Json.Schema.ToDotNet.dll   || goto :ExitFailed
+call :CopyUnsignedLibraryToSigningDirectory Json.Schema.Validation.dll || goto :ExitFailed
 
-call :CopyExeForMultitargeting Json.Schema.ToDotNet.Cli   || goto :ExitFailed
-call :CopyExeForMultitargeting Json.Schema.Validation.Cli || goto :ExitFailed
+call :CopyUnsignedExecutableToSigningDirectory Json.Schema.ToDotNet.Cli   || goto :ExitFailed
+call :CopyUnsignedExecutableToSigningDirectory Json.Schema.Validation.Cli || goto :ExitFailed
 
 goto :Exit
 
-:CopyDllForMultitargeting
+:CopyUnsignedLibraryToSigningDirectory
 xcopy /Y %BinaryOutputDirectory%\%~n1\netstandard2.0\Microsoft.%1  %SigningDirectory%\netcoreapp2.0\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
 
 xcopy /Y %BinaryOutputDirectory%\%~n1\net461\Microsoft.%1  %SigningDirectory%\net461\
-if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
+if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed.)
+goto :CopyFilesExit
 
-Exit /B %ERRORLEVEL%
-
-:CopyExeForMultitargeting
+:CopyUnsignedExecutableToSigningDirectory
 xcopy /Y %BinaryOutputDirectory%\%1\netcoreapp2.0\Microsoft.%1.dll  %SigningDirectory%\netcoreapp2.0\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
 
 xcopy /Y %BinaryOutputDirectory%\%1\net461\Microsoft.%1.exe  %SigningDirectory%\net461\
-if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
+if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed.)
 
+:CopyFilesExit
 Exit /B %ERRORLEVEL%
 
 :CreateDirIfNotExist

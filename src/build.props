@@ -19,7 +19,6 @@
 
   <PropertyGroup Label="Build">
     <AssemblyName>Microsoft.$(MSBuildProjectName)</AssemblyName>
-    <AssemblyName Condition=" '$(AssemblyNameOverride)' != '' ">$(AssemblyNameOverride)</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <RootNamespace Condition=" '$(RootNamespaceOverride)' != '' ">$(RootNamespaceOverride)</RootNamespace>
     <OutputSubDir>$(Platform)_$(Configuration)</OutputSubDir>
