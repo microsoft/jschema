@@ -93,7 +93,7 @@ function New-NuGetPackageFromNuspecFile($project, $version, $suffix = "") {
     $arguments=
         "pack", $nuspecFile,
         "-Symbols",
-        "-Properties", "configuration=$Configuration;version=$version",
+        "-Properties", "platform=$Platform;configuration=$Configuration;version=$version",
         "-Verbosity", "Quiet",
         "-BasePath", ".\",
         "-OutputDirectory", $PackageOutputDirectory
@@ -109,6 +109,8 @@ function New-NuGetPackageFromNuspecFile($project, $version, $suffix = "") {
     &$nuGetExePath $arguments
     if ($LASTEXITCODE -ne 0) {
         Exit-WithFailureMessage "$project NuGet package creation failed."
+    } else {
+        Write-Information "Successfully created package from $nuspecFile"
     }
 }
 
@@ -138,12 +140,12 @@ if (-not $NoPackage) {
     $versionPrefix, $versionSuffix = .\src\build\Get-VersionConstants.ps1
     $version = "$versionPrefix$versionSuffix"
 
-    $packagingProjects = "Json.Pointer", "Json.Schema", "Json.Schema.ToDotNet", "Json.Schema.Validation"
+    $packagingProjects = "Json.Pointer", "Json.Schema"
     foreach ($project in $packagingProjects) {
         New-NuGetPackageFromProjectFile $project $version
     }
 
-    $nuspecProjects = @()
+    $nuspecProjects = "Json.Schema.ToDotNet.Cli", "Json.Schema.Validation.Cli"
     foreach ($project in $nuspecProjects) {
         New-NuGetPackageFromNuSpecFile $project $version
     }
