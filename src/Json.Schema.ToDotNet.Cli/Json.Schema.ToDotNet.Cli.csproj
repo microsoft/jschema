@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <AssemblyNameOverride>Microsoft.Json.Schema.ToDotNet.Cli</AssemblyNameOverride>
+    <RootNamespaceOverride>Microsoft.Json.Schema.ToDotNet.CommandLine</RootNamespaceOverride>
+    <AssemblyName>Microsoft.Json.Schema.ToDotNet.Cli</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Label="AssemblyAttributes">
+    <AssemblyTitle>JSON Schema To .NET Code Generation Tool</AssemblyTitle>
+    <Description>Command line tool to generate a set of .NET classes from a JSON Schema</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <IsTool>true</IsTool>
+  </PropertyGroup>
+
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj" />
+    <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
+  </ItemGroup>
+
+</Project>
