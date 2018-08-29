@@ -20,7 +20,6 @@
   <PropertyGroup Label="Build">
     <AssemblyName>Microsoft.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
-    <RootNamespace Condition=" '$(RootNamespaceOverride)' != '' ">$(RootNamespaceOverride)</RootNamespace>
     <OutputSubDir>$(Platform)_$(Configuration)</OutputSubDir>
     <IntermediateOutputPath>$(MsBuildThisFileDirectory)..\bld\obj\$(MSBuildProjectName)\$(OutputSubDir)\</IntermediateOutputPath>
     <OutputPath>$(MsBuildThisFileDirectory)..\bld\bin\$(OutputSubDir)\$(MSBuildProjectName)\</OutputPath>

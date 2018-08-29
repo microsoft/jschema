@@ -10,7 +10,7 @@ using System.Reflection;
 using CommandLine;
 using Microsoft.Json.Schema.ToDotNet.Hints;
 
-namespace Microsoft.Json.Schema.ToDotNet.CommandLine
+namespace Microsoft.Json.Schema.ToDotNet.Cli
 {
     internal class Program
     {
