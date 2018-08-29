@@ -1,0 +1,39 @@
+﻿<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Microsoft.Json.Schema.ToDotNet</id>
+    <version>$version$</version>
+    <title>Microsoft Json Schema to .NET Object Model Generator</title>
+    <authors>microsoft</authors>
+    <owners>microsoft,tse-securitytools</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A utility that generates a .NET object model from a JSON schema.</description>
+    <releaseNotes>Version $version$ of the JSON .NET object model generator (for SARIF v2.0.0)</releaseNotes>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <licenseUrl>https://github.com/Microsoft/jschema/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/microsoft/jschema</projectUrl>
+    <iconUrl>https://go.microsoft.com/fwlink/?linkid=2009431</iconUrl>
+    <tags>Microsoft Json Schema .NET ToDotNet Object Model Generator Jschema</tags>
+  </metadata>
+  <files>
+    <file src="bld\bin\$platform$_$configuration$\Json.Schema.ToDotNet\net461\Microsoft.Json.Schema.ToDotNet.dll"
+          target="lib\net461\Microsoft.Json.Schema.ToDotNet.dll"
+          />
+
+    <file src="bld\bin\$platform$_$configuration$\Json.Schema.ToDotNet\netstandard2.0\Microsoft.Json.Schema.ToDotNet.dll"
+          target="lib\netstandard2.0\Microsoft.Json.Schema.ToDotNet.dll"
+          /> 
+
+    <file src="bld\bin\$platform$_$configuration$\Json.Schema.ToDotNet.Cli\net461\**"
+          target="tools\net461"
+          />
+    
+    <file src="bld\bin\$platform$_$configuration$\Json.Schema.ToDotNet.Cli\netcoreapp2.0\**"
+          target="tools\netcoreapp2.0"
+          />
+
+    <file src="src\ReleaseHistory.md" />
+    <file src="src\Json.Schema.ToDotNet\**\*.cs" target="src\Json.Schema.ToDotNet" />
+    <file src="src\Json.Schema.ToDotNet.Cli\**\*.cs" target="src\Json.Schema.ToDotNet.Cli" />
+  </files>
+</package>
