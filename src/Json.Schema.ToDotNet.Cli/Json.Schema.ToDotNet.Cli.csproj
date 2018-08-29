@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
-    <AssemblyNameOverride>Json.Schema.ToDotNet.Cli</AssemblyNameOverride>
+    <AssemblyNameOverride>Microsoft.Json.Schema.ToDotNet.Cli</AssemblyNameOverride>
     <RootNamespaceOverride>Microsoft.Json.Schema.ToDotNet.CommandLine</RootNamespaceOverride>
     <AssemblyName>Microsoft.Json.Schema.ToDotNet.Cli</AssemblyName>
   </PropertyGroup>
