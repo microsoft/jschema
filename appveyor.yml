@@ -5,6 +5,7 @@ init:
 
 branches:
   only:
+    - develop
     - master
 
 platform: Any CPU
