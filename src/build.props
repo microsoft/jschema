@@ -13,13 +13,14 @@
     <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
     <Product Condition=" '$(Product)' == '' ">JSON Schema</Product>
     <Copyright Condition=" '$(Copyright)' == '' ">© Microsoft Corporation. All rights reserved.</Copyright>
-    <VersionPrefix>0.58.0</VersionPrefix>
+    <VersionPrefix>0.59.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup Label="Build">
     <AssemblyName>Microsoft.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>$(AssemblyName)</RootNamespace>
+    <RootNamespace Condition=" '$(RootNamespaceOverride)' != '' ">$(RootNamespaceOverride)</RootNamespace>
     <OutputSubDir>$(Platform)_$(Configuration)</OutputSubDir>
     <IntermediateOutputPath>$(MsBuildThisFileDirectory)..\bld\obj\$(MSBuildProjectName)\$(OutputSubDir)\</IntermediateOutputPath>
     <OutputPath>$(MsBuildThisFileDirectory)..\bld\bin\$(OutputSubDir)\$(MSBuildProjectName)\</OutputPath>

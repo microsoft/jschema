@@ -8,6 +8,7 @@
   <PropertyGroup Label="AssemblyAttributes">
     <AssemblyTitle>JSON Schema To .NET Code Generation Tool</AssemblyTitle>
     <Description>Command line tool to generate a set of .NET classes from a JSON Schema</Description>
+    <RootNamespaceOverride>Microsoft.Json.Schema.ToDotNet.CommandLine</RootNamespaceOverride>
   </PropertyGroup>
 
   <PropertyGroup Label="Package">

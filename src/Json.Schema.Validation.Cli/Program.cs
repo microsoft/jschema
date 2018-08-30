@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.CodeAnalysis.Sarif.Writers;
 using Microsoft.Json.Schema.Validation;
 
-namespace Microsoft.Json.Schema.Validation.Cli
+namespace Microsoft.Json.Schema.Validation.CommandLine
 {
     internal class Program
     {
