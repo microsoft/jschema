@@ -3,7 +3,7 @@
 
 using CommandLine;
 
-namespace Microsoft.Json.Schema.Validation.Cli
+namespace Microsoft.Json.Schema.Validation.CommandLine
 {
     internal class Options
     {

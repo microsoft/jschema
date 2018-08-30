@@ -3,7 +3,7 @@
 
 using CommandLine;
 
-namespace Microsoft.Json.Schema.ToDotNet.Cli
+namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 {
     internal class Options
     {

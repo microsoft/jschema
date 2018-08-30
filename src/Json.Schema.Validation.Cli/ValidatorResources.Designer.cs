@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.Json.Schema.Validation.Cli {
+namespace Microsoft.Json.Schema.Validation.CommandLine {
     using System;
     
     

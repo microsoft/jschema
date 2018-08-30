@@ -8,7 +8,8 @@
   <PropertyGroup Label="AssemblyAttributes">
     <AssemblyTitle>JSON Schema Validation Tool</AssemblyTitle>
     <Description>Command line tool to validate a JSON instance against a JSON Schema</Description>
-  </PropertyGroup>
+    <RootNamespaceOverride>Microsoft.Json.Schema.Validation.CommandLine</RootNamespaceOverride>
+   </PropertyGroup>
 
   <PropertyGroup Label="Package">
     <IsTool>true</IsTool>

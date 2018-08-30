@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.Json.Schema.ToDotNet.Cli {
+namespace Microsoft.Json.Schema.ToDotNet.CommandLine {
     using System;
     
     
