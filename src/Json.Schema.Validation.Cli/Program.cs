@@ -38,7 +38,6 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
                                             options.SchemaFilePath
                                         },
                                         loggingOptions: LoggingOptions.Verbose,
-                                        prereleaseInfo: null,
                                         invocationTokensToRedact: null))
             {
                 DateTime start = DateTime.Now;
