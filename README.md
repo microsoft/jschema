@@ -1,6 +1,6 @@
 # Microsoft/jschema
 
-A set of .NET components for working with JSON sSchema Draft 4
+A set of .NET components for working with JSON Schema Draft 4
 
 The JSchema repo consists of the following components, each of which is documented in its own README.md:
 
