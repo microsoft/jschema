@@ -8,7 +8,7 @@ The JSchema repo consists of the following components, each of which is document
 
 * `Microsoft.Json.Schema`: an almost but not quite complete implementation of [JSON Schema Draft 4](http://json-schema.org/specification-links.html#draft-4). Documentation: coming soon.
 
-* `Microsoft.Json.Schema.Validation`: a library to validate a JSON instance document against a JSON schema document.  Documentation: coming soon.
+* `Microsoft.Json.Schema.Validation`: a library to validate a JSON instance document against a JSON schema document. Documentation: coming soon.
 
 * `Microsoft.Json.Schema.Validation.Cli`: a Windows command-line tool to validate a JSON instance document against a JSON schema document, built on the `Microsoft.Json.Schema.Validation` library.
 
