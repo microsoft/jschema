@@ -169,7 +169,7 @@ The code displays the following output:
 elementPointer = "/outer/inner/1"
 ```
 
-### `EscapeJsonPointer()`
+### `EscapeJsonPointer(string propertyName)`
 
 Given a property name, `EscapeJsonPointer` escapes the characters `~` and `/` with `~0` and `~1`
 as described in the JSON Pointer specification, so the resulting string can be used as
@@ -195,7 +195,7 @@ escapedPropertyName = "a~1~0b"
 
 NOTE: This method would have been better named `EscapeJsonPropertyName`.
 
-### `UnescapeJsonPointer()`
+### `UnescapeJsonPointer(string escapedPropertyName)`
 
 Given an escaped property name, `UnescapeJsonPointer` replaces the escape sequences `~0` and `~1`
 with `~` and `/` as described in the JSON pointer specification.
