@@ -13,6 +13,7 @@ namespace Microsoft.Json.Schema.ToDotNet
     internal class RewritingVisitorGenerator
     {
         private const string NodeParameterName = "node";
+        private const string KeyVariableName = "key";
         private const string VisitMethodName = "Visit";
         private const string VisitActualMethodName = "VisitActual";
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
@@ -20,6 +21,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string CountPropertyName = "Count";
         private const string AddMethodName = "Add";
         private const string ToArrayMethodName = "ToArray";
+
+        private readonly TypeSyntax KeyParameterType = SyntaxFactory.ParseTypeName("string");
 
         private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
@@ -103,20 +106,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.VirtualKeyword))
                 .AddParameterListParameters(
-                    SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(
-                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)))
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(SyntaxFactory.ParseTypeName(_nodeInterfaceName)),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyVariableName))
+                        .WithType(KeyParameterType)
+                        .WithDefault(
+                            SyntaxFactory.EqualsValueClause(
+                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression))))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.ThisExpression(),
-                                SyntaxFactory.IdentifierName(VisitActualMethodName)))
-                            .AddArgumentListArguments(
-                                SyntaxFactory.Argument(
-                                    SyntaxFactory.IdentifierName(NodeParameterName)))))
+                                SyntaxFactory.IdentifierName(VisitActualMethodName)),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.IdentifierName(NodeParameterName),
+                                SyntaxFactory.IdentifierName(KeyVariableName)))))
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(
@@ -142,7 +148,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Parameter(
                         SyntaxFactory.Identifier(NodeParameterName))
                         .WithType(
-                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)))
+                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyVariableName))
+                        .WithType(KeyParameterType)
+                        .WithDefault(
+                            SyntaxFactory.EqualsValueClause(
+                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression))))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
@@ -150,12 +161,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.ThrowStatement(
                                 SyntaxFactory.ObjectCreationExpression(
                                     SyntaxFactory.ParseTypeName("ArgumentNullException"),
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.LiteralExpression(
-                                                    SyntaxKind.StringLiteralExpression,
-                                                    SyntaxFactory.Literal(NodeParameterName))))),
+                                    SyntaxHelper.ArgumentList(
+                                        SyntaxFactory.LiteralExpression(
+                                            SyntaxKind.StringLiteralExpression,
+                                            SyntaxFactory.Literal(NodeParameterName))),
                                     default(InitializerExpressionSyntax))))),
                     SyntaxFactory.SwitchStatement(
                         SyntaxFactory.MemberAccessExpression(
@@ -198,12 +207,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(methodName),
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.Argument(
-                                            SyntaxFactory.CastExpression(
-                                                SyntaxFactory.ParseTypeName(generatedClassName),
-                                                SyntaxFactory.IdentifierName(NodeParameterName)))))))));
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.CastExpression(
+                                        SyntaxFactory.ParseTypeName(generatedClassName),
+                                        SyntaxFactory.IdentifierName(NodeParameterName)),
+                                    SyntaxFactory.IdentifierName(KeyVariableName))))));
             }
 
             switchSections[index] = SyntaxFactory.SwitchSection(
@@ -239,7 +247,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                             })))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(typeParameterType))
+                        .WithType(typeParameterType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyVariableName))
+                        .WithType(KeyParameterType)
+                        .WithDefault(
+                            SyntaxFactory.EqualsValueClause(
+                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression))))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
@@ -251,10 +264,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                             typeParameterType,
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(VisitMethodName),
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.Argument(
-                                            SyntaxFactory.IdentifierName(NodeParameterName))))))));
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.IdentifierName(NodeParameterName),
+                                    SyntaxFactory.IdentifierName(KeyVariableName))))));
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
@@ -304,7 +316,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Token(SyntaxKind.VirtualKeyword))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
-                    .WithType(generatedClassType))
+                        .WithType(generatedClassType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyVariableName))
+                        .WithType(KeyParameterType)
+                        .WithDefault(
+                            SyntaxFactory.EqualsValueClause(
+                                    SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression))))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNotNull(NodeParameterName),
@@ -407,7 +424,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax GenerateScalarVisit(
             ExpressionSyntax target,
-            ExpressionSyntax source = null)
+            ExpressionSyntax source = null,
+            string keyVariableName = KeyVariableName)
         {
             if (source == null)
             {
@@ -421,12 +439,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                         target,
                         SyntaxFactory.InvocationExpression(
                             SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
-                            SyntaxHelper.ArgumentList(source))));
+                            SyntaxHelper.ArgumentList(
+                                source,
+                                SyntaxFactory.IdentifierName(keyVariableName)))));
         }
 
         private StatementSyntax[] GenerateDictionaryVisit(int arrayRank, string propertyName)
         {
-            const string KeyVariableName = "key";
+            const string DictionaryKeyVariableName = "dictionaryKey";
             const string KeysVariableName = "keys";
             const string KeysPropertyName = "Keys";
             const string ValueVariableName = "value";
@@ -440,7 +460,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.BracketedArgumentList(
                         SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.Argument(
-                                SyntaxFactory.IdentifierName(KeyVariableName)))));
+                                SyntaxFactory.IdentifierName(DictionaryKeyVariableName)))));
 
             // The code to visit an individual dictionary element depends on whether the
             // elements are scalar values or arrays.
@@ -450,7 +470,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 dictionaryElementVisitStatements = new StatementSyntax[]
                 {
-                    GenerateScalarVisit(dictionaryValue, SyntaxFactory.IdentifierName(ValueVariableName))
+                    GenerateScalarVisit(dictionaryValue, SyntaxFactory.IdentifierName(ValueVariableName), DictionaryKeyVariableName)
                 };
             }
             else
@@ -464,12 +484,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.BracketedArgumentList(
                             SyntaxFactory.SingletonSeparatedList(
                                 SyntaxFactory.Argument(
-                                    SyntaxFactory.IdentifierName(KeyVariableName)))));
+                                    SyntaxFactory.IdentifierName(DictionaryKeyVariableName)))));
 
                 dictionaryElementVisitStatements = GenerateArrayVisit(
                     arrayRank,
                     nestingLevel: 0,
-                    arrayValuedExpression: arrayValuedExpression);
+                    arrayValuedExpression: arrayValuedExpression,
+                    keyVariableName: DictionaryKeyVariableName);
             }
 
             return new StatementSyntax[]
@@ -499,7 +520,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 // foreach (var key in keys)
                 SyntaxFactory.ForEachStatement(
                     SyntaxHelper.Var(),
-                    KeyVariableName,
+                    DictionaryKeyVariableName,
                     SyntaxFactory.IdentifierName(KeysVariableName),
                     SyntaxFactory.Block(
                         SyntaxFactory.LocalDeclarationStatement(
@@ -519,7 +540,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         private StatementSyntax[] GenerateArrayVisit(
             int arrayRank,
             int nestingLevel,
-            ExpressionSyntax arrayValuedExpression)
+            ExpressionSyntax arrayValuedExpression,
+            string keyVariableName = KeyVariableName)
         {
             ExpressionSyntax loopLimitExpression;
             if (nestingLevel == 0)
@@ -595,7 +617,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.IdentifierName(loopVariableName))),
                         // { ... }
                         SyntaxFactory.Block(
-                            GenerateArrayVisit(arrayRank, nestingLevel + 1, arrayValuedExpression)));
+                            GenerateArrayVisit(arrayRank, nestingLevel + 1, arrayValuedExpression, keyVariableName)));
 
                 if (nestingLevel > 0)
                 {
@@ -652,7 +674,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                             elementAccessExpression,
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
-                                SyntaxHelper.ArgumentList(elementAccessExpression)))));
+                                SyntaxHelper.ArgumentList(
+                                    elementAccessExpression,
+                                    SyntaxFactory.IdentifierName(keyVariableName))))));
             }
 
             return statements.ToArray();

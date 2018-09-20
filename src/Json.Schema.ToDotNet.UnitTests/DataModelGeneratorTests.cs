@@ -1401,9 +1401,9 @@ namespace N
         /// <returns>
         /// A rewritten instance of the node.
         /// </returns>
-        public virtual object Visit(ISNode node)
+        public virtual object Visit(ISNode node, string key = null)
         {
-            return this.VisitActual(node);
+            return this.VisitActual(node, key);
         }
 
         /// <summary>
@@ -1415,7 +1415,7 @@ namespace N
         /// <returns>
         /// A rewritten instance of the node.
         /// </returns>
-        public virtual object VisitActual(ISNode node)
+        public virtual object VisitActual(ISNode node, string key = null)
         {
             if (node == null)
             {
@@ -1425,34 +1425,34 @@ namespace N
             switch (node.SNodeKind)
             {
                 case SNodeKind.C:
-                    return VisitC((C)node);
+                    return VisitC((C)node, key);
                 case SNodeKind.D:
-                    return VisitD((D)node);
+                    return VisitD((D)node, key);
                 default:
                     return node;
             }
         }
 
-        private T VisitNullChecked<T>(T node) where T : class, ISNode
+        private T VisitNullChecked<T>(T node, string key = null) where T : class, ISNode
         {
             if (node == null)
             {
                 return null;
             }
 
-            return (T)Visit(node);
+            return (T)Visit(node, key);
         }
 
-        public virtual C VisitC(C node)
+        public virtual C VisitC(C node, string key = null)
         {
             if (node != null)
             {
-                node.ReferencedTypeProp = VisitNullChecked(node.ReferencedTypeProp);
+                node.ReferencedTypeProp = VisitNullChecked(node.ReferencedTypeProp, key);
                 if (node.ArrayOfRefProp != null)
                 {
                     for (int index_0 = 0; index_0 < node.ArrayOfRefProp.Count; ++index_0)
                     {
-                        node.ArrayOfRefProp[index_0] = VisitNullChecked(node.ArrayOfRefProp[index_0]);
+                        node.ArrayOfRefProp[index_0] = VisitNullChecked(node.ArrayOfRefProp[index_0], key);
                     }
                 }
 
@@ -1465,7 +1465,7 @@ namespace N
                         {
                             for (int index_1 = 0; index_1 < value_0.Count; ++index_1)
                             {
-                                value_0[index_1] = VisitNullChecked(value_0[index_1]);
+                                value_0[index_1] = VisitNullChecked(value_0[index_1], key);
                             }
                         }
                     }
@@ -1474,12 +1474,12 @@ namespace N
                 if (node.DictionaryWithObjectSchemaProp != null)
                 {
                     var keys = node.DictionaryWithObjectSchemaProp.Keys.ToArray();
-                    foreach (var key in keys)
+                    foreach (var dictionaryKey in keys)
                     {
-                        var value = node.DictionaryWithObjectSchemaProp[key];
+                        var value = node.DictionaryWithObjectSchemaProp[dictionaryKey];
                         if (value != null)
                         {
-                            node.DictionaryWithObjectSchemaProp[key] = VisitNullChecked(value);
+                            node.DictionaryWithObjectSchemaProp[dictionaryKey] = VisitNullChecked(value, dictionaryKey);
                         }
                     }
                 }
@@ -1487,14 +1487,14 @@ namespace N
                 if (node.DictionaryWithObjectArraySchemaProp != null)
                 {
                     var keys = node.DictionaryWithObjectArraySchemaProp.Keys.ToArray();
-                    foreach (var key in keys)
+                    foreach (var dictionaryKey in keys)
                     {
-                        var value = node.DictionaryWithObjectArraySchemaProp[key];
+                        var value = node.DictionaryWithObjectArraySchemaProp[dictionaryKey];
                         if (value != null)
                         {
-                            for (int index_0 = 0; index_0 < node.DictionaryWithObjectArraySchemaProp[key].Count; ++index_0)
+                            for (int index_0 = 0; index_0 < node.DictionaryWithObjectArraySchemaProp[dictionaryKey].Count; ++index_0)
                             {
-                                node.DictionaryWithObjectArraySchemaProp[key][index_0] = VisitNullChecked(node.DictionaryWithObjectArraySchemaProp[key][index_0]);
+                                node.DictionaryWithObjectArraySchemaProp[dictionaryKey][index_0] = VisitNullChecked(node.DictionaryWithObjectArraySchemaProp[dictionaryKey][index_0], dictionaryKey);
                             }
                         }
                     }
@@ -1503,12 +1503,12 @@ namespace N
                 if (node.DictionaryWithUriKeyProp != null)
                 {
                     var keys = node.DictionaryWithUriKeyProp.Keys.ToArray();
-                    foreach (var key in keys)
+                    foreach (var dictionaryKey in keys)
                     {
-                        var value = node.DictionaryWithUriKeyProp[key];
+                        var value = node.DictionaryWithUriKeyProp[dictionaryKey];
                         if (value != null)
                         {
-                            node.DictionaryWithUriKeyProp[key] = VisitNullChecked(value);
+                            node.DictionaryWithUriKeyProp[dictionaryKey] = VisitNullChecked(value, dictionaryKey);
                         }
                     }
                 }
@@ -1517,7 +1517,7 @@ namespace N
             return node;
         }
 
-        public virtual D VisitD(D node)
+        public virtual D VisitD(D node, string key = null)
         {
             if (node != null)
             {
@@ -2657,9 +2657,9 @@ namespace N
         /// <returns>
         /// A rewritten instance of the node.
         /// </returns>
-        public virtual object Visit(ISNode node)
+        public virtual object Visit(ISNode node, string key = null)
         {
-            return this.VisitActual(node);
+            return this.VisitActual(node, key);
         }
 
         /// <summary>
@@ -2671,7 +2671,7 @@ namespace N
         /// <returns>
         /// A rewritten instance of the node.
         /// </returns>
-        public virtual object VisitActual(ISNode node)
+        public virtual object VisitActual(ISNode node, string key = null)
         {
             if (node == null)
             {
@@ -2681,23 +2681,23 @@ namespace N
             switch (node.SNodeKind)
             {
                 case SNodeKind.C:
-                    return VisitC((C)node);
+                    return VisitC((C)node, key);
                 default:
                     return node;
             }
         }
 
-        private T VisitNullChecked<T>(T node) where T : class, ISNode
+        private T VisitNullChecked<T>(T node, string key = null) where T : class, ISNode
         {
             if (node == null)
             {
                 return null;
             }
 
-            return (T)Visit(node);
+            return (T)Visit(node, key);
         }
 
-        public virtual C VisitC(C node)
+        public virtual C VisitC(C node, string key = null)
         {
             if (node != null)
             {
