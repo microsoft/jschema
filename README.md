@@ -4,7 +4,7 @@ A set of .NET components for working with JSON Schema Draft 4
 
 The JSchema repo consists of the following components, each of which is documented in its own README.md:
 
-* `Microsoft.Json.Pointer`: an implementation of the JSON Pointer specification ([RFC 6901](https://tools.ietf.org/html/rfc6901)). Documentation: [src\Json.Pointer\README.md](src/Json.Pointer/README.md).
+* `Microsoft.Json.Pointer`: an implementation of the JSON Pointer specification ([RFC 6901](https://tools.ietf.org/html/rfc6901)). Documentation: [src/Json.Pointer/README.md](src/Json.Pointer/README.md).
 
 * `Microsoft.Json.Schema`: an almost but not quite complete implementation of [JSON Schema Draft 4](http://json-schema.org/specification-links.html#draft-4). Documentation: coming soon.
 
