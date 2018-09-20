@@ -200,7 +200,7 @@ NOTE: This method would have been better named `EscapeJsonPropertyName`.
 Given an escaped property name, `UnescapeJsonPointer` replaces the escape sequences `~0` and `~1`
 with `~` and `/` as described in the JSON pointer specification.
 
-#### Example: Unescaping a property name
+#### Example 7: Unescaping a property name
 
 This code unescapes the escape sequences in an escaped property name:
 ```
