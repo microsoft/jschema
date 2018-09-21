@@ -75,7 +75,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     .AddMembers(
                         GenerateVisitMethod(),
                         GenerateVisitActualMethod(),
-                        GenerateVisitNullCheckedMethod())
+                        GenerateVisitNullCheckedOneArgumentMethod())
                     .AddMembers(
                         GenerateVisitClassMethods());
 
@@ -216,7 +216,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return switchSections;
         }
 
-        private MethodDeclarationSyntax GenerateVisitNullCheckedMethod()
+        private MethodDeclarationSyntax GenerateVisitNullCheckedOneArgumentMethod()
         {
             TypeSyntax typeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
 
