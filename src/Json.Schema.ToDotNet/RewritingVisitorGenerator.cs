@@ -243,21 +243,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
                         .WithType(TypeParameterType))
-                .AddBodyStatements(
-                    SyntaxFactory.IfStatement(
-                        SyntaxHelper.IsNull(NodeParameterName),
-                        SyntaxFactory.Block(
-                            SyntaxFactory.ReturnStatement(
-                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
-                    SyntaxFactory.ReturnStatement(
-                        SyntaxFactory.CastExpression(
-                            TypeParameterType,
-                            SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(VisitMethodName),
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.Argument(
-                                            SyntaxFactory.IdentifierName(NodeParameterName))))))));
+                .AddBodyStatements();
         }
 
         private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
