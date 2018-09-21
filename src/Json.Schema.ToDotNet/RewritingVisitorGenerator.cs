@@ -75,7 +75,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                     .AddMembers(
                         GenerateVisitMethod(),
                         GenerateVisitActualMethod(),
-                        GenerateVisitNullCheckedOneArgumentMethod())
+                        GenerateVisitNullCheckedOneArgumentMethod(),
+                        GenerateVisitNullCheckedTwoArgumentMethod())
                     .AddMembers(
                         GenerateVisitClassMethods());
 
@@ -257,6 +258,46 @@ namespace Microsoft.Json.Schema.ToDotNet
                                             SyntaxFactory.IdentifierName(NodeParameterName))))))));
         }
 
+        private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
+        {
+            TypeSyntax typeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
+
+            return SyntaxFactory.MethodDeclaration(
+                typeParameterType,
+                VisitNullCheckedMethodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddTypeParameterListParameters(
+                    SyntaxFactory.TypeParameter(TypeParameterName))
+                .AddConstraintClauses(
+                    SyntaxFactory.TypeParameterConstraintClause(
+                        SyntaxFactory.IdentifierName(TypeParameterName),
+                        SyntaxFactory.SeparatedList(
+                            new TypeParameterConstraintSyntax[]
+                            {
+                                SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint),
+                                SyntaxFactory.TypeConstraint(
+                                    SyntaxFactory.ParseTypeName(_nodeInterfaceName))
+                            })))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(typeParameterType))
+                .AddBodyStatements(
+                    SyntaxFactory.IfStatement(
+                        SyntaxHelper.IsNull(NodeParameterName),
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ReturnStatement(
+                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.CastExpression(
+                            typeParameterType,
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(VisitMethodName),
+                                SyntaxFactory.ArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList(
+                                        SyntaxFactory.Argument(
+                                            SyntaxFactory.IdentifierName(NodeParameterName))))))));
+        }
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
         {
             // There is one VisitXxx method for each generated class.
