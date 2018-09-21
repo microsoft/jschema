@@ -13,6 +13,7 @@ namespace Microsoft.Json.Schema.ToDotNet
     internal class RewritingVisitorGenerator
     {
         private const string NodeParameterName = "node";
+        private const string KeyParameterName = "key";
         private const string VisitMethodName = "Visit";
         private const string VisitActualMethodName = "VisitActual";
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
@@ -261,6 +262,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
         {
             TypeSyntax typeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
+            TypeSyntax stringParameterType = SyntaxFactory.ParseTypeName("string");
 
             return SyntaxFactory.MethodDeclaration(
                 typeParameterType,
@@ -281,7 +283,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                             })))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(typeParameterType))
+                        .WithType(typeParameterType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
+                        .WithType(stringParameterType))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
