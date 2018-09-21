@@ -22,6 +22,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string AddMethodName = "Add";
         private const string ToArrayMethodName = "ToArray";
 
+        private readonly TypeSyntax TypeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
+        private readonly TypeSyntax StringParameterType = SyntaxFactory.ParseTypeName("string");
+
         private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
         private readonly string _namespaceName;
@@ -220,10 +223,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private MethodDeclarationSyntax GenerateVisitNullCheckedOneArgumentMethod()
         {
-            TypeSyntax typeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
-
             return SyntaxFactory.MethodDeclaration(
-                typeParameterType,
+                TypeParameterType,
                 VisitNullCheckedMethodName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
@@ -241,7 +242,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             })))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(typeParameterType))
+                        .WithType(TypeParameterType))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
@@ -250,7 +251,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
-                            typeParameterType,
+                            TypeParameterType,
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(VisitMethodName),
                                 SyntaxFactory.ArgumentList(
@@ -261,11 +262,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
         {
-            TypeSyntax typeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
-            TypeSyntax stringParameterType = SyntaxFactory.ParseTypeName("string");
-
             return SyntaxFactory.MethodDeclaration(
-                typeParameterType,
+                TypeParameterType,
                 VisitNullCheckedMethodName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
@@ -283,9 +281,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                             })))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(typeParameterType),
+                        .WithType(TypeParameterType),
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
-                        .WithType(stringParameterType))
+                        .WithType(StringParameterType))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
@@ -294,7 +292,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
-                            typeParameterType,
+                            TypeParameterType,
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(VisitMethodName),
                                 SyntaxFactory.ArgumentList(
