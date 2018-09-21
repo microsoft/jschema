@@ -283,7 +283,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
                         .WithType(TypeParameterType),
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
-                        .WithType(StringParameterType))
+                        .WithType(StringParameterType)
+                        .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
