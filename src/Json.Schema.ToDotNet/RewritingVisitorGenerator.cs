@@ -300,6 +300,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Block(
                             SyntaxFactory.ReturnStatement(
                                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
+                    SyntaxFactory.IfStatement(
+                        SyntaxHelper.IsNull(KeyParameterName),
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ReturnStatement(
+                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
                             TypeParameterType,
