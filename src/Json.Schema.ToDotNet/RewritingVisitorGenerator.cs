@@ -324,7 +324,18 @@ namespace Microsoft.Json.Schema.ToDotNet
                         .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
                 .AddBodyStatements(
                     SyntaxHelper.NullParameterCheck(NodeParameterName),
-                    SyntaxHelper.NullParameterCheck(KeyParameterName));
+                    SyntaxHelper.NullParameterCheck(KeyParameterName),
+                    SyntaxFactory.SwitchStatement(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(NodeParameterName),
+                            SyntaxFactory.IdentifierName(_kindEnumName)))
+                        .AddSections(GenerateVisitDictionaryEntrySwitchSections()));
+        }
+
+        private SwitchSectionSyntax[] GenerateVisitDictionaryEntrySwitchSections()
+        {
+            return new SwitchSectionSyntax[0];
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
