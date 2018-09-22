@@ -89,6 +89,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                         GenerateVisitNullCheckedTwoArgumentMethod(),
                         GenerateVisitDictionaryEntryMethod())
                     .AddMembers(
+                        GenerateVisitTypedDictionaryEntryMethods())
+                    .AddMembers(
                         GenerateVisitClassMethods());
 
             var usings = new List<string> { "System", "System.Collections.Generic", "System.Linq" };
@@ -379,6 +381,37 @@ namespace Microsoft.Json.Schema.ToDotNet
         private string MakeVisitDictionaryEntryMethodName(string className)
         {
             return "Visit" + className + "DictionaryEntry";
+        }
+        private MemberDeclarationSyntax[] GenerateVisitTypedDictionaryEntryMethods()
+        {
+            // There is one method for each class that can occur in a dictionary.
+            var methodDeclarations = new MemberDeclarationSyntax[_dictionaryEntryClassNames.Count];
+
+            int index = 0;
+            foreach (string className in _dictionaryEntryClassNames)
+            {
+                methodDeclarations[index++] = GenerateVisitTypedDictionaryEntryMethods(className);
+            }
+
+            return methodDeclarations;
+        }
+
+        private MemberDeclarationSyntax GenerateVisitTypedDictionaryEntryMethods(string className)
+        {
+            string methodName = MakeVisitDictionaryEntryMethodName(className);
+            TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(className);
+
+            return SyntaxFactory.MethodDeclaration(generatedClassType, methodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.VirtualKeyword))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(generatedClassType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
+                        .WithType(StringParameterType)
+                        .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
+                .AddBodyStatements();
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
