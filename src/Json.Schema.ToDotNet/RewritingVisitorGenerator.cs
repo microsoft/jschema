@@ -411,7 +411,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
                         .WithType(StringParameterType)
                         .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
-                .AddBodyStatements();
+                .AddBodyStatements(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.CastExpression(
+                            generatedClassType,
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(VisitMethodName),
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.IdentifierName(NodeParameterName))))));
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
