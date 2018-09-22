@@ -259,7 +259,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                     // return VisitNullChecked<T>(node, ref emptyKey)
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(VisitNullCheckedMethodName))));
+                            SyntaxFactory.GenericName(
+                                SyntaxFactory.Identifier(VisitNullCheckedMethodName),
+                                SyntaxFactory.TypeArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList(TypeParameterType))),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.IdentifierName(NodeParameterName),
+                                SyntaxFactory.RefExpression(
+                                    SyntaxFactory.IdentifierName(EmptyKeyVariableName))))));
         }
 
         private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
