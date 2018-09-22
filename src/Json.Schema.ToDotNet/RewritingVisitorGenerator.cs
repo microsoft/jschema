@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -35,6 +36,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly string _kindEnumName;
         private readonly List<string> _generatedClassNames;
 
+        // The names of classes that occur in dictionary entries.
+        private readonly List<string> _dictionaryEntryClassNames;
+
         private readonly LocalVariableNameGenerator _localVariableNameGenerator;
 
         /// <summary>
@@ -66,6 +70,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _kindEnumName = kindEnumName;
             NodeInterfaceType = SyntaxFactory.ParseTypeName(nodeInterfaceName);
             _generatedClassNames = generatedClassNames.OrderBy(gn => gn).ToList();
+            _dictionaryEntryClassNames = new List<string> { "FileData", "Graph", "LogicalLocation", "Rule" };
 
             _localVariableNameGenerator = new LocalVariableNameGenerator();
         }
@@ -335,7 +340,39 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private SwitchSectionSyntax[] GenerateVisitDictionaryEntrySwitchSections()
         {
-            return new SwitchSectionSyntax[0];
+            // There is one switch section for each class that can occur in a dictionary, plus one for the default.
+            var switchSections = new SwitchSectionSyntax[_dictionaryEntryClassNames.Count + 1];
+
+            int index = 0;
+            foreach (string className in _dictionaryEntryClassNames)
+            {
+                string methodName = MakeVisitDictionaryEntryMethodName(className);
+                switchSections[index++] = SyntaxFactory.SwitchSection(
+                    SyntaxFactory.SingletonList<SwitchLabelSyntax>(
+                        SyntaxFactory.CaseSwitchLabel(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(_kindEnumName),
+                                SyntaxFactory.IdentifierName(className)))),
+                    SyntaxFactory.SingletonList<StatementSyntax>(
+                        SyntaxFactory.ReturnStatement(
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(methodName)))));
+            }
+
+            switchSections[index] = SyntaxFactory.SwitchSection(
+                SyntaxFactory.SingletonList<SwitchLabelSyntax>(
+                    SyntaxFactory.DefaultSwitchLabel()),
+                SyntaxFactory.SingletonList<StatementSyntax>(
+                    SyntaxFactory.ThrowStatement(
+                        SyntaxHelper.NewInvalidOperationException())));
+
+            return switchSections;
+        }
+
+        private string MakeVisitDictionaryEntryMethodName(string className)
+        {
+            return "Visit" + className + "DictionaryEntry";
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()

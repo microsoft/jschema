@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -206,7 +207,26 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.IdentifierName(symbol)));
         }
 
-        private static readonly TypeSyntax ArgumentNullExceptionType = SyntaxFactory.ParseTypeName("ArgumentNullException");
+        private static readonly TypeSyntax ArgumentNullExceptionType = SyntaxFactory.ParseTypeName(nameof(ArgumentNullException));
+
+        internal static ObjectCreationExpressionSyntax NewArgumentNullException(string parameterName)
+        {
+            return SyntaxFactory.ObjectCreationExpression(
+                ArgumentNullExceptionType,
+                ArgumentList(
+                    NameofExpression(parameterName)),
+                default(InitializerExpressionSyntax));
+        }
+
+        private static readonly TypeSyntax InvalidOperationExceptionType = SyntaxFactory.ParseTypeName(nameof(InvalidOperationException));
+
+        internal static ObjectCreationExpressionSyntax NewInvalidOperationException()
+        {
+            return SyntaxFactory.ObjectCreationExpression(
+                InvalidOperationExceptionType,
+                ArgumentList(),
+                default(InitializerExpressionSyntax));
+        }
 
         internal static IfStatementSyntax NullParameterCheck(string parameterName)
         {
@@ -214,11 +234,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 IsNull(parameterName),
                 SyntaxFactory.Block(
                     SyntaxFactory.ThrowStatement(
-                        SyntaxFactory.ObjectCreationExpression(
-                            ArgumentNullExceptionType,
-                            ArgumentList(
-                                NameofExpression(parameterName)),
-                            default(InitializerExpressionSyntax)))));
+                        NewArgumentNullException(parameterName))));
         }
     }
 }
