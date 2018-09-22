@@ -246,6 +246,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
                         .WithType(TypeParameterType))
                 .AddBodyStatements(
+                    // string emptyKey = null;
                     SyntaxFactory.LocalDeclarationStatement(
                         SyntaxFactory.VariableDeclaration(
                             StringParameterType,
@@ -254,7 +255,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.Identifier(EmptyKeyVariableName),
                                     default(BracketedArgumentListSyntax),
                                     SyntaxFactory.EqualsValueClause(
-                                        SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))))));
+                                        SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))))),
+                    // return VisitNullChecked<T>(node, ref emptyKey)
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(VisitNullCheckedMethodName))));
         }
 
         private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
