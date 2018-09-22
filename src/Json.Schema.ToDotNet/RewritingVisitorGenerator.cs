@@ -357,7 +357,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.SingletonList<StatementSyntax>(
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(methodName)))));
+                                SyntaxFactory.IdentifierName(methodName),
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.CastExpression(
+                                        SyntaxFactory.ParseTypeName(className),
+                                        SyntaxFactory.IdentifierName(NodeParameterName)),
+                                    SyntaxFactory.RefExpression(
+                                        SyntaxFactory.IdentifierName(KeyParameterName)))))));
             }
 
             switchSections[index] = SyntaxFactory.SwitchSection(
