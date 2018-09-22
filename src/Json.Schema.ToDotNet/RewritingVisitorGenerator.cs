@@ -223,6 +223,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private MethodDeclarationSyntax GenerateVisitNullCheckedOneArgumentMethod()
         {
+            const string EmptyKeyVariableName = "emptyKey";
+
             return SyntaxFactory.MethodDeclaration(
                 TypeParameterType,
                 VisitNullCheckedMethodName)
@@ -243,7 +245,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
                         .WithType(TypeParameterType))
-                .AddBodyStatements();
+                .AddBodyStatements(
+                    SyntaxFactory.LocalDeclarationStatement(
+                        SyntaxFactory.VariableDeclaration(
+                            StringParameterType,
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.VariableDeclarator(
+                                    SyntaxFactory.Identifier(EmptyKeyVariableName),
+                                    default(BracketedArgumentListSyntax),
+                                    SyntaxFactory.EqualsValueClause(
+                                        SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))))));
         }
 
         private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
