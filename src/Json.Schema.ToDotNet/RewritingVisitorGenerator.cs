@@ -17,6 +17,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string VisitMethodName = "Visit";
         private const string VisitActualMethodName = "VisitActual";
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
+        private const string VisitDictionaryEntryMethodName = "VisitDictionaryEntry";
         private const string TypeParameterName = "T";
         private const string CountPropertyName = "Count";
         private const string AddMethodName = "Add";
@@ -304,17 +305,25 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxHelper.IsNull(KeyParameterName),
                         SyntaxFactory.Block(
                             SyntaxFactory.ReturnStatement(
-                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
+                                SyntaxFactory.CastExpression(
+                                    TypeParameterType,
+                                    SyntaxFactory.InvocationExpression(
+                                        SyntaxFactory.IdentifierName(VisitMethodName),
+                                        SyntaxFactory.ArgumentList(
+                                            SyntaxFactory.SingletonSeparatedList(
+                                                SyntaxFactory.Argument(
+                                                    SyntaxFactory.IdentifierName(NodeParameterName))))))))),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
                             TypeParameterType,
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(VisitMethodName),
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.Argument(
-                                            SyntaxFactory.IdentifierName(NodeParameterName))))))));
+                                SyntaxFactory.IdentifierName(VisitDictionaryEntryMethodName),
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.IdentifierName(NodeParameterName),
+                                    SyntaxFactory.RefExpression(
+                                        SyntaxFactory.IdentifierName(KeyParameterName)))))));
         }
+
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
         {
             // There is one VisitXxx method for each generated class.
