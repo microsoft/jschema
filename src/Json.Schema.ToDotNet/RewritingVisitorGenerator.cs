@@ -149,19 +149,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Identifier(NodeParameterName))
                         .WithType(NodeInterfaceType))
                 .AddBodyStatements(
-                    SyntaxFactory.IfStatement(
-                        SyntaxHelper.IsNull(NodeParameterName),
-                        SyntaxFactory.Block(
-                            SyntaxFactory.ThrowStatement(
-                                SyntaxFactory.ObjectCreationExpression(
-                                    SyntaxFactory.ParseTypeName("ArgumentNullException"),
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.LiteralExpression(
-                                                    SyntaxKind.StringLiteralExpression,
-                                                    SyntaxFactory.Literal(NodeParameterName))))),
-                                    default(InitializerExpressionSyntax))))),
+                    SyntaxHelper.NullParameterCheck(NodeParameterName),
                     SyntaxFactory.SwitchStatement(
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
