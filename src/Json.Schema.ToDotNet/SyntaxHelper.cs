@@ -188,5 +188,37 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.ParseTypeName("var");
         }
+
+        // Roslyn doesn't directly expose a "nameof expression". This article shows how
+        // to make one:
+        // https://stackoverflow.com/questions/46259039/constructing-nameof-expression-via-syntaxfactory-roslyn
+        internal static ExpressionSyntax NameofExpression(string symbol)
+        {
+            return SyntaxFactory.InvocationExpression(
+                SyntaxFactory.IdentifierName(
+                    SyntaxFactory.Identifier(
+                        leading: SyntaxFactory.TriviaList(),
+                        contextualKind: SyntaxKind.NameOfKeyword,
+                        text: "nameof",
+                        valueText: "nameof",
+                        trailing: SyntaxFactory.TriviaList())),
+                ArgumentList(
+                    SyntaxFactory.IdentifierName(symbol)));
+        }
+
+        private static readonly TypeSyntax ArgumentNullExceptionType = SyntaxFactory.ParseTypeName("ArgumentNullException");
+
+        internal static IfStatementSyntax NullParameterCheck(string parameterName)
+        {
+            return SyntaxFactory.IfStatement(
+                IsNull(parameterName),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ThrowStatement(
+                        SyntaxFactory.ObjectCreationExpression(
+                            ArgumentNullExceptionType,
+                            ArgumentList(
+                                NameofExpression(parameterName)),
+                            default(InitializerExpressionSyntax)))));
+        }
     }
 }

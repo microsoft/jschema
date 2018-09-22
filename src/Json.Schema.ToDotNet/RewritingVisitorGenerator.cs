@@ -334,7 +334,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
                         .WithType(StringParameterType)
                         .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
-                .AddBodyStatements();
+                .AddBodyStatements(
+                    SyntaxHelper.NullParameterCheck(NodeParameterName),
+                    SyntaxHelper.NullParameterCheck(KeyParameterName));
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
