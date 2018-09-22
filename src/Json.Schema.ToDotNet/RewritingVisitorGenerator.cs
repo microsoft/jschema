@@ -25,6 +25,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private readonly TypeSyntax TypeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
         private readonly TypeSyntax StringParameterType = SyntaxFactory.ParseTypeName("string");
+        private readonly TypeSyntax NodeInterfaceType;
 
         private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
@@ -32,7 +33,6 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly string _className;
         private readonly string _schemaName;
         private readonly string _kindEnumName;
-        private readonly string _nodeInterfaceName;
         private readonly List<string> _generatedClassNames;
 
         private readonly LocalVariableNameGenerator _localVariableNameGenerator;
@@ -64,7 +64,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _className = className;
             _schemaName = schemaName;
             _kindEnumName = kindEnumName;
-            _nodeInterfaceName = nodeInterfaceName;
+            NodeInterfaceType = SyntaxFactory.ParseTypeName(nodeInterfaceName);
             _generatedClassNames = generatedClassNames.OrderBy(gn => gn).ToList();
 
             _localVariableNameGenerator = new LocalVariableNameGenerator();
@@ -81,7 +81,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                         GenerateVisitMethod(),
                         GenerateVisitActualMethod(),
                         GenerateVisitNullCheckedOneArgumentMethod(),
-                        GenerateVisitNullCheckedTwoArgumentMethod())
+                        GenerateVisitNullCheckedTwoArgumentMethod(),
+                        GenerateVisitDictionaryEntryMethod())
                     .AddMembers(
                         GenerateVisitClassMethods());
 
@@ -111,8 +112,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
                         SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(
-                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)))
+                        .WithType(NodeInterfaceType))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
@@ -147,8 +147,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
                         SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(
-                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)))
+                        .WithType(NodeInterfaceType))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
@@ -240,8 +239,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             new TypeParameterConstraintSyntax[]
                             {
                                 SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint),
-                                SyntaxFactory.TypeConstraint(
-                                    SyntaxFactory.ParseTypeName(_nodeInterfaceName))
+                                SyntaxFactory.TypeConstraint(NodeInterfaceType)
                             })))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
@@ -286,8 +284,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             new TypeParameterConstraintSyntax[]
                             {
                                 SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint),
-                                SyntaxFactory.TypeConstraint(
-                                    SyntaxFactory.ParseTypeName(_nodeInterfaceName))
+                                SyntaxFactory.TypeConstraint(NodeInterfaceType)
                             })))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
@@ -322,6 +319,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.IdentifierName(NodeParameterName),
                                     SyntaxFactory.RefExpression(
                                         SyntaxFactory.IdentifierName(KeyParameterName)))))));
+        }
+
+        private MethodDeclarationSyntax GenerateVisitDictionaryEntryMethod()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                NodeInterfaceType,
+                VisitDictionaryEntryMethodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddBodyStatements();
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
