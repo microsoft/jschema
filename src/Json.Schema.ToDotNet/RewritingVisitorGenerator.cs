@@ -328,6 +328,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 VisitDictionaryEntryMethodName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(NodeInterfaceType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
+                        .WithType(StringParameterType)
+                        .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
                 .AddBodyStatements();
         }
 
