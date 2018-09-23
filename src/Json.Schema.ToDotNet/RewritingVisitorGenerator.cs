@@ -42,7 +42,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly List<string> _generatedClassNames;
 
         // The names of classes that occur in dictionary entries.
-        private readonly List<string> _dictionaryEntryClassNames;
+        private readonly IList<string> _dictionaryEntryClassNames;
 
         private readonly LocalVariableNameGenerator _localVariableNameGenerator;
 
@@ -75,9 +75,58 @@ namespace Microsoft.Json.Schema.ToDotNet
             _kindEnumName = kindEnumName;
             NodeInterfaceType = SyntaxFactory.ParseTypeName(nodeInterfaceName);
             _generatedClassNames = generatedClassNames.OrderBy(gn => gn).ToList();
-            _dictionaryEntryClassNames = new List<string> { "FileData", "Graph", "LogicalLocation", "Rule" };
+            _dictionaryEntryClassNames = GetDictionaryEntryClassNames(classInfoDictionary);
 
             _localVariableNameGenerator = new LocalVariableNameGenerator();
+        }
+
+        /// <summary>
+        /// Gets the list of schema-defined classes that appear as dictionary entries.
+        /// </summary>
+        /// <remarks>
+        /// The property dictionary for a class contains one entry describing each property.
+        /// For those properties that are dictionaries, the property dictionary also
+        /// contains an entry that describes the dictionary _entry_. For example, suppose
+        /// a class named Run contains a property named Graphs, defined as a dictionary
+        /// from string to Graph. Then the class dictionary for the Run class contains
+        /// one entry with the key "Graphs", which describes the property Run.Graphs.
+        /// It contains another entry with the key "Graphs{}", which describes the
+        /// entries in the Run.Graphs dictionary, and the PropertyInfo indexed by
+        /// "Graphs{}" tells us that the dictionary entry is of the schema-defined
+        /// type Graph. The string "{}" is called the "dictionary marker".
+        ///
+        /// Our goal is to locate dictionary-valued properties whose dictionary
+        /// entries are of schema-defined types.
+        /// </remarks>
+        IList<string> GetDictionaryEntryClassNames(Dictionary<string, PropertyInfoDictionary> classInfoDictionary)
+        {
+            var dictionaryEntryClassNames = new HashSet<string>();
+
+            // Loop over all properties of all classes defined in the schema.
+            foreach (string className in classInfoDictionary.Keys)
+            {
+                PropertyInfoDictionary propertyInfoDictionary = classInfoDictionary[className];
+                foreach (string key in propertyInfoDictionary.Keys)
+                {
+                    int dictionaryMarkerIndex = key.IndexOf(PropertyInfoDictionary.DictionaryMarker);
+                    if (dictionaryMarkerIndex != -1)
+                    {
+                        // We've found a property info dictionary entry that describes
+                        // an entry in a dictionary-valued property defined by the schema.
+                        PropertyInfo dictionaryEntryInfo = propertyInfoDictionary[key];
+                        {
+                            if (dictionaryEntryInfo.IsOfSchemaDefinedType)
+                            {
+                                // The dictionary entries for this property are of schema-defined type!
+                                // Remember this type so we can generate code to descend into the dictionary entries.
+                                dictionaryEntryClassNames.Add(dictionaryEntryInfo.TypeName);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return dictionaryEntryClassNames.OrderBy(name => name).ToList();
         }
 
         internal string GenerateRewritingVisitor()
