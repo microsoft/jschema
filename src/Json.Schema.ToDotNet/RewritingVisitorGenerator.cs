@@ -15,6 +15,10 @@ namespace Microsoft.Json.Schema.ToDotNet
     {
         private const string NodeParameterName = "node";
         private const string KeyParameterName = "key";
+        private const string KeyVariableName = "key";
+        private const string KeysVariableName = "keys";
+        private const string KeysPropertyName = "Keys";
+        private const string ValueVariableName = "value";
         private const string VisitMethodName = "Visit";
         private const string VisitActualMethodName = "VisitActual";
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
@@ -22,6 +26,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string TypeParameterName = "T";
         private const string CountPropertyName = "Count";
         private const string AddMethodName = "Add";
+        private const string RemoveMethodName = "Remove";
         private const string ToArrayMethodName = "ToArray";
 
         private readonly TypeSyntax TypeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
@@ -590,11 +595,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax[] GenerateDictionaryVisit(int arrayRank, string propertyName)
         {
-            const string KeyVariableName = "key";
-            const string KeysVariableName = "keys";
-            const string KeysPropertyName = "Keys";
-            const string ValueVariableName = "value";
-
             ExpressionSyntax dictionaryValue =
                 SyntaxFactory.ElementAccessExpression(
                     SyntaxFactory.MemberAccessExpression(
@@ -612,10 +612,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (arrayRank == 0)
             {
-                dictionaryElementVisitStatements = new StatementSyntax[]
-                {
-                    GenerateScalarVisit(dictionaryValue, SyntaxFactory.IdentifierName(ValueVariableName))
-                };
+                dictionaryElementVisitStatements = GenerateDictionaryElementVisit(propertyName);
             }
             else
             {
@@ -677,6 +674,67 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IfStatement(
                             SyntaxHelper.IsNotNull(ValueVariableName),
                             SyntaxFactory.Block(dictionaryElementVisitStatements))))
+            };
+        }
+
+        private StatementSyntax[] GenerateDictionaryElementVisit(string propertyName)
+        {
+            const string NewKeyVariableName = "newKey";
+
+            return new StatementSyntax[]
+            {
+                // string newKey = key;
+                SyntaxFactory.LocalDeclarationStatement(
+                    SyntaxFactory.VariableDeclaration(
+                        StringParameterType,
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.VariableDeclarator(
+                                SyntaxFactory.Identifier(NewKeyVariableName),
+                                default(BracketedArgumentListSyntax),
+                                SyntaxFactory.EqualsValueClause(
+                                    SyntaxFactory.IdentifierName(KeyVariableName)))))),
+                // node.Property.Remove(key);
+                SyntaxFactory.ExpressionStatement(
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(NodeParameterName),
+                                SyntaxFactory.IdentifierName(propertyName)),
+                            SyntaxFactory.IdentifierName(RemoveMethodName)),
+                        SyntaxHelper.ArgumentList(
+                            SyntaxFactory.IdentifierName(KeyVariableName)))),
+                // value = VisitNullChecked(value, ref newKey);
+                SyntaxFactory.ExpressionStatement(
+                    SyntaxFactory.AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        SyntaxFactory.IdentifierName(ValueVariableName),
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.IdentifierName(ValueVariableName),
+                                SyntaxFactory.RefExpression(
+                                    SyntaxFactory.IdentifierName(NewKeyVariableName)))))),
+                // if (newKey != null)
+                SyntaxFactory.IfStatement(
+                    SyntaxHelper.IsNotNull(NewKeyVariableName),
+                    SyntaxFactory.Block(
+                        SyntaxFactory.ExpressionStatement(
+                            // node.Property[newKey] = VisitNullChecked(value);
+                            SyntaxFactory.AssignmentExpression(
+                                SyntaxKind.SimpleAssignmentExpression,
+                                SyntaxFactory.ElementAccessExpression(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(NodeParameterName),
+                                        SyntaxFactory.IdentifierName(propertyName)),
+                                    SyntaxHelper.BracketedArgumentList(
+                                        SyntaxFactory.IdentifierName(NewKeyVariableName))),
+                                SyntaxFactory.InvocationExpression(
+                                    SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                                    SyntaxHelper.ArgumentList(
+                                        SyntaxFactory.IdentifierName(ValueVariableName)))))))
             };
         }
 
