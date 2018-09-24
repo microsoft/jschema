@@ -12,6 +12,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
+    /// <summary>
+    /// The methods in this class encapsulate or simplify the generation of certain
+    /// code patterns that The ToDotNet code generator emits.
+    /// </summary>
     internal static class SyntaxHelper
     {
         private const string DocCommentSummaryFormat =
