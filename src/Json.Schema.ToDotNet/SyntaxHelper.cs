@@ -194,9 +194,17 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.ParseTypeName("var");
         }
 
-        // Roslyn doesn't directly expose a "nameof expression". This article shows how
-        // to make one:
+        /// <summary>
+        /// Generates the code <code>nameof(symbol)</code>.
+        /// </summary>
+        /// <param name="symbol">
+        /// The argument to the <code>nameof</code> operator.
+        /// </param>
+        /// <remarks>
+        /// Roslyn doesn't directly expose a "nameof expression". This article shows how
+        /// to make one:
         // https://stackoverflow.com/questions/46259039/constructing-nameof-expression-via-syntaxfactory-roslyn
+        /// </remarks>
         internal static ExpressionSyntax NameofExpression(string symbol)
         {
             return SyntaxFactory.InvocationExpression(
@@ -213,6 +221,15 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private static readonly TypeSyntax ArgumentNullExceptionType = SyntaxFactory.ParseTypeName(nameof(ArgumentNullException));
 
+        /// <summary>
+        /// Generates the code <code>new ArgumentNullException(nameof(parameter))</code>.
+        /// </summary>
+        /// <param name="parameterName">
+        /// The name of the parameter that was null.
+        /// </param>
+        /// <returns>
+        /// The generated code.
+        /// </returns>
         internal static ObjectCreationExpressionSyntax NewArgumentNullException(string parameterName)
         {
             return SyntaxFactory.ObjectCreationExpression(
@@ -224,6 +241,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private static readonly TypeSyntax InvalidOperationExceptionType = SyntaxFactory.ParseTypeName(nameof(InvalidOperationException));
 
+        /// <summary>
+        /// Generates the code <code>new InvalidOperationException()</code>.
+        /// </summary>
         internal static ObjectCreationExpressionSyntax NewInvalidOperationException()
         {
             return SyntaxFactory.ObjectCreationExpression(
@@ -232,6 +252,15 @@ namespace Microsoft.Json.Schema.ToDotNet
                 default(InitializerExpressionSyntax));
         }
 
+        /// <summary>
+        /// Generates the code <code>if (parameter == null) { throw new ArgumentNullException(nameof(parameter)); }</code>.
+        /// </summary>
+        /// <param name="parameterName">
+        /// The name of the parameter begin null-checked.
+        /// </param>
+        /// <returns>
+        /// The generated code.
+        /// </returns>
         internal static IfStatementSyntax NullParameterCheck(string parameterName)
         {
             return SyntaxFactory.IfStatement(
