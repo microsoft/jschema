@@ -88,7 +88,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// For those properties that are dictionaries, the property dictionary also
         /// contains an entry that describes the dictionary _entry_. For example, suppose
         /// a class named Run contains a property named Graphs, defined as a dictionary
-        /// from string to Graph. Then the class dictionary for the Run class contains
+        /// from string to Graph. Then the property dictionary for the Run class contains
         /// one entry with the key "Graphs", which describes the property Run.Graphs.
         /// It contains another entry with the key "Graphs{}", which describes the
         /// entries in the Run.Graphs dictionary, and the PropertyInfo indexed by
