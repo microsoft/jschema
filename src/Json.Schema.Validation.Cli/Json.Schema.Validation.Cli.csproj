@@ -28,4 +28,19 @@
     <ProjectReference Include="..\Json.Schema.Validation\Json.Schema.Validation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ValidatorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValidatorResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ValidatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
