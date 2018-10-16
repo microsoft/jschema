@@ -39,7 +39,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Json.Schema.JsonSchemaValidator.ValidatorResources", typeof(ValidatorResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Json.Schema.Validation.CommandLine.ValidatorResources", typeof(ValidatorResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
