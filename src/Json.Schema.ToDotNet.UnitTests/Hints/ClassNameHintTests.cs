@@ -271,7 +271,6 @@ namespace N
 }"
                 ),
 
-#if BLEAH
             new TestCase(
                 "Renamed class has a base class",
 @"{
@@ -302,7 +301,9 @@ namespace N
       ""arguments"": {
         ""className"": ""FileData""
       }
-    },
+    }
+  ],
+  ""fileData"": [
     {
       ""kind"": ""BaseTypeHint"",
       ""arguments"": {
@@ -402,7 +403,7 @@ namespace N
 {
     [DataContract]
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class FileData : PropertyBagComparer
+    public partial class FileData : PropertyBagHolder
     {
         public static IEqualityComparer<FileData> ValueComparer => FileDataEqualityComparer.Instance;
 
@@ -470,7 +471,6 @@ namespace N
     }
 }"
                 )
-#endif
         };
 
         [Theory(DisplayName = nameof(ClassNameHint))]
