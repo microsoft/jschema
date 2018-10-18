@@ -269,7 +269,208 @@ namespace N
         }
     }
 }"
-)
+                ),
+
+            new TestCase(
+                "Renamed class has a base class",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""file"": {
+      ""$ref"": ""#/definitions/file""
+    }
+  },
+  ""definitions"": {
+    ""file"": {
+      ""type"": ""object"",
+      ""properties"": {
+        ""path"": {
+          ""type"": ""string""
+        }
+      }
+    }
+  }
+}",
+
+    "FileData",
+
+@"{
+  ""file"": [
+    {
+      ""kind"": ""ClassNameHint"",
+      ""arguments"": {
+        ""className"": ""FileData""
+      }
+    }
+  ],
+  ""fileData"": [
+    {
+      ""kind"": ""BaseTypeHint"",
+      ""arguments"": {
+        ""baseTypeNames"": [
+          ""PropertyBagHolder""
+        ]
+      }
+    }
+  ]
+}",
+
+// PrimaryClassText
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        [DataMember(Name = ""file"", IsRequired = false, EmitDefaultValue = false)]
+        public FileData File { get; set; }
+    }
+}",
+
+// PrimaryClassComparerText
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (!FileData.ValueComparer.Equals(left.File, right.File))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.File != null)
+                {
+                    result = (result * 31) + obj.File.ValueGetHashCode();
+                }
+            }
+
+            return result;
+        }
+    }
+}",
+
+// HintedClassText
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class FileData : PropertyBagHolder
+    {
+        public static IEqualityComparer<FileData> ValueComparer => FileDataEqualityComparer.Instance;
+
+        public bool ValueEquals(FileData other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        [DataMember(Name = ""path"", IsRequired = false, EmitDefaultValue = false)]
+        public string Path { get; set; }
+    }
+}",
+
+// HintedClassComparerText
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type FileData for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class FileDataEqualityComparer : IEqualityComparer<FileData>
+    {
+        internal static readonly FileDataEqualityComparer Instance = new FileDataEqualityComparer();
+
+        public bool Equals(FileData left, FileData right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.Path != right.Path)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(FileData obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.Path != null)
+                {
+                    result = (result * 31) + obj.Path.GetHashCode();
+                }
+            }
+
+            return result;
+        }
+    }
+}"
+                )
         };
 
         [Theory(DisplayName = nameof(ClassNameHint))]
