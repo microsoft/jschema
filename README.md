@@ -10,11 +10,13 @@ The JSchema repo consists of the following components, each of which is document
 
 * `Microsoft.Json.Schema.Validation`: a library to validate a JSON instance document against a JSON schema document. Documentation: coming soon.
 
-* `Microsoft.Json.Schema.Validation.Cli`: a Windows command-line tool to validate a JSON instance document against a JSON schema document, built on the `Microsoft.Json.Schema.Validation` library.
+* `Microsoft.Json.Schema.Validation.Cli`: a command-line tool to validate a JSON instance document against a JSON schema document, built on the `Microsoft.Json.Schema.Validation` library.
 
-* `Microsoft.Json.Schema.ToDotNet`: a library to generate .NET classes from a JSON schema. Documentation: coming soon.
+* `Microsoft.Json.Schema.ToDotNet`: a library to generate .NET classes from a JSON schema. Documentation (incomplete): [src/Json.Schema.ToDotNet/README.md](src/Json.Schema.ToDotNet/README.md).
 
-* `Microsoft.Json.Schema.ToDotNet.Cli`: a Windows command-line tool to generate .NET classes from a JSON schema, built on the `Microsoft.Json.Schema.ToDotNet` library. Documentation: coming soon.
+* `Microsoft.Json.Schema.ToDotNet.Cli`: a command-line tool to generate .NET classes from a JSON schema, built on the `Microsoft.Json.Schema.ToDotNet` library. Documentation: coming soon.
+
+All facilities built from the JSchema repo, including the command line tools, are available for both the net461 and netcoreapp2.0 platforms.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/),
