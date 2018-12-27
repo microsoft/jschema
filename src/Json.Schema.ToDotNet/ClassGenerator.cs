@@ -372,13 +372,31 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.ConstructorDeclaration(SuffixedTypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddBodyStatements()
+                .AddBodyStatements(GenerateDefaultInitializations())
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.DefaultCtorSummary,
                             SuffixedTypeName)));
+        }
+
+        /// <summary>
+        /// Generates an initialization statement for each property for which the
+        /// schema specifies a default value.
+        /// </summary>
+        /// <remarks>
+        /// The resulting statements are inserted into the default constructor.
+        /// This ensures that the default values are set even if the object is
+        /// not the result of deserializing a JSON instance document.
+        /// <remarks>
+        /// <returns>
+        /// An array containing one initialization statement for each property
+        /// for which the schema specifies a default value.
+        /// </returns>
+        private StatementSyntax[] GenerateDefaultInitializations()
+        {
+            return new StatementSyntax[0];
         }
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
