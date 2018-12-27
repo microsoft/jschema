@@ -4,7 +4,7 @@
 
 ## Installation and usage
 
-To use `Microsoft.Json.Pointer` in your project, add a NuGet reference to the `Microsoft.Json.Pointer` [NuGet package](https://www.nuget.org/packages/Microsoft.Json.Pointer/).
+To use `Microsoft.Json.Pointer` in your project, add a NuGet reference to the [`Microsoft.Json.Pointer` NuGet package](https://www.nuget.org/packages/Microsoft.Json.Pointer/).
 
 To use the `Microsoft.Json.Pointer` classes in a source file, add the `using` directive:
 ```
