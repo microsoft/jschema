@@ -102,6 +102,7 @@ namespace Microsoft.Json.Schema
                 PatternProperties = new Dictionary<string, JsonSchema>(other.PatternProperties);
             }
 
+            Default = other.Default;
             Pattern = other.Pattern;
             MaxLength = other.MaxLength;
             MinLength = other.MinLength;
@@ -265,6 +266,12 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.String"/>.
         /// </remarks>
         public int? MinLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value the property should be taken to have if it is absent
+        /// from an instance document.
+        /// </summary>
+        public object Default { get; set; }
 
         /// <summary>
         /// Gets or sets a regular expression which a string schema instance must match.
@@ -547,6 +554,7 @@ namespace Microsoft.Json.Schema
                     collapsedSchema.Items.SingleSchema = referencedSchema.Items.SingleSchema;
                 }
 
+                collapsedSchema.Default = referencedSchema.Default;
                 collapsedSchema.Pattern = referencedSchema.Pattern;
                 collapsedSchema.MaxLength = referencedSchema.MaxLength;
                 collapsedSchema.MinLength = referencedSchema.MinLength;
@@ -583,6 +591,7 @@ namespace Microsoft.Json.Schema
                 Required,
                 Definitions,
                 Reference,
+                Default,
                 Pattern,
                 MaxLength,
                 MinLength,
@@ -646,6 +655,7 @@ namespace Microsoft.Json.Schema
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
+                && DefaultsAreEqual(Default, other.Default)
                 && Pattern == other.Pattern
                 && MaxLength == other.MaxLength
                 && MinLength == other.MinLength
@@ -690,6 +700,26 @@ namespace Microsoft.Json.Schema
         public static bool operator !=(JsonSchema left, JsonSchema right)
         {
             return !(left == right);
+        }
+
+        private static bool DefaultsAreEqual(object left, object right)
+        {
+            if ((left == null) != (right == null)) { return false; }
+
+            if (left == null) { return true; }
+
+            Type leftType = left.GetType(),
+                 rightType = right.GetType();
+            if (leftType != rightType) { return false; }
+
+            string leftString = left as String;
+            if (leftString != null) { return leftString.Equals(right as string, StringComparison.Ordinal); }
+
+            if (left is bool) { return (bool)left == (bool)right; }
+            if (left is long) { return (long)left == (long)right; }
+            if (left is double) { return (double)left == (double)right; }
+
+            return left == right; // Not good. How do we deal with other types?
         }
     }
 }
