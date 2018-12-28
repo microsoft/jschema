@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Json.Schema.ToDotNet.Hints;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -57,8 +56,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         public delegate void AdditionalTypeRequiredDelegate(AdditionalTypeRequiredInfo additionalTypeRequiredInfo);
 
-        private AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
-        private string _typeNameSuffix;
+        private readonly AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
+        private readonly string _typeNameSuffix;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyInfoDictionary"/> class.
@@ -143,8 +142,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         public static SyntaxKind GetTypeKeywordFromSchemaType(SchemaType type)
         {
-            SyntaxKind typeKeyword;
-            if (!s_SchemaTypeToSyntaxKindDictionary.TryGetValue(type, out typeKeyword))
+            if (!s_SchemaTypeToSyntaxKindDictionary.TryGetValue(type, out SyntaxKind typeKeyword))
             {
                 typeKeyword = SyntaxKind.ObjectKeyword;
             }
@@ -158,8 +156,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             get
             {
-                PropertyInfo info;
-                if (!TryGetValue(key, out info))
+                if (!TryGetValue(key, out PropertyInfo info))
                 {
                     throw new ApplicationException($"The schema does not contain information describing the property or element {key}.");
                 }
@@ -229,8 +226,6 @@ namespace Microsoft.Json.Schema.ToDotNet
             string referencedEnumTypeName;
             bool isOfSchemaDefinedType = false;
             int arrayRank = 0;
-            EnumHint enumHint;
-            DictionaryHint dictionaryHint;
 
             if (propertySchema.IsDateTime())
             {
@@ -246,7 +241,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.Uri;
                 type = MakeNamedType("System.Uri", out namespaceName);
             }
-            else if (propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out dictionaryHint))
+            else if (propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
             {
                 comparisonKind = ComparisonKind.Dictionary;
                 hashKind = HashKind.Dictionary;
@@ -271,7 +266,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(referencedEnumTypeName, out namespaceName);
             }
-            else if (propertySchema.ShouldBeEnum(_typeName, schemaPropertyName,  _hintDictionary, out enumHint))
+            else if (propertySchema.ShouldBeEnum(_typeName, schemaPropertyName,  _hintDictionary, out EnumHint enumHint))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
@@ -284,7 +279,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 OnAdditionalTypeRequired(enumHint, propertySchema);
             }
             else
-        	{
+            {
                 SchemaType propertyType = propertySchema.SafeGetType();
 
                 switch (propertyType)
@@ -384,6 +379,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     type,
                     namespaceName,
                     isRequired,
+                    propertySchema.Default,
                     isOfSchemaDefinedType,
                     arrayRank,
                     entries.Count)));
@@ -477,6 +473,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         type: valueType,
                         namespaceName: dictionaryHint.NamespaceName,
                         isRequired: true,
+                        defaultValue: null,
                         isOfSchemaDefinedType: false,
                         arrayRank: 0,
                         declarationOrder: 0)));

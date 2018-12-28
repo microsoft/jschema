@@ -27,6 +27,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         // Name used for the parameters of the copy ctor.
         private const string OtherParameterName = "other";
 
+        private const string DefaultValueAttributeNamespaceName = "System.ComponentModel";
+        private const string DefaultValueAttributeName = "DefaultValue";
+
         private const string DataContractAttributeName = "DataContract";
         private const string DataMemberAttributeName = "DataMember";
         private const string DataMemberNamePropertyName = "Name";
@@ -241,7 +244,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
-        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired)
+        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired, object defaultValue)
         {
             var attributes = new List<AttributeSyntax>();
 
@@ -278,6 +281,24 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.SeparatedList(dataMemberAttributeArguments)));
 
             attributes.Add(dataMemberAttribute);
+
+            if (defaultValue != null)
+            {
+                AddUsing(DefaultValueAttributeNamespaceName);
+
+                var defaultValueArguments = new List<AttributeArgumentSyntax>
+                {
+                    SyntaxFactory.AttributeArgument(GetLiteralExpressionForValue(defaultValue))
+                };
+
+                AttributeSyntax defaultValueAttribute =
+                    SyntaxFactory.Attribute(
+                        SyntaxFactory.IdentifierName(DefaultValueAttributeName),
+                        SyntaxFactory.AttributeArgumentList(
+                            SyntaxFactory.SeparatedList(defaultValueArguments)));
+
+                attributes.Add(defaultValueAttribute);
+            }
 
             string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
             AttributeHint[] attributeHints = HintDictionary?.GetHints<AttributeHint>(hintDictionaryKey);
@@ -372,13 +393,102 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.ConstructorDeclaration(SuffixedTypeName)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddBodyStatements()
+                .AddBodyStatements(GenerateDefaultInitializations())
                 .WithLeadingTrivia(
                     SyntaxHelper.MakeDocComment(
                         string.Format(
                             CultureInfo.CurrentCulture,
                             Resources.DefaultCtorSummary,
                             SuffixedTypeName)));
+        }
+
+        /// <summary>
+        /// Generates an initialization statement for each property for which the
+        /// schema specifies a default value.
+        /// </summary>
+        /// <remarks>
+        /// The resulting statements are inserted into the default constructor.
+        /// This ensures that the default values are set even if the object is
+        /// not the result of deserializing a JSON instance document.
+        /// <remarks>
+        /// <returns>
+        /// An array containing one initialization statement for each property
+        /// for which the schema specifies a default value.
+        /// </returns>
+        private ExpressionStatementSyntax[] GenerateDefaultInitializations()
+        {
+            var initializations = new List<ExpressionStatementSyntax>();
+
+            foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
+            {
+                if (IncludeProperty(propertyName))
+                {
+                    PropertyInfo propInfo = PropInfoDictionary[propertyName];
+                    object defaultValue = propInfo.DefaultValue;
+
+                    ExpressionStatementSyntax initializationStatement = GenerateDefaultInitialization(propertyName, defaultValue);
+                    if (initializationStatement != null)
+                    {
+                        initializations.Add(initializationStatement);
+                    }
+                }
+            }
+
+            return initializations.ToArray();
+        }
+
+        private ExpressionStatementSyntax GenerateDefaultInitialization(
+            string propertyName,
+            object defaultValue)
+        {
+            LiteralExpressionSyntax defaultValueExpression = GetLiteralExpressionForValue(defaultValue);
+            if (defaultValueExpression == null) { return null; }
+
+            return SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    SyntaxFactory.IdentifierName(propertyName),
+                    defaultValueExpression));
+        }
+
+        private LiteralExpressionSyntax GetLiteralExpressionForValue(object value)
+        {
+            LiteralExpressionSyntax literalExpression = null;
+
+            if (value is bool)
+            {
+                SyntaxKind literalSyntaxKind = (bool)value == true
+                    ? SyntaxKind.TrueLiteralExpression
+                    : SyntaxKind.FalseLiteralExpression;
+
+                literalExpression = SyntaxFactory.LiteralExpression(literalSyntaxKind);
+            }
+            else if (value is long)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((int)(long)value));
+                // Note: the extra cast compensates for a mismatch between our code generation
+                // and Newtonsoft.Json's deserialization behavior. Newtonsoft deserializes
+                // integer properties as Int64 (long), but we generate integer properties
+                // with type int. The extra cast causes Roslyn to emit the literal 42,
+                // which can be assigned to an int, rather than 42L, which cannot. We should
+                // consider changing the code generation to emit longs for integer properties.
+            }
+            else if (value is double)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((double)value));
+            }
+            else if (value is string)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.StringLiteralExpression,
+                    SyntaxFactory.Literal((string)value));
+            }
+
+            return literalExpression;
         }
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()

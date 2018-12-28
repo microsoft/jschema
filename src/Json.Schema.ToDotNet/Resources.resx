@@ -169,7 +169,7 @@
     <value>An uninitialized kind.</value>
   </data>
   <data name="PropertyCtorParamDescription" xml:space="preserve">
-    <value>An initialization value for the &lt;see cref="P: {0}" /&gt; property.</value>
+    <value>An initialization value for the &lt;see cref="P:{0}" /&gt; property.</value>
   </data>
   <data name="PropertyCtorSummary" xml:space="preserve">
     <value>Initializes a new instance of the &lt;see cref="{0}" /&gt; class from the supplied values.</value>

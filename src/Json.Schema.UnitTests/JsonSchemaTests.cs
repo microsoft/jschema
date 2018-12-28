@@ -73,7 +73,8 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""uniqueItems"": true,
                     ""format"": ""date-time"",
                     ""maximimum"": 2,
-                    ""exclusiveMaximum"": false
+                    ""exclusiveMaximum"": false,
+                    ""default"": 2,
                 }",
                 @"{
                     ""id"": ""http://x/y#"",
@@ -128,7 +129,8 @@ namespace Microsoft.Json.Schema.UnitTests
                     ""uniqueItems"": true,
                     ""format"": ""date-time"",
                     ""maximimum"": 2,
-                    ""exclusiveMaximum"": false
+                    ""exclusiveMaximum"": false,
+                    ""default"": 2
                 }",
                 true
             ),
@@ -773,6 +775,84 @@ namespace Microsoft.Json.Schema.UnitTests
                 }",
                 false
             ),
+
+            new EqualityTestCase(
+                "Same integer defaults",
+                @"{
+                    ""default"": 2
+                }",
+                @"{
+                    ""default"": 2
+                }",
+                true),
+
+            new EqualityTestCase(
+                "Different integer defaults",
+                @"{
+                    ""default"": 2
+                }",
+                @"{
+                    ""default"": 3
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Same string defaults",
+                @"{
+                    ""default"": ""2""
+                }",
+                @"{
+                    ""default"": ""2""
+                }",
+                true),
+
+            new EqualityTestCase(
+                "Different string defaults",
+                @"{
+                    ""default"": ""2""
+                }",
+                @"{
+                    ""default"": ""3""
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Same Boolean defaults",
+                @"{
+                    ""default"": true
+                }",
+                @"{
+                    ""default"": true
+                }",
+                true),
+
+            new EqualityTestCase(
+                "Different Boolean defaults",
+                @"{
+                    ""default"": false
+                }",
+                @"{
+                    ""default"": true
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Different default types",
+                @"{
+                    ""default"": 2
+                }",
+                @"{
+                    ""default"": ""2""
+                }",
+                false),
+
+            new EqualityTestCase(
+                "Present and missing defaults",
+                @"{
+                    ""default"": 2
+                }",
+                @"{}",
+                false)
         };
 
         [Theory(DisplayName = "JsonSchema equality")]

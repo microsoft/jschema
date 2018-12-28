@@ -79,7 +79,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     .AddMembers(
                         GenerateVisitClassMethods());
 
-            var usings = new List<string> { "System", "System.Collections.Generic", "System.Linq" };
+            var usings = new HashSet<string> { "System", "System.Collections.Generic", "System.Linq" };
 
             string summaryComment = string.Format(
                 CultureInfo.CurrentCulture,
@@ -356,9 +356,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     continue;
                 }
 
-                int arrayRank = 0;
-                bool isDictionary = false;
-                string propertyName = propertyNameWithRank.BasePropertyName(out arrayRank, out isDictionary);
+                string propertyName = propertyNameWithRank.BasePropertyName(out int arrayRank, out bool isDictionary);
 
                 TypeSyntax collectionType = propertyInfoDictionary.GetConcreteListType(propertyName);
                 TypeSyntax elementType = propertyInfoDictionary[propertyNameWithRank].Type;

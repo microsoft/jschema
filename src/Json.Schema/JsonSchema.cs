@@ -102,6 +102,7 @@ namespace Microsoft.Json.Schema
                 PatternProperties = new Dictionary<string, JsonSchema>(other.PatternProperties);
             }
 
+            Default = other.Default;
             Pattern = other.Pattern;
             MaxLength = other.MaxLength;
             MinLength = other.MinLength;
@@ -265,6 +266,12 @@ namespace Microsoft.Json.Schema
         /// This property applies only to schemas whose <see cref="Type"/> is <see cref="SchemaType.String"/>.
         /// </remarks>
         public int? MinLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value the property should be taken to have if it is absent
+        /// from an instance document.
+        /// </summary>
+        public object Default { get; set; }
 
         /// <summary>
         /// Gets or sets a regular expression which a string schema instance must match.
@@ -520,8 +527,7 @@ namespace Microsoft.Json.Schema
 
                 string definitionName = schema.Reference.GetDefinitionName();
 
-                JsonSchema referencedSchema;
-                if (rootSchema.Definitions == null || !rootSchema.Definitions.TryGetValue(definitionName, out referencedSchema))
+                if (rootSchema.Definitions == null || !rootSchema.Definitions.TryGetValue(definitionName, out JsonSchema referencedSchema))
                 {
                     throw Error.CreateException(
                         Resources.ErrorDefinitionDoesNotExist,
@@ -547,6 +553,7 @@ namespace Microsoft.Json.Schema
                     collapsedSchema.Items.SingleSchema = referencedSchema.Items.SingleSchema;
                 }
 
+                collapsedSchema.Default = referencedSchema.Default;
                 collapsedSchema.Pattern = referencedSchema.Pattern;
                 collapsedSchema.MaxLength = referencedSchema.MaxLength;
                 collapsedSchema.MinLength = referencedSchema.MinLength;
@@ -583,6 +590,7 @@ namespace Microsoft.Json.Schema
                 Required,
                 Definitions,
                 Reference,
+                Default,
                 Pattern,
                 MaxLength,
                 MinLength,
@@ -610,7 +618,7 @@ namespace Microsoft.Json.Schema
 
         public bool Equals(JsonSchema other)
         {
-            if ((object)other == null)
+            if (other is null)
             {
                 return false;
             }
@@ -646,6 +654,7 @@ namespace Microsoft.Json.Schema
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
+                && Object.Equals(Default, other.Default)
                 && Pattern == other.Pattern
                 && MaxLength == other.MaxLength
                 && MinLength == other.MinLength
@@ -679,7 +688,7 @@ namespace Microsoft.Json.Schema
                 return true;
             }
 
-            if ((object)left == null)
+            if (left is null)
             {
                 return false;
             }

@@ -54,7 +54,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         internal static string Format(
             this BaseTypeDeclarationSyntax typeDecl,
             string copyrightNotice,
-            List<string> usings,
+            HashSet<string> usings,
             string namespaceName,
             string summaryComment)
         {
@@ -74,15 +74,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             CompilationUnitSyntax compilationUnit = SyntaxFactory.CompilationUnit()
                 .AddMembers(namespaceDecl);
 
-            if (usings == null)
-            {
-                usings = new List<string>();
-            }
+            usings = usings ?? new HashSet<string>();
 
             usings.Add("System.CodeDom.Compiler"); // For GeneratedCodeAttribute
 
             UsingDirectiveSyntax[] usingDirectives = usings
-                .Distinct()
                 .OrderBy(u => u, UsingComparer.Instance)
                 .Select(u => SyntaxFactory.UsingDirective(MakeQualifiedName(u)))
                 .ToArray();
