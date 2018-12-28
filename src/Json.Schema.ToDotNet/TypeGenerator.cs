@@ -75,10 +75,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             Usings = Usings ?? new List<string>();
 
-            if (!Usings.Contains(namespaceName))
-            {
-                Usings.Add(namespaceName);
-            }
+            Usings.Add(namespaceName);
         }
     }
 }
