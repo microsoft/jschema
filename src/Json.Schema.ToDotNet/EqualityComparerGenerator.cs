@@ -111,16 +111,20 @@ namespace Microsoft.Json.Schema.ToDotNet
                         GenerateEqualsMethod(),
                         GenerateGetHashCodeMethod());
 
-            var usings = new List<string>
+            var usings = new HashSet<string>
             {
                 "System",                       // For Object.
                 "System.Collections.Generic"    // For IEqualityComparer<T>
             };
 
-            usings.AddRange(_propertyInfoDictionary
+            IEnumerable<string> namespaceNames = _propertyInfoDictionary
                 .Values
                 .Select(propertyInfo => propertyInfo.NamespaceName)
-                .Where(namespaceName => !string.IsNullOrWhiteSpace(namespaceName)));
+                .Where(namespaceName => !string.IsNullOrWhiteSpace(namespaceName));
+            foreach (string namespaceName in namespaceNames)
+            {
+                usings.Add(namespaceName);
+            }
 
             return classDeclaration.Format(
                 _copyrightNotice,

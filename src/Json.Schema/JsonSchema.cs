@@ -527,8 +527,7 @@ namespace Microsoft.Json.Schema
 
                 string definitionName = schema.Reference.GetDefinitionName();
 
-                JsonSchema referencedSchema;
-                if (rootSchema.Definitions == null || !rootSchema.Definitions.TryGetValue(definitionName, out referencedSchema))
+                if (rootSchema.Definitions == null || !rootSchema.Definitions.TryGetValue(definitionName, out JsonSchema referencedSchema))
                 {
                     throw Error.CreateException(
                         Resources.ErrorDefinitionDoesNotExist,
@@ -619,7 +618,7 @@ namespace Microsoft.Json.Schema
 
         public bool Equals(JsonSchema other)
         {
-            if ((object)other == null)
+            if (other is null)
             {
                 return false;
             }
@@ -655,7 +654,7 @@ namespace Microsoft.Json.Schema
                 && (Reference == null
                         ? other.Reference == null
                         : Reference.Equals(other.Reference))
-                && DefaultsAreEqual(Default, other.Default)
+                && Object.Equals(Default, other.Default)
                 && Pattern == other.Pattern
                 && MaxLength == other.MaxLength
                 && MinLength == other.MinLength
@@ -689,7 +688,7 @@ namespace Microsoft.Json.Schema
                 return true;
             }
 
-            if ((object)left == null)
+            if (left is null)
             {
                 return false;
             }
@@ -700,26 +699,6 @@ namespace Microsoft.Json.Schema
         public static bool operator !=(JsonSchema left, JsonSchema right)
         {
             return !(left == right);
-        }
-
-        private static bool DefaultsAreEqual(object left, object right)
-        {
-            if ((left == null) != (right == null)) { return false; }
-
-            if (left == null) { return true; }
-
-            Type leftType = left.GetType(),
-                 rightType = right.GetType();
-            if (leftType != rightType) { return false; }
-
-            string leftString = left as String;
-            if (leftString != null) { return leftString.Equals(right as string, StringComparison.Ordinal); }
-
-            if (left is bool) { return (bool)left == (bool)right; }
-            if (left is long) { return (long)left == (long)right; }
-            if (left is double) { return (double)left == (double)right; }
-
-            return left == right; // Not good. How do we deal with other types?
         }
     }
 }

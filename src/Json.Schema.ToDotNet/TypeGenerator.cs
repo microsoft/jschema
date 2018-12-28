@@ -37,7 +37,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </summary>
         protected BaseTypeDeclarationSyntax TypeDeclaration { get; set; }
 
-        protected List<string> Usings { get; private set; }
+        protected HashSet<string> Usings { get; private set; }
 
         public abstract BaseTypeDeclarationSyntax GenerateTypeDeclaration();
 
@@ -73,7 +73,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected void AddUsing(string namespaceName)
         {
-            Usings = Usings ?? new List<string>();
+            Usings = Usings ?? new HashSet<string>();
 
             Usings.Add(namespaceName);
         }

@@ -429,7 +429,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     ExpressionStatementSyntax initializationStatement = GenerateDefaultInitialization(propertyName, defaultValue);
                     if (initializationStatement != null)
                     {
-                        initializations.Add(GenerateDefaultInitialization(propertyName, defaultValue));
+                        initializations.Add(initializationStatement);
                     }
                 }
             }
