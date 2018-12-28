@@ -9,7 +9,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 {
     public abstract class TypeGenerator
     {
-        private string _typeNameSuffix;
+        private readonly string _typeNameSuffix;
 
         protected TypeGenerator(
             JsonSchema schema,
@@ -73,12 +73,12 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected void AddUsing(string namespaceName)
         {
-            if (Usings == null)
-            {
-                Usings = new List<string>();
-            }
+            Usings = Usings ?? new List<string>();
 
-            Usings.Add(namespaceName);
+            if (!Usings.Contains(namespaceName))
+            {
+                Usings.Add(namespaceName);
+            }
         }
     }
 }

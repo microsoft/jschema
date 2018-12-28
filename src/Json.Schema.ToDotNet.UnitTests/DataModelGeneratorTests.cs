@@ -1039,6 +1039,7 @@ namespace N
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace N
@@ -1068,6 +1069,7 @@ namespace N
         /// An integer property with a default value.
         /// </summary>
         [DataMember(Name = ""intPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42)]
         public int IntPropWithDefault { get; set; }
 
         /// <summary>
@@ -1080,6 +1082,7 @@ namespace N
         /// A number property with a default value.
         /// </summary>
         [DataMember(Name = ""numberPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42.1)]
         public double NumberPropWithDefault { get; set; }
 
         /// <summary>
@@ -1092,6 +1095,7 @@ namespace N
         /// A string property with a default value.
         /// </summary>
         [DataMember(Name = ""stringPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""42"")]
         public string StringPropWithDefault { get; set; }
 
         /// <summary>
@@ -1104,12 +1108,14 @@ namespace N
         /// A Boolean property with a true default value.
         /// </summary>
         [DataMember(Name = ""boolPropWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(true)]
         public bool BoolPropWithTrueDefault { get; set; }
 
         /// <summary>
         /// A Boolean property with a false default value.
         /// </summary>
         [DataMember(Name = ""boolPropWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(false)]
         public bool BoolPropWithFalseDefault { get; set; }
 
         /// <summary>
@@ -1196,67 +1202,67 @@ namespace N
         /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
         /// </summary>
         /// <param name=""intProp"">
-        /// An initialization value for the <see cref=""P: IntProp"" /> property.
+        /// An initialization value for the <see cref=""P:IntProp"" /> property.
         /// </param>
         /// <param name=""intPropWithDefault"">
-        /// An initialization value for the <see cref=""P: IntPropWithDefault"" /> property.
+        /// An initialization value for the <see cref=""P:IntPropWithDefault"" /> property.
         /// </param>
         /// <param name=""numberProp"">
-        /// An initialization value for the <see cref=""P: NumberProp"" /> property.
+        /// An initialization value for the <see cref=""P:NumberProp"" /> property.
         /// </param>
         /// <param name=""numberPropWithDefault"">
-        /// An initialization value for the <see cref=""P: NumberPropWithDefault"" /> property.
+        /// An initialization value for the <see cref=""P:NumberPropWithDefault"" /> property.
         /// </param>
         /// <param name=""stringProp"">
-        /// An initialization value for the <see cref=""P: StringProp"" /> property.
+        /// An initialization value for the <see cref=""P:StringProp"" /> property.
         /// </param>
         /// <param name=""stringPropWithDefault"">
-        /// An initialization value for the <see cref=""P: StringPropWithDefault"" /> property.
+        /// An initialization value for the <see cref=""P:StringPropWithDefault"" /> property.
         /// </param>
         /// <param name=""boolProp"">
-        /// An initialization value for the <see cref=""P: BoolProp"" /> property.
+        /// An initialization value for the <see cref=""P:BoolProp"" /> property.
         /// </param>
         /// <param name=""boolPropWithTrueDefault"">
-        /// An initialization value for the <see cref=""P: BoolPropWithTrueDefault"" /> property.
+        /// An initialization value for the <see cref=""P:BoolPropWithTrueDefault"" /> property.
         /// </param>
         /// <param name=""boolPropWithFalseDefault"">
-        /// An initialization value for the <see cref=""P: BoolPropWithFalseDefault"" /> property.
+        /// An initialization value for the <see cref=""P:BoolPropWithFalseDefault"" /> property.
         /// </param>
         /// <param name=""arrayProp"">
-        /// An initialization value for the <see cref=""P: ArrayProp"" /> property.
+        /// An initialization value for the <see cref=""P:ArrayProp"" /> property.
         /// </param>
         /// <param name=""uriProp"">
-        /// An initialization value for the <see cref=""P: UriProp"" /> property.
+        /// An initialization value for the <see cref=""P:UriProp"" /> property.
         /// </param>
         /// <param name=""dateTimeProp"">
-        /// An initialization value for the <see cref=""P: DateTimeProp"" /> property.
+        /// An initialization value for the <see cref=""P:DateTimeProp"" /> property.
         /// </param>
         /// <param name=""referencedTypeProp"">
-        /// An initialization value for the <see cref=""P: ReferencedTypeProp"" /> property.
+        /// An initialization value for the <see cref=""P:ReferencedTypeProp"" /> property.
         /// </param>
         /// <param name=""arrayOfRefProp"">
-        /// An initialization value for the <see cref=""P: ArrayOfRefProp"" /> property.
+        /// An initialization value for the <see cref=""P:ArrayOfRefProp"" /> property.
         /// </param>
         /// <param name=""arrayOfArrayProp"">
-        /// An initialization value for the <see cref=""P: ArrayOfArrayProp"" /> property.
+        /// An initialization value for the <see cref=""P:ArrayOfArrayProp"" /> property.
         /// </param>
         /// <param name=""dictionaryProp"">
-        /// An initialization value for the <see cref=""P: DictionaryProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithPrimitiveSchemaProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithPrimitiveSchemaProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithPrimitiveSchemaProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithObjectSchemaProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithObjectSchemaProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithObjectSchemaProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithObjectArraySchemaProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithObjectArraySchemaProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithObjectArraySchemaProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithUriKeyProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithUriKeyProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithUriKeyProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithHintedValueProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithHintedValueProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithHintedValueProp"" /> property.
         /// </param>
         public C(int intProp, int intPropWithDefault, double numberProp, double numberPropWithDefault, string stringProp, string stringPropWithDefault, bool boolProp, bool boolPropWithTrueDefault, bool boolPropWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
@@ -2558,7 +2564,7 @@ namespace N
         /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
         /// </summary>
         /// <param name=""uriFormattedStrings"">
-        /// An initialization value for the <see cref=""P: UriFormattedStrings"" /> property.
+        /// An initialization value for the <see cref=""P:UriFormattedStrings"" /> property.
         /// </param>
         public C(IEnumerable<Uri> uriFormattedStrings)
         {

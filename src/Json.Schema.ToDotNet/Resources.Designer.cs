@@ -19,7 +19,7 @@ namespace Microsoft.Json.Schema.ToDotNet {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -214,7 +214,7 @@ namespace Microsoft.Json.Schema.ToDotNet {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An initialization value for the &lt;see cref=&quot;P: {0}&quot; /&gt; property..
+        ///   Looks up a localized string similar to An initialization value for the &lt;see cref=&quot;P:{0}&quot; /&gt; property..
         /// </summary>
         internal static string PropertyCtorParamDescription {
             get {

@@ -27,6 +27,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         // Name used for the parameters of the copy ctor.
         private const string OtherParameterName = "other";
 
+        private const string DefaultValueAttributeNamespaceName = "System.ComponentModel";
+        private const string DefaultValueAttributeName = "DefaultValue";
+
         private const string DataContractAttributeName = "DataContract";
         private const string DataMemberAttributeName = "DataMember";
         private const string DataMemberNamePropertyName = "Name";
@@ -241,7 +244,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
-        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired)
+        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired, object defaultValue)
         {
             var attributes = new List<AttributeSyntax>();
 
@@ -278,6 +281,24 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.SeparatedList(dataMemberAttributeArguments)));
 
             attributes.Add(dataMemberAttribute);
+
+            if (defaultValue != null)
+            {
+                AddUsing(DefaultValueAttributeNamespaceName);
+
+                var defaultValueArguments = new List<AttributeArgumentSyntax>
+                {
+                    SyntaxFactory.AttributeArgument(GetLiteralExpressionForValue(defaultValue))
+                };
+
+                AttributeSyntax defaultValueAttribute =
+                    SyntaxFactory.Attribute(
+                        SyntaxFactory.IdentifierName(DefaultValueAttributeName),
+                        SyntaxFactory.AttributeArgumentList(
+                            SyntaxFactory.SeparatedList(defaultValueArguments)));
+
+                attributes.Add(defaultValueAttribute);
+            }
 
             string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
             AttributeHint[] attributeHints = HintDictionary?.GetHints<AttributeHint>(hintDictionaryKey);
