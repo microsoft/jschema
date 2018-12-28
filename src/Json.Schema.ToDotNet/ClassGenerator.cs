@@ -442,23 +442,17 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                 literalExpression = SyntaxFactory.LiteralExpression(literalSyntaxKind);
             }
-            else if (value is int)
-            {
-                literalExpression = SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((int)value));
-            }
             else if (value is long)
             {
                 literalExpression = SyntaxFactory.LiteralExpression(
                     SyntaxKind.NumericLiteralExpression,
                     SyntaxFactory.Literal((int)(long)value));
-            }
-            else if (value is float)
-            {
-                literalExpression = SyntaxFactory.LiteralExpression(
-                    SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((float)value));
+                // Note: the extra cast compensates for a mismatch between our code generation
+                // and Newtonsoft.Json's deserialization behavior. Newtonsoft deserializes
+                // integer properties as Int64 (long), but we generate integer properties
+                // with type int. The extra cast causes Roslyn to emit the literal 42,
+                // which can be assigned to an int, rather than 42L, which cannot. We should
+                // consider changing the code generation to emit longs for integer properties.
             }
             else if (value is double)
             {
