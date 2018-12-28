@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Json.Schema.ToDotNet.Hints;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
@@ -284,7 +283,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 OnAdditionalTypeRequired(enumHint, propertySchema);
             }
             else
-        	{
+            {
                 SchemaType propertyType = propertySchema.SafeGetType();
 
                 switch (propertyType)
@@ -384,6 +383,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     type,
                     namespaceName,
                     isRequired,
+                    propertySchema.Default,
                     isOfSchemaDefinedType,
                     arrayRank,
                     entries.Count)));
@@ -477,6 +477,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         type: valueType,
                         namespaceName: dictionaryHint.NamespaceName,
                         isRequired: true,
+                        defaultValue: null,
                         isOfSchemaDefinedType: false,
                         arrayRank: 0,
                         declarationOrder: 0)));

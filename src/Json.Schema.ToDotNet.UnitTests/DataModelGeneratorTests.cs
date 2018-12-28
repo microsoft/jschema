@@ -871,9 +871,19 @@ namespace N
       ""type"": ""integer"",
       ""description"": ""An integer property.""
     },
+    ""intPropWithDefault"": {
+      ""type"": ""integer"",
+      ""description"": ""An integer property with a default value."",
+      ""default"": 42
+    },
     ""stringProp"": {
       ""type"": ""string"",
       ""description"": ""A string property.""
+    },
+    ""stringPropWithDefault"": {
+      ""type"": ""string"",
+      ""description"": ""A string property with a default value."",
+      ""default"": ""42""
     },
     ""arrayProp"": {
       ""type"": ""array"",
@@ -1032,10 +1042,22 @@ namespace N
         public int IntProp { get; set; }
 
         /// <summary>
+        /// An integer property with a default value.
+        /// </summary>
+        [DataMember(Name = ""intPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntPropWithDefault { get; set; }
+
+        /// <summary>
         /// A string property.
         /// </summary>
         [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProp { get; set; }
+
+        /// <summary>
+        /// A string property with a default value.
+        /// </summary>
+        [DataMember(Name = ""stringPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringPropWithDefault { get; set; }
 
         /// <summary>
         /// An array property.
@@ -1110,6 +1132,8 @@ namespace N
         /// </summary>
         public C()
         {
+            IntPropWithDefault = 42;
+            StringPropWithDefault = ""42"";
         }
 
         /// <summary>
@@ -1118,8 +1142,14 @@ namespace N
         /// <param name=""intProp"">
         /// An initialization value for the <see cref=""P: IntProp"" /> property.
         /// </param>
+        /// <param name=""intPropWithDefault"">
+        /// An initialization value for the <see cref=""P: IntPropWithDefault"" /> property.
+        /// </param>
         /// <param name=""stringProp"">
         /// An initialization value for the <see cref=""P: StringProp"" /> property.
+        /// </param>
+        /// <param name=""stringPropWithDefault"">
+        /// An initialization value for the <see cref=""P: StringPropWithDefault"" /> property.
         /// </param>
         /// <param name=""arrayProp"">
         /// An initialization value for the <see cref=""P: ArrayProp"" /> property.
@@ -1157,9 +1187,9 @@ namespace N
         /// <param name=""dictionaryWithHintedValueProp"">
         /// An initialization value for the <see cref=""P: DictionaryWithHintedValueProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        public C(int intProp, int intPropWithDefault, string stringProp, string stringPropWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
+            Init(intProp, intPropWithDefault, stringProp, stringPropWithDefault, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
         }
 
         /// <summary>
@@ -1178,7 +1208,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
+            Init(other.IntProp, other.IntPropWithDefault, other.StringProp, other.StringPropWithDefault, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -1199,10 +1229,12 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        private void Init(int intProp, int intPropWithDefault, string stringProp, string stringPropWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
             IntProp = intProp;
+            IntPropWithDefault = intPropWithDefault;
             StringProp = stringProp;
+            StringPropWithDefault = stringPropWithDefault;
             if (arrayProp != null)
             {
                 var destination_0 = new List<double>();

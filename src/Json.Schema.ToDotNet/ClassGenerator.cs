@@ -394,9 +394,86 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// An array containing one initialization statement for each property
         /// for which the schema specifies a default value.
         /// </returns>
-        private StatementSyntax[] GenerateDefaultInitializations()
+        private ExpressionStatementSyntax[] GenerateDefaultInitializations()
         {
-            return new StatementSyntax[0];
+            var initializations = new List<ExpressionStatementSyntax>();
+
+            foreach (string propertyName in PropInfoDictionary.GetPropertyNames())
+            {
+                if (IncludeProperty(propertyName))
+                {
+                    PropertyInfo propInfo = PropInfoDictionary[propertyName];
+                    object defaultValue = propInfo.DefaultValue;
+
+                    ExpressionStatementSyntax initializationStatement = GenerateDefaultInitialization(propertyName, defaultValue);
+                    if (initializationStatement != null)
+                    {
+                        initializations.Add(GenerateDefaultInitialization(propertyName, defaultValue));
+                    }
+                }
+            }
+
+            return initializations.ToArray();
+        }
+
+        private ExpressionStatementSyntax GenerateDefaultInitialization(
+            string propertyName,
+            object defaultValue)
+        {
+            LiteralExpressionSyntax defaultValueExpression = GetLiteralExpressionForValue(defaultValue);
+            if (defaultValueExpression == null) { return null; }
+
+            return SyntaxFactory.ExpressionStatement(
+                SyntaxFactory.AssignmentExpression(
+                    SyntaxKind.SimpleAssignmentExpression,
+                    SyntaxFactory.IdentifierName(propertyName),
+                    defaultValueExpression));
+        }
+
+        private LiteralExpressionSyntax GetLiteralExpressionForValue(object value)
+        {
+            LiteralExpressionSyntax literalExpression = null;
+
+            if (value is bool)
+            {
+                SyntaxKind literalSyntaxKind = (bool)value == true
+                    ? SyntaxKind.TrueLiteralExpression
+                    : SyntaxKind.FalseLiteralExpression;
+
+                literalExpression = SyntaxFactory.LiteralExpression(literalSyntaxKind);
+            }
+            else if (value is int)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((int)value));
+            }
+            else if (value is long)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((int)(long)value));
+            }
+            else if (value is float)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((float)value));
+            }
+            else if (value is double)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.NumericLiteralExpression,
+                    SyntaxFactory.Literal((double)value));
+            }
+            else if (value is string)
+            {
+                literalExpression = SyntaxFactory.LiteralExpression(
+                    SyntaxKind.StringLiteralExpression,
+                    SyntaxFactory.Literal((string)value));
+            }
+
+            return literalExpression;
         }
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
