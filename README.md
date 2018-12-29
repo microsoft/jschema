@@ -1,11 +1,22 @@
-# JSchema
+# Microsoft/jschema
 
-A .NET library for working with JSON schema Draft 4
+A set of .NET components for working with JSON Schema Draft 4
 
-* Read a schema file into an object model representing the schema (`JsonSchema` object).
-* Write a `JsonSchema` object to a stream.
-* Generate .NET classes from a schema.
-* Validate the generated classes against the schema.
+The JSchema repo consists of the following components, each of which is documented in its own README.md:
+
+* `Microsoft.Json.Pointer`: an implementation of the JSON Pointer specification ([RFC 6901](https://tools.ietf.org/html/rfc6901)). Documentation: [src/Json.Pointer/README.md](src/Json.Pointer/README.md).
+
+* `Microsoft.Json.Schema`: an almost but not quite complete implementation of [JSON Schema Draft 4](http://json-schema.org/specification-links.html#draft-4). Documentation: coming soon.
+
+* `Microsoft.Json.Schema.Validation`: a library to validate a JSON instance document against a JSON schema document. Documentation: coming soon.
+
+* `Microsoft.Json.Schema.Validation.Cli`: a command-line tool to validate a JSON instance document against a JSON schema document, built on the `Microsoft.Json.Schema.Validation` library.
+
+* `Microsoft.Json.Schema.ToDotNet`: a library to generate .NET classes from a JSON schema. Documentation (incomplete): [src/Json.Schema.ToDotNet/README.md](src/Json.Schema.ToDotNet/README.md).
+
+* `Microsoft.Json.Schema.ToDotNet.Cli`: a command-line tool to generate .NET classes from a JSON schema, built on the `Microsoft.Json.Schema.ToDotNet` library. Documentation: coming soon.
+
+All facilities built from the JSchema repo, including the command line tools, are available for both the net461 and netcoreapp2.0 platforms.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/),

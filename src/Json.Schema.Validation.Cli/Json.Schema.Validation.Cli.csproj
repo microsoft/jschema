@@ -3,15 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
-    <AssemblyNameOverride>Microsoft.Json.Schema.Validation.Cli</AssemblyNameOverride>
-    <RootNamespaceOverride>Microsoft.Json.Schema.Validation.CommandLine</RootNamespaceOverride>
-    <AssemblyName>Microsoft.Json.Schema.Validator.Cli</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Label="AssemblyAttributes">
     <AssemblyTitle>JSON Schema Validation Tool</AssemblyTitle>
     <Description>Command line tool to validate a JSON instance against a JSON Schema</Description>
-  </PropertyGroup>
+    <RootNamespaceOverride>Microsoft.Json.Schema.Validation.CommandLine</RootNamespaceOverride>
+   </PropertyGroup>
 
   <PropertyGroup Label="Package">
     <IsTool>true</IsTool>
@@ -21,13 +19,28 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
     <ProjectReference Include="..\Json.Schema.Validation\Json.Schema.Validation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ValidatorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValidatorResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ValidatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

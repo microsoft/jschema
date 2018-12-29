@@ -3,12 +3,12 @@
   <metadata>
     <id>Microsoft.Json.Schema.Validation</id>
     <version>$version$</version>
-    <title>Microsoft Json Schema Validation</title>
+    <title>Microsoft JSON Schema Validation</title>
     <authors>microsoft</authors>
     <owners>microsoft,tse-securitytools</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A utility that validates files according to a JSON schema.</description>
-    <releaseNotes>Version $version$ of the JSON validation utility (for SARIF v2.0.0)</releaseNotes>
+    <description>A command line tool that validates files against a JSON schema.</description>
+    <releaseNotes>Version $version$ of the JSON validation tool.</releaseNotes>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
     <licenseUrl>https://github.com/Microsoft/jschema/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/microsoft/jschema</projectUrl>
@@ -28,7 +28,7 @@
           target="tools\net461"
           />
 
-    <file src="bld\bin\$platform$_$configuration$\Json.Schema.Validation.Cli\netcoreapp2.0\**"
+    <file src="bld\bin\$platform$_$configuration$\Json.Schema.Validation.Cli\netcoreapp2.0\publish\**"
           target="tools\netcoreapp2.0"
           />
 

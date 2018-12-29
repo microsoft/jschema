@@ -39,7 +39,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 $InformationPreference = "Continue"
 
-$SolutionFile = "$PSScriptRoot\src\Everything.sln"
+$SourceRoot = "$PSScriptRoot\src"
+$SolutionFile = "$SourceRoot\Everything.sln"
 $Platform = "AnyCPU"
 $BuildDirectory = "$PSScriptRoot\bld"
 $PackageOutputDirectory = "$BuildDirectory\bin\NuGet\$Configuration"
@@ -66,6 +67,21 @@ function Invoke-Tests($project) {
     if ($LASTEXITCODE -ne 0) {
         Exit-WithFailureMessage "$project unit tests failed."
     }
+}
+
+# Publish-Application
+#
+# This function invokes "dotnet publish" to create a "publish" directory
+# containing all files necessary to execute an application. In particular,
+# dotnet publish adds the binaries from any dependent NuGet packages to the
+# publish directory.
+#
+# This operation is necessary only when building an application for .NET Core.
+# When building for .NET Framework, the build output directory already contains
+# the necessary dependencies.
+function Publish-Application($project, $framework) {
+    Write-Information "Publishing $project for $framework ..."
+    dotnet publish $SourceRoot\$project\$project.csproj --no-restore --configuration $Configuration --framework $framework
 }
 
 function New-NuGetPackageFromProjectFile($project, $version) {
@@ -147,6 +163,7 @@ if (-not $NoPackage) {
 
     $nuspecProjects = "Json.Schema.ToDotNet.Cli", "Json.Schema.Validation.Cli"
     foreach ($project in $nuspecProjects) {
+        Publish-Application $project netcoreapp2.0
         New-NuGetPackageFromNuSpecFile $project $version
     }
 }

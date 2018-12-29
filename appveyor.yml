@@ -5,6 +5,7 @@ init:
 
 branches:
   only:
+    - develop
     - master
 
 platform: Any CPU
@@ -17,13 +18,6 @@ build_script:
 
 test:
   assemblies: '**\*.UnitTests.dll'
-
-notifications:
-  - provider: Email
-    to:
-     - tse-securitytools@microsoft.com
-    subject: '{{projectName}} Build {{status}}: Version: {{buildVersion}}'
-    on_build_status_changed: true
 
 cache:
   - packages -> **\packages.config

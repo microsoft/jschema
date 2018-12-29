@@ -3,14 +3,12 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
-    <AssemblyNameOverride>Microsoft.Json.Schema.ToDotNet.Cli</AssemblyNameOverride>
-    <RootNamespaceOverride>Microsoft.Json.Schema.ToDotNet.CommandLine</RootNamespaceOverride>
-    <AssemblyName>Microsoft.Json.Schema.ToDotNet.Cli</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Label="AssemblyAttributes">
     <AssemblyTitle>JSON Schema To .NET Code Generation Tool</AssemblyTitle>
     <Description>Command line tool to generate a set of .NET classes from a JSON Schema</Description>
+    <RootNamespaceOverride>Microsoft.Json.Schema.ToDotNet.CommandLine</RootNamespaceOverride>
   </PropertyGroup>
 
   <PropertyGroup Label="Package">
@@ -26,6 +24,21 @@
   <ItemGroup>
     <ProjectReference Include="..\Json.Schema.ToDotNet\Json.Schema.ToDotNet.csproj" />
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

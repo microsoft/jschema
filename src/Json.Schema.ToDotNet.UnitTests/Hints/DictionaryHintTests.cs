@@ -1099,7 +1099,7 @@ namespace N
                 expectedContentsDictionary.Add("D", new ExpectedContents());
             }
 
-            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary, Settings.GenerateEqualityComparers);
         }
 
         [Fact(DisplayName = nameof(DictionaryHint_WildCard))]
@@ -1245,7 +1245,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary, Settings.GenerateEqualityComparers);
         }
     }
 }

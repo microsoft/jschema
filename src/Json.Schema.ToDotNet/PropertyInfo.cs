@@ -42,6 +42,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// <code>true</code> if this property is required by the schema;
         /// otherwise <code>false</code>.
         /// </param>
+        /// <param name="defaultValue">
+        /// The default value, if any, specified by the schema; otherwise <code>null</code>.
+        /// </param>
         /// <param name="isOfSchemaDefinedType">
         /// <code>true</code> if this property is of a type defined by the schema (or an;
         /// array of a schema-defined type otherwise <code>false</code>.
@@ -61,6 +64,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeSyntax type,
             string namespaceName,
             bool isRequired,
+            object defaultValue,
             bool isOfSchemaDefinedType,
             int arrayRank,
             int declarationOrder)
@@ -74,6 +78,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             TypeName = type.ToString();
             NamespaceName = namespaceName;
             IsRequired = isRequired;
+            DefaultValue = defaultValue;
             IsOfSchemaDefinedType = isOfSchemaDefinedType;
             ArrayRank = arrayRank;
             DeclarationOrder = declarationOrder;
@@ -130,6 +135,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets a value indicating whether this property is required by the schema.
         /// </summary>
         public bool IsRequired { get; }
+
+        /// <summary>
+        /// Gets this property's default value, if the schema specifies one; otherwise <code>null</code>.
+        /// </summary>
+        public object DefaultValue;
 
         /// <summary>
         /// Gets a value indicating whether this property is of a type defined by the schema.

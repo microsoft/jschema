@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.CodeAnalysis.Sarif.Writers;
 using Microsoft.Json.Schema.Validation;
 
-namespace Microsoft.Json.Schema.JsonSchemaValidator
+namespace Microsoft.Json.Schema.Validation.CommandLine
 {
     internal class Program
     {
@@ -38,7 +38,6 @@ namespace Microsoft.Json.Schema.JsonSchemaValidator
                                             options.SchemaFilePath
                                         },
                                         loggingOptions: LoggingOptions.Verbose,
-                                        prereleaseInfo: null,
                                         invocationTokensToRedact: null))
             {
                 DateTime start = DateTime.Now;

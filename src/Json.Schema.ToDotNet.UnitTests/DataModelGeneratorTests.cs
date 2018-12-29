@@ -126,14 +126,14 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
-        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
-        public string StringProp { get; set; }
-        [DataMember(Name = ""numberProp"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProp { get; set; }
-        [DataMember(Name = ""booleanProp"", IsRequired = false, EmitDefaultValue = false)]
-        public bool BooleanProp { get; set; }
-        [DataMember(Name = ""integerProp"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProp { get; set; }
+        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringProperty { get; set; }
+        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public double NumberProperty { get; set; }
+        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool BooleanProperty { get; set; }
+        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty { get; set; }
     }
 }";
 
@@ -164,22 +164,22 @@ namespace N
                 return false;
             }
 
-            if (left.StringProp != right.StringProp)
+            if (left.StringProperty != right.StringProperty)
             {
                 return false;
             }
 
-            if (left.NumberProp != right.NumberProp)
+            if (left.NumberProperty != right.NumberProperty)
             {
                 return false;
             }
 
-            if (left.BooleanProp != right.BooleanProp)
+            if (left.BooleanProperty != right.BooleanProperty)
             {
                 return false;
             }
 
-            if (left.IntegerProp != right.IntegerProp)
+            if (left.IntegerProperty != right.IntegerProperty)
             {
                 return false;
             }
@@ -197,14 +197,14 @@ namespace N
             int result = 17;
             unchecked
             {
-                if (obj.StringProp != null)
+                if (obj.StringProperty != null)
                 {
-                    result = (result * 31) + obj.StringProp.GetHashCode();
+                    result = (result * 31) + obj.StringProperty.GetHashCode();
                 }
 
-                result = (result * 31) + obj.NumberProp.GetHashCode();
-                result = (result * 31) + obj.BooleanProp.GetHashCode();
-                result = (result * 31) + obj.IntegerProp.GetHashCode();
+                result = (result * 31) + obj.NumberProperty.GetHashCode();
+                result = (result * 31) + obj.BooleanProperty.GetHashCode();
+                result = (result * 31) + obj.IntegerProperty.GetHashCode();
             }
 
             return result;
@@ -227,7 +227,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
@@ -328,7 +328,7 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
@@ -523,7 +523,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
@@ -820,7 +820,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates copyright notice")]
@@ -867,13 +867,46 @@ namespace N
 @"{
   ""type"": ""object"",
   ""properties"": {
-    ""intProp"": {
+    ""integerProperty"": {
       ""type"": ""integer"",
       ""description"": ""An integer property.""
     },
-    ""stringProp"": {
+    ""integerPropertyWithDefault"": {
+      ""type"": ""integer"",
+      ""description"": ""An integer property with a default value."",
+      ""default"": 42
+    },
+    ""numberProperty"": {
+      ""type"": ""number"",
+      ""description"": ""A number property.""
+    },
+    ""numberPropertyWithDefault"": {
+      ""type"": ""number"",
+      ""description"": ""A number property with a default value."",
+      ""default"": 42.1
+    },
+    ""stringProperty"": {
       ""type"": ""string"",
       ""description"": ""A string property.""
+    },
+    ""stringPropertyWithDefault"": {
+      ""type"": ""string"",
+      ""description"": ""A string property with a default value."",
+      ""default"": ""Don't panic.""
+    },
+    ""booleanProperty"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property.""
+    },
+    ""booleanPropertyWithTrueDefault"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property with a true default value."",
+      ""default"": true
+    },
+    ""booleanPropertyWithFalseDefault"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property with a false default value."",
+      ""default"": false
     },
     ""arrayProp"": {
       ""type"": ""array"",
@@ -1006,7 +1039,9 @@ namespace N
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace N
 {
@@ -1028,14 +1063,66 @@ namespace N
         /// <summary>
         /// An integer property.
         /// </summary>
-        [DataMember(Name = ""intProp"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntProp { get; set; }
+        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty { get; set; }
+
+        /// <summary>
+        /// An integer property with a default value.
+        /// </summary>
+        [DataMember(Name = ""integerPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public int IntegerPropertyWithDefault { get; set; }
+
+        /// <summary>
+        /// A number property.
+        /// </summary>
+        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public double NumberProperty { get; set; }
+
+        /// <summary>
+        /// A number property with a default value.
+        /// </summary>
+        [DataMember(Name = ""numberPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42.1)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public double NumberPropertyWithDefault { get; set; }
 
         /// <summary>
         /// A string property.
         /// </summary>
-        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
-        public string StringProp { get; set; }
+        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringProperty { get; set; }
+
+        /// <summary>
+        /// A string property with a default value.
+        /// </summary>
+        [DataMember(Name = ""stringPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""Don't panic."")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public string StringPropertyWithDefault { get; set; }
+
+        /// <summary>
+        /// A Boolean property.
+        /// </summary>
+        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool BooleanProperty { get; set; }
+
+        /// <summary>
+        /// A Boolean property with a true default value.
+        /// </summary>
+        [DataMember(Name = ""booleanPropertyWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public bool BooleanPropertyWithTrueDefault { get; set; }
+
+        /// <summary>
+        /// A Boolean property with a false default value.
+        /// </summary>
+        [DataMember(Name = ""booleanPropertyWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public bool BooleanPropertyWithFalseDefault { get; set; }
 
         /// <summary>
         /// An array property.
@@ -1110,56 +1197,82 @@ namespace N
         /// </summary>
         public C()
         {
+            IntegerPropertyWithDefault = 42;
+            NumberPropertyWithDefault = 42.1;
+            StringPropertyWithDefault = ""Don't panic."";
+            BooleanPropertyWithTrueDefault = true;
+            BooleanPropertyWithFalseDefault = false;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
         /// </summary>
-        /// <param name=""intProp"">
-        /// An initialization value for the <see cref=""P: IntProp"" /> property.
+        /// <param name=""integerProperty"">
+        /// An initialization value for the <see cref=""P:IntegerProperty"" /> property.
         /// </param>
-        /// <param name=""stringProp"">
-        /// An initialization value for the <see cref=""P: StringProp"" /> property.
+        /// <param name=""integerPropertyWithDefault"">
+        /// An initialization value for the <see cref=""P:IntegerPropertyWithDefault"" /> property.
+        /// </param>
+        /// <param name=""numberProperty"">
+        /// An initialization value for the <see cref=""P:NumberProperty"" /> property.
+        /// </param>
+        /// <param name=""numberPropertyWithDefault"">
+        /// An initialization value for the <see cref=""P:NumberPropertyWithDefault"" /> property.
+        /// </param>
+        /// <param name=""stringProperty"">
+        /// An initialization value for the <see cref=""P:StringProperty"" /> property.
+        /// </param>
+        /// <param name=""stringPropertyWithDefault"">
+        /// An initialization value for the <see cref=""P:StringPropertyWithDefault"" /> property.
+        /// </param>
+        /// <param name=""booleanProperty"">
+        /// An initialization value for the <see cref=""P:BooleanProperty"" /> property.
+        /// </param>
+        /// <param name=""booleanPropertyWithTrueDefault"">
+        /// An initialization value for the <see cref=""P:BooleanPropertyWithTrueDefault"" /> property.
+        /// </param>
+        /// <param name=""booleanPropertyWithFalseDefault"">
+        /// An initialization value for the <see cref=""P:BooleanPropertyWithFalseDefault"" /> property.
         /// </param>
         /// <param name=""arrayProp"">
-        /// An initialization value for the <see cref=""P: ArrayProp"" /> property.
+        /// An initialization value for the <see cref=""P:ArrayProp"" /> property.
         /// </param>
         /// <param name=""uriProp"">
-        /// An initialization value for the <see cref=""P: UriProp"" /> property.
+        /// An initialization value for the <see cref=""P:UriProp"" /> property.
         /// </param>
         /// <param name=""dateTimeProp"">
-        /// An initialization value for the <see cref=""P: DateTimeProp"" /> property.
+        /// An initialization value for the <see cref=""P:DateTimeProp"" /> property.
         /// </param>
         /// <param name=""referencedTypeProp"">
-        /// An initialization value for the <see cref=""P: ReferencedTypeProp"" /> property.
+        /// An initialization value for the <see cref=""P:ReferencedTypeProp"" /> property.
         /// </param>
         /// <param name=""arrayOfRefProp"">
-        /// An initialization value for the <see cref=""P: ArrayOfRefProp"" /> property.
+        /// An initialization value for the <see cref=""P:ArrayOfRefProp"" /> property.
         /// </param>
         /// <param name=""arrayOfArrayProp"">
-        /// An initialization value for the <see cref=""P: ArrayOfArrayProp"" /> property.
+        /// An initialization value for the <see cref=""P:ArrayOfArrayProp"" /> property.
         /// </param>
         /// <param name=""dictionaryProp"">
-        /// An initialization value for the <see cref=""P: DictionaryProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithPrimitiveSchemaProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithPrimitiveSchemaProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithPrimitiveSchemaProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithObjectSchemaProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithObjectSchemaProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithObjectSchemaProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithObjectArraySchemaProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithObjectArraySchemaProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithObjectArraySchemaProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithUriKeyProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithUriKeyProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithUriKeyProp"" /> property.
         /// </param>
         /// <param name=""dictionaryWithHintedValueProp"">
-        /// An initialization value for the <see cref=""P: DictionaryWithHintedValueProp"" /> property.
+        /// An initialization value for the <see cref=""P:DictionaryWithHintedValueProp"" /> property.
         /// </param>
-        public C(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        public C(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
-            Init(intProp, stringProp, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
+            Init(integerProperty, integerPropertyWithDefault, numberProperty, numberPropertyWithDefault, stringProperty, stringPropertyWithDefault, booleanProperty, booleanPropertyWithTrueDefault, booleanPropertyWithFalseDefault, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
         }
 
         /// <summary>
@@ -1178,7 +1291,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.StringProp, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
+            Init(other.IntegerProperty, other.IntegerPropertyWithDefault, other.NumberProperty, other.NumberPropertyWithDefault, other.StringProperty, other.StringPropertyWithDefault, other.BooleanProperty, other.BooleanPropertyWithTrueDefault, other.BooleanPropertyWithFalseDefault, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -1199,10 +1312,17 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, string stringProp, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        private void Init(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
-            IntProp = intProp;
-            StringProp = stringProp;
+            IntegerProperty = integerProperty;
+            IntegerPropertyWithDefault = integerPropertyWithDefault;
+            NumberProperty = numberProperty;
+            NumberPropertyWithDefault = numberPropertyWithDefault;
+            StringProperty = stringProperty;
+            StringPropertyWithDefault = stringPropertyWithDefault;
+            BooleanProperty = booleanProperty;
+            BooleanPropertyWithTrueDefault = booleanPropertyWithTrueDefault;
+            BooleanPropertyWithFalseDefault = booleanPropertyWithFalseDefault;
             if (arrayProp != null)
             {
                 var destination_0 = new List<double>();
@@ -1812,7 +1932,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
@@ -1919,7 +2039,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
 
@@ -2029,7 +2149,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates URI-valued properties from uri-reference format")]
@@ -2138,7 +2258,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates integer property from reference")]
@@ -2249,7 +2369,152 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates attributes for properties with defaults.")]
+        public void GeneratesAttributesForPropertiesWithDefaults()
+        {
+            const string Schema =
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""integerProperty"": {
+      ""type"": ""integer"",
+      ""description"": ""An integer property.""
+    },
+    ""integerPropertyWithDefault"": {
+      ""type"": ""integer"",
+      ""description"": ""An integer property with a default value."",
+      ""default"": 42
+    },
+    ""numberProperty"": {
+      ""type"": ""number"",
+      ""description"": ""A number property.""
+    },
+    ""numberPropertyWithDefault"": {
+      ""type"": ""number"",
+      ""description"": ""A number property with a default value."",
+      ""default"": 42.1
+    },
+    ""stringProperty"": {
+      ""type"": ""string"",
+      ""description"": ""A string property.""
+    },
+    ""stringPropertyWithDefault"": {
+      ""type"": ""string"",
+      ""description"": ""A string property with a default value."",
+      ""default"": ""Thanks for all the fish.""
+    },
+    ""booleanProperty"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property.""
+    },
+    ""booleanPropertyWithTrueDefault"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property with a true default value."",
+      ""default"": true
+    },
+    ""booleanPropertyWithFalseDefault"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property with a false default value."",
+      ""default"": false
+    }
+  }
+}";
+            const string ExpectedClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.ComponentModel;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        /// <summary>
+        /// An integer property.
+        /// </summary>
+        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty { get; set; }
+
+        /// <summary>
+        /// An integer property with a default value.
+        /// </summary>
+        [DataMember(Name = ""integerPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public int IntegerPropertyWithDefault { get; set; }
+
+        /// <summary>
+        /// A number property.
+        /// </summary>
+        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public double NumberProperty { get; set; }
+
+        /// <summary>
+        /// A number property with a default value.
+        /// </summary>
+        [DataMember(Name = ""numberPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42.1)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public double NumberPropertyWithDefault { get; set; }
+
+        /// <summary>
+        /// A string property.
+        /// </summary>
+        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringProperty { get; set; }
+
+        /// <summary>
+        /// A string property with a default value.
+        /// </summary>
+        [DataMember(Name = ""stringPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""Thanks for all the fish."")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public string StringPropertyWithDefault { get; set; }
+
+        /// <summary>
+        /// A Boolean property.
+        /// </summary>
+        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool BooleanProperty { get; set; }
+
+        /// <summary>
+        /// A Boolean property with a true default value.
+        /// </summary>
+        [DataMember(Name = ""booleanPropertyWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public bool BooleanPropertyWithTrueDefault { get; set; }
+
+        /// <summary>
+        /// A Boolean property with a false default value.
+        /// </summary>
+        [DataMember(Name = ""booleanPropertyWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public bool BooleanPropertyWithFalseDefault { get; set; }
+    }
+}";
+
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+
+            generator.Generate(schema);
+
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass
+                }
+            };
+
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref")]
@@ -2388,7 +2653,7 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of uri-formatted strings")]
@@ -2450,7 +2715,7 @@ namespace N
         /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
         /// </summary>
         /// <param name=""uriFormattedStrings"">
-        /// An initialization value for the <see cref=""P: UriFormattedStrings"" /> property.
+        /// An initialization value for the <see cref=""P:UriFormattedStrings"" /> property.
         /// </param>
         public C(IEnumerable<Uri> uriFormattedStrings)
         {
@@ -2898,7 +3163,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
@@ -3065,7 +3330,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
@@ -3237,7 +3502,7 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates string for inline enum of string")]
@@ -3349,6 +3614,11 @@ namespace N
 }";
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
+        }
+
+        private void VerifyGeneratedFileContents(IDictionary<string, ExpectedContents> expectedContentsDictionary)
+        {
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers);
         }
     }
 }
