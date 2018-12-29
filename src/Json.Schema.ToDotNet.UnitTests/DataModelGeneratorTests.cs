@@ -1041,6 +1041,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace N
 {
@@ -1070,6 +1071,7 @@ namespace N
         /// </summary>
         [DataMember(Name = ""intPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(42)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public int IntPropWithDefault { get; set; }
 
         /// <summary>
@@ -1083,6 +1085,7 @@ namespace N
         /// </summary>
         [DataMember(Name = ""numberPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(42.1)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public double NumberPropWithDefault { get; set; }
 
         /// <summary>
@@ -1096,6 +1099,7 @@ namespace N
         /// </summary>
         [DataMember(Name = ""stringPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(""42"")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public string StringPropWithDefault { get; set; }
 
         /// <summary>
@@ -1109,6 +1113,7 @@ namespace N
         /// </summary>
         [DataMember(Name = ""boolPropWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool BoolPropWithTrueDefault { get; set; }
 
         /// <summary>
@@ -1116,6 +1121,7 @@ namespace N
         /// </summary>
         [DataMember(Name = ""boolPropWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool BoolPropWithFalseDefault { get; set; }
 
         /// <summary>
@@ -2374,11 +2380,45 @@ namespace N
   ""type"": ""object"",
   ""properties"": {
     ""intProp"": {
-      ""type"": ""integer""
+      ""type"": ""integer"",
+      ""description"": ""An integer property.""
     },
     ""intPropWithDefault"": {
       ""type"": ""integer"",
+      ""description"": ""An integer property with a default value."",
       ""default"": 42
+    },
+    ""numberProp"": {
+      ""type"": ""number"",
+      ""description"": ""A number property.""
+    },
+    ""numberPropWithDefault"": {
+      ""type"": ""number"",
+      ""description"": ""A number property with a default value."",
+      ""default"": 42.1
+    },
+    ""stringProp"": {
+      ""type"": ""string"",
+      ""description"": ""A string property.""
+    },
+    ""stringPropWithDefault"": {
+      ""type"": ""string"",
+      ""description"": ""A string property with a default value."",
+      ""default"": ""42""
+    },
+    ""boolProp"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property.""
+    },
+    ""boolPropWithTrueDefault"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property with a true default value."",
+      ""default"": true
+    },
+    ""boolPropWithFalseDefault"": {
+      ""type"": ""boolean"",
+      ""description"": ""A Boolean property with a false default value."",
+      ""default"": false
     }
   }
 }";
@@ -2395,12 +2435,69 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        /// <summary>
+        /// An integer property.
+        /// </summary>
         [DataMember(Name = ""intProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntProp { get; set; }
+
+        /// <summary>
+        /// An integer property with a default value.
+        /// </summary>
         [DataMember(Name = ""intPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(42)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public int IntPropWithDefault { get; set; }
+
+        /// <summary>
+        /// A number property.
+        /// </summary>
+        [DataMember(Name = ""numberProp"", IsRequired = false, EmitDefaultValue = false)]
+        public double NumberProp { get; set; }
+
+        /// <summary>
+        /// A number property with a default value.
+        /// </summary>
+        [DataMember(Name = ""numberPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42.1)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public double NumberPropWithDefault { get; set; }
+
+        /// <summary>
+        /// A string property.
+        /// </summary>
+        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringProp { get; set; }
+
+        /// <summary>
+        /// A string property with a default value.
+        /// </summary>
+        [DataMember(Name = ""stringPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""42"")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public string StringPropWithDefault { get; set; }
+
+        /// <summary>
+        /// A Boolean property.
+        /// </summary>
+        [DataMember(Name = ""boolProp"", IsRequired = false, EmitDefaultValue = false)]
+        public bool BoolProp { get; set; }
+
+        /// <summary>
+        /// A Boolean property with a true default value.
+        /// </summary>
+        [DataMember(Name = ""boolPropWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public bool BoolPropWithTrueDefault { get; set; }
+
+        /// <summary>
+        /// A Boolean property with a false default value.
+        /// </summary>
+        [DataMember(Name = ""boolPropWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public bool BoolPropWithFalseDefault { get; set; }
     }
 }";
 
