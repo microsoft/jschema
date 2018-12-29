@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -29,6 +28,12 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private const string DefaultValueAttributeNamespaceName = "System.ComponentModel";
         private const string DefaultValueAttributeName = "DefaultValue";
+
+        private const string JsonPropertyAttributeNamespaceName = "Newtonsoft.Json";
+        private const string JsonPropertyAttributeName = "JsonProperty";
+        private const string DefaultValueHandlingPropertyName = "DefaultValueHandling";
+        private const string DefaultValueHandlingEnumerationName = "DefaultValueHandling";
+        private const string DefaultValueHandlingValueName = "IgnoreAndPopulate";
 
         private const string DataContractAttributeName = "DataContract";
         private const string DataMemberAttributeName = "DataMember";
@@ -298,6 +303,27 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.SeparatedList(defaultValueArguments)));
 
                 attributes.Add(defaultValueAttribute);
+
+                AddUsing(JsonPropertyAttributeNamespaceName);
+
+                var jsonPropertyArguments = new List<AttributeArgumentSyntax>
+                {
+                    SyntaxFactory.AttributeArgument(
+                        SyntaxFactory.NameEquals(DefaultValueHandlingPropertyName),
+                        default(NameColonSyntax),
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(DefaultValueHandlingEnumerationName),
+                            SyntaxFactory.IdentifierName(DefaultValueHandlingValueName)))
+                };
+
+                AttributeSyntax jsonPropertyAttribute =
+                    SyntaxFactory.Attribute(
+                        SyntaxFactory.IdentifierName(JsonPropertyAttributeName),
+                        SyntaxFactory.AttributeArgumentList(
+                            SyntaxFactory.SeparatedList(jsonPropertyArguments)));
+
+                attributes.Add(jsonPropertyAttribute);
             }
 
             string hintDictionaryKey = MakeHintDictionaryKey(propertyName);

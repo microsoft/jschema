@@ -10,10 +10,13 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
     {
         internal static void FileContentsMatchExpectedContents(
             TestFileSystem testFileSystem,
-            IDictionary<string, ExpectedContents> expectedContentsDictionary)
+            IDictionary<string, ExpectedContents> expectedContentsDictionary,
+            bool generateEqualityComparers)
         {
-            // Each type in the schema generates a class and an equality comparer class.
-            testFileSystem.Files.Count.Should().Be(expectedContentsDictionary.Count * 2);
+            // Each type in the schema generates a class and, optionally, an equality comparer class.
+            int filesPerType = generateEqualityComparers ? 2 : 1;
+
+            testFileSystem.Files.Count.Should().Be(expectedContentsDictionary.Count * filesPerType);
 
             foreach (string className in expectedContentsDictionary.Keys)
             {
@@ -26,14 +29,17 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
                     testFileSystem[classPath].Should().Be(expectedClassContents);
                 }
 
-                string comparerClassName = EqualityComparerGenerator.GetEqualityComparerClassName(className);
-                string comparerClassPath = TestFileSystem.MakeOutputFilePath(comparerClassName);
-                testFileSystem.Files.Should().Contain(comparerClassPath);
-
-                string expectedComparerClassContents = expectedContentsDictionary[className].ComparerClassContents;
-                if (expectedComparerClassContents != null)
+                if (generateEqualityComparers)
                 {
-                    testFileSystem[comparerClassPath].Should().Be(expectedComparerClassContents);
+                    string comparerClassName = EqualityComparerGenerator.GetEqualityComparerClassName(className);
+                    string comparerClassPath = TestFileSystem.MakeOutputFilePath(comparerClassName);
+                    testFileSystem.Files.Should().Contain(comparerClassPath);
+
+                    string expectedComparerClassContents = expectedContentsDictionary[className].ComparerClassContents;
+                    if (expectedComparerClassContents != null)
+                    {
+                        testFileSystem[comparerClassPath].Should().Be(expectedComparerClassContents);
+                    }
                 }
             }
         }
