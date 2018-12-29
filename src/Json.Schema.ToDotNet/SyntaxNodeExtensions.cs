@@ -120,20 +120,17 @@ namespace Microsoft.Json.Schema.ToDotNet
             AttributeListSyntax attributeListForGeneratedCodeAttribute =
                 SyntaxFactory.AttributeList(SyntaxFactory.SingletonSeparatedList(MakeGeneratedCodeAttribute()));
 
-            var enumDecl = typeDecl as EnumDeclarationSyntax;
-            if (enumDecl != null)
+            if (typeDecl is EnumDeclarationSyntax enumDecl)
             {
                 return enumDecl.AddAttributeLists(attributeListForGeneratedCodeAttribute);
             }
 
-            var classDecl = typeDecl as ClassDeclarationSyntax;
-            if (classDecl != null)
+            if (typeDecl is ClassDeclarationSyntax classDecl)
             {
                 return classDecl.AddAttributeLists(attributeListForGeneratedCodeAttribute);
             }
 
-            var interfaceDecl = typeDecl as InterfaceDeclarationSyntax;
-            if (interfaceDecl != null)
+            if (typeDecl is InterfaceDeclarationSyntax interfaceDecl)
             {
                 return interfaceDecl.AddAttributeLists(attributeListForGeneratedCodeAttribute);
             }

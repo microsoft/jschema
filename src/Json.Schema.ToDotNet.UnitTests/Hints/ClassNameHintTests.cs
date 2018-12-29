@@ -499,7 +499,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary);
+            Assert.FileContentsMatchExpectedContents(TestFileSystem, expectedContentsDictionary, Settings.GenerateEqualityComparers);
         }
     }
 }

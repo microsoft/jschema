@@ -227,7 +227,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
@@ -328,7 +328,7 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
@@ -523,7 +523,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties")]
@@ -820,7 +820,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates copyright notice")]
@@ -1926,7 +1926,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
@@ -2033,7 +2033,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
 
@@ -2143,7 +2143,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates URI-valued properties from uri-reference format")]
@@ -2252,7 +2252,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates integer property from reference")]
@@ -2363,7 +2363,46 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates attributes for properties with defaults.")]
+        public void GeneratesAttributesForPropertiesWithDefaults()
+        {
+            const string Schema =
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+  }
+}";
+            const string ExpectedClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+    }
+}";
+
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+
+            generator.Generate(schema);
+
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass
+                }
+            };
+
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of primitive types by $ref")]
@@ -2502,7 +2541,7 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of uri-formatted strings")]
@@ -3012,7 +3051,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
@@ -3179,7 +3218,7 @@ namespace N
                 }
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
@@ -3351,7 +3390,7 @@ namespace N
                 ["D"] = new ExpectedContents()
             };
 
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary);
+            VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates string for inline enum of string")]
@@ -3463,6 +3502,11 @@ namespace N
 }";
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
+        }
+
+        private void VerifyGeneratedFileContents(IDictionary<string, ExpectedContents> expectedContentsDictionary)
+        {
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers);
         }
     }
 }
