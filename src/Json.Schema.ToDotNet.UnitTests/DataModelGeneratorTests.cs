@@ -126,14 +126,14 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
-        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
-        public string StringProp { get; set; }
-        [DataMember(Name = ""numberProp"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProp { get; set; }
-        [DataMember(Name = ""booleanProp"", IsRequired = false, EmitDefaultValue = false)]
-        public bool BooleanProp { get; set; }
-        [DataMember(Name = ""integerProp"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProp { get; set; }
+        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringProperty { get; set; }
+        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public double NumberProperty { get; set; }
+        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool BooleanProperty { get; set; }
+        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty { get; set; }
     }
 }";
 
@@ -164,22 +164,22 @@ namespace N
                 return false;
             }
 
-            if (left.StringProp != right.StringProp)
+            if (left.StringProperty != right.StringProperty)
             {
                 return false;
             }
 
-            if (left.NumberProp != right.NumberProp)
+            if (left.NumberProperty != right.NumberProperty)
             {
                 return false;
             }
 
-            if (left.BooleanProp != right.BooleanProp)
+            if (left.BooleanProperty != right.BooleanProperty)
             {
                 return false;
             }
 
-            if (left.IntegerProp != right.IntegerProp)
+            if (left.IntegerProperty != right.IntegerProperty)
             {
                 return false;
             }
@@ -197,14 +197,14 @@ namespace N
             int result = 17;
             unchecked
             {
-                if (obj.StringProp != null)
+                if (obj.StringProperty != null)
                 {
-                    result = (result * 31) + obj.StringProp.GetHashCode();
+                    result = (result * 31) + obj.StringProperty.GetHashCode();
                 }
 
-                result = (result * 31) + obj.NumberProp.GetHashCode();
-                result = (result * 31) + obj.BooleanProp.GetHashCode();
-                result = (result * 31) + obj.IntegerProp.GetHashCode();
+                result = (result * 31) + obj.NumberProperty.GetHashCode();
+                result = (result * 31) + obj.BooleanProperty.GetHashCode();
+                result = (result * 31) + obj.IntegerProperty.GetHashCode();
             }
 
             return result;
@@ -867,43 +867,43 @@ namespace N
 @"{
   ""type"": ""object"",
   ""properties"": {
-    ""intProp"": {
+    ""integerProperty"": {
       ""type"": ""integer"",
       ""description"": ""An integer property.""
     },
-    ""intPropWithDefault"": {
+    ""integerPropertyWithDefault"": {
       ""type"": ""integer"",
       ""description"": ""An integer property with a default value."",
       ""default"": 42
     },
-    ""numberProp"": {
+    ""numberProperty"": {
       ""type"": ""number"",
       ""description"": ""A number property.""
     },
-    ""numberPropWithDefault"": {
+    ""numberPropertyWithDefault"": {
       ""type"": ""number"",
       ""description"": ""A number property with a default value."",
       ""default"": 42.1
     },
-    ""stringProp"": {
+    ""stringProperty"": {
       ""type"": ""string"",
       ""description"": ""A string property.""
     },
-    ""stringPropWithDefault"": {
+    ""stringPropertyWithDefault"": {
       ""type"": ""string"",
       ""description"": ""A string property with a default value."",
-      ""default"": ""42""
+      ""default"": ""Don't panic.""
     },
-    ""boolProp"": {
+    ""booleanProperty"": {
       ""type"": ""boolean"",
       ""description"": ""A Boolean property.""
     },
-    ""boolPropWithTrueDefault"": {
+    ""booleanPropertyWithTrueDefault"": {
       ""type"": ""boolean"",
       ""description"": ""A Boolean property with a true default value."",
       ""default"": true
     },
-    ""boolPropWithFalseDefault"": {
+    ""booleanPropertyWithFalseDefault"": {
       ""type"": ""boolean"",
       ""description"": ""A Boolean property with a false default value."",
       ""default"": false
@@ -1063,66 +1063,66 @@ namespace N
         /// <summary>
         /// An integer property.
         /// </summary>
-        [DataMember(Name = ""intProp"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntProp { get; set; }
+        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty { get; set; }
 
         /// <summary>
         /// An integer property with a default value.
         /// </summary>
-        [DataMember(Name = ""intPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""integerPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(42)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public int IntPropWithDefault { get; set; }
+        public int IntegerPropertyWithDefault { get; set; }
 
         /// <summary>
         /// A number property.
         /// </summary>
-        [DataMember(Name = ""numberProp"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProp { get; set; }
+        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public double NumberProperty { get; set; }
 
         /// <summary>
         /// A number property with a default value.
         /// </summary>
-        [DataMember(Name = ""numberPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""numberPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(42.1)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public double NumberPropWithDefault { get; set; }
+        public double NumberPropertyWithDefault { get; set; }
 
         /// <summary>
         /// A string property.
         /// </summary>
-        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
-        public string StringProp { get; set; }
+        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringProperty { get; set; }
 
         /// <summary>
         /// A string property with a default value.
         /// </summary>
-        [DataMember(Name = ""stringPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(""42"")]
+        [DataMember(Name = ""stringPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""Don't panic."")]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public string StringPropWithDefault { get; set; }
+        public string StringPropertyWithDefault { get; set; }
 
         /// <summary>
         /// A Boolean property.
         /// </summary>
-        [DataMember(Name = ""boolProp"", IsRequired = false, EmitDefaultValue = false)]
-        public bool BoolProp { get; set; }
+        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool BooleanProperty { get; set; }
 
         /// <summary>
         /// A Boolean property with a true default value.
         /// </summary>
-        [DataMember(Name = ""boolPropWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""booleanPropertyWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool BoolPropWithTrueDefault { get; set; }
+        public bool BooleanPropertyWithTrueDefault { get; set; }
 
         /// <summary>
         /// A Boolean property with a false default value.
         /// </summary>
-        [DataMember(Name = ""boolPropWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""booleanPropertyWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(false)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool BoolPropWithFalseDefault { get; set; }
+        public bool BooleanPropertyWithFalseDefault { get; set; }
 
         /// <summary>
         /// An array property.
@@ -1197,42 +1197,42 @@ namespace N
         /// </summary>
         public C()
         {
-            IntPropWithDefault = 42;
-            NumberPropWithDefault = 42.1;
-            StringPropWithDefault = ""42"";
-            BoolPropWithTrueDefault = true;
-            BoolPropWithFalseDefault = false;
+            IntegerPropertyWithDefault = 42;
+            NumberPropertyWithDefault = 42.1;
+            StringPropertyWithDefault = ""Don't panic."";
+            BooleanPropertyWithTrueDefault = true;
+            BooleanPropertyWithFalseDefault = false;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
         /// </summary>
-        /// <param name=""intProp"">
-        /// An initialization value for the <see cref=""P:IntProp"" /> property.
+        /// <param name=""integerProperty"">
+        /// An initialization value for the <see cref=""P:IntegerProperty"" /> property.
         /// </param>
-        /// <param name=""intPropWithDefault"">
-        /// An initialization value for the <see cref=""P:IntPropWithDefault"" /> property.
+        /// <param name=""integerPropertyWithDefault"">
+        /// An initialization value for the <see cref=""P:IntegerPropertyWithDefault"" /> property.
         /// </param>
-        /// <param name=""numberProp"">
-        /// An initialization value for the <see cref=""P:NumberProp"" /> property.
+        /// <param name=""numberProperty"">
+        /// An initialization value for the <see cref=""P:NumberProperty"" /> property.
         /// </param>
-        /// <param name=""numberPropWithDefault"">
-        /// An initialization value for the <see cref=""P:NumberPropWithDefault"" /> property.
+        /// <param name=""numberPropertyWithDefault"">
+        /// An initialization value for the <see cref=""P:NumberPropertyWithDefault"" /> property.
         /// </param>
-        /// <param name=""stringProp"">
-        /// An initialization value for the <see cref=""P:StringProp"" /> property.
+        /// <param name=""stringProperty"">
+        /// An initialization value for the <see cref=""P:StringProperty"" /> property.
         /// </param>
-        /// <param name=""stringPropWithDefault"">
-        /// An initialization value for the <see cref=""P:StringPropWithDefault"" /> property.
+        /// <param name=""stringPropertyWithDefault"">
+        /// An initialization value for the <see cref=""P:StringPropertyWithDefault"" /> property.
         /// </param>
-        /// <param name=""boolProp"">
-        /// An initialization value for the <see cref=""P:BoolProp"" /> property.
+        /// <param name=""booleanProperty"">
+        /// An initialization value for the <see cref=""P:BooleanProperty"" /> property.
         /// </param>
-        /// <param name=""boolPropWithTrueDefault"">
-        /// An initialization value for the <see cref=""P:BoolPropWithTrueDefault"" /> property.
+        /// <param name=""booleanPropertyWithTrueDefault"">
+        /// An initialization value for the <see cref=""P:BooleanPropertyWithTrueDefault"" /> property.
         /// </param>
-        /// <param name=""boolPropWithFalseDefault"">
-        /// An initialization value for the <see cref=""P:BoolPropWithFalseDefault"" /> property.
+        /// <param name=""booleanPropertyWithFalseDefault"">
+        /// An initialization value for the <see cref=""P:BooleanPropertyWithFalseDefault"" /> property.
         /// </param>
         /// <param name=""arrayProp"">
         /// An initialization value for the <see cref=""P:ArrayProp"" /> property.
@@ -1270,9 +1270,9 @@ namespace N
         /// <param name=""dictionaryWithHintedValueProp"">
         /// An initialization value for the <see cref=""P:DictionaryWithHintedValueProp"" /> property.
         /// </param>
-        public C(int intProp, int intPropWithDefault, double numberProp, double numberPropWithDefault, string stringProp, string stringPropWithDefault, bool boolProp, bool boolPropWithTrueDefault, bool boolPropWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        public C(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
-            Init(intProp, intPropWithDefault, numberProp, numberPropWithDefault, stringProp, stringPropWithDefault, boolProp, boolPropWithTrueDefault, boolPropWithFalseDefault, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
+            Init(integerProperty, integerPropertyWithDefault, numberProperty, numberPropertyWithDefault, stringProperty, stringPropertyWithDefault, booleanProperty, booleanPropertyWithTrueDefault, booleanPropertyWithFalseDefault, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
         }
 
         /// <summary>
@@ -1291,7 +1291,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntProp, other.IntPropWithDefault, other.NumberProp, other.NumberPropWithDefault, other.StringProp, other.StringPropWithDefault, other.BoolProp, other.BoolPropWithTrueDefault, other.BoolPropWithFalseDefault, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
+            Init(other.IntegerProperty, other.IntegerPropertyWithDefault, other.NumberProperty, other.NumberPropertyWithDefault, other.StringProperty, other.StringPropertyWithDefault, other.BooleanProperty, other.BooleanPropertyWithTrueDefault, other.BooleanPropertyWithFalseDefault, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -1312,17 +1312,17 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int intProp, int intPropWithDefault, double numberProp, double numberPropWithDefault, string stringProp, string stringPropWithDefault, bool boolProp, bool boolPropWithTrueDefault, bool boolPropWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        private void Init(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
-            IntProp = intProp;
-            IntPropWithDefault = intPropWithDefault;
-            NumberProp = numberProp;
-            NumberPropWithDefault = numberPropWithDefault;
-            StringProp = stringProp;
-            StringPropWithDefault = stringPropWithDefault;
-            BoolProp = boolProp;
-            BoolPropWithTrueDefault = boolPropWithTrueDefault;
-            BoolPropWithFalseDefault = boolPropWithFalseDefault;
+            IntegerProperty = integerProperty;
+            IntegerPropertyWithDefault = integerPropertyWithDefault;
+            NumberProperty = numberProperty;
+            NumberPropertyWithDefault = numberPropertyWithDefault;
+            StringProperty = stringProperty;
+            StringPropertyWithDefault = stringPropertyWithDefault;
+            BooleanProperty = booleanProperty;
+            BooleanPropertyWithTrueDefault = booleanPropertyWithTrueDefault;
+            BooleanPropertyWithFalseDefault = booleanPropertyWithFalseDefault;
             if (arrayProp != null)
             {
                 var destination_0 = new List<double>();
@@ -2379,43 +2379,43 @@ namespace N
 @"{
   ""type"": ""object"",
   ""properties"": {
-    ""intProp"": {
+    ""integerProperty"": {
       ""type"": ""integer"",
       ""description"": ""An integer property.""
     },
-    ""intPropWithDefault"": {
+    ""integerPropertyWithDefault"": {
       ""type"": ""integer"",
       ""description"": ""An integer property with a default value."",
       ""default"": 42
     },
-    ""numberProp"": {
+    ""numberProperty"": {
       ""type"": ""number"",
       ""description"": ""A number property.""
     },
-    ""numberPropWithDefault"": {
+    ""numberPropertyWithDefault"": {
       ""type"": ""number"",
       ""description"": ""A number property with a default value."",
       ""default"": 42.1
     },
-    ""stringProp"": {
+    ""stringProperty"": {
       ""type"": ""string"",
       ""description"": ""A string property.""
     },
-    ""stringPropWithDefault"": {
+    ""stringPropertyWithDefault"": {
       ""type"": ""string"",
       ""description"": ""A string property with a default value."",
-      ""default"": ""42""
+      ""default"": ""Thanks for all the fish.""
     },
-    ""boolProp"": {
+    ""booleanProperty"": {
       ""type"": ""boolean"",
       ""description"": ""A Boolean property.""
     },
-    ""boolPropWithTrueDefault"": {
+    ""booleanPropertyWithTrueDefault"": {
       ""type"": ""boolean"",
       ""description"": ""A Boolean property with a true default value."",
       ""default"": true
     },
-    ""boolPropWithFalseDefault"": {
+    ""booleanPropertyWithFalseDefault"": {
       ""type"": ""boolean"",
       ""description"": ""A Boolean property with a false default value."",
       ""default"": false
@@ -2438,66 +2438,66 @@ namespace N
         /// <summary>
         /// An integer property.
         /// </summary>
-        [DataMember(Name = ""intProp"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntProp { get; set; }
+        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty { get; set; }
 
         /// <summary>
         /// An integer property with a default value.
         /// </summary>
-        [DataMember(Name = ""intPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""integerPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(42)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public int IntPropWithDefault { get; set; }
+        public int IntegerPropertyWithDefault { get; set; }
 
         /// <summary>
         /// A number property.
         /// </summary>
-        [DataMember(Name = ""numberProp"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProp { get; set; }
+        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public double NumberProperty { get; set; }
 
         /// <summary>
         /// A number property with a default value.
         /// </summary>
-        [DataMember(Name = ""numberPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""numberPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(42.1)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public double NumberPropWithDefault { get; set; }
+        public double NumberPropertyWithDefault { get; set; }
 
         /// <summary>
         /// A string property.
         /// </summary>
-        [DataMember(Name = ""stringProp"", IsRequired = false, EmitDefaultValue = false)]
-        public string StringProp { get; set; }
+        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public string StringProperty { get; set; }
 
         /// <summary>
         /// A string property with a default value.
         /// </summary>
-        [DataMember(Name = ""stringPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(""42"")]
+        [DataMember(Name = ""stringPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""Thanks for all the fish."")]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public string StringPropWithDefault { get; set; }
+        public string StringPropertyWithDefault { get; set; }
 
         /// <summary>
         /// A Boolean property.
         /// </summary>
-        [DataMember(Name = ""boolProp"", IsRequired = false, EmitDefaultValue = false)]
-        public bool BoolProp { get; set; }
+        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool BooleanProperty { get; set; }
 
         /// <summary>
         /// A Boolean property with a true default value.
         /// </summary>
-        [DataMember(Name = ""boolPropWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""booleanPropertyWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool BoolPropWithTrueDefault { get; set; }
+        public bool BooleanPropertyWithTrueDefault { get; set; }
 
         /// <summary>
         /// A Boolean property with a false default value.
         /// </summary>
-        [DataMember(Name = ""boolPropWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DataMember(Name = ""booleanPropertyWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(false)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool BoolPropWithFalseDefault { get; set; }
+        public bool BooleanPropertyWithFalseDefault { get; set; }
     }
 }";
 

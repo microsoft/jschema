@@ -1,16 +1,16 @@
 ﻿{
   "type": "object",
   "properties": {
-    "stringProp": {
+    "stringProperty": {
       "type": "string"
     },
-    "numberProp": {
+    "numberProperty": {
       "type": "number"
     },
-    "booleanProp": {
+    "booleanProperty": {
       "type": "boolean"
     },
-    "integerProp": {
+    "integerProperty": {
       "type": "integer"
     }
   }
