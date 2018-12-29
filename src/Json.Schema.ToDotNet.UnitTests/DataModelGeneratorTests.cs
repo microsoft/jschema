@@ -2366,7 +2366,7 @@ namespace N
             VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates attributes for properties with defaults.", Skip = "NYI")]
+        [Fact(DisplayName = "DataModelGenerator generates attributes for properties with defaults.")]
         public void GeneratesAttributesForPropertiesWithDefaults()
         {
             const string Schema =
@@ -2387,6 +2387,7 @@ namespace N
 using System.CodeDom.Compiler;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace N
 {
