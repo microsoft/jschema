@@ -2366,18 +2366,26 @@ namespace N
             VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates attributes for properties with defaults.")]
+        [Fact(DisplayName = "DataModelGenerator generates attributes for properties with defaults.", Skip = "NYI")]
         public void GeneratesAttributesForPropertiesWithDefaults()
         {
             const string Schema =
 @"{
   ""type"": ""object"",
   ""properties"": {
+    ""intProp"": {
+      ""type"": ""integer""
+    },
+    ""intPropWithDefault"": {
+      ""type"": ""integer"",
+      ""default"": 42
+    }
   }
 }";
             const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace N
@@ -2386,6 +2394,12 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
+        [DataMember(Name = ""intProp"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntProp { get; set; }
+        [DataMember(Name = ""intPropWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(42)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public int IntPropWithDefault { get; set; }
     }
 }";
 
