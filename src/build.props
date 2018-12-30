@@ -36,7 +36,7 @@
     <Authors Condition=" '$(Authors)' == '' ">$(Company)</Authors>
     <Owners Condition=" '$(Authors)' == '' ">$(Company),tse-securitytools</Owners>
     <PackageRequireLicenseAcceptance Condition=" '$(PackageRequireLicenseAcceptance)' == '' ">false</PackageRequireLicenseAcceptance>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache 2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Microsoft/jschema</PackageProjectUrl>
     <PackageIconUrl>https://go.microsoft.com/fwlink/?linkid=2009431</PackageIconUrl>
   </PropertyGroup>
