@@ -4,7 +4,7 @@
     <id>Microsoft.Json.Schema.Validation</id>
     <version>$version$</version>
     <title>Microsoft JSON Schema Validation</title>
-    <authors>Microsoft</authors>
+    <authors>Microsoft,tse-securitytools</authors>
     <owners>Microsoft,tse-securitytools</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A command line tool that validates files against a JSON schema.</description>
