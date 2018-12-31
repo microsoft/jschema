@@ -10,3 +10,5 @@
 * Add missing runtime dependencies to Validation and ToDotNet packages.
 * Drop JSON.NET dependency to 9.0.1.
 * Provide handling to populate default property values during deserialization and on object creation.
+* In ToDotNet, emit initializers in the default constructor, and emit a `JsonProperty` attribute, for all properties whose default values differ from the .NET defaults. This ensures that these properties are properly initialized whether the object is default-constructed or deserialized from JSON.
+* Update the `<license>` elements in the .nuspec files to conform to recent NuGet improvements in this area.
