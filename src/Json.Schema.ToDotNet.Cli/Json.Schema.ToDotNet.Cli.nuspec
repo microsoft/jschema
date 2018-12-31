@@ -4,13 +4,13 @@
     <id>Microsoft.Json.Schema.ToDotNet</id>
     <version>$version$</version>
     <title>Microsoft JSON Schema to .NET Object Model Generator</title>
-    <authors>microsoft</authors>
-    <owners>microsoft,tse-securitytools</owners>
+    <authors>Microsoft</authors>
+    <owners>Microsoft,tse-securitytools</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A command line tool that generates a .NET object model from a JSON schema.</description>
     <releaseNotes>Version $version$ of the JSON .NET object model generator</releaseNotes>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
-    <licenseUrl>https://github.com/Microsoft/jschema/blob/master/LICENSE</licenseUrl>
+    <license type="expression">$packageLicenseExpression$</license>
     <projectUrl>https://github.com/microsoft/jschema</projectUrl>
     <iconUrl>https://go.microsoft.com/fwlink/?linkid=2009431</iconUrl>
     <tags>Microsoft JSON Schema .NET ToDotNet Object Model Generator Jschema</tags>

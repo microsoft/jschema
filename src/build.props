@@ -33,8 +33,9 @@
 
   <PropertyGroup Label="Package">
     <PackageId Condition=" '$(PackageId)' == '' ">$(AssemblyName)</PackageId>
+    <Title Condition=" '$(Title)' == '' ">$(AssemblyTitle)</Title>
     <Authors Condition=" '$(Authors)' == '' ">$(Company)</Authors>
-    <Owners Condition=" '$(Authors)' == '' ">$(Company),tse-securitytools</Owners>
+    <Owners Condition=" '$(Owners)' == '' ">$(Company),tse-securitytools</Owners>
     <PackageRequireLicenseAcceptance Condition=" '$(PackageRequireLicenseAcceptance)' == '' ">false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Microsoft/jschema</PackageProjectUrl>
