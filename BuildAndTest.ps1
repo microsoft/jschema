@@ -51,6 +51,16 @@ function Exit-WithFailureMessage($message) {
     exit 1
 }
 
+function Get-PackageLicenseExpression() {
+    $buildPropsPath = "$PSScriptRoot\src\build.props"
+    $namespace = @{ msbuild = "http://schemas.microsoft.com/developer/msbuild/2003" }
+    $xPath = "/msbuild:Project/msbuild:PropertyGroup[@Label='Package']/msbuild:PackageLicenseExpression"
+    $xml = Select-Xml -Path $buildPropsPath -Namespace $namespace -XPath $xPath
+    $packageLicenseExpression = $xml.Node.InnerText
+
+    $packageLicenseExpression
+}
+
 function Invoke-Build {
     if (Test-Path $buildDirectory) {
         Remove-Item -Force -Recurse $buildDirectory
@@ -103,13 +113,13 @@ function New-NuGetPackageFromProjectFile($project, $version) {
     }
 }
 
-function New-NuGetPackageFromNuspecFile($project, $version, $suffix = "") {
+function New-NuGetPackageFromNuspecFile($project, $version, $packageLicenseExpression, $suffix = "") {
     $nuspecFile = "$PSScriptRoot\src\$project\$project.nuspec"
 
     $arguments=
         "pack", $nuspecFile,
         "-Symbols",
-        "-Properties", "platform=$Platform;configuration=$Configuration;version=$version",
+        "-Properties", "platform=$Platform;configuration=$Configuration;version=$version;packageLicenseExpression=$packageLicenseExpression",
         "-Verbosity", "Quiet",
         "-BasePath", ".\",
         "-OutputDirectory", $PackageOutputDirectory
@@ -164,6 +174,6 @@ if (-not $NoPackage) {
     $nuspecProjects = "Json.Schema.ToDotNet.Cli", "Json.Schema.Validation.Cli"
     foreach ($project in $nuspecProjects) {
         Publish-Application $project netcoreapp2.0
-        New-NuGetPackageFromNuSpecFile $project $version
+        New-NuGetPackageFromNuSpecFile $project $version $(Get-PackageLicenseExpression)
     }
 }
