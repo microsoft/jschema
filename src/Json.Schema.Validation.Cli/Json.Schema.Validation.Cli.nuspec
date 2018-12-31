@@ -4,16 +4,16 @@
     <id>Microsoft.Json.Schema.Validation</id>
     <version>$version$</version>
     <title>Microsoft JSON Schema Validation</title>
-    <authors>microsoft</authors>
-    <owners>microsoft,tse-securitytools</owners>
+    <authors>Microsoft,tse-securitytools</authors>
+    <owners>Microsoft,tse-securitytools</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A command line tool that validates files against a JSON schema.</description>
     <releaseNotes>Version $version$ of the JSON validation tool.</releaseNotes>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
-    <licenseUrl>https://github.com/Microsoft/jschema/blob/master/LICENSE</licenseUrl>
+    <license type="expression">$packageLicenseExpression$</license>
     <projectUrl>https://github.com/microsoft/jschema</projectUrl>
     <iconUrl>https://go.microsoft.com/fwlink/?linkid=2009431</iconUrl>
-    <tags>Microsoft Json Schema .NET Validation Validator JSchema</tags>
+    <tags>Microsoft JSON Schema .NET Validation Validator JSchema</tags>
   </metadata>
   <files>
     <file src="bld\bin\$platform$_$configuration$\Json.Schema.Validation\net461\Microsoft.Json.Schema.Validation.dll"
