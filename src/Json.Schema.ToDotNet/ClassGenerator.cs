@@ -289,20 +289,28 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (defaultValue != null)
             {
-                AddUsing(DefaultValueAttributeNamespaceName);
-
-                var defaultValueArguments = new List<AttributeArgumentSyntax>
+                // We want to add a DefaultValue attribute, but we can only do that if the
+                // default value specified in the schema can be represented by a literal
+                // (a compile-time constant like 42 or "Don't panic"). We can't do it if the
+                // default value must be calculated at runtime, for example, an empty array.
+                LiteralExpressionSyntax literalExpression = GetLiteralExpressionForValue(defaultValue);
+                if (literalExpression != null)
                 {
-                    SyntaxFactory.AttributeArgument(GetLiteralExpressionForValue(defaultValue))
-                };
+                    AddUsing(DefaultValueAttributeNamespaceName);
 
-                AttributeSyntax defaultValueAttribute =
-                    SyntaxFactory.Attribute(
-                        SyntaxFactory.IdentifierName(DefaultValueAttributeName),
-                        SyntaxFactory.AttributeArgumentList(
-                            SyntaxFactory.SeparatedList(defaultValueArguments)));
+                    var defaultValueArguments = new List<AttributeArgumentSyntax>
+                    {
+                        SyntaxFactory.AttributeArgument(literalExpression)
+                    };
 
-                attributes.Add(defaultValueAttribute);
+                    AttributeSyntax defaultValueAttribute =
+                        SyntaxFactory.Attribute(
+                            SyntaxFactory.IdentifierName(DefaultValueAttributeName),
+                            SyntaxFactory.AttributeArgumentList(
+                                SyntaxFactory.SeparatedList(defaultValueArguments)));
+
+                    attributes.Add(defaultValueAttribute);
+                }
 
                 AddUsing(JsonPropertyAttributeNamespaceName);
 

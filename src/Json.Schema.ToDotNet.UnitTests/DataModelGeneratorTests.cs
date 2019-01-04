@@ -2372,8 +2372,8 @@ namespace N
             VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates attributes for properties with defaults.")]
-        public void GeneratesAttributesForPropertiesWithDefaults()
+        [Fact(DisplayName = "DataModelGenerator generates attributes for properties of primitive type with defaults.")]
+        public void GeneratesAttributesForPropertiesOfPrimitiveTypeWithDefaults()
         {
             const string Schema =
 @"{
@@ -2419,12 +2419,21 @@ namespace N
       ""type"": ""boolean"",
       ""description"": ""A Boolean property with a false default value."",
       ""default"": false
+    },
+    ""nonPrimitivePropertyWithDefault"": {
+      ""type"": ""array"",
+      ""description"": ""A non-primitive property with a default value: DefaultValue attribute will -not- be emitted."",
+      ""items"": {
+        ""type"": ""integer""
+      },
+      ""default"": []
     }
   }
 }";
             const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -2498,6 +2507,13 @@ namespace N
         [DefaultValue(false)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool BooleanPropertyWithFalseDefault { get; set; }
+
+        /// <summary>
+        /// A non-primitive property with a default value: DefaultValue attribute will -not- be emitted.
+        /// </summary>
+        [DataMember(Name = ""nonPrimitivePropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public IList<int> NonPrimitivePropertyWithDefault { get; set; }
     }
 }";
 
