@@ -3632,7 +3632,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator accepts a limited oneOf with \"type\": \"null\"", Skip = "Not yet implemented")]
+        [Fact(DisplayName = "DataModelGenerator accepts a limited oneOf with \"type\": \"null\"")]
         public void AcceptsLimitedOneOfWithTypeNull()
         {
             const string Schema =
@@ -3660,7 +3660,6 @@ namespace N
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace N
 {

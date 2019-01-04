@@ -113,9 +113,36 @@ namespace Microsoft.Json.Schema
     {
         public static SchemaType SafeGetType(this JsonSchema schema)
         {
-            return (schema.Type != null && schema.Type.Count > 0)
-                ? schema.Type[0]
-                : SchemaType.None;
+            if (schema.Type?.Count > 0) { return schema.Type[0]; }
+
+            if (TryGetTypeFromOneOf(schema.OneOf, out SchemaType typeFromOneOf)) { return typeFromOneOf;  }
+
+            return SchemaType.None;
+        }
+
+        // Support a very limited usage of JSON Schema's "oneOf" validation keyword.
+        // The reason for this support, and a disclaimer about its limitations, are
+        // given in https://github.com/Microsoft/jschema/issues/79.
+        private static bool TryGetTypeFromOneOf(IList<JsonSchema> oneOf, out SchemaType result)
+        {
+            result = SchemaType.None;
+
+            if (oneOf == null || oneOf.Count != 2) { return false; }
+
+            SchemaType firstType = SchemaType.None;
+            if (oneOf[0].Type?.Count > 0) { firstType = oneOf[0].Type[0]; }
+
+            SchemaType secondType = SchemaType.None;
+            if (oneOf[1].Type?.Count > 0) { secondType = oneOf[1].Type[0]; }
+
+            if ((firstType == SchemaType.Array && secondType == SchemaType.Null) ||
+                (firstType == SchemaType.Null  && secondType == SchemaType.Array))
+            {
+                result = SchemaType.Array;
+                return true;
+            }
+
+            return false;
         }
     }
 
