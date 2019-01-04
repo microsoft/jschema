@@ -12,3 +12,9 @@
 * Provide handling to populate default property values during deserialization and on object creation.
 * In ToDotNet, emit initializers in the default constructor, and emit a `JsonProperty` attribute, for all properties whose default values differ from the .NET defaults. This ensures that these properties are properly initialized whether the object is default-constructed or deserialized from JSON.
 * Update the `<license>` elements in the .nuspec files to conform to recent NuGet improvements in this area.
+
+## **0.60.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/0.60.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/0.60.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/0.60.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/0.60.0)
+
+* #68, #69: Fix up NuGet package attributes related to licensing.
+* #77: Bug fix: Don't emit DefaultValue attributes for non-primitive types.
+* #79: Code gen: Add limited support for `oneOf` to allow an array-valued property to have a `null` value.
