@@ -18,3 +18,7 @@
 * #68, #69: Fix up NuGet package attributes related to licensing.
 * #77: Bug fix: Don't emit DefaultValue attributes for non-primitive types.
 * #79: Code gen: Add limited support for `oneOf` to allow an array-valued property to have a `null` value.
+
+## **0.61.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/0.61.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/0.61.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/0.61.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/0.61.0)
+
+* #84: Bug fix: Generated default values for enumerated types now work properly.

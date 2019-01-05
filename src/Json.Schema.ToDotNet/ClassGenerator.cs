@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -249,7 +250,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
-        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired, object defaultValue)
+        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired, object defaultValue, TypeSyntax propertyType)
         {
             var attributes = new List<AttributeSyntax>();
 
@@ -291,16 +292,16 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 // We want to add a DefaultValue attribute, but we can only do that if the
                 // default value specified in the schema can be represented by a literal
-                // (a compile-time constant like 42 or "Don't panic"). We can't do it if the
-                // default value must be calculated at runtime, for example, an empty array.
-                LiteralExpressionSyntax literalExpression = GetLiteralExpressionForValue(defaultValue);
-                if (literalExpression != null)
+                // (a compile-time constant like 42 or "Don't panic" or Color.Red). We can't do it if
+                // the default value must be calculated at runtime, for example, an empty array.
+                ExpressionSyntax expression = GetExpressionForValue(defaultValue, propertyType);
+                if (expression != null)
                 {
                     AddUsing(DefaultValueAttributeNamespaceName);
 
                     var defaultValueArguments = new List<AttributeArgumentSyntax>
                     {
-                        SyntaxFactory.AttributeArgument(literalExpression)
+                        SyntaxFactory.AttributeArgument(expression)
                     };
 
                     AttributeSyntax defaultValueAttribute =
@@ -460,7 +461,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     PropertyInfo propInfo = PropInfoDictionary[propertyName];
                     object defaultValue = propInfo.DefaultValue;
 
-                    ExpressionStatementSyntax initializationStatement = GenerateDefaultInitialization(propertyName, defaultValue);
+                    ExpressionStatementSyntax initializationStatement = GenerateDefaultInitialization(propertyName, defaultValue, propInfo.Type);
                     if (initializationStatement != null)
                     {
                         initializations.Add(initializationStatement);
@@ -473,9 +474,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private ExpressionStatementSyntax GenerateDefaultInitialization(
             string propertyName,
-            object defaultValue)
+            object defaultValue,
+            TypeSyntax propertyType)
         {
-            LiteralExpressionSyntax defaultValueExpression = GetLiteralExpressionForValue(defaultValue);
+            ExpressionSyntax defaultValueExpression = GetExpressionForValue(defaultValue, propertyType);
             if (defaultValueExpression == null) { return null; }
 
             return SyntaxFactory.ExpressionStatement(
@@ -485,23 +487,23 @@ namespace Microsoft.Json.Schema.ToDotNet
                     defaultValueExpression));
         }
 
-        private LiteralExpressionSyntax GetLiteralExpressionForValue(object value)
+        private ExpressionSyntax GetExpressionForValue(object value, TypeSyntax propertyType)
         {
-            LiteralExpressionSyntax literalExpression = null;
+            ExpressionSyntax expression = null;
 
-            if (value is bool)
+            if (value is bool boolValue)
             {
-                SyntaxKind literalSyntaxKind = (bool)value == true
+                SyntaxKind literalSyntaxKind = boolValue
                     ? SyntaxKind.TrueLiteralExpression
                     : SyntaxKind.FalseLiteralExpression;
 
-                literalExpression = SyntaxFactory.LiteralExpression(literalSyntaxKind);
+                expression = SyntaxFactory.LiteralExpression(literalSyntaxKind);
             }
-            else if (value is long)
+            else if (value is long longValue)
             {
-                literalExpression = SyntaxFactory.LiteralExpression(
+                expression = SyntaxFactory.LiteralExpression(
                     SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((int)(long)value));
+                    SyntaxFactory.Literal((int)longValue));
                 // Note: the extra cast compensates for a mismatch between our code generation
                 // and Newtonsoft.Json's deserialization behavior. Newtonsoft deserializes
                 // integer properties as Int64 (long), but we generate integer properties
@@ -509,20 +511,37 @@ namespace Microsoft.Json.Schema.ToDotNet
                 // which can be assigned to an int, rather than 42L, which cannot. We should
                 // consider changing the code generation to emit longs for integer properties.
             }
-            else if (value is double)
+            else if (value is double doubleValue)
             {
-                literalExpression = SyntaxFactory.LiteralExpression(
+                expression = SyntaxFactory.LiteralExpression(
                     SyntaxKind.NumericLiteralExpression,
-                    SyntaxFactory.Literal((double)value));
+                    SyntaxFactory.Literal(doubleValue));
             }
-            else if (value is string)
+            else if (value is string stringValue)
             {
-                literalExpression = SyntaxFactory.LiteralExpression(
-                    SyntaxKind.StringLiteralExpression,
-                    SyntaxFactory.Literal((string)value));
+                // When the schema specifies a string value for the default, it is either
+                // because the property is a plain string, or because it is an enumerated
+                // type. If it's an enumerated type, like Color, then we have to generate
+                // an enumeration constant like Color.Green, and not a string literal like
+                // "green".
+                if (propertyType is PredefinedTypeSyntax)
+                {
+                    expression = SyntaxFactory.LiteralExpression(
+                        SyntaxKind.StringLiteralExpression,
+                        SyntaxFactory.Literal(stringValue));
+                }
+                else if (propertyType is IdentifierNameSyntax identifierNameSyntax)
+                {
+                    string enumerationConstantName = stringValue.ToPascalCase();
+
+                    expression = SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName(identifierNameSyntax.Identifier.ValueText),
+                        SyntaxFactory.IdentifierName(enumerationConstantName));
+                }
             }
 
-            return literalExpression;
+            return expression;
         }
 
         private ConstructorDeclarationSyntax GeneratePropertyCtor()
