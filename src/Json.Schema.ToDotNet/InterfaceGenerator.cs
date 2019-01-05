@@ -41,7 +41,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddMembers(GenerateProperties());
         }
 
-        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired, object defaultValue)
+        protected override AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired, object defaultValue, TypeSyntax propertyType)
         {
             return new AttributeSyntax[0];
         }
