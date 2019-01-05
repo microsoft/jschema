@@ -1682,7 +1682,7 @@ namespace N
     /// <summary>
     /// Some colors.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.60.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """+ VersionConstants.FileVersion + @""")]
     public enum Color
     {
         Red,
