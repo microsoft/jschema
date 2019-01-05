@@ -908,6 +908,11 @@ namespace N
       ""description"": ""A Boolean property with a false default value."",
       ""default"": false
     },
+    ""enumeratedPropertyWithDefault"": {
+      ""description"": ""An enumerated property with a default value."",
+      ""enum"": [ ""red"", ""green"", ""blue"", ""black"", ""white"" ],
+      ""default"": ""green""
+    },
     ""arrayProp"": {
       ""type"": ""array"",
       ""description"": ""An array property."",
@@ -994,6 +999,15 @@ namespace N
 
             const string HintsText =
 @"{
+  ""C.EnumeratedPropertyWithDefault"": [
+    {
+      ""kind"": ""EnumHint"",
+      ""arguments"": {
+        ""typeName"": ""Color"",
+        ""description"": ""Some colors.""
+      }
+    }
+  ],
   ""C.DictionaryProp"": [
     {
       ""kind"": ""DictionaryHint""
@@ -1125,6 +1139,14 @@ namespace N
         public bool BooleanPropertyWithFalseDefault { get; set; }
 
         /// <summary>
+        /// An enumerated property with a default value.
+        /// </summary>
+        [DataMember(Name = ""enumeratedPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(Color.Green)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public Color EnumeratedPropertyWithDefault { get; set; }
+
+        /// <summary>
         /// An array property.
         /// </summary>
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
@@ -1202,6 +1224,7 @@ namespace N
             StringPropertyWithDefault = ""Don't panic."";
             BooleanPropertyWithTrueDefault = true;
             BooleanPropertyWithFalseDefault = false;
+            EnumeratedPropertyWithDefault = Color.Green;
         }
 
         /// <summary>
@@ -1233,6 +1256,9 @@ namespace N
         /// </param>
         /// <param name=""booleanPropertyWithFalseDefault"">
         /// An initialization value for the <see cref=""P:BooleanPropertyWithFalseDefault"" /> property.
+        /// </param>
+        /// <param name=""enumeratedPropertyWithDefault"">
+        /// An initialization value for the <see cref=""P:EnumeratedPropertyWithDefault"" /> property.
         /// </param>
         /// <param name=""arrayProp"">
         /// An initialization value for the <see cref=""P:ArrayProp"" /> property.
@@ -1270,9 +1296,9 @@ namespace N
         /// <param name=""dictionaryWithHintedValueProp"">
         /// An initialization value for the <see cref=""P:DictionaryWithHintedValueProp"" /> property.
         /// </param>
-        public C(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        public C(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, Color enumeratedPropertyWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
-            Init(integerProperty, integerPropertyWithDefault, numberProperty, numberPropertyWithDefault, stringProperty, stringPropertyWithDefault, booleanProperty, booleanPropertyWithTrueDefault, booleanPropertyWithFalseDefault, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
+            Init(integerProperty, integerPropertyWithDefault, numberProperty, numberPropertyWithDefault, stringProperty, stringPropertyWithDefault, booleanProperty, booleanPropertyWithTrueDefault, booleanPropertyWithFalseDefault, enumeratedPropertyWithDefault, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
         }
 
         /// <summary>
@@ -1291,7 +1317,7 @@ namespace N
                 throw new ArgumentNullException(nameof(other));
             }
 
-            Init(other.IntegerProperty, other.IntegerPropertyWithDefault, other.NumberProperty, other.NumberPropertyWithDefault, other.StringProperty, other.StringPropertyWithDefault, other.BooleanProperty, other.BooleanPropertyWithTrueDefault, other.BooleanPropertyWithFalseDefault, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
+            Init(other.IntegerProperty, other.IntegerPropertyWithDefault, other.NumberProperty, other.NumberPropertyWithDefault, other.StringProperty, other.StringPropertyWithDefault, other.BooleanProperty, other.BooleanPropertyWithTrueDefault, other.BooleanPropertyWithFalseDefault, other.EnumeratedPropertyWithDefault, other.ArrayProp, other.UriProp, other.DateTimeProp, other.ReferencedTypeProp, other.ArrayOfRefProp, other.ArrayOfArrayProp, other.DictionaryProp, other.DictionaryWithPrimitiveSchemaProp, other.DictionaryWithObjectSchemaProp, other.DictionaryWithObjectArraySchemaProp, other.DictionaryWithUriKeyProp, other.DictionaryWithHintedValueProp);
         }
 
         ISNode ISNode.DeepClone()
@@ -1312,7 +1338,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        private void Init(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, Color enumeratedPropertyWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
             IntegerProperty = integerProperty;
             IntegerPropertyWithDefault = integerPropertyWithDefault;
@@ -1323,6 +1349,7 @@ namespace N
             BooleanProperty = booleanProperty;
             BooleanPropertyWithTrueDefault = booleanPropertyWithTrueDefault;
             BooleanPropertyWithFalseDefault = booleanPropertyWithFalseDefault;
+            EnumeratedPropertyWithDefault = enumeratedPropertyWithDefault;
             if (arrayProp != null)
             {
                 var destination_0 = new List<double>();
@@ -1647,6 +1674,24 @@ namespace N
         }
     }
 }";
+            const string ExpectedEnumType =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// Some colors.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""0.60.0.0"")]
+    public enum Color
+    {
+        Red,
+        Green,
+        Blue,
+        Black,
+        White
+    }
+}";
             _settings.GenerateCloningCode = true;
             _settings.HintDictionary = new HintDictionary(HintsText);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -1657,6 +1702,7 @@ namespace N
             string kindEnumPath = TestFileSystem.MakeOutputFilePath("SNodeKind");
             string referencedTypePath = TestFileSystem.MakeOutputFilePath("D");
             string rewritingVisitorClassPath = TestFileSystem.MakeOutputFilePath("SRewritingVisitor");
+            string enumTypePath = TestFileSystem.MakeOutputFilePath("Color");
 
             var expectedOutputFiles = new List<string>
             {
@@ -1664,12 +1710,14 @@ namespace N
                 syntaxInterfacePath,
                 kindEnumPath,
                 rewritingVisitorClassPath,
-                referencedTypePath
+                referencedTypePath,
+                enumTypePath
             };
 
             _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
             _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
+            _testFileSystem[enumTypePath].Should().Be(ExpectedEnumType);
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
             _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
             _testFileSystem[kindEnumPath].Should().Be(ExpectedKindEnum);
