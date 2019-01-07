@@ -99,6 +99,8 @@ namespace N
     {
     }
 }";
+            TestUtil.WriteTestInputFile(this.GetType().Name, nameof(Expected) + ".cs", Expected);
+
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 

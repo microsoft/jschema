@@ -46,5 +46,21 @@ namespace Microsoft.Json.Schema.TestUtilities
             File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".actual.cs"), actual);
 #endif
         }
+
+        private static readonly string InputFilesRootDirectory = "InputFiles";
+
+        public static void WriteTestInputFile(
+            string className,
+            string fileName,
+            string fileContents,
+            [System.Runtime.CompilerServices.CallerMemberName] string methodName = ""
+            )
+        {
+            fileContents = fileContents.Replace(VersionConstants.FileVersion, "$JSchemaFileVersion$");
+            string inputFileDirectory = Path.Combine(InputFilesRootDirectory, className, methodName);
+            Directory.CreateDirectory(inputFileDirectory);
+            string inputFilePath = Path.Combine(inputFileDirectory, fileName);
+            File.WriteAllText(inputFilePath, fileContents);
+        }
     }
 }
