@@ -83,23 +83,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates class description")]
         public void GeneratesClassDescription()
         {
-            const string Expected =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    /// <summary>
-    /// The description
-    /// </summary>
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-    }
-}";
-            TestUtil.WriteTestInputFile(this.GetType().Name, nameof(Expected) + ".cs", Expected);
+            string Expected = TestUtil.ReadTestInputFile(this.GetType().Name, "Expected.cs");
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
