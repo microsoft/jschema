@@ -95,108 +95,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+            string ExpectedClass = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedClass.cs");
+            string ExpectedComparerClass = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedComparerClass.cs");
 
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public string StringProperty { get; set; }
-        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty { get; set; }
-        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public bool BooleanProperty { get; set; }
-        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty { get; set; }
-    }
-}";
-
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.StringProperty != right.StringProperty)
-            {
-                return false;
-            }
-
-            if (left.NumberProperty != right.NumberProperty)
-            {
-                return false;
-            }
-
-            if (left.BooleanProperty != right.BooleanProperty)
-            {
-                return false;
-            }
-
-            if (left.IntegerProperty != right.IntegerProperty)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.StringProperty != null)
-                {
-                    result = (result * 31) + obj.StringProperty.GetHashCode();
-                }
-
-                result = (result * 31) + obj.NumberProperty.GetHashCode();
-                result = (result * 31) + obj.BooleanProperty.GetHashCode();
-                result = (result * 31) + obj.IntegerProperty.GetHashCode();
-            }
-
-            return result;
-        }
-    }
-}";
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -219,82 +120,8 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
-        public D ObjectProp { get; set; }
-    }
-}";
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (!D.ValueComparer.Equals(left.ObjectProp, right.ObjectProp))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.ObjectProp != null)
-                {
-                    result = (result * 31) + obj.ObjectProp.ValueGetHashCode();
-                }
-            }
-
-            return result;
-        }
-    }
-}";
+            string ExpectedClass = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedClass.cs");
+            string ExpectedComparerClass = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedComparerClass.cs");
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -320,15 +147,8 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
         public void ThrowsIfReferenceIsNotAFragment()
         {
-            const string SchemaText = @"
-{
-  ""type"": ""object"",
-  ""properties"": {
-    ""p"": {
-      ""$ref"": ""https://example.com/pschema.schema.json/#""
-    }
-  },
-}";
+            string SchemaText = TestUtil.ReadTestInputFile(this.GetType().Name, "Schema.json");
+
             JsonSchema schema = SchemaReader.ReadSchema(SchemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -341,19 +161,8 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator throws if reference does not specify a definition")]
         public void ThrowsIfReferenceDoesNotSpecifyADefinition()
         {
-            const string SchemaText = @"
-{
-  ""type"": ""object"",
-  ""properties"": {
-    ""p"": {
-      ""$ref"": ""#/notDefinitions/p""
-    }
-  },
-  ""notDefinitions"": {
-    ""p"": {
-    }
-  }
-}";
+            string SchemaText = TestUtil.ReadTestInputFile(this.GetType().Name, "Schema.json");
+
             JsonSchema schema = SchemaReader.ReadSchema(SchemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -366,19 +175,8 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator throws if referenced definition does not exist")]
         public void ThrowsIfReferencedDefinitionDoesNotExist()
         {
-            const string SchemaText = @"
-{
-  ""type"": ""object"",
-  ""properties"": {
-    ""p"": {
-      ""$ref"": ""#/definitions/nonExistentDefinition""
-    }
-  },
-  ""definitions"": {
-    ""p"": {
-    }
-  }
-}";
+            string SchemaText = TestUtil.ReadTestInputFile(this.GetType().Name, "Schema.json");
+
             JsonSchema schema = SchemaReader.ReadSchema(SchemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -412,6 +210,7 @@ namespace N
         public IList<object> ArrayProp { get; set; }
     }
 }";
+            TestUtil.WriteTestInputFile(this.GetType().Name, "ExpectedClass.cs", ExpectedClass);
 
             string ExpectedComparerClass =
 @"using System;
@@ -491,6 +290,7 @@ namespace N
         }
     }
 }";
+            TestUtil.WriteTestInputFile(this.GetType().Name, "ExpectedComparerClass.cs", ExpectedComparerClass);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -537,6 +337,7 @@ namespace N
         public string ExampleProp { get; set; }
     }
 }";
+            TestUtil.WriteTestInputFile(this.GetType().Name, "ExpectedClass.cs", Expected);
 
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);

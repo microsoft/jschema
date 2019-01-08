@@ -13,6 +13,10 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
 
   <ItemGroup>
+    <Compile Remove="TestData\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="TestData\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
