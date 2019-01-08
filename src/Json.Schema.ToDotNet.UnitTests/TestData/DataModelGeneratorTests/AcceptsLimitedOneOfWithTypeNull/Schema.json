@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "arrayOrNullProperty": {
+      "description": "A property that can either be an array or null.",
+      "oneOf": [
+        {
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "items": {
+        "type": "integer"
+      }
+    }
+  }
+}

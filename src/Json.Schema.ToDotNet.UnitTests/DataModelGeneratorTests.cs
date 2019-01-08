@@ -653,36 +653,13 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         {
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(
-    @"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""version"": {
-      ""enum"": [
-        ""v1.0"",
-        ""v2.0""
-      ]
-    }
-  }
-}", TestUtil.TestFilePath);
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
-            const string Expected =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        [DataMember(Name = ""version"", IsRequired = false, EmitDefaultValue = false)]
-        public string Version { get; set; }
-    }
-}";
             string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+            actual.Should().Be(expectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates attributes for required and optional properties")]
@@ -690,44 +667,13 @@ namespace N
         {
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(
-    @"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""requiredProp1"": {
-      ""type"": ""string""
-    },
-    ""optionalProp"": {
-      ""type"": ""string""
-    },
-    ""requiredProp2"": {
-      ""type"": ""string""
-    }
-  },
-  ""required"": [ ""requiredProp1"", ""requiredProp2"" ]
-}", TestUtil.TestFilePath);
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
-            const string Expected =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        [DataMember(Name = ""requiredProp1"", IsRequired = true)]
-        public string RequiredProp1 { get; set; }
-        [DataMember(Name = ""optionalProp"", IsRequired = false, EmitDefaultValue = false)]
-        public string OptionalProp { get; set; }
-        [DataMember(Name = ""requiredProp2"", IsRequired = true)]
-        public string RequiredProp2 { get; set; }
-    }
-}";
             string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+            actual.Should().Be(expectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates sealed classes when option is set")]
@@ -737,73 +683,23 @@ namespace N
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(
-@"{
-  ""type"": ""object"",
-}", TestUtil.TestFilePath);
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
-            const string Expected =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
+            string exectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public sealed class C
-    {
-    }
-}";
             string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+            actual.Should().Be(exectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator accepts a limited oneOf with \"type\": \"null\"")]
         public void AcceptsLimitedOneOfWithTypeNull()
         {
-            const string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""arrayOrNullProperty"": {
-      ""description"": ""A property that can either be an array or null."",
-      ""oneOf"": [
-        {
-          ""type"": ""array""
-        },
-        {
-          ""type"": ""null""
-        }
-      ],
-      ""items"": {
-        ""type"": ""integer""
-      }
-    }
-  }
-}";
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        /// <summary>
-        /// A property that can either be an array or null.
-        /// </summary>
-        [DataMember(Name = ""arrayOrNullProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public IList<int> ArrayOrNullProperty { get; set; }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -811,7 +707,7 @@ namespace N
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass
+                    ClassContents = expectedClass
                 }
             };
 
