@@ -360,95 +360,14 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
-            const string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-  ""startTime"": {
-    ""type"": ""string"",
-    ""format"": ""date-time""
-    }
-  }
-}";
-
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
-        public DateTime StartTime { get; set; }
-    }
-}";
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.StartTime != right.StartTime)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + obj.StartTime.GetHashCode();
-            }
-
-            return result;
-        }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -456,8 +375,8 @@ namespace N
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    ClassContents = expectedClass,
+                    ComparerClassContents = expectedComparerClass
                 }
             };
 
@@ -468,106 +387,22 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates URI-valued properties from uri format")]
         public void GeneratesUriValuedPropertiesFromUriFormat()
         {
-            string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-  ""targetFile"": {
-    ""type"": ""string"",
-    ""format"": ""uri""
-    }
-  }
-}";
-
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
-        public Uri TargetFile { get; set; }
-    }
-}";
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.TargetFile != right.TargetFile)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.TargetFile != null)
-                {
-                    result = (result * 31) + obj.TargetFile.GetHashCode();
-                }
-            }
-
-            return result;
-        }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    ClassContents = expectedClass,
+                    ComparerClassContents = expectedComparerClass
                 }
             };
 
@@ -577,106 +412,22 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates URI-valued properties from uri-reference format")]
         public void GeneratesUriValuedPropertiesFromUriReferenceFormat()
         {
-            string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-  ""targetFile"": {
-    ""type"": ""string"",
-    ""format"": ""uri-reference""
-    }
-  }
-}";
-
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
-        public Uri TargetFile { get; set; }
-    }
-}";
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.TargetFile != right.TargetFile)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.TargetFile != null)
-                {
-                    result = (result * 31) + obj.TargetFile.GetHashCode();
-                }
-            }
-
-            return result;
-        }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    ClassContents = expectedClass,
+                    ComparerClassContents = expectedComparerClass
                 }
             };
 
