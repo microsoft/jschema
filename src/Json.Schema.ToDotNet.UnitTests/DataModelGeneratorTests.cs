@@ -112,7 +112,6 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
             string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
-
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
