@@ -321,233 +321,13 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
         public void GeneratesClassesForSchemasInDefinitions()
         {
-            const string ExpectedRootClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+            string expectedRootClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedRootClass.cs");
+            string expectedRootComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedRootComparerClass.cs");
+            string expectedDefinedClass1 = TestUtil.ReadTestInputFile(ClassName, "ExpectedDefinedClass1.cs");
+            string expectedComparerClass1 = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass1.cs");
+            string expectedDefinedClass2 = TestUtil.ReadTestInputFile(ClassName, "ExpectedDefinedClass2.cs");
+            string expectedComparerClass2 = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass2.cs");
 
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
-        public bool RootProp { get; set; }
-    }
-}";
-
-            const string ExpectedRootComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.RootProp != right.RootProp)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + obj.RootProp.GetHashCode();
-            }
-
-            return result;
-        }
-    }
-}";
-
-            const string ExpectedDefinedClass1 =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class Def1
-    {
-        public static IEqualityComparer<Def1> ValueComparer => Def1EqualityComparer.Instance;
-
-        public bool ValueEquals(Def1 other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
-        public string Prop1 { get; set; }
-    }
-}";
-
-            const string ExpectedComparerClass1 =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type Def1 for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class Def1EqualityComparer : IEqualityComparer<Def1>
-    {
-        internal static readonly Def1EqualityComparer Instance = new Def1EqualityComparer();
-
-        public bool Equals(Def1 left, Def1 right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.Prop1 != right.Prop1)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(Def1 obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.Prop1 != null)
-                {
-                    result = (result * 31) + obj.Prop1.GetHashCode();
-                }
-            }
-
-            return result;
-        }
-    }
-}";
-
-            const string ExpectedDefinedClass2 =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class Def2
-    {
-        public static IEqualityComparer<Def2> ValueComparer => Def2EqualityComparer.Instance;
-
-        public bool ValueEquals(Def2 other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
-        public int Prop2 { get; set; }
-    }
-}";
-
-            const string ExpectedComparerClass2 =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type Def2 for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class Def2EqualityComparer : IEqualityComparer<Def2>
-    {
-        internal static readonly Def2EqualityComparer Instance = new Def2EqualityComparer();
-
-        public bool Equals(Def2 left, Def2 right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.Prop2 != right.Prop2)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(Def2 obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + obj.Prop2.GetHashCode();
-            }
-
-            return result;
-        }
-    }
-}";
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -559,18 +339,18 @@ namespace N
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedRootClass,
-                    ComparerClassContents = ExpectedRootComparerClass
+                    ClassContents = expectedRootClass,
+                    ComparerClassContents = expectedRootComparerClass
                 },
                 ["Def1"] = new ExpectedContents
                 {
-                    ClassContents = ExpectedDefinedClass1,
-                    ComparerClassContents = ExpectedComparerClass1
+                    ClassContents = expectedDefinedClass1,
+                    ComparerClassContents = expectedComparerClass1
                 },
                 ["Def2"] = new ExpectedContents
                 {
-                    ClassContents = ExpectedDefinedClass2,
-                    ComparerClassContents = ExpectedComparerClass2
+                    ClassContents = expectedDefinedClass2,
+                    ComparerClassContents = expectedComparerClass2
                 }
             };
 
