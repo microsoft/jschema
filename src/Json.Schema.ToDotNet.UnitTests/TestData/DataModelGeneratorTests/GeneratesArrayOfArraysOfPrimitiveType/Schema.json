@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "arrayOfArrayOfInt": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/itemType"
+      }
+    }
+  },
+  "definitions": {
+    "itemType": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    }
+  }
+}
