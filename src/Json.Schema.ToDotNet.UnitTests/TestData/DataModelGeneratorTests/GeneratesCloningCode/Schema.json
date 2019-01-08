@@ -1,0 +1,132 @@
+{
+  "type": "object",
+  "properties": {
+    "integerProperty": {
+      "type": "integer",
+      "description": "An integer property."
+    },
+    "integerPropertyWithDefault": {
+      "type": "integer",
+      "description": "An integer property with a default value.",
+      "default": 42
+    },
+    "numberProperty": {
+      "type": "number",
+      "description": "A number property."
+    },
+    "numberPropertyWithDefault": {
+      "type": "number",
+      "description": "A number property with a default value.",
+      "default": 42.1
+    },
+    "stringProperty": {
+      "type": "string",
+      "description": "A string property."
+    },
+    "stringPropertyWithDefault": {
+      "type": "string",
+      "description": "A string property with a default value.",
+      "default": "Don't panic."
+    },
+    "booleanProperty": {
+      "type": "boolean",
+      "description": "A Boolean property."
+    },
+    "booleanPropertyWithTrueDefault": {
+      "type": "boolean",
+      "description": "A Boolean property with a true default value.",
+      "default": true
+    },
+    "booleanPropertyWithFalseDefault": {
+      "type": "boolean",
+      "description": "A Boolean property with a false default value.",
+      "default": false
+    },
+    "enumeratedPropertyWithDefault": {
+      "description": "An enumerated property with a default value.",
+      "enum": [ "red", "green", "blue", "black", "white" ],
+      "default": "green"
+    },
+    "arrayProp": {
+      "type": "array",
+      "description": "An array property.",
+      "items": {
+        "type": "number"
+      }
+    },
+    "uriProp": {
+      "type": "string",
+      "description": "A Uri property.",
+      "format": "uri"
+    },
+    "dateTimeProp": {
+      "type": "string",
+      "description": "A DateTime property.",
+      "format": "date-time"
+    },
+    "referencedTypeProp": {
+      "$ref": "#/definitions/d"
+    },
+    "arrayOfRefProp": {
+      "type": "array",
+      "description": "An array of a cloneable type.",
+      "items": {
+        "$ref": "#/definitions/d"
+      }
+    },
+    "arrayOfArrayProp": {
+      "type": "array",
+      "description": "An array of arrays.",
+      "items": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/d"
+        }
+      }
+    },
+    "dictionaryProp": {
+      "description": "A dictionary property.",
+      "type": "object"
+    },
+    "dictionaryWithPrimitiveSchemaProp": {
+      "description": "A dictionary property whose values are defined by a primitive additionalProperties schema.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "dictionaryWithObjectSchemaProp": {
+      "description": "A dictionary property whose values are defined by an object-valued additionalProperties schema.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/d"
+      }
+    },
+    "dictionaryWithObjectArraySchemaProp": {
+      "description": "A dictionary property whose values are defined by an array-of-object-valued additionalProperties schema.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/d"
+        }
+      }
+    },
+    "dictionaryWithUriKeyProp": {
+      "description": "A dictionary property whose keys are Uris.",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/d"
+      }
+    },
+    "dictionaryWithHintedValueProp": {
+      "description": "A dictionary property whose value type is hinted.",
+      "type": "object"
+    }
+  },
+  "definitions": {
+    "d": {
+      "type": "object"
+    }
+  }
+}

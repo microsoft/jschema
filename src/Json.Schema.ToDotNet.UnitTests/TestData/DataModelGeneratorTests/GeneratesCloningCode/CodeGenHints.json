@@ -1,0 +1,50 @@
+{
+  "C.EnumeratedPropertyWithDefault": [
+    {
+      "kind": "EnumHint",
+      "arguments": {
+        "typeName": "Color",
+        "description": "Some colors."
+      }
+    }
+  ],
+  "C.DictionaryProp": [
+    {
+      "kind": "DictionaryHint"
+    }
+  ],
+  "C.DictionaryWithPrimitiveSchemaProp": [
+    {
+      "kind": "DictionaryHint"
+    }
+  ],
+  "C.DictionaryWithObjectSchemaProp": [
+    {
+      "kind": "DictionaryHint"
+    }
+  ],
+  "C.DictionaryWithObjectArraySchemaProp": [
+    {
+      "kind": "DictionaryHint"
+    }
+  ],
+  "C.DictionaryWithUriKeyProp": [
+    {
+      "kind": "DictionaryHint",
+      "arguments": {
+        "keyTypeName": "Uri"
+      }
+    }
+  ],
+  "C.DictionaryWithHintedValueProp": [
+    {
+      "kind": "DictionaryHint",
+      "arguments": {
+        "valueTypeName": "V",
+        "comparisonKind": "ObjectEquals",
+        "hashKind": "ScalarReferenceType",
+        "initializationKind": "SimpleAssign"
+      }
+    }
+  ]
+}
