@@ -13,6 +13,13 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
     public class DataModelGeneratorTests
     {
         private const string ClassName = nameof(DataModelGeneratorTests);
+
+        // File names for commonly used input data files.
+        private const string SchemaFileName = "Schema.json";
+        private const string ExpectedClassFileName = "ExpectedClass.cs";
+        private const string ExpectedComparerClassFileName = "ExpectedComparerClass.cs";
+        private const string HintsFileName = "CodeGenHints.json";
+
         private static readonly string PrimaryOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName);
 
         private TestFileSystem _testFileSystem;
@@ -84,7 +91,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates class description")]
         public void GeneratesClassDescription()
         {
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
@@ -96,8 +103,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
         public void GeneratesPropertiesWithBuiltInTypes()
         {
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
-            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
 
             _settings.GenerateEqualityComparers = true;
@@ -121,8 +128,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
-            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -148,7 +155,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator throws if reference is not a fragment")]
         public void ThrowsIfReferenceIsNotAFragment()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
 
             JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -162,7 +169,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator throws if reference does not specify a definition")]
         public void ThrowsIfReferenceDoesNotSpecifyADefinition()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
 
             JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -176,7 +183,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator throws if referenced definition does not exist")]
         public void ThrowsIfReferencedDefinitionDoesNotExist()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
 
             JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -190,8 +197,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
-            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -220,7 +227,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
             string actual = generator.Generate(schema);
             actual.Should().Be(expectedClass);
@@ -229,7 +236,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties whose property type is ref")]
         public void GeneratesXmlCommentsForPropertiesWhosePropertyTypeIsRef()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
             string expectedRootClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedRootClass.cs");
             string expectedRootComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedRootComparerClass.cs");
             string expectedColorClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedColorClass.cs");
@@ -267,7 +274,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
             string actual = generator.Generate(schema);
             actual.Should().Be(expectedClass);
@@ -276,11 +283,11 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates cloning code")]
         public void GeneratesCloningCode()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
             JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
-            string hintsText = TestUtil.ReadTestInputFile(ClassName, "CodeGenHints.json");
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
+            string hintsText = TestUtil.ReadTestInputFile(ClassName, HintsFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
             string expectedSyntaxInterface = TestUtil.ReadTestInputFile(ClassName, "ExpectedSyntaxInterface.cs");
             string expectedKindEnum = TestUtil.ReadTestInputFile(ClassName, "ExpectedKindEnum.cs");
             string expectedRewritingVisitor = TestUtil.ReadTestInputFile(ClassName, "ExpectedRewritingVisitor.cs");
@@ -360,9 +367,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates date-time-valued properties")]
         public void GeneratesDateTimeValuedProperties()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
-            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -387,9 +394,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates URI-valued properties from uri format")]
         public void GeneratesUriValuedPropertiesFromUriFormat()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
-            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -412,9 +419,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates URI-valued properties from uri-reference format")]
         public void GeneratesUriValuedPropertiesFromUriReferenceFormat()
         {
-            string schemaText = TestUtil.ReadTestInputFile(ClassName, "Schema.json");
-            string expectedClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedClass.cs");
-            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, "ExpectedComparerClass.cs");
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
