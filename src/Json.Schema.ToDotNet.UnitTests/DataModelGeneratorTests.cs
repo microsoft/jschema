@@ -53,7 +53,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         }
 
         [Fact(DisplayName = "DataModelGenerator does not throw if ForceOverwrite setting is set")]
-        public void DoesNotThowIfForceOverwriteSettingIsSet()
+        public void DoesNotThrowIfForceOverwriteSettingIsSet()
         {
             // This is the default from MakeSettings; restated here for explicitness.
             _settings.ForceOverwrite = true;
@@ -83,13 +83,13 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates class description")]
         public void GeneratesClassDescription()
         {
-            string Expected = TestUtil.ReadTestInputFile(this.GetType().Name, "Expected.cs");
+            string ExpectedClass = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedClass.cs");
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
             string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+            actual.Should().Be(ExpectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
@@ -189,108 +189,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
         public void GeneratesArrayValuedProperty()
         {
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+            string ExpectedClass = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedClass.cs");
 
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
-        public IList<object> ArrayProp { get; set; }
-    }
-}";
-            TestUtil.WriteTestInputFile(this.GetType().Name, "ExpectedClass.cs", ExpectedClass);
-
-            string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (!object.ReferenceEquals(left.ArrayProp, right.ArrayProp))
-            {
-                if (left.ArrayProp == null || right.ArrayProp == null)
-                {
-                    return false;
-                }
-
-                if (left.ArrayProp.Count != right.ArrayProp.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < left.ArrayProp.Count; ++index_0)
-                {
-                    if (!object.Equals(left.ArrayProp[index_0], right.ArrayProp[index_0]))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.ArrayProp != null)
-                {
-                    foreach (var value_0 in obj.ArrayProp)
-                    {
-                        result = result * 31;
-                        if (value_0 != null)
-                        {
-                            result = (result * 31) + value_0.GetHashCode();
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-    }
-}";
-            TestUtil.WriteTestInputFile(this.GetType().Name, "ExpectedComparerClass.cs", ExpectedComparerClass);
+            string ExpectedComparerClass = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedComparerClass.cs");
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
@@ -319,25 +220,7 @@ namespace N
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("PropertyDescription");
 
-            const string Expected =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        /// <summary>
-        /// An example property.
-        /// </summary>
-        [DataMember(Name = ""exampleProp"", IsRequired = false, EmitDefaultValue = false)]
-        public string ExampleProp { get; set; }
-    }
-}";
-            TestUtil.WriteTestInputFile(this.GetType().Name, "ExpectedClass.cs", Expected);
+            string Expected = TestUtil.ReadTestInputFile(this.GetType().Name, "ExpectedClass.cs");
 
             string actual = generator.Generate(schema);
             actual.Should().Be(Expected);
