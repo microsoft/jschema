@@ -444,98 +444,13 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates integer property from reference")]
         public void GeneratesIntegerPropertyFromReference()
         {
-            const string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""intDefProp"": {
-      ""$ref"": ""#/definitions/d""
-    }
-  },
-  ""definitions"": {
-    ""d"": {
-      ""type"": ""integer""
-    }
-  }
-}";
-
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntDefProp { get; set; }
-    }
-}";
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (left.IntDefProp != right.IntDefProp)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                result = (result * 31) + obj.IntDefProp.GetHashCode();
-            }
-
-            return result;
-        }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -543,8 +458,8 @@ namespace N
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    ClassContents = expectedClass,
+                    ComparerClassContents = expectedComparerClass
                 },
                 ["D"] = new ExpectedContents()
             };
@@ -555,150 +470,11 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates attributes for properties of primitive type with defaults.")]
         public void GeneratesAttributesForPropertiesOfPrimitiveTypeWithDefaults()
         {
-            const string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""integerProperty"": {
-      ""type"": ""integer"",
-      ""description"": ""An integer property.""
-    },
-    ""integerPropertyWithDefault"": {
-      ""type"": ""integer"",
-      ""description"": ""An integer property with a default value."",
-      ""default"": 42
-    },
-    ""numberProperty"": {
-      ""type"": ""number"",
-      ""description"": ""A number property.""
-    },
-    ""numberPropertyWithDefault"": {
-      ""type"": ""number"",
-      ""description"": ""A number property with a default value."",
-      ""default"": 42.1
-    },
-    ""stringProperty"": {
-      ""type"": ""string"",
-      ""description"": ""A string property.""
-    },
-    ""stringPropertyWithDefault"": {
-      ""type"": ""string"",
-      ""description"": ""A string property with a default value."",
-      ""default"": ""Thanks for all the fish.""
-    },
-    ""booleanProperty"": {
-      ""type"": ""boolean"",
-      ""description"": ""A Boolean property.""
-    },
-    ""booleanPropertyWithTrueDefault"": {
-      ""type"": ""boolean"",
-      ""description"": ""A Boolean property with a true default value."",
-      ""default"": true
-    },
-    ""booleanPropertyWithFalseDefault"": {
-      ""type"": ""boolean"",
-      ""description"": ""A Boolean property with a false default value."",
-      ""default"": false
-    },
-    ""nonPrimitivePropertyWithDefault"": {
-      ""type"": ""array"",
-      ""description"": ""A non-primitive property with a default value: DefaultValue attribute will -not- be emitted."",
-      ""items"": {
-        ""type"": ""integer""
-      },
-      ""default"": []
-    }
-  }
-}";
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        /// <summary>
-        /// An integer property.
-        /// </summary>
-        [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty { get; set; }
-
-        /// <summary>
-        /// An integer property with a default value.
-        /// </summary>
-        [DataMember(Name = ""integerPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(42)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public int IntegerPropertyWithDefault { get; set; }
-
-        /// <summary>
-        /// A number property.
-        /// </summary>
-        [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty { get; set; }
-
-        /// <summary>
-        /// A number property with a default value.
-        /// </summary>
-        [DataMember(Name = ""numberPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(42.1)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public double NumberPropertyWithDefault { get; set; }
-
-        /// <summary>
-        /// A string property.
-        /// </summary>
-        [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public string StringProperty { get; set; }
-
-        /// <summary>
-        /// A string property with a default value.
-        /// </summary>
-        [DataMember(Name = ""stringPropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(""Thanks for all the fish."")]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public string StringPropertyWithDefault { get; set; }
-
-        /// <summary>
-        /// A Boolean property.
-        /// </summary>
-        [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public bool BooleanProperty { get; set; }
-
-        /// <summary>
-        /// A Boolean property with a true default value.
-        /// </summary>
-        [DataMember(Name = ""booleanPropertyWithTrueDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool BooleanPropertyWithTrueDefault { get; set; }
-
-        /// <summary>
-        /// A Boolean property with a false default value.
-        /// </summary>
-        [DataMember(Name = ""booleanPropertyWithFalseDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(false)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool BooleanPropertyWithFalseDefault { get; set; }
-
-        /// <summary>
-        /// A non-primitive property with a default value: DefaultValue attribute will -not- be emitted.
-        /// </summary>
-        [DataMember(Name = ""nonPrimitivePropertyWithDefault"", IsRequired = false, EmitDefaultValue = false)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public IList<int> NonPrimitivePropertyWithDefault { get; set; }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             generator.Generate(schema);
 
@@ -706,7 +482,7 @@ namespace N
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass
+                    ClassContents = expectedClass
                 }
             };
 
