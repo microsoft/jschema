@@ -102,8 +102,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Basic");
 
-            string actual = generator.Generate(schema);
-            actual.Should().Be(expectedClass);
+            string actualClass = generator.Generate(schema);
+            actualClass.Should().Be(expectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates properties with built-in types")]
@@ -210,9 +210,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
 
-            string actual = generator.Generate(schema);
+            string actualClass = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(expectedClass, actual, nameof(GeneratesArrayValuedProperty));
+            TestUtil.WriteTestResultFiles(expectedClass, actualClass, nameof(GeneratesArrayValuedProperty));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
@@ -235,8 +235,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-            string actual = generator.Generate(schema);
-            actual.Should().Be(expectedClass);
+            string actualClass = generator.Generate(schema);
+            actualClass.Should().Be(expectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates XML comments for properties whose property type is ref")]
@@ -282,8 +282,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-            string actual = generator.Generate(schema);
-            actual.Should().Be(expectedClass);
+            string actualClass = generator.Generate(schema);
+            actualClass.Should().Be(expectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates cloning code")]
@@ -507,9 +507,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
             string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
-            string actual = generator.Generate(schema);
+            string actualClass = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(expectedClass, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
+            TestUtil.WriteTestResultFiles(expectedClass, actualClass, nameof(GeneratesArrayOfPrimitiveTypeByReference));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
@@ -577,9 +577,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
-            string actual = generator.Generate(schema);
+            string actualClass = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(expectedClass, actual, nameof(GeneratesArrayOfArraysOfPrimitiveType));
+            TestUtil.WriteTestResultFiles(expectedClass, actualClass, nameof(GeneratesArrayOfArraysOfPrimitiveType));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
@@ -604,9 +604,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
-            string actual = generator.Generate(schema);
+            string actualClass = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(expectedClass, actual, nameof(GeneratesArrayOfArraysOfObjectType));
+            TestUtil.WriteTestResultFiles(expectedClass, actualClass, nameof(GeneratesArrayOfArraysOfObjectType));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
@@ -631,9 +631,9 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
-            string actual = generator.Generate(schema);
+            string actualClass = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(expectedClass, actual, nameof(GeneratesArrayOfArraysOfClassType));
+            TestUtil.WriteTestResultFiles(expectedClass, actualClass, nameof(GeneratesArrayOfArraysOfClassType));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
@@ -658,8 +658,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-            string actual = generator.Generate(schema);
-            actual.Should().Be(expectedClass);
+            string actualClass = generator.Generate(schema);
+            actualClass.Should().Be(expectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates attributes for required and optional properties")]
@@ -672,8 +672,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-            string actual = generator.Generate(schema);
-            actual.Should().Be(expectedClass);
+            string actualClass = generator.Generate(schema);
+            actualClass.Should().Be(expectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates sealed classes when option is set")]
@@ -688,8 +688,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
             string exectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
 
-            string actual = generator.Generate(schema);
-            actual.Should().Be(exectedClass);
+            string actualClass = generator.Generate(schema);
+            actualClass.Should().Be(exectedClass);
         }
 
         [Fact(DisplayName = "DataModelGenerator accepts a limited oneOf with \"type\": \"null\"")]
