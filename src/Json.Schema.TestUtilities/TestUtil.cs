@@ -48,19 +48,20 @@ namespace Microsoft.Json.Schema.TestUtilities
 #endif
         }
 
+        private const string FileVersionReplacementToken = "$JSchemaFileVersion$";
+
         public static void WriteTestInputFile(
             string className,
             string fileName,
             string fileContents,
             [System.Runtime.CompilerServices.CallerMemberName] string methodName = "")
         {
-            fileContents = fileContents.Replace(VersionConstants.FileVersion, "$JSchemaFileVersion$");
+            fileContents = fileContents.Replace(VersionConstants.FileVersion, FileVersionReplacementToken);
             string inputFileDirectory = Path.Combine(TestDataDirectoryName, className, methodName);
             Directory.CreateDirectory(inputFileDirectory);
             string inputFilePath = Path.Combine(inputFileDirectory, fileName);
             File.WriteAllText(inputFilePath, fileContents);
         }
-
 
         public static string ReadTestInputFile(
             string className,
@@ -70,7 +71,7 @@ namespace Microsoft.Json.Schema.TestUtilities
             string inputFileDirectory = Path.Combine(TestDataDirectoryName, className, methodName);
             string inputFilePath = Path.Combine(inputFileDirectory, fileName);
             string fileContents = File.ReadAllText(inputFilePath);
-            fileContents = fileContents.Replace("$JSchemaFileVersion$", VersionConstants.FileVersion);
+            fileContents = fileContents.Replace(FileVersionReplacementToken, VersionConstants.FileVersion);
             return fileContents;
         }
     }
