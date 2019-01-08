@@ -7,6 +7,7 @@ namespace Microsoft.Json.Schema.TestUtilities
 {
     public static class TestUtil
     {
+        public const string TestDataDirectoryName = "TestData";
         public const string TestFilePath = @"C:\test.json";
 
         public static string ReadTestDataFile(string fileNameStem)
@@ -19,7 +20,7 @@ namespace Microsoft.Json.Schema.TestUtilities
 
         public static string GetTestDataFilePath(string fileNameStem)
         {
-            return $"TestData\\{fileNameStem}.schema.json";
+            return $"{TestDataDirectoryName}\\{fileNameStem}.schema.json";
         }
 
         public static Stream GetTestDataStream(string fileNameStem)
@@ -47,8 +48,6 @@ namespace Microsoft.Json.Schema.TestUtilities
 #endif
         }
 
-        private static readonly string InputFilesRootDirectory = "InputFiles";
-
         public static void WriteTestInputFile(
             string className,
             string fileName,
@@ -57,7 +56,7 @@ namespace Microsoft.Json.Schema.TestUtilities
             )
         {
             fileContents = fileContents.Replace(VersionConstants.FileVersion, "$JSchemaFileVersion$");
-            string inputFileDirectory = Path.Combine(InputFilesRootDirectory, className, methodName);
+            string inputFileDirectory = Path.Combine(TestDataDirectoryName, className, methodName);
             Directory.CreateDirectory(inputFileDirectory);
             string inputFilePath = Path.Combine(inputFileDirectory, fileName);
             File.WriteAllText(inputFilePath, fileContents);
