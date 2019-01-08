@@ -596,164 +596,24 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of object type")]
         public void GeneratesArrayOfArraysOfObjectType()
         {
-            const string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""arrayOfArrayOfObject"": {
-      ""type"": ""array"",
-      ""items"": {
-        ""$ref"": ""#/definitions/itemType""
-      }
-    }
-  },
-  ""definitions"": {
-    ""itemType"": {
-      ""type"": ""array"",
-      ""items"": {
-        ""type"": ""object""
-      }
-    }
-  }
-}";
-
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
-        public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
-    }
-}";
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (!object.ReferenceEquals(left.ArrayOfArrayOfObject, right.ArrayOfArrayOfObject))
-            {
-                if (left.ArrayOfArrayOfObject == null || right.ArrayOfArrayOfObject == null)
-                {
-                    return false;
-                }
-
-                if (left.ArrayOfArrayOfObject.Count != right.ArrayOfArrayOfObject.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < left.ArrayOfArrayOfObject.Count; ++index_0)
-                {
-                    if (!object.ReferenceEquals(left.ArrayOfArrayOfObject[index_0], right.ArrayOfArrayOfObject[index_0]))
-                    {
-                        if (left.ArrayOfArrayOfObject[index_0] == null || right.ArrayOfArrayOfObject[index_0] == null)
-                        {
-                            return false;
-                        }
-
-                        if (left.ArrayOfArrayOfObject[index_0].Count != right.ArrayOfArrayOfObject[index_0].Count)
-                        {
-                            return false;
-                        }
-
-                        for (int index_1 = 0; index_1 < left.ArrayOfArrayOfObject[index_0].Count; ++index_1)
-                        {
-                            if (!object.Equals(left.ArrayOfArrayOfObject[index_0][index_1], right.ArrayOfArrayOfObject[index_0][index_1]))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.ArrayOfArrayOfObject != null)
-                {
-                    foreach (var value_0 in obj.ArrayOfArrayOfObject)
-                    {
-                        result = result * 31;
-                        if (value_0 != null)
-                        {
-                            foreach (var value_1 in value_0)
-                            {
-                                result = result * 31;
-                                if (value_1 != null)
-                                {
-                                    result = (result * 31) + value_1.GetHashCode();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayOfArraysOfObjectType));
+            TestUtil.WriteTestResultFiles(expectedClass, actual, nameof(GeneratesArrayOfArraysOfObjectType));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    ClassContents = expectedClass,
+                    ComparerClassContents = expectedComparerClass
                 }
             };
 
@@ -763,168 +623,24 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates array of arrays of class type")]
         public void GeneratesArrayOfArraysOfClassType()
         {
-            const string Schema =
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""arrayOfArrayOfD"": {
-      ""type"": ""array"",
-      ""items"": {
-        ""$ref"": ""#/definitions/itemType""
-      }
-    }
-  },
-  ""definitions"": {
-    ""itemType"": {
-      ""type"": ""array"",
-      ""items"": {
-        ""$ref"": ""#/definitions/d""
-      }
-    },
-    ""d"": {
-      ""type"": ""object"",
-      }
-    }
-  }
-}";
-
-            const string ExpectedClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
-
-        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
-        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
-
-        [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
-        public IList<IList<D>> ArrayOfArrayOfD { get; set; }
-    }
-}";
-            const string ExpectedComparerClass =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-
-namespace N
-{
-    /// <summary>
-    /// Defines methods to support the comparison of objects of type C for equality.
-    /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    internal sealed class CEqualityComparer : IEqualityComparer<C>
-    {
-        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
-
-        public bool Equals(C left, C right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
-            {
-                return false;
-            }
-
-            if (!object.ReferenceEquals(left.ArrayOfArrayOfD, right.ArrayOfArrayOfD))
-            {
-                if (left.ArrayOfArrayOfD == null || right.ArrayOfArrayOfD == null)
-                {
-                    return false;
-                }
-
-                if (left.ArrayOfArrayOfD.Count != right.ArrayOfArrayOfD.Count)
-                {
-                    return false;
-                }
-
-                for (int index_0 = 0; index_0 < left.ArrayOfArrayOfD.Count; ++index_0)
-                {
-                    if (!object.ReferenceEquals(left.ArrayOfArrayOfD[index_0], right.ArrayOfArrayOfD[index_0]))
-                    {
-                        if (left.ArrayOfArrayOfD[index_0] == null || right.ArrayOfArrayOfD[index_0] == null)
-                        {
-                            return false;
-                        }
-
-                        if (left.ArrayOfArrayOfD[index_0].Count != right.ArrayOfArrayOfD[index_0].Count)
-                        {
-                            return false;
-                        }
-
-                        for (int index_1 = 0; index_1 < left.ArrayOfArrayOfD[index_0].Count; ++index_1)
-                        {
-                            if (!D.ValueComparer.Equals(left.ArrayOfArrayOfD[index_0][index_1], right.ArrayOfArrayOfD[index_0][index_1]))
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public int GetHashCode(C obj)
-        {
-            if (ReferenceEquals(obj, null))
-            {
-                return 0;
-            }
-
-            int result = 17;
-            unchecked
-            {
-                if (obj.ArrayOfArrayOfD != null)
-                {
-                    foreach (var value_0 in obj.ArrayOfArrayOfD)
-                    {
-                        result = result * 31;
-                        if (value_0 != null)
-                        {
-                            foreach (var value_1 in value_0)
-                            {
-                                result = result * 31;
-                                if (value_1 != null)
-                                {
-                                    result = (result * 31) + value_1.ValueGetHashCode();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-    }
-}";
+            string schemaText = TestUtil.ReadTestInputFile(ClassName, SchemaFileName);
+            string expectedClass = TestUtil.ReadTestInputFile(ClassName, ExpectedClassFileName);
+            string expectedComparerClass = TestUtil.ReadTestInputFile(ClassName, ExpectedComparerClassFileName);
 
             _settings.GenerateEqualityComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
-            JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
+            JsonSchema schema = SchemaReader.ReadSchema(schemaText, TestUtil.TestFilePath);
 
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayOfArraysOfClassType));
+            TestUtil.WriteTestResultFiles(expectedClass, actual, nameof(GeneratesArrayOfArraysOfClassType));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
                 [_settings.RootClassName] = new ExpectedContents
                 {
-                    ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    ClassContents = expectedClass,
+                    ComparerClassContents = expectedComparerClass
                 },
                 ["D"] = new ExpectedContents()
             };
