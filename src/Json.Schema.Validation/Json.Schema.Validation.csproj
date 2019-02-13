@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.1.0.3" />
+    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.2.beta.2019-01-09" />
   </ItemGroup>
 
   <ItemGroup>
