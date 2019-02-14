@@ -101,9 +101,6 @@ namespace Microsoft.Json.Schema.Validation
                 case RuleConfigurationDefaultLevel.Error:
                     return ResultLevel.Error;
 
-                case RuleConfigurationDefaultLevel.Open:
-                    return ResultLevel.Open;
-
                 default:
                     throw new ArgumentException("Invalid value: " + ruleConfigurationDefaultLevel, nameof(ruleConfigurationDefaultLevel));
             }
