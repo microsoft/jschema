@@ -16,16 +16,16 @@ namespace Microsoft.Json.Schema.Validation
         private const string ErrorCodePrefix = "JSON";
         internal static readonly string ErrorCodeFormat = ErrorCodePrefix + "{0:D4}";
 
-        private static Rule MakeRule(ErrorNumber errorNumber, string fullDescription, string messageFormat)
+        private static ReportingDescriptor MakeRule(ErrorNumber errorNumber, string fullDescription, string messageFormat)
         {
             string messageStringWithPath = string.Format(CultureInfo.CurrentCulture, RuleResources.ErrorMessageStringWithPath, messageFormat);
 
-            return new Rule
+            return new ReportingDescriptor
             {
                 Id = ResultFactory.RuleIdFromErrorNumber(errorNumber),
-                Configuration = new RuleConfiguration
+                DefaultConfiguration = new ReportingConfiguration
                 {
-                    DefaultLevel = RuleConfigurationDefaultLevel.Error
+                    Level = FailureLevel.Error
                 },
                 Name = new Message
                 {
@@ -35,14 +35,14 @@ namespace Microsoft.Json.Schema.Validation
                 {
                     Text = fullDescription
                 },
-                MessageStrings = new Dictionary<string, string>
+                MessageStrings = new Dictionary<string, MultiformatMessageString>
                 {
-                    [DefaultRuleMessageId] = messageStringWithPath
+                    [DefaultRuleMessageId] = new MultiformatMessageString { Text = messageStringWithPath }
                 }
             };
         }
 
-        private static readonly Dictionary<ErrorNumber, Rule> s_ruleDictionary = new Dictionary<ErrorNumber, Rule>
+        private static readonly Dictionary<ErrorNumber, ReportingDescriptor> s_ruleDictionary = new Dictionary<ErrorNumber, ReportingDescriptor>
         {
             [ErrorNumber.SyntaxError] = MakeRule(
                 ErrorNumber.SyntaxError,
@@ -205,13 +205,13 @@ namespace Microsoft.Json.Schema.Validation
                 RuleResources.ErrorDependentPropertyMissing)
         };
 
-        public static Rule GetRuleFromRuleId(string ruleId)
+        public static ReportingDescriptor GetRuleFromRuleId(string ruleId)
         {
             var errorNumber = (ErrorNumber)int.Parse(ruleId.Substring(ErrorCodePrefix.Length));
             return GetRuleFromErrorNumber(errorNumber);
         }
 
-        public static Rule GetRuleFromErrorNumber(ErrorNumber errorNumber)
+        public static ReportingDescriptor GetRuleFromErrorNumber(ErrorNumber errorNumber)
         {
             return s_ruleDictionary[errorNumber];
         }

@@ -31,7 +31,7 @@ namespace Microsoft.Json.Schema.Validation
             ErrorNumber errorNumber,
             params object[] args)
         {
-            Rule rule = RuleFactory.GetRuleFromErrorNumber(errorNumber);
+            ReportingDescriptor rule = RuleFactory.GetRuleFromErrorNumber(errorNumber);
 
             var messageArguments = new List<string> { jsonPath };
             messageArguments.AddRange(args.Select(a => a.ToString()));
@@ -39,7 +39,7 @@ namespace Microsoft.Json.Schema.Validation
             var result = new Result
             {
                 RuleId = rule.Id,
-                Level = rule.Configuration.DefaultLevel.ToLevel(),
+                Level = rule.DefaultConfiguration.Level,
                 Locations = new List<Location>
                 {
                     new Location
