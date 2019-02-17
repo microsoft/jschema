@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -13,11 +13,16 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.2.beta.2019-01-09" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Sarif">
+      <HintPath>..\..\..\sarif-artifacts\bld\bin\AnyCPU_Release\Sarif\netstandard2.0\Sarif.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
