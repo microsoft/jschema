@@ -86,7 +86,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
             }
             catch (Exception ex)
             {
-                LogToolNotification(logger, ex.Message, NotificationLevel.Error, ex);
+                LogToolNotification(logger, ex.Message, FailureLevel.Error, ex);
             }
 
             return returnCode;
@@ -117,7 +117,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
 
         private static void ReportResult(Result result, SarifLogger logger)
         {
-            Rule rule = RuleFactory.GetRuleFromRuleId(result.RuleId);
+            ReportingDescriptor rule = RuleFactory.GetRuleFromRuleId(result.RuleId);
 
             Console.Error.WriteLine(
                 result.FormatForVisualStudio(rule));
@@ -128,7 +128,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
         private static void LogToolNotification(
             SarifLogger logger,
             string message,
-            NotificationLevel level = NotificationLevel.Note,
+            FailureLevel level = FailureLevel.Note,
             Exception ex = null)
         {
             ExceptionData exceptionData = null;
@@ -142,7 +142,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
                 };
             }
 
-            TextWriter writer = level == NotificationLevel.Error ? Console.Error : Console.Out;
+            TextWriter writer = level == FailureLevel.Error ? Console.Error : Console.Out;
             writer.WriteLine(message);
             logger.LogToolNotification(new Notification
             {
