@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.1.0.3" />
+    <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.2.beta.2019-01-24.1" />
   </ItemGroup>
 
   <ItemGroup>

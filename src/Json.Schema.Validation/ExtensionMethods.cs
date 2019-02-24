@@ -30,7 +30,7 @@ namespace Microsoft.Json.Schema.Validation
                     location.PhysicalLocation = new PhysicalLocation();
                 }
 
-                location.PhysicalLocation.FileLocation = new FileLocation
+                location.PhysicalLocation.ArtifactLocation = new ArtifactLocation
                 {
                     Uri = new Uri(filePath, uriKind)
                 };
@@ -47,19 +47,19 @@ namespace Microsoft.Json.Schema.Validation
             string fileName = ex.FileName;
             JsonReaderException jsonReaderException = ex.JsonReaderException;
 
-            Rule rule = RuleFactory.GetRuleFromErrorNumber(ErrorNumber.SyntaxError);
+            ReportingDescriptor rule = RuleFactory.GetRuleFromErrorNumber(ErrorNumber.SyntaxError);
 
             return new Result
             {
                 RuleId = rule.Id,
-                Level = rule.Configuration.DefaultLevel.ToLevel(),
+                Level = rule.DefaultConfiguration.Level,
                 Locations = new List<Location>
                 {
                     new Location
                     {
                         PhysicalLocation = new PhysicalLocation
                         {
-                            FileLocation = new FileLocation
+                            ArtifactLocation = new ArtifactLocation
                             {
                                 Uri = new Uri(fileName, UriKind.RelativeOrAbsolute)
                             },
@@ -82,31 +82,6 @@ namespace Microsoft.Json.Schema.Validation
                     }
                 },
             };
-        }
-    }
-
-    public static class RuleConfigurationDefaultLevelExtensions
-    {
-        public static ResultLevel ToLevel(this RuleConfigurationDefaultLevel ruleConfigurationDefaultLevel)
-        {
-            switch (ruleConfigurationDefaultLevel)
-            {
-                case RuleConfigurationDefaultLevel.Note:
-                    return ResultLevel.Note;
-
-                case RuleConfigurationDefaultLevel.None:
-                case RuleConfigurationDefaultLevel.Warning:
-                    return ResultLevel.Warning;
-
-                case RuleConfigurationDefaultLevel.Error:
-                    return ResultLevel.Error;
-
-                case RuleConfigurationDefaultLevel.Open:
-                    return ResultLevel.Open;
-
-                default:
-                    throw new ArgumentException("Invalid value: " + ruleConfigurationDefaultLevel, nameof(ruleConfigurationDefaultLevel));
-            }
         }
     }
 }
