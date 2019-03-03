@@ -12,6 +12,22 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
 
   <ItemGroup>
+    <EmbeddedResource Update="RuleResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>Microsoft.Json.Schema.Validation</CustomToolNamespace>
+      <LastGenOutput>RuleResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="RuleResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RuleResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="Sarif.Sdk" Version="2.0.0-csd.2.beta.2019-01-24.1" />
   </ItemGroup>
