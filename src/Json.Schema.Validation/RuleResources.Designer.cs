@@ -178,7 +178,7 @@ namespace Microsoft.Json.Schema.Validation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance does validate successfully against any of the {1} schemas specified by &quot;anyOf&quot;..
+        ///   Looks up a localized string similar to The instance does not validate successfully against any of the {1} schemas specified by &quot;anyOf&quot;..
         /// </summary>
         internal static string ErrorNotAnyOf {
             get {
