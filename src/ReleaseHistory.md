@@ -26,3 +26,7 @@
 ## **0.62.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/0.62.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/0.62.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/0.62.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/0.62.0)
 
 * Update SARIF dependency to 2.0.0-csd.2.beta.2019-01-24.1
+
+## **0.63.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/0.63.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/0.63.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/0.63.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/0.63.0)
+
+* Update SARIF dependency to private build which is effectively 2.0.0-csd.2.beta.2019-02-20 (the core SARIF eballots).
