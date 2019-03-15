@@ -27,11 +27,8 @@ namespace Microsoft.Json.Schema.Validation
                 {
                     Level = FailureLevel.Error
                 },
-                Name = new Message
-                {
-                    Text = errorNumber.ToString()
-                },
-                FullDescription = new Message
+                Name = errorNumber.ToString(),
+                FullDescription = new MultiformatMessageString
                 {
                     Text = fullDescription
                 },

@@ -137,7 +137,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
                 exceptionData = new ExceptionData
                 {
                     Kind = ex.GetType().FullName,
-                    Message = new Message { Text = ex.Message },
+                    Message = ex.Message,
                     Stack = Stack.CreateStacks(ex).FirstOrDefault()
                 };
             }
