@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -13,13 +14,24 @@ namespace Microsoft.Json.Schema.ToDotNet
     internal class RewritingVisitorGenerator
     {
         private const string NodeParameterName = "node";
+        private const string KeyParameterName = "key";
+        private const string KeyVariableName = "key";
+        private const string KeysVariableName = "keys";
+        private const string KeysPropertyName = "Keys";
+        private const string ValueVariableName = "value";
         private const string VisitMethodName = "Visit";
         private const string VisitActualMethodName = "VisitActual";
         private const string VisitNullCheckedMethodName = "VisitNullChecked";
+        private const string VisitDictionaryEntryMethodName = "VisitDictionaryEntry";
         private const string TypeParameterName = "T";
         private const string CountPropertyName = "Count";
         private const string AddMethodName = "Add";
+        private const string RemoveMethodName = "Remove";
         private const string ToArrayMethodName = "ToArray";
+
+        private readonly TypeSyntax TypeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
+        private readonly TypeSyntax StringParameterType = SyntaxFactory.ParseTypeName("string");
+        private readonly TypeSyntax NodeInterfaceType;
 
         private readonly Dictionary<string, PropertyInfoDictionary> _classInfoDictionary;
         private readonly string _copyrightNotice;
@@ -27,8 +39,10 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly string _className;
         private readonly string _schemaName;
         private readonly string _kindEnumName;
-        private readonly string _nodeInterfaceName;
         private readonly List<string> _generatedClassNames;
+
+        // The names of classes that occur in dictionary entries.
+        private readonly IList<string> _dictionaryEntryClassNames;
 
         private readonly LocalVariableNameGenerator _localVariableNameGenerator;
 
@@ -59,10 +73,60 @@ namespace Microsoft.Json.Schema.ToDotNet
             _className = className;
             _schemaName = schemaName;
             _kindEnumName = kindEnumName;
-            _nodeInterfaceName = nodeInterfaceName;
+            NodeInterfaceType = SyntaxFactory.ParseTypeName(nodeInterfaceName);
             _generatedClassNames = generatedClassNames.OrderBy(gn => gn).ToList();
+            _dictionaryEntryClassNames = GetDictionaryEntryClassNames(classInfoDictionary);
 
             _localVariableNameGenerator = new LocalVariableNameGenerator();
+        }
+
+        /// <summary>
+        /// Gets the list of schema-defined classes that appear as dictionary entries.
+        /// </summary>
+        /// <remarks>
+        /// The property dictionary for a class contains one entry describing each property.
+        /// For those properties that are dictionaries, the property dictionary also
+        /// contains an entry that describes the dictionary _entry_. For example, suppose
+        /// a class named Run contains a property named Graphs, defined as a dictionary
+        /// from string to Graph. Then the property dictionary for the Run class contains
+        /// one entry with the key "Graphs", which describes the property Run.Graphs.
+        /// It contains another entry with the key "Graphs{}", which describes the
+        /// entries in the Run.Graphs dictionary, and the PropertyInfo indexed by
+        /// "Graphs{}" tells us that the dictionary entry is of the schema-defined
+        /// type Graph. The string "{}" is called the "dictionary marker".
+        ///
+        /// Our goal is to locate dictionary-valued properties whose dictionary
+        /// entries are of schema-defined types.
+        /// </remarks>
+        IList<string> GetDictionaryEntryClassNames(Dictionary<string, PropertyInfoDictionary> classInfoDictionary)
+        {
+            var dictionaryEntryClassNames = new HashSet<string>();
+
+            // Loop over all properties of all classes defined in the schema.
+            foreach (string className in classInfoDictionary.Keys)
+            {
+                PropertyInfoDictionary propertyInfoDictionary = classInfoDictionary[className];
+                foreach (string key in propertyInfoDictionary.Keys)
+                {
+                    int dictionaryMarkerIndex = key.IndexOf(PropertyInfoDictionary.DictionaryMarker);
+                    if (dictionaryMarkerIndex != -1)
+                    {
+                        // We've found a property info dictionary entry that describes
+                        // an entry in a dictionary-valued property defined by the schema.
+                        PropertyInfo dictionaryEntryInfo = propertyInfoDictionary[key];
+                        {
+                            if (dictionaryEntryInfo.IsOfSchemaDefinedType)
+                            {
+                                // The dictionary entries for this property are of schema-defined type!
+                                // Remember this type so we can generate code to descend into the dictionary entries.
+                                dictionaryEntryClassNames.Add(dictionaryEntryInfo.TypeName);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return dictionaryEntryClassNames.OrderBy(name => name).ToList();
         }
 
         internal string GenerateRewritingVisitor()
@@ -75,7 +139,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                     .AddMembers(
                         GenerateVisitMethod(),
                         GenerateVisitActualMethod(),
-                        GenerateVisitNullCheckedMethod())
+                        GenerateVisitNullCheckedOneArgumentMethod(),
+                        GenerateVisitNullCheckedTwoArgumentMethod(),
+                        GenerateVisitDictionaryEntryMethod())
+                    .AddMembers(
+                        GenerateVisitTypedDictionaryEntryMethods())
                     .AddMembers(
                         GenerateVisitClassMethods());
 
@@ -105,8 +173,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
                         SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(
-                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)))
+                        .WithType(NodeInterfaceType))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
@@ -141,22 +208,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
                         SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(
-                            SyntaxFactory.ParseTypeName(_nodeInterfaceName)))
+                        .WithType(NodeInterfaceType))
                 .AddBodyStatements(
-                    SyntaxFactory.IfStatement(
-                        SyntaxHelper.IsNull(NodeParameterName),
-                        SyntaxFactory.Block(
-                            SyntaxFactory.ThrowStatement(
-                                SyntaxFactory.ObjectCreationExpression(
-                                    SyntaxFactory.ParseTypeName("ArgumentNullException"),
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.LiteralExpression(
-                                                    SyntaxKind.StringLiteralExpression,
-                                                    SyntaxFactory.Literal(NodeParameterName))))),
-                                    default(InitializerExpressionSyntax))))),
+                    SyntaxHelper.NullParameterCheck(NodeParameterName),
                     SyntaxFactory.SwitchStatement(
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
@@ -216,12 +270,12 @@ namespace Microsoft.Json.Schema.ToDotNet
             return switchSections;
         }
 
-        private MethodDeclarationSyntax GenerateVisitNullCheckedMethod()
+        private MethodDeclarationSyntax GenerateVisitNullCheckedOneArgumentMethod()
         {
-            TypeSyntax typeParameterType = SyntaxFactory.ParseTypeName(TypeParameterName);
+            const string EmptyKeyVariableName = "emptyKey";
 
             return SyntaxFactory.MethodDeclaration(
-                typeParameterType,
+                TypeParameterType,
                 VisitNullCheckedMethodName)
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
@@ -234,27 +288,191 @@ namespace Microsoft.Json.Schema.ToDotNet
                             new TypeParameterConstraintSyntax[]
                             {
                                 SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint),
-                                SyntaxFactory.TypeConstraint(
-                                    SyntaxFactory.ParseTypeName(_nodeInterfaceName))
+                                SyntaxFactory.TypeConstraint(NodeInterfaceType)
                             })))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
-                        .WithType(typeParameterType))
+                        .WithType(TypeParameterType))
+                .AddBodyStatements(
+                    // string emptyKey = null;
+                    SyntaxFactory.LocalDeclarationStatement(
+                        SyntaxFactory.VariableDeclaration(
+                            StringParameterType,
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.VariableDeclarator(
+                                    SyntaxFactory.Identifier(EmptyKeyVariableName),
+                                    default(BracketedArgumentListSyntax),
+                                    SyntaxFactory.EqualsValueClause(
+                                        SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))))),
+                    // return VisitNullChecked<T>(node, ref emptyKey)
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.GenericName(
+                                SyntaxFactory.Identifier(VisitNullCheckedMethodName),
+                                SyntaxFactory.TypeArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList(TypeParameterType))),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.IdentifierName(NodeParameterName),
+                                SyntaxFactory.RefExpression(
+                                    SyntaxFactory.IdentifierName(EmptyKeyVariableName))))));
+        }
+
+        private MethodDeclarationSyntax GenerateVisitNullCheckedTwoArgumentMethod()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                TypeParameterType,
+                VisitNullCheckedMethodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddTypeParameterListParameters(
+                    SyntaxFactory.TypeParameter(TypeParameterName))
+                .AddConstraintClauses(
+                    SyntaxFactory.TypeParameterConstraintClause(
+                        SyntaxFactory.IdentifierName(TypeParameterName),
+                        SyntaxFactory.SeparatedList(
+                            new TypeParameterConstraintSyntax[]
+                            {
+                                SyntaxFactory.ClassOrStructConstraint(SyntaxKind.ClassConstraint),
+                                SyntaxFactory.TypeConstraint(NodeInterfaceType)
+                            })))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(TypeParameterType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
+                        .WithType(StringParameterType)
+                        .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
                 .AddBodyStatements(
                     SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNull(NodeParameterName),
                         SyntaxFactory.Block(
                             SyntaxFactory.ReturnStatement(
                                 SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)))),
+                    SyntaxFactory.IfStatement(
+                        SyntaxHelper.IsNull(KeyParameterName),
+                        SyntaxFactory.Block(
+                            SyntaxFactory.ReturnStatement(
+                                SyntaxFactory.CastExpression(
+                                    TypeParameterType,
+                                    SyntaxFactory.InvocationExpression(
+                                        SyntaxFactory.IdentifierName(VisitMethodName),
+                                        SyntaxFactory.ArgumentList(
+                                            SyntaxFactory.SingletonSeparatedList(
+                                                SyntaxFactory.Argument(
+                                                    SyntaxFactory.IdentifierName(NodeParameterName))))))))),
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
-                            typeParameterType,
+                            TypeParameterType,
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(VisitDictionaryEntryMethodName),
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.IdentifierName(NodeParameterName),
+                                    SyntaxFactory.RefExpression(
+                                        SyntaxFactory.IdentifierName(KeyParameterName)))))));
+        }
+
+        private MethodDeclarationSyntax GenerateVisitDictionaryEntryMethod()
+        {
+            return SyntaxFactory.MethodDeclaration(
+                NodeInterfaceType,
+                VisitDictionaryEntryMethodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(NodeInterfaceType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
+                        .WithType(StringParameterType)
+                        .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
+                .AddBodyStatements(
+                    SyntaxHelper.NullParameterCheck(NodeParameterName),
+                    SyntaxHelper.NullParameterCheck(KeyParameterName),
+                    SyntaxFactory.SwitchStatement(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(NodeParameterName),
+                            SyntaxFactory.IdentifierName(_kindEnumName)))
+                        .AddSections(GenerateVisitDictionaryEntrySwitchSections()));
+        }
+
+        private SwitchSectionSyntax[] GenerateVisitDictionaryEntrySwitchSections()
+        {
+            // There is one switch section for each class that can occur in a dictionary, plus one for the default.
+            var switchSections = new SwitchSectionSyntax[_dictionaryEntryClassNames.Count + 1];
+
+            int index = 0;
+            foreach (string className in _dictionaryEntryClassNames)
+            {
+                string methodName = MakeVisitDictionaryEntryMethodName(className);
+                switchSections[index++] = SyntaxFactory.SwitchSection(
+                    SyntaxFactory.SingletonList<SwitchLabelSyntax>(
+                        SyntaxFactory.CaseSwitchLabel(
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(_kindEnumName),
+                                SyntaxFactory.IdentifierName(className)))),
+                    SyntaxFactory.SingletonList<StatementSyntax>(
+                        SyntaxFactory.ReturnStatement(
+                            SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.IdentifierName(methodName),
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.CastExpression(
+                                        SyntaxFactory.ParseTypeName(className),
+                                        SyntaxFactory.IdentifierName(NodeParameterName)),
+                                    SyntaxFactory.RefExpression(
+                                        SyntaxFactory.IdentifierName(KeyParameterName)))))));
+            }
+
+            switchSections[index] = SyntaxFactory.SwitchSection(
+                SyntaxFactory.SingletonList<SwitchLabelSyntax>(
+                    SyntaxFactory.DefaultSwitchLabel()),
+                SyntaxFactory.SingletonList<StatementSyntax>(
+                    SyntaxFactory.ThrowStatement(
+                        SyntaxHelper.NewInvalidOperationException())));
+
+            return switchSections;
+        }
+
+        private string MakeVisitDictionaryEntryMethodName(string className)
+        {
+            return "Visit" + className + "DictionaryEntry";
+        }
+        private MemberDeclarationSyntax[] GenerateVisitTypedDictionaryEntryMethods()
+        {
+            // There is one method for each class that can occur in a dictionary.
+            var methodDeclarations = new MemberDeclarationSyntax[_dictionaryEntryClassNames.Count];
+
+            int index = 0;
+            foreach (string className in _dictionaryEntryClassNames)
+            {
+                methodDeclarations[index++] = GenerateVisitTypedDictionaryEntryMethods(className);
+            }
+
+            return methodDeclarations;
+        }
+
+        private MemberDeclarationSyntax GenerateVisitTypedDictionaryEntryMethods(string className)
+        {
+            string methodName = MakeVisitDictionaryEntryMethodName(className);
+            TypeSyntax generatedClassType = SyntaxFactory.ParseTypeName(className);
+
+            return SyntaxFactory.MethodDeclaration(generatedClassType, methodName)
+                .AddModifiers(
+                    SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                    SyntaxFactory.Token(SyntaxKind.VirtualKeyword))
+                .AddParameterListParameters(
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(NodeParameterName))
+                        .WithType(generatedClassType),
+                    SyntaxFactory.Parameter(SyntaxFactory.Identifier(KeyParameterName))
+                        .WithType(StringParameterType)
+                        .WithModifiers(SyntaxTokenList.Create(SyntaxFactory.Token(SyntaxKind.RefKeyword))))
+                .AddBodyStatements(
+                    SyntaxFactory.ReturnStatement(
+                        SyntaxFactory.CastExpression(
+                            generatedClassType,
                             SyntaxFactory.InvocationExpression(
                                 SyntaxFactory.IdentifierName(VisitMethodName),
-                                SyntaxFactory.ArgumentList(
-                                    SyntaxFactory.SingletonSeparatedList(
-                                        SyntaxFactory.Argument(
-                                            SyntaxFactory.IdentifierName(NodeParameterName))))))));
+                                SyntaxHelper.ArgumentList(
+                                    SyntaxFactory.IdentifierName(NodeParameterName))))));
         }
 
         private MemberDeclarationSyntax[] GenerateVisitClassMethods()
@@ -424,11 +642,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax[] GenerateDictionaryVisit(int arrayRank, string propertyName)
         {
-            const string KeyVariableName = "key";
-            const string KeysVariableName = "keys";
-            const string KeysPropertyName = "Keys";
-            const string ValueVariableName = "value";
-
             ExpressionSyntax dictionaryValue =
                 SyntaxFactory.ElementAccessExpression(
                     SyntaxFactory.MemberAccessExpression(
@@ -446,10 +659,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (arrayRank == 0)
             {
-                dictionaryElementVisitStatements = new StatementSyntax[]
-                {
-                    GenerateScalarVisit(dictionaryValue, SyntaxFactory.IdentifierName(ValueVariableName))
-                };
+                dictionaryElementVisitStatements = GenerateDictionaryElementVisit(propertyName);
             }
             else
             {
@@ -511,6 +721,67 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.IfStatement(
                             SyntaxHelper.IsNotNull(ValueVariableName),
                             SyntaxFactory.Block(dictionaryElementVisitStatements))))
+            };
+        }
+
+        private StatementSyntax[] GenerateDictionaryElementVisit(string propertyName)
+        {
+            const string NewKeyVariableName = "newKey";
+
+            return new StatementSyntax[]
+            {
+                // string newKey = key;
+                SyntaxFactory.LocalDeclarationStatement(
+                    SyntaxFactory.VariableDeclaration(
+                        StringParameterType,
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.VariableDeclarator(
+                                SyntaxFactory.Identifier(NewKeyVariableName),
+                                default(BracketedArgumentListSyntax),
+                                SyntaxFactory.EqualsValueClause(
+                                    SyntaxFactory.IdentifierName(KeyVariableName)))))),
+                // node.Property.Remove(key);
+                SyntaxFactory.ExpressionStatement(
+                    SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                SyntaxFactory.IdentifierName(NodeParameterName),
+                                SyntaxFactory.IdentifierName(propertyName)),
+                            SyntaxFactory.IdentifierName(RemoveMethodName)),
+                        SyntaxHelper.ArgumentList(
+                            SyntaxFactory.IdentifierName(KeyVariableName)))),
+                // value = VisitNullChecked(value, ref newKey);
+                SyntaxFactory.ExpressionStatement(
+                    SyntaxFactory.AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        SyntaxFactory.IdentifierName(ValueVariableName),
+                        SyntaxFactory.InvocationExpression(
+                            SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                            SyntaxHelper.ArgumentList(
+                                SyntaxFactory.IdentifierName(ValueVariableName),
+                                SyntaxFactory.RefExpression(
+                                    SyntaxFactory.IdentifierName(NewKeyVariableName)))))),
+                // if (newKey != null)
+                SyntaxFactory.IfStatement(
+                    SyntaxHelper.IsNotNull(NewKeyVariableName),
+                    SyntaxFactory.Block(
+                        SyntaxFactory.ExpressionStatement(
+                            // node.Property[newKey] = VisitNullChecked(value);
+                            SyntaxFactory.AssignmentExpression(
+                                SyntaxKind.SimpleAssignmentExpression,
+                                SyntaxFactory.ElementAccessExpression(
+                                    SyntaxFactory.MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        SyntaxFactory.IdentifierName(NodeParameterName),
+                                        SyntaxFactory.IdentifierName(propertyName)),
+                                    SyntaxHelper.BracketedArgumentList(
+                                        SyntaxFactory.IdentifierName(NewKeyVariableName))),
+                                SyntaxFactory.InvocationExpression(
+                                    SyntaxFactory.IdentifierName(VisitNullCheckedMethodName),
+                                    SyntaxHelper.ArgumentList(
+                                        SyntaxFactory.IdentifierName(ValueVariableName)))))))
             };
         }
 

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,6 +12,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.Json.Schema.ToDotNet
 {
+    /// <summary>
+    /// The methods in this class encapsulate or simplify the generation of certain
+    /// code patterns that The ToDotNet code generator emits.
+    /// </summary>
     internal static class SyntaxHelper
     {
         private const string DocCommentSummaryFormat =
@@ -187,6 +192,82 @@ namespace Microsoft.Json.Schema.ToDotNet
         internal static TypeSyntax Var()
         {
             return SyntaxFactory.ParseTypeName("var");
+        }
+
+        /// <summary>
+        /// Generates the code <code>nameof(symbol)</code>.
+        /// </summary>
+        /// <param name="symbol">
+        /// The argument to the <code>nameof</code> operator.
+        /// </param>
+        /// <remarks>
+        /// Roslyn doesn't directly expose a "nameof expression". This article shows how
+        /// to make one:
+        // https://stackoverflow.com/questions/46259039/constructing-nameof-expression-via-syntaxfactory-roslyn
+        /// </remarks>
+        internal static ExpressionSyntax NameofExpression(string symbol)
+        {
+            return SyntaxFactory.InvocationExpression(
+                SyntaxFactory.IdentifierName(
+                    SyntaxFactory.Identifier(
+                        leading: SyntaxFactory.TriviaList(),
+                        contextualKind: SyntaxKind.NameOfKeyword,
+                        text: "nameof",
+                        valueText: "nameof",
+                        trailing: SyntaxFactory.TriviaList())),
+                ArgumentList(
+                    SyntaxFactory.IdentifierName(symbol)));
+        }
+
+        private static readonly TypeSyntax ArgumentNullExceptionType = SyntaxFactory.ParseTypeName(nameof(ArgumentNullException));
+
+        /// <summary>
+        /// Generates the code <code>new ArgumentNullException(nameof(parameter))</code>.
+        /// </summary>
+        /// <param name="parameterName">
+        /// The name of the parameter that was null.
+        /// </param>
+        /// <returns>
+        /// The generated code.
+        /// </returns>
+        internal static ObjectCreationExpressionSyntax NewArgumentNullException(string parameterName)
+        {
+            return SyntaxFactory.ObjectCreationExpression(
+                ArgumentNullExceptionType,
+                ArgumentList(
+                    NameofExpression(parameterName)),
+                default(InitializerExpressionSyntax));
+        }
+
+        private static readonly TypeSyntax InvalidOperationExceptionType = SyntaxFactory.ParseTypeName(nameof(InvalidOperationException));
+
+        /// <summary>
+        /// Generates the code <code>new InvalidOperationException()</code>.
+        /// </summary>
+        internal static ObjectCreationExpressionSyntax NewInvalidOperationException()
+        {
+            return SyntaxFactory.ObjectCreationExpression(
+                InvalidOperationExceptionType,
+                ArgumentList(),
+                default(InitializerExpressionSyntax));
+        }
+
+        /// <summary>
+        /// Generates the code <code>if (parameter == null) { throw new ArgumentNullException(nameof(parameter)); }</code>.
+        /// </summary>
+        /// <param name="parameterName">
+        /// The name of the parameter begin null-checked.
+        /// </param>
+        /// <returns>
+        /// The generated code.
+        /// </returns>
+        internal static IfStatementSyntax NullParameterCheck(string parameterName)
+        {
+            return SyntaxFactory.IfStatement(
+                IsNull(parameterName),
+                SyntaxFactory.Block(
+                    SyntaxFactory.ThrowStatement(
+                        NewArgumentNullException(parameterName))));
         }
     }
 }

@@ -1566,7 +1566,7 @@ namespace N
         {
             if (node == null)
             {
-                throw new ArgumentNullException(""node"");
+                throw new ArgumentNullException(nameof(node));
             }
 
             switch (node.SNodeKind)
@@ -1582,12 +1582,49 @@ namespace N
 
         private T VisitNullChecked<T>(T node) where T : class, ISNode
         {
+            string emptyKey = null;
+            return VisitNullChecked<T>(node, ref emptyKey);
+        }
+
+        private T VisitNullChecked<T>(T node, ref string key) where T : class, ISNode
+        {
             if (node == null)
             {
                 return null;
             }
 
-            return (T)Visit(node);
+            if (key == null)
+            {
+                return (T)Visit(node);
+            }
+
+            return (T)VisitDictionaryEntry(node, ref key);
+        }
+
+        private ISNode VisitDictionaryEntry(ISNode node, ref string key)
+        {
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            switch (node.SNodeKind)
+            {
+                case SNodeKind.D:
+                    return VisitDDictionaryEntry((D)node, ref key);
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        public virtual D VisitDDictionaryEntry(D node, ref string key)
+        {
+            return (D)Visit(node);
         }
 
         public virtual C VisitC(C node)
@@ -1626,7 +1663,13 @@ namespace N
                         var value = node.DictionaryWithObjectSchemaProp[key];
                         if (value != null)
                         {
-                            node.DictionaryWithObjectSchemaProp[key] = VisitNullChecked(value);
+                            string newKey = key;
+                            node.DictionaryWithObjectSchemaProp.Remove(key);
+                            value = VisitNullChecked(value, ref newKey);
+                            if (newKey != null)
+                            {
+                                node.DictionaryWithObjectSchemaProp[newKey] = VisitNullChecked(value);
+                            }
                         }
                     }
                 }
@@ -1655,7 +1698,13 @@ namespace N
                         var value = node.DictionaryWithUriKeyProp[key];
                         if (value != null)
                         {
-                            node.DictionaryWithUriKeyProp[key] = VisitNullChecked(value);
+                            string newKey = key;
+                            node.DictionaryWithUriKeyProp.Remove(key);
+                            value = VisitNullChecked(value, ref newKey);
+                            if (newKey != null)
+                            {
+                                node.DictionaryWithUriKeyProp[newKey] = VisitNullChecked(value);
+                            }
                         }
                     }
                 }
@@ -3004,7 +3053,7 @@ namespace N
         {
             if (node == null)
             {
-                throw new ArgumentNullException(""node"");
+                throw new ArgumentNullException(nameof(node));
             }
 
             switch (node.SNodeKind)
@@ -3018,12 +3067,42 @@ namespace N
 
         private T VisitNullChecked<T>(T node) where T : class, ISNode
         {
+            string emptyKey = null;
+            return VisitNullChecked<T>(node, ref emptyKey);
+        }
+
+        private T VisitNullChecked<T>(T node, ref string key) where T : class, ISNode
+        {
             if (node == null)
             {
                 return null;
             }
 
-            return (T)Visit(node);
+            if (key == null)
+            {
+                return (T)Visit(node);
+            }
+
+            return (T)VisitDictionaryEntry(node, ref key);
+        }
+
+        private ISNode VisitDictionaryEntry(ISNode node, ref string key)
+        {
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            switch (node.SNodeKind)
+            {
+                default:
+                    throw new InvalidOperationException();
+            }
         }
 
         public virtual C VisitC(C node)
