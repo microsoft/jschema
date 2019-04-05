@@ -74,7 +74,7 @@ namespace Microsoft.Json.Schema.Validation
 
                 Message = new Message
                 {
-                    MessageId = RuleFactory.DefaultRuleMessageId,
+                    Id = RuleFactory.DefaultRuleMessageId,
                     Arguments = new List<string>
                     {
                         jsonReaderException.Path,
