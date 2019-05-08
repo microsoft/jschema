@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "arrayOfIntByRef": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/d"
+      }
+    }
+  },
+  "definitions": {
+    "d": {
+      "type": "integer",
+      }
+    }
+  }
+}

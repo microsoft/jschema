@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "arrayOfArrayOfD": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/itemType"
+      }
+    }
+  },
+  "definitions": {
+    "itemType": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/d"
+      }
+    },
+    "d": {
+      "type": "object",
+      }
+    }
+  }
+}

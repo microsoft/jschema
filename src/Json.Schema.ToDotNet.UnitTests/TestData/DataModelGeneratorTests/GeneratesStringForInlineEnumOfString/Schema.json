@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "version": {
+      "enum": [
+        "v1.0",
+        "v2.0"
+      ]
+    }
+  }
+}

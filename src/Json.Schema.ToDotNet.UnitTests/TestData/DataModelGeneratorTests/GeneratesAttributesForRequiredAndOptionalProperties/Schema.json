@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "requiredProp1": {
+      "type": "string"
+    },
+    "optionalProp": {
+      "type": "string"
+    },
+    "requiredProp2": {
+      "type": "string"
+    }
+  },
+  "required": [ "requiredProp1", "requiredProp2" ]
+}

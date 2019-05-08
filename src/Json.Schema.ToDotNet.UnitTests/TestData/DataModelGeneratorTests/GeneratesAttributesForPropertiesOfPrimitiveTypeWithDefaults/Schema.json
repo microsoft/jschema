@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "integerProperty": {
+      "type": "integer",
+      "description": "An integer property."
+    },
+    "integerPropertyWithDefault": {
+      "type": "integer",
+      "description": "An integer property with a default value.",
+      "default": 42
+    },
+    "numberProperty": {
+      "type": "number",
+      "description": "A number property."
+    },
+    "numberPropertyWithDefault": {
+      "type": "number",
+      "description": "A number property with a default value.",
+      "default": 42.1
+    },
+    "stringProperty": {
+      "type": "string",
+      "description": "A string property."
+    },
+    "stringPropertyWithDefault": {
+      "type": "string",
+      "description": "A string property with a default value.",
+      "default": "Thanks for all the fish."
+    },
+    "booleanProperty": {
+      "type": "boolean",
+      "description": "A Boolean property."
+    },
+    "booleanPropertyWithTrueDefault": {
+      "type": "boolean",
+      "description": "A Boolean property with a true default value.",
+      "default": true
+    },
+    "booleanPropertyWithFalseDefault": {
+      "type": "boolean",
+      "description": "A Boolean property with a false default value.",
+      "default": false
+    },
+    "nonPrimitivePropertyWithDefault": {
+      "type": "array",
+      "description": "A non-primitive property with a default value: DefaultValue attribute will -not- be emitted.",
+      "items": {
+        "type": "integer"
+      },
+      "default": []
+    }
+  }
+}

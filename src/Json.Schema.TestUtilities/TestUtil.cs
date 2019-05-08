@@ -7,6 +7,7 @@ namespace Microsoft.Json.Schema.TestUtilities
 {
     public static class TestUtil
     {
+        public const string TestDataDirectoryName = "TestData";
         public const string TestFilePath = @"C:\test.json";
 
         public static string ReadTestDataFile(string fileNameStem)
@@ -19,7 +20,7 @@ namespace Microsoft.Json.Schema.TestUtilities
 
         public static string GetTestDataFilePath(string fileNameStem)
         {
-            return $"TestData\\{fileNameStem}.schema.json";
+            return $"{TestDataDirectoryName}\\{fileNameStem}.schema.json";
         }
 
         public static Stream GetTestDataStream(string fileNameStem)
@@ -45,6 +46,33 @@ namespace Microsoft.Json.Schema.TestUtilities
             File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".expected.cs"), expected);
             File.WriteAllText(Path.Combine(TestResultFilesDirectory, testName + ".actual.cs"), actual);
 #endif
+        }
+
+        private const string FileVersionReplacementToken = "$JSchemaFileVersion$";
+
+        public static void WriteTestInputFile(
+            string className,
+            string fileName,
+            string fileContents,
+            [System.Runtime.CompilerServices.CallerMemberName] string methodName = "")
+        {
+            fileContents = fileContents.Replace(VersionConstants.FileVersion, FileVersionReplacementToken);
+            string inputFileDirectory = Path.Combine(TestDataDirectoryName, className, methodName);
+            Directory.CreateDirectory(inputFileDirectory);
+            string inputFilePath = Path.Combine(inputFileDirectory, fileName);
+            File.WriteAllText(inputFilePath, fileContents);
+        }
+
+        public static string ReadTestInputFile(
+            string className,
+            string fileName,
+            [System.Runtime.CompilerServices.CallerMemberName] string methodName = "")
+        {
+            string inputFileDirectory = Path.Combine(TestDataDirectoryName, className, methodName);
+            string inputFilePath = Path.Combine(inputFileDirectory, fileName);
+            string fileContents = File.ReadAllText(inputFilePath);
+            fileContents = fileContents.Replace(FileVersionReplacementToken, VersionConstants.FileVersion);
+            return fileContents;
         }
     }
 }

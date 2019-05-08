@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "description": "Describes a console window.",
+  "properties": {
+    "foregroundColor": {
+      "$ref": "#/definitions/color",
+      "description": "The color of the text on the screen."
+    },
+    "backgroundColor": {
+      "$ref": "#/definitions/color",
+      "description": "The color of the screen background."
+    },
+  },
+  "definitions": {
+    "color": {
+      "type": "object",
+      "description": "Describes a color with R, G, and B components.",
+      "properties": {
+        "red": {
+          "type": "integer",
+          "description": "The value of the R component."
+        },
+        "green": {
+          "type": "integer",
+          "description": "The value of the G component."
+        },
+        "blue": {
+          "type": "integer",
+          "description": "The value of the B component."
+        }
+      }
+    }
+  }
+}

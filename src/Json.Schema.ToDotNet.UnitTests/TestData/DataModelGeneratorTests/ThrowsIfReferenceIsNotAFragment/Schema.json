@@ -1,0 +1,9 @@
+
+{
+  "type": "object",
+  "properties": {
+    "p": {
+      "$ref": "https://example.com/pschema.schema.json/#"
+    }
+  },
+}

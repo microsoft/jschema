@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "intDefProp": {
+      "$ref": "#/definitions/d"
+    }
+  },
+  "definitions": {
+    "d": {
+      "type": "integer"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+
+{
+  "type": "object",
+  "properties": {
+    "p": {
+      "$ref": "#/notDefinitions/p"
+    }
+  },
+  "notDefinitions": {
+    "p": {
+    }
+  }
+}
