@@ -94,10 +94,10 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 
         [Option(
             'v',
-            "virtual-properties",
-            HelpText = "Mark generated properties as virtual.",
+            "virtual-members",
+            HelpText = "Mark generated properties and methods as virtual.",
             Default = false,
             Required = false)]
-        public bool VirtualProperties { get; set; }
+        public bool VirtualMembers { get; set; }
     }
 }

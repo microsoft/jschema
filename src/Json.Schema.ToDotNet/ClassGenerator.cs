@@ -21,7 +21,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly bool _generateEqualityComparers;
         private readonly bool _generateCloningCode;
         private readonly bool _sealClasses;
-        private readonly bool _virtualProperties;
+        private readonly bool _virtualMembers;
         private readonly string _syntaxInterfaceName;
         private readonly string _kindEnumName;
 
@@ -65,7 +65,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             bool generateEqualityComparers,
             bool generateCloningCode,
             bool sealClasses,
-            bool virtualProperties,
+            bool virtualMembers,
             string syntaxInterfaceName,
             string kindEnumName,
             string typeNameSuffix)
@@ -76,7 +76,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
             _sealClasses = sealClasses;
-            _virtualProperties = virtualProperties;
+            _virtualMembers = virtualMembers;
             _kindEnumName = kindEnumName;
 
             _localVariableNameGenerator = new LocalVariableNameGenerator();
@@ -396,7 +396,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 };
             }
 
-            if (_virtualProperties)
+            if (_virtualMembers)
             {
                 modifierTokens.Add(SyntaxFactory.Token(SyntaxKind.VirtualKeyword));
             }
