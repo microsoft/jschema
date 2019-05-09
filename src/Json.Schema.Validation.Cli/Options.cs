@@ -10,7 +10,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
         [Option(
             's',
             "schema-file-path",
-            HelpText = "Path to the JSON schema file",
+            HelpText = "Path to the JSON schema file.",
             Required = true)]
         public string SchemaFilePath { get; set; }
 
