@@ -84,7 +84,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public bool SealClasses { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the members of the generated
+        /// Gets or sets a value indicating whether the properties of the generated
         /// classes whould be declared <code>virtual</code>.
         /// </summary>
         public bool VirtualProperties { get; set; }
