@@ -20,17 +20,12 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Sarif.Sdk" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
     <ProjectReference Include="..\Json.Schema.Validation\Json.Schema.Validation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Sarif">
-      <HintPath>..\..\ref\Sarif.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

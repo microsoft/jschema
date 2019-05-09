@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Json.Pointer", "Json.Pointer\Json.Pointer.csproj", "{370BB86D-4EC4-4BA9-BED3-3922B078C692}"
 EndProject
@@ -39,6 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{14BA185B-9
 		..\BuildAndTest.cmd = ..\BuildAndTest.cmd
 		..\License.txt = ..\License.txt
 		..\README.md = ..\README.md
+		ReleaseHistory.md = ReleaseHistory.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Json.Schema.ToDotNet.Cli", "Json.Schema.ToDotNet.Cli\Json.Schema.ToDotNet.Cli.csproj", "{2F62D002-63BE-4C5A-B91E-AD75D6055FFE}"
