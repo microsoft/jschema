@@ -396,6 +396,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                 };
             }
 
+            if (_virtualMembers)
+            {
+                modifierTokens.Add(SyntaxFactory.Token(SyntaxKind.VirtualKeyword));
+            }
+
             return modifierTokens.ToArray();
         }
 

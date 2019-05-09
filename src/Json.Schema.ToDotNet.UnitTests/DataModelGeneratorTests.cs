@@ -3680,7 +3680,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates virtual members when option is set", Skip = "NYI")]
+        [Fact(DisplayName = "DataModelGenerator generates virtual members when option is set")]
         public void GeneratesVirtualMembersWhenOptionIsSet()
         {
             _settings.VirtualMembers = true;
