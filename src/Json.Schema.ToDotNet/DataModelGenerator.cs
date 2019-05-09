@@ -72,7 +72,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 throw Error.CreateException(Resources.ErrorNotAnObject, rootSchemaType.ToString().ToLowerInvariant());
             }
 
-            string rootFileText = GenerateClass(_settings.RootClassName, _rootSchema, _settings.SealClasses, _settings.TypeNameSuffix);
+            string rootFileText = GenerateClass(_settings.RootClassName, _rootSchema);
 
             if (_settings.GenerateEqualityComparers)
             {
@@ -136,7 +136,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             foreach (KeyValuePair<string, JsonSchema> definition in definitions)
             {
-                GenerateClass(definition.Key, definition.Value, _settings.SealClasses, _settings.TypeNameSuffix);
+                GenerateClass(definition.Key, definition.Value);
             }
         }
 
@@ -250,12 +250,10 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         internal string GenerateClass(
             string className,
-            JsonSchema schema,
-            bool sealClasses,
-            string classNameSuffix)
+            JsonSchema schema)
         {
             className = GetHintedClassName(className).ToPascalCase();
-            string suffixedClassName = className + classNameSuffix;
+            string suffixedClassName = className + _settings.TypeNameSuffix;
 
             var propertyInfoDictionary = new PropertyInfoDictionary(
                 className,

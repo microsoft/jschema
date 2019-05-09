@@ -3612,7 +3612,7 @@ namespace N
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
-    @"{
+@"{
   ""type"": ""object"",
   ""properties"": {
     ""requiredProp1"": {
@@ -3674,6 +3674,42 @@ namespace N
     [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public sealed class C
     {
+    }
+}";
+            string actual = generator.Generate(schema);
+            actual.Should().Be(Expected);
+        }
+
+        [Fact(DisplayName = "DataModelGenerator generates virtual members when option is set", Skip = "NYI")]
+        public void GeneratesVirtualMembersWhenOptionIsSet()
+        {
+            _settings.VirtualMembers = true;
+
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""prop"": {
+      ""type"": ""string""
+    }
+  }
+}", TestUtil.TestFilePath);
+
+            const string Expected =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""prop"", IsRequired = false, EmitDefaultValue = false)]
+        public virtual string Prop { get; set; }
     }
 }";
             string actual = generator.Generate(schema);
