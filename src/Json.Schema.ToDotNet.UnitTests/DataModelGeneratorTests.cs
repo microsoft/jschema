@@ -3680,10 +3680,10 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates virtual members when option is set")]
-        public void GeneratesVirtualMembersWhenOptionIsSet()
+        [Fact(DisplayName = "DataModelGenerator generates virtual properties when option is set")]
+        public void GeneratesVirtualPropertiesWhenOptionIsSet()
         {
-            _settings.VirtualMembers = true;
+            _settings.VirtualProperties = true;
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 

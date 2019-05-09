@@ -87,7 +87,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets or sets a value indicating whether the members of the generated
         /// classes whould be declared <code>virtual</code>.
         /// </summary>
-        public bool VirtualMembers { get; set; }
+        public bool VirtualProperties { get; set; }
 
         internal void Validate()
         {
