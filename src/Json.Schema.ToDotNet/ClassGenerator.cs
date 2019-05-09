@@ -383,20 +383,20 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             PropertyModifiersHint propertyModifiersHint = HintDictionary?.GetPropertyHint<PropertyModifiersHint>(TypeName, propertyName);
 
-            SyntaxToken[] modifierTokens;
+            IList<SyntaxToken> modifierTokens;
             if (propertyModifiersHint?.Modifiers != null)
             {
-                modifierTokens = propertyModifiersHint.Modifiers.ToArray();
+                modifierTokens = propertyModifiersHint.Modifiers;
             }
             else
             {
-                modifierTokens = new SyntaxToken[]
+                modifierTokens = new List<SyntaxToken>
                 {
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword)
                 };
             }
 
-            return modifierTokens;
+            return modifierTokens.ToArray();
         }
 
         protected override AccessorDeclarationSyntax[] GeneratePropertyAccessors()
