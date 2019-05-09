@@ -290,6 +290,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     _settings.GenerateEqualityComparers,
                     _settings.GenerateCloningCode,
                     _settings.SealClasses,
+                    _settings.VirtualMembers,
                     _nodeInterfaceName,
                     _kindEnumName,
                     _settings.TypeNameSuffix);
