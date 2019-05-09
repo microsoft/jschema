@@ -33,4 +33,4 @@
 
 ## **1.0.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.0.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.0.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.0.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.0.0)
 
-* Update SARIF dependency to v2.1.0 RTM.0.
+* Update SARIF dependency to v2.1.0.
