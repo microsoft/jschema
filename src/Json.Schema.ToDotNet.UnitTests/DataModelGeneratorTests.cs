@@ -13,6 +13,10 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
     public class DataModelGeneratorTests
     {
         private static readonly string PrimaryOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName);
+        private static readonly string PrimaryEqualityComparerOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName + "EqualityComparer");
+        private static readonly string SyntaxInterfaceOutputFilePath = TestFileSystem.MakeOutputFilePath("ISNode");
+        private static readonly string KindEnumOutputFilePath = TestFileSystem.MakeOutputFilePath("SNodeKind");
+        private static readonly string RewritingVisitorOutputFilePath = TestFileSystem.MakeOutputFilePath("SRewritingVisitor");
 
         private TestFileSystem _testFileSystem;
         private readonly DataModelGeneratorSettings _settings;
@@ -1698,18 +1702,15 @@ namespace N
 
             generator.Generate(schema);
 
-            string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISNode");
-            string kindEnumPath = TestFileSystem.MakeOutputFilePath("SNodeKind");
             string referencedTypePath = TestFileSystem.MakeOutputFilePath("D");
-            string rewritingVisitorClassPath = TestFileSystem.MakeOutputFilePath("SRewritingVisitor");
             string enumTypePath = TestFileSystem.MakeOutputFilePath("Color");
 
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
-                syntaxInterfacePath,
-                kindEnumPath,
-                rewritingVisitorClassPath,
+                SyntaxInterfaceOutputFilePath,
+                KindEnumOutputFilePath,
+                RewritingVisitorOutputFilePath,
                 referencedTypePath,
                 enumTypePath
             };
@@ -1719,9 +1720,9 @@ namespace N
 
             _testFileSystem[enumTypePath].Should().Be(ExpectedEnumType);
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
-            _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
-            _testFileSystem[kindEnumPath].Should().Be(ExpectedKindEnum);
-            _testFileSystem[rewritingVisitorClassPath].Should().Be(ExpectedRewritingVisitor);
+            _testFileSystem[SyntaxInterfaceOutputFilePath].Should().Be(ExpectedSyntaxInterface);
+            _testFileSystem[KindEnumOutputFilePath].Should().Be(ExpectedKindEnum);
+            _testFileSystem[RewritingVisitorOutputFilePath].Should().Be(ExpectedRewritingVisitor);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates classes for schemas in definitions")]
@@ -3680,12 +3681,12 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates virtual memberts when option is set")]
+        [Fact(DisplayName = "DataModelGenerator generates virtual members when option is set")]
         public void GeneratesVirtualMembersWhenOptionIsSet()
         {
             _settings.VirtualMembers = true;
             _settings.GenerateCloningCode = true;
-            // _settings.GenerateEqualityComparers = true;
+            _settings.GenerateEqualityComparers = true;
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -3699,17 +3700,23 @@ namespace N
   }
 }", TestUtil.TestFilePath);
 
-            const string Expected =
+            const string ExpectedClass =
 @"using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""1.0.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C : ISNode
     {
+        public static IEqualityComparer<C> ValueComparer => CEqualityComparer.Instance;
+
+        public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
+        public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
         /// <summary>
         /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
         /// </summary>
@@ -3785,8 +3792,198 @@ namespace N
         }
     }
 }";
-            string actual = generator.Generate(schema);
-            actual.Should().Be(Expected);
+
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for equality.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CEqualityComparer : IEqualityComparer<C>
+    {
+        internal static readonly CEqualityComparer Instance = new CEqualityComparer();
+
+        public bool Equals(C left, C right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            if (left.Prop != right.Prop)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(C obj)
+        {
+            if (ReferenceEquals(obj, null))
+            {
+                return 0;
+            }
+
+            int result = 17;
+            unchecked
+            {
+                if (obj.Prop != null)
+                {
+                    result = (result * 31) + obj.Prop.GetHashCode();
+                }
+            }
+
+            return result;
+        }
+    }
+}";
+            const string ExpectedSyntaxInterface =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// An interface for all types generated from the S schema.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public interface ISNode
+    {
+        /// <summary>
+        /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
+        /// </summary>
+        SNodeKind SNodeKind { get; }
+
+        /// <summary>
+        /// Makes a deep copy of this instance.
+        /// </summary>
+        ISNode DeepClone();
+    }
+}";
+            const string ExpectedKindEnum =
+@"using System.CodeDom.Compiler;
+
+namespace N
+{
+    /// <summary>
+    /// A set of values for all the types that implement <see cref=""ISNode"" />.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public enum SNodeKind
+    {
+        /// <summary>
+        /// An uninitialized kind.
+        /// </summary>
+        None,
+        /// <summary>
+        /// A value indicating that the <see cref=""ISNode"" /> object is of type <see cref=""C"" />.
+        /// </summary>
+        C
+    }
+}";
+            const string ExpectedRewritingVisitor =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace N
+{
+    /// <summary>
+    /// Rewriting visitor for the S object model.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public abstract class SRewritingVisitor
+    {
+        /// <summary>
+        /// Starts a rewriting visit of a node in the S object model.
+        /// </summary>
+        /// <param name=""node"">
+        /// The node to rewrite.
+        /// </param>
+        /// <returns>
+        /// A rewritten instance of the node.
+        /// </returns>
+        public virtual object Visit(ISNode node)
+        {
+            return this.VisitActual(node);
+        }
+
+        /// <summary>
+        /// Visits and rewrites a node in the S object model.
+        /// </summary>
+        /// <param name=""node"">
+        /// The node to rewrite.
+        /// </param>
+        /// <returns>
+        /// A rewritten instance of the node.
+        /// </returns>
+        public virtual object VisitActual(ISNode node)
+        {
+            if (node == null)
+            {
+                throw new ArgumentNullException(""node"");
+            }
+
+            switch (node.SNodeKind)
+            {
+                case SNodeKind.C:
+                    return VisitC((C)node);
+                default:
+                    return node;
+            }
+        }
+
+        private T VisitNullChecked<T>(T node) where T : class, ISNode
+        {
+            if (node == null)
+            {
+                return null;
+            }
+
+            return (T)Visit(node);
+        }
+
+        public virtual C VisitC(C node)
+        {
+            if (node != null)
+            {
+            }
+
+            return node;
+        }
+    }
+}";
+
+            generator.Generate(schema);
+
+            var expectedOutputFiles = new List<string>
+            {
+                PrimaryOutputFilePath,
+                PrimaryEqualityComparerOutputFilePath,
+                SyntaxInterfaceOutputFilePath,
+                KindEnumOutputFilePath,
+                RewritingVisitorOutputFilePath
+            };
+
+            _testFileSystem.Files.Count.Should().Be(expectedOutputFiles.Count);
+            _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
+
+            _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
+            _testFileSystem[PrimaryEqualityComparerOutputFilePath].Should().Be(ExpectedComparerClass);
+            _testFileSystem[SyntaxInterfaceOutputFilePath].Should().Be(ExpectedSyntaxInterface);
+            _testFileSystem[KindEnumOutputFilePath].Should().Be(ExpectedKindEnum);
+            _testFileSystem[RewritingVisitorOutputFilePath].Should().Be(ExpectedRewritingVisitor);
         }
 
         [Fact(DisplayName = "DataModelGenerator accepts a limited oneOf with \"type\": \"null\"")]
