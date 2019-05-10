@@ -379,7 +379,16 @@ namespace Microsoft.Json.Schema.ToDotNet
             return attributes.ToArray();
         }
 
-        protected override SyntaxToken[] GeneratePropertyModifiers(string propertyName)
+        /// <summary>
+        /// Generates the modifiers for a property specified in the schema.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The name of the property whose modifiers are to be generated.
+        /// </param>
+        /// <returns>
+        /// An array of <code>SyntaxToken</code> describing the modifiers.
+        /// </returns>
+        protected override SyntaxToken[] GenerateSchemaPropertyModifiers(string propertyName)
         {
             PropertyModifiersHint propertyModifiersHint = HintDictionary?.GetPropertyHint<PropertyModifiersHint>(TypeName, propertyName);
 
@@ -394,11 +403,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                 {
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword)
                 };
-            }
 
-            if (_virtualMembers)
-            {
-                modifierTokens.Add(SyntaxFactory.Token(SyntaxKind.VirtualKeyword));
+                if (_virtualMembers)
+                {
+                    modifierTokens.Add(SyntaxFactory.Token(SyntaxKind.VirtualKeyword));
+                }
             }
 
             return modifierTokens.ToArray();
@@ -418,7 +427,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.PropertyDeclaration(
                 SyntaxFactory.ParseTypeName(_kindEnumName),
                 _kindEnumName)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(GenerateNonSchemaPropertyModifiers(SyntaxKind.PublicKeyword))
                 .AddAccessorListAccessors(
                         SyntaxHelper.MakeGetAccessor(
                             SyntaxFactory.Block(
@@ -695,7 +704,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.ParseTypeName(SuffixedTypeName),
                 DeepCloneMethodName)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(GenerateNonSchemaPropertyModifiers(SyntaxKind.PublicKeyword))
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.CastExpression(
@@ -860,6 +869,19 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxKind.SimpleAssignmentExpression,
                             SyntaxFactory.IdentifierName(propertyName),
                             SyntaxFactory.IdentifierName(destinationVariableName)))));
+        }
+
+        private SyntaxToken[] GenerateNonSchemaPropertyModifiers(params SyntaxKind[] modifierKinds)
+        {
+            List<SyntaxKind> modifierKindList = modifierKinds.ToList();
+            if (_virtualMembers)
+            {
+                modifierKindList.Add(SyntaxKind.VirtualKeyword);
+            }
+
+            return modifierKindList
+                .Select(mk => SyntaxFactory.Token(mk))
+                .ToArray();
         }
 
         private LocalDeclarationStatementSyntax DeclareCollection(

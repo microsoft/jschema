@@ -3684,6 +3684,8 @@ namespace N
         public void GeneratesVirtualMembersWhenOptionIsSet()
         {
             _settings.VirtualMembers = true;
+            _settings.GenerateCloningCode = true;
+            // _settings.GenerateEqualityComparers = true;
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
@@ -3705,11 +3707,82 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""1.0.0.0"")]
+    public partial class C : ISNode
     {
+        /// <summary>
+        /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
+        /// </summary>
+        public virtual SNodeKind SNodeKind
+        {
+            get
+            {
+                return SNodeKind.C;
+            }
+        }
+
         [DataMember(Name = ""prop"", IsRequired = false, EmitDefaultValue = false)]
         public virtual string Prop { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class.
+        /// </summary>
+        public C()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
+        /// </summary>
+        /// <param name=""prop"">
+        /// An initialization value for the <see cref=""P:Prop"" /> property.
+        /// </param>
+        public C(string prop)
+        {
+            Init(prop);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the specified instance.
+        /// </summary>
+        /// <param name=""other"">
+        /// The instance from which the new instance is to be initialized.
+        /// </param>
+        /// <exception cref=""ArgumentNullException"">
+        /// Thrown if <paramref name=""other"" /> is null.
+        /// </exception>
+        public C(C other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            Init(other.Prop);
+        }
+
+        ISNode ISNode.DeepClone()
+        {
+            return DeepCloneCore();
+        }
+
+        /// <summary>
+        /// Creates a deep copy of this instance.
+        /// </summary>
+        public virtual C DeepClone()
+        {
+            return (C)DeepCloneCore();
+        }
+
+        private ISNode DeepCloneCore()
+        {
+            return new C(this);
+        }
+
+        private void Init(string prop)
+        {
+            Prop = prop;
+        }
     }
 }";
             string actual = generator.Generate(schema);
