@@ -46,7 +46,16 @@ namespace Microsoft.Json.Schema.ToDotNet
             return new AttributeSyntax[0];
         }
 
-        protected override SyntaxToken[] GeneratePropertyModifiers(string propertyName)
+        /// <summary>
+        /// Generates the modifiers for a property specified in the schema.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The name of the property whose modifiers are to be generated.
+        /// </param>
+        /// <returns>
+        /// An array of <code>SyntaxToken</code> describing the modifiers.
+        /// </returns>
+        protected override SyntaxToken[] GenerateSchemaPropertyModifiers(string propertyName)
         {
             return new SyntaxToken[0];
         }

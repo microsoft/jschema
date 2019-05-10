@@ -27,7 +27,16 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         protected abstract AttributeSyntax[] GeneratePropertyAttributes(string propertyName, string serializedName, bool isRequired, object defaultValue, TypeSyntax propertyType);
 
-        protected abstract SyntaxToken[] GeneratePropertyModifiers(string propertyName);
+        /// <summary>
+        /// Generates the modifiers for a property specified in the schema.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The name of the property whose modifiers are to be generated.
+        /// </param>
+        /// <returns>
+        /// An array of <code>SyntaxToken</code> describing the modifiers.
+        /// </returns>
+        protected abstract SyntaxToken[] GenerateSchemaPropertyModifiers(string propertyName);
 
         protected abstract AccessorDeclarationSyntax[] GeneratePropertyAccessors();
 
@@ -100,7 +109,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
                 info.Type,
                 propertyName.ToPascalCase())
-                .AddModifiers(GeneratePropertyModifiers(propertyName))
+                .AddModifiers(GenerateSchemaPropertyModifiers(propertyName))
                 .AddAccessorListAccessors(GeneratePropertyAccessors());
 
             AttributeSyntax[] attributes = GeneratePropertyAttributes(propertyName, info.SerializedName, info.IsRequired, info.DefaultValue, info.Type);

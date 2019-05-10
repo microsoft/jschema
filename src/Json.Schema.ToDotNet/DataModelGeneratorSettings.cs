@@ -83,6 +83,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </summary>
         public bool SealClasses { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the members of the generated
+        /// classes whould be declared <code>virtual</code>.
+        /// </summary>
+        public bool VirtualMembers { get; set; }
+
         internal void Validate()
         {
             var sb = new StringBuilder();

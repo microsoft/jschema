@@ -91,5 +91,13 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
             Default = false,
             Required = false)]
         public bool SealClasses { get; set; }
+
+        [Option(
+            'v',
+            "virtual-members",
+            HelpText = "Mark generated properties and methods as virtual.",
+            Default = false,
+            Required = false)]
+        public bool VirtualMembers { get; set; }
     }
 }
