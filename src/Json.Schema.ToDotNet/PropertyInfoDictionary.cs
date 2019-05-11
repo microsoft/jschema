@@ -430,6 +430,21 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema)
         {
             string key = MakeElementKeyName(propertyName);
+            if (schema.Items == null)
+            {
+                // If "items" is missing, it defaults to an empty schema, meaning the array
+                // element type can be anything. By treating it as if it were "items": "object",
+                // we will generate the same code, namely, a .NET array of System.Object.
+                schema.Items = new Items(
+                    new JsonSchema
+                    {
+                        Type = new List<SchemaType>
+                        {
+                            SchemaType.Object
+                        }
+                    });
+            }
+
             if (!schema.Items.SingleSchema)
             {
                 throw new ApplicationException($"Cannot generate code for the array property '{propertyName}' because the 'items' property of the schema contains different schemas for each array element.");

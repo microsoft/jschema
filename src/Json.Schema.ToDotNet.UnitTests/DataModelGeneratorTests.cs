@@ -406,8 +406,8 @@ namespace N
                 .WithMessage("*nonExistentDefinition*");
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates array-valued property")]
-        public void GeneratesArrayValuedProperty()
+        [Fact(DisplayName = "DataModelGenerator generates array-valued properties")]
+        public void GeneratesArrayValuedProperties()
         {
             const string ExpectedClass =
 @"using System;
@@ -428,6 +428,10 @@ namespace N
 
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
+        [DataMember(Name = ""arrayProp2"", IsRequired = false, EmitDefaultValue = false)]
+        public IList<int> ArrayProp2 { get; set; }
+        [DataMember(Name = ""arrayProp3"", IsRequired = false, EmitDefaultValue = false)]
+        public IList<object> ArrayProp3 { get; set; }
     }
 }";
 
@@ -479,6 +483,48 @@ namespace N
                 }
             }
 
+            if (!object.ReferenceEquals(left.ArrayProp2, right.ArrayProp2))
+            {
+                if (left.ArrayProp2 == null || right.ArrayProp2 == null)
+                {
+                    return false;
+                }
+
+                if (left.ArrayProp2.Count != right.ArrayProp2.Count)
+                {
+                    return false;
+                }
+
+                for (int index_1 = 0; index_1 < left.ArrayProp2.Count; ++index_1)
+                {
+                    if (left.ArrayProp2[index_1] != right.ArrayProp2[index_1])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (!object.ReferenceEquals(left.ArrayProp3, right.ArrayProp3))
+            {
+                if (left.ArrayProp3 == null || right.ArrayProp3 == null)
+                {
+                    return false;
+                }
+
+                if (left.ArrayProp3.Count != right.ArrayProp3.Count)
+                {
+                    return false;
+                }
+
+                for (int index_2 = 0; index_2 < left.ArrayProp3.Count; ++index_2)
+                {
+                    if (!object.Equals(left.ArrayProp3[index_2], right.ArrayProp3[index_2]))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -503,6 +549,27 @@ namespace N
                         }
                     }
                 }
+
+                if (obj.ArrayProp2 != null)
+                {
+                    foreach (var value_1 in obj.ArrayProp2)
+                    {
+                        result = result * 31;
+                        result = (result * 31) + value_1.GetHashCode();
+                    }
+                }
+
+                if (obj.ArrayProp3 != null)
+                {
+                    foreach (var value_2 in obj.ArrayProp3)
+                    {
+                        result = result * 31;
+                        if (value_2 != null)
+                        {
+                            result = (result * 31) + value_2.GetHashCode();
+                        }
+                    }
+                }
             }
 
             return result;
@@ -516,7 +583,7 @@ namespace N
 
             string actual = generator.Generate(schema);
 
-            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayValuedProperty));
+            TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayValuedProperties));
 
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
             {
