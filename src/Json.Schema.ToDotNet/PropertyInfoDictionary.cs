@@ -649,7 +649,11 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             TypeSyntax type = this[propertyName].Type;
 
-            string typeName = Regex.Replace(type.ToString(), "^IDictionary<", "Dictionary<");
+            string typeName = type.ToString();
+            if (typeName.StartsWith("IDictionary"))
+            {
+                typeName = typeName.Substring(1);
+            }
 
             return SyntaxFactory.ParseTypeName(typeName);
         }
