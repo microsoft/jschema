@@ -641,12 +641,12 @@ namespace Microsoft.Json.Schema.ToDotNet
             return GetConcreteType(propertyName, "IDictionary");
         }
 
-        private TypeSyntax GetConcreteType(string propertyName, string abstractTypeName)
+        private TypeSyntax GetConcreteType(string propertyName, string interfaceName)
         {
             TypeSyntax type = this[propertyName].Type;
 
             string typeName = type.ToString();
-            if (typeName.StartsWith(abstractTypeName))
+            if (typeName.StartsWith(interfaceName))
             {
                 typeName = typeName.Substring(1);
                 type = SyntaxFactory.ParseTypeName(typeName);
