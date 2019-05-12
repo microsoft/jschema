@@ -629,7 +629,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             string typeName = type.ToString();
             if (typeName.StartsWith("IList"))
             {
-                typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
+                typeName = typeName.Substring(1);
             }
 
             return SyntaxFactory.ParseTypeName(typeName);
