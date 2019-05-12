@@ -623,16 +623,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         internal TypeSyntax GetConcreteListType(string propertyName)
         {
-            TypeSyntax type = this[propertyName].Type;
-
-            string typeName = type.ToString();
-            if (typeName.StartsWith("IList"))
-            {
-                typeName = typeName.Substring(1);
-                type = SyntaxFactory.ParseTypeName(typeName);
-            }
-
-            return type;
+            return GetConcreteType(propertyName, "IList");
         }
 
         /// <summary>
@@ -647,10 +638,15 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         internal TypeSyntax GetConcreteDictionaryType(string propertyName)
         {
+            return GetConcreteType(propertyName, "IDictionary");
+        }
+
+        private TypeSyntax GetConcreteType(string propertyName, string abstractTypeName)
+        {
             TypeSyntax type = this[propertyName].Type;
 
             string typeName = type.ToString();
-            if (typeName.StartsWith("IDictionary"))
+            if (typeName.StartsWith(abstractTypeName))
             {
                 typeName = typeName.Substring(1);
                 type = SyntaxFactory.ParseTypeName(typeName);
