@@ -629,9 +629,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (typeName.StartsWith("IList"))
             {
                 typeName = typeName.Substring(1);
+                type = SyntaxFactory.ParseTypeName(typeName);
             }
 
-            return SyntaxFactory.ParseTypeName(typeName);
+            return type;
         }
 
         /// <summary>
@@ -652,9 +653,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (typeName.StartsWith("IDictionary"))
             {
                 typeName = typeName.Substring(1);
+                type = SyntaxFactory.ParseTypeName(typeName);
             }
 
-            return SyntaxFactory.ParseTypeName(typeName);
+            return type;
         }
     }
 }
