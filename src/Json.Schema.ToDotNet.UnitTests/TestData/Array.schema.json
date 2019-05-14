@@ -6,6 +6,15 @@
       "items": {
         "type": "object"
       }
+    },
+    "arrayProp2": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "arrayProp3": {
+      "type": "array"
     }
   },
   "minItems": 1

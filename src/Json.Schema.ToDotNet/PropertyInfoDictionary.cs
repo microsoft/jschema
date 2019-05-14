@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Json.Schema.ToDotNet.Hints;
@@ -430,6 +429,21 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema)
         {
             string key = MakeElementKeyName(propertyName);
+            if (schema.Items == null)
+            {
+                // If "items" is missing, it defaults to an empty schema, meaning the array
+                // element type can be anything. By treating it as if it were "items": "object",
+                // we will generate the same code, namely, a .NET array of System.Object.
+                schema.Items = new Items(
+                    new JsonSchema
+                    {
+                        Type = new List<SchemaType>
+                        {
+                            SchemaType.Object
+                        }
+                    });
+            }
+
             if (!schema.Items.SingleSchema)
             {
                 throw new ApplicationException($"Cannot generate code for the array property '{propertyName}' because the 'items' property of the schema contains different schemas for each array element.");
@@ -609,15 +623,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         internal TypeSyntax GetConcreteListType(string propertyName)
         {
-            TypeSyntax type = this[propertyName].Type;
-
-            string typeName = type.ToString();
-            if (typeName.StartsWith("IList"))
-            {
-                typeName = Regex.Replace(type.ToString(), "^IList<", "List<");
-            }
-
-            return SyntaxFactory.ParseTypeName(typeName);
+            return GetConcreteType(propertyName, "IList");
         }
 
         /// <summary>
@@ -632,11 +638,21 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </remarks>
         internal TypeSyntax GetConcreteDictionaryType(string propertyName)
         {
+            return GetConcreteType(propertyName, "IDictionary");
+        }
+
+        private TypeSyntax GetConcreteType(string propertyName, string interfaceName)
+        {
             TypeSyntax type = this[propertyName].Type;
 
-            string typeName = Regex.Replace(type.ToString(), "^IDictionary<", "Dictionary<");
+            string typeName = type.ToString();
+            if (typeName.StartsWith(interfaceName))
+            {
+                typeName = typeName.Substring(1);
+                type = SyntaxFactory.ParseTypeName(typeName);
+            }
 
-            return SyntaxFactory.ParseTypeName(typeName);
+            return type;
         }
     }
 }
