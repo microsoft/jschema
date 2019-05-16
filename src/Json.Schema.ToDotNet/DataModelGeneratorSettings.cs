@@ -89,6 +89,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </summary>
         public bool VirtualMembers { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the Init methods of the generated
+        /// classes should be declared <code>protected</code>
+        /// </summary>
+        public bool ProtectedInitMethods { get; set; }
+
         internal void Validate()
         {
             var sb = new StringBuilder();
