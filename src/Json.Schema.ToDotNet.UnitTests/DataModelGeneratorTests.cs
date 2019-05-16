@@ -3748,7 +3748,7 @@ namespace N
             actual.Should().Be(Expected);
         }
 
-        [Fact(DisplayName = "DataModelGenerator generates protected Init methods when option is set", Skip = "NYI")]
+        [Fact(DisplayName = "DataModelGenerator generates protected Init methods when option is set")]
         public void GeneratesProtectedInitMethodsWhenOptionIsSet()
         {
             _settings.ProtectedInitMethods = true;
