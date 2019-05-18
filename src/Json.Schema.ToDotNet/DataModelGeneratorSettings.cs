@@ -91,7 +91,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         /// <summary>
         /// Gets or sets a value indicating whether the Init methods of the generated
-        /// classes should be declared <code>protected</code>
+        /// classes should be declared <code>protected</code>.
         /// </summary>
         public bool ProtectedInitMethods { get; set; }
 

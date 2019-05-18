@@ -42,4 +42,4 @@ According to JSON Schema, that is equivalent to `"items": { }`, meaning anything
 
 ## **1.1.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.0)
 
-* #118: Code gen: Allow Init methods to be declared protected virtual.
+* #118: Code gen: Allow generated Init methods to be protected.
