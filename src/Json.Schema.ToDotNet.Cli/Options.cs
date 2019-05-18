@@ -103,7 +103,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         [Option(
             'p',
             "protected-init-methods",
-            HelpText = "Declare auto-generated Init methods as protected rather than private.",
+            HelpText = "Declare generated Init methods as protected rather than private.",
             Default = false,
             Required = false)]
         public bool ProtectedInitMethods { get; set; }
