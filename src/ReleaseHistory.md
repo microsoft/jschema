@@ -39,3 +39,7 @@
 
 * #108: Bug fix: The code generator crashed on a schema with `"type": "array"` but no `"items"` property.
 According to JSON Schema, that is equivalent to `"items": { }`, meaning anything is allowed, meaning this construct should generate an array whose elements are `System.Object`.
+
+## **1.1.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.0)
+
+* #118: Code gen: Allow Init methods to be declared protected virtual.
