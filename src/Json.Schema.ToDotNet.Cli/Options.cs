@@ -95,9 +95,17 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         [Option(
             'v',
             "virtual-members",
-            HelpText = "Mark generated properties and methods as virtual.",
+            HelpText = "Declare generated properties and methods as virtual.",
             Default = false,
             Required = false)]
         public bool VirtualMembers { get; set; }
+
+        [Option(
+            'p',
+            "protected-init-methods",
+            HelpText = "Declare generated Init methods as protected rather than private.",
+            Default = false,
+            Required = false)]
+        public bool ProtectedInitMethods { get; set; }
     }
 }

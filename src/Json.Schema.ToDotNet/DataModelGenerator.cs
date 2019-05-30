@@ -291,6 +291,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     _settings.GenerateCloningCode,
                     _settings.SealClasses,
                     _settings.VirtualMembers,
+                    _settings.ProtectedInitMethods,
                     _nodeInterfaceName,
                     _kindEnumName,
                     _settings.TypeNameSuffix);

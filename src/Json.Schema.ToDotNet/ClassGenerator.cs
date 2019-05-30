@@ -22,6 +22,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private readonly bool _generateCloningCode;
         private readonly bool _sealClasses;
         private readonly bool _virtualMembers;
+        private readonly bool _protectedInitMethods;
         private readonly string _syntaxInterfaceName;
         private readonly string _kindEnumName;
 
@@ -66,6 +67,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             bool generateCloningCode,
             bool sealClasses,
             bool virtualMembers,
+            bool protectedInitMethods,
             string syntaxInterfaceName,
             string kindEnumName,
             string typeNameSuffix)
@@ -77,6 +79,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _syntaxInterfaceName = syntaxInterfaceName;
             _sealClasses = sealClasses;
             _virtualMembers = virtualMembers;
+            _protectedInitMethods = protectedInitMethods;
             _kindEnumName = kindEnumName;
 
             _localVariableNameGenerator = new LocalVariableNameGenerator();
@@ -733,10 +736,18 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             _localVariableNameGenerator.Reset();
 
+            SyntaxKind[] modifierKinds = _protectedInitMethods ?
+                new[] { SyntaxKind.ProtectedKeyword, SyntaxKind.VirtualKeyword } :
+                new[] { SyntaxKind.PrivateKeyword };
+
+            SyntaxToken[] modifierTokens = modifierKinds
+                .Select(mk => SyntaxFactory.Token(mk))
+                .ToArray();
+
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)),
                 InitMethodName)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PrivateKeyword))
+                .AddModifiers(modifierTokens)
                 .AddParameterListParameters(GenerateInitMethodParameterList())
                 .AddBodyStatements(GenerateInitializations());
         }

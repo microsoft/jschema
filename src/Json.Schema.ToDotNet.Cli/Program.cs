@@ -77,7 +77,8 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     GenerateEqualityComparers = options.GenerateEqualityComparers,
                     GenerateCloningCode = options.GenerateCloningCode,
                     SealClasses = options.SealClasses,
-                    VirtualMembers = options.VirtualMembers
+                    VirtualMembers = options.VirtualMembers,
+                    ProtectedInitMethods = options.ProtectedInitMethods
                 };
 
                 new DataModelGenerator(settings).Generate(schema);

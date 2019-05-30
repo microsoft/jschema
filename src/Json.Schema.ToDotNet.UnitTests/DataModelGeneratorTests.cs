@@ -3748,6 +3748,117 @@ namespace N
             actual.Should().Be(Expected);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates protected Init methods when option is set")]
+        public void GeneratesProtectedInitMethodsWhenOptionIsSet()
+        {
+            _settings.ProtectedInitMethods = true;
+
+            // Unless you generate cloning code, you don't get an Init method at all.
+            _settings.GenerateCloningCode = true;
+
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+
+            JsonSchema schema = SchemaReader.ReadSchema(
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""prop"": {
+      ""type"": ""string""
+    }
+  }
+}", TestUtil.TestFilePath);
+
+            const string ExpectedClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C : ISNode
+    {
+        /// <summary>
+        /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
+        /// </summary>
+        public SNodeKind SNodeKind
+        {
+            get
+            {
+                return SNodeKind.C;
+            }
+        }
+
+        [DataMember(Name = ""prop"", IsRequired = false, EmitDefaultValue = false)]
+        public string Prop { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class.
+        /// </summary>
+        public C()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the supplied values.
+        /// </summary>
+        /// <param name=""prop"">
+        /// An initialization value for the <see cref=""P:Prop"" /> property.
+        /// </param>
+        public C(string prop)
+        {
+            Init(prop);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""C"" /> class from the specified instance.
+        /// </summary>
+        /// <param name=""other"">
+        /// The instance from which the new instance is to be initialized.
+        /// </param>
+        /// <exception cref=""ArgumentNullException"">
+        /// Thrown if <paramref name=""other"" /> is null.
+        /// </exception>
+        public C(C other)
+        {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            Init(other.Prop);
+        }
+
+        ISNode ISNode.DeepClone()
+        {
+            return DeepCloneCore();
+        }
+
+        /// <summary>
+        /// Creates a deep copy of this instance.
+        /// </summary>
+        public C DeepClone()
+        {
+            return (C)DeepCloneCore();
+        }
+
+        private ISNode DeepCloneCore()
+        {
+            return new C(this);
+        }
+
+        protected virtual void Init(string prop)
+        {
+            Prop = prop;
+        }
+    }
+}";
+
+            string actualClass = generator.Generate(schema);
+            actualClass.Should().Be(ExpectedClass);
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates virtual members when option is set")]
         public void GeneratesVirtualMembersWhenOptionIsSet()
         {
