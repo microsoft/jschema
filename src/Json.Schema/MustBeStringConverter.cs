@@ -42,7 +42,7 @@ namespace Microsoft.Json.Schema
                 string propertyName = reader.Path?.Split(s_pathSplitChars).LastOrDefault()
                     ?? string.Empty;
 
-                throw new SchemaValidationException(jToken, ErrorNumber.NotAString, propertyName, reader.TokenType);
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.NotAString, propertyName, reader.TokenType);
             }
 
             return reader.Value;

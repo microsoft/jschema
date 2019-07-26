@@ -11,6 +11,8 @@ namespace Microsoft.Json.Schema
 {
     internal class SchemaTypeConverter : JsonConverter
     {
+        public static SchemaTypeConverter Instance = new SchemaTypeConverter();
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(SchemaType);
@@ -31,7 +33,8 @@ namespace Microsoft.Json.Schema
                 }
                 else
                 {
-                    throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeString, typeString);
+                    SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidTypeString, typeString);
+                    return null;
                 }
             }
             else if (jToken.Type == JTokenType.Array)
@@ -50,13 +53,13 @@ namespace Microsoft.Json.Schema
                         else
                         {
                             allValid = false;
-                            throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeString, typeString);
+                            SchemaValidationErrorAccumulator.Instance.AddError(elementToken, ErrorNumber.InvalidTypeString, typeString);
                         }
                     }
                     else
                     {
                         allValid = false;
-                        throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
+                        SchemaValidationErrorAccumulator.Instance.AddError(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
                     }
                 }
 
@@ -68,6 +71,7 @@ namespace Microsoft.Json.Schema
             else
             {
                 throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
+                return null;
             }
 
             return schemaTypes;
