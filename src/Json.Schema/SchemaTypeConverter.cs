@@ -70,7 +70,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
                 return null;
             }
 
