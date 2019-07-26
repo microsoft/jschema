@@ -5,10 +5,6 @@
     <TargetFrameworks>$(TargetFrameworks);net461</TargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup Label="ConditionalCompilation">
-    <DefineConstants Condition=" '$(TargetFramework)' == 'net461' ">$(DefineConstants);NET461</DefineConstants>
-  </PropertyGroup>
-
   <PropertyGroup Label="AssemblyAttributes">
     <Company Condition=" '$(Company)' == '' ">Microsoft</Company>
     <Product Condition=" '$(Product)' == '' ">JSON Schema</Product>
