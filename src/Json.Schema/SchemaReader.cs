@@ -15,13 +15,15 @@ namespace Microsoft.Json.Schema
 
         public static JsonSchema ReadSchema(string jsonText, string filePath)
         {
+            var errorAccumulator = new SchemaValidationErrorAccumulator();
+
             // Change "$ref" to "$$ref" before we ask Json.NET to deserialize it,
             // because Json.NET treats "$ref" specially.
             jsonText = RefProperty.ConvertFromInput(jsonText);
 
             var serializer = new JsonSerializer
             {
-                ContractResolver = new JsonSchemaContractResolver(),
+                ContractResolver = new JsonSchemaContractResolver(errorAccumulator),
             };
 
             JsonSchema schema;
@@ -35,6 +37,11 @@ namespace Microsoft.Json.Schema
                 {
                     throw new JsonSyntaxException(filePath, ex);
                 }
+            }
+
+            if (errorAccumulator.HasErrors)
+            {
+                throw errorAccumulator.ToException();
             }
 
             return schema;

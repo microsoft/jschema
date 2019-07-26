@@ -10,9 +10,10 @@ namespace Microsoft.Json.Schema
     /// Converts a property of type <see cref="UriOrFragment"/> to or from a string
     /// during serialization or deserialization.
     /// </summary>
-    internal class UriOrFragmentConverter : JsonConverter
+    internal class UriOrFragmentConverter : ErrorAccumulatingConverter
     {
-        public static readonly UriOrFragmentConverter Instance = new UriOrFragmentConverter();
+        public UriOrFragmentConverter(SchemaValidationErrorAccumulator errorAccumulator)
+            : base(errorAccumulator) { }
 
         public override bool CanConvert(Type objectType)
         {

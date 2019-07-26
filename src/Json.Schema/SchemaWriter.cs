@@ -22,7 +22,7 @@ namespace Microsoft.Json.Schema
             };
 
             var serializer = JsonSerializer.Create(settings);
-            serializer.ContractResolver = new JsonSchemaContractResolver();
+            serializer.ContractResolver = new JsonSchemaContractResolver(new SchemaValidationErrorAccumulator());
             serializer.Converters.Add(
                 new StringEnumConverter
                 {

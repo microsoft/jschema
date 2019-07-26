@@ -58,7 +58,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
         {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                ContractResolver = new JsonSchemaContractResolver()
+                ContractResolver = new JsonSchemaContractResolver(new SchemaValidationErrorAccumulator())
             };
 
             _data = new List<object[]>();
