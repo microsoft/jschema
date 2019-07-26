@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -34,7 +33,7 @@ namespace Microsoft.Json.Schema
                 }
                 else
                 {
-                    serializer.CaptureError(jToken, ErrorNumber.InvalidTypeString, typeString);
+                    SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidTypeString, typeString);
                     return null;
                 }
             }
@@ -54,13 +53,13 @@ namespace Microsoft.Json.Schema
                         else
                         {
                             allValid = false;
-                            serializer.CaptureError(elementToken, ErrorNumber.InvalidTypeString, typeString);
+                            SchemaValidationErrorAccumulator.Instance.AddError(elementToken, ErrorNumber.InvalidTypeString, typeString);
                         }
                     }
                     else
                     {
                         allValid = false;
-                        serializer.CaptureError(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
+                        SchemaValidationErrorAccumulator.Instance.AddError(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
                     }
                 }
 
@@ -71,7 +70,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                serializer.CaptureError(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
                 return null;
             }
 

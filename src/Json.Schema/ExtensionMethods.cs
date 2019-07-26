@@ -5,16 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-// Newtonsoft defines TraceLevel inconsistently between .NET Framework and .NET Standard.
-// This fixes the problem. See https://github.com/JamesNK/Newtonsoft.Json/issues/1616.
-#if NET461
-using TraceLevel = System.Diagnostics.TraceLevel;
-#else
-using TraceLevel = Newtonsoft.Json.TraceLevel;
-#endif
 
 namespace Microsoft.Json.Schema
 {
@@ -143,19 +133,6 @@ namespace Microsoft.Json.Schema
             }
 
             return false;
-        }
-    }
-
-    public static class JsonSerializerExtensions
-    {
-        public static void CaptureError(
-            this JsonSerializer serializer,
-            JToken jToken,
-            ErrorNumber errorNumber,
-            params object[] args)
-        {
-            var exception = new SchemaValidationException(jToken, errorNumber, args);
-            serializer.TraceWriter.Trace(TraceLevel.Error, exception.Message, exception);
         }
     }
 }

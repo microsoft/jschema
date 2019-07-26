@@ -41,7 +41,7 @@ namespace Microsoft.Json.Schema
                     }
                     else
                     {
-                        serializer.CaptureError(elementToken, ErrorNumber.InvalidPropertyDependencyType, elementToken.Type);
+                        SchemaValidationErrorAccumulator.Instance.AddError(elementToken, ErrorNumber.InvalidPropertyDependencyType, elementToken.Type);
                     }
                 }
 
@@ -49,7 +49,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                serializer.CaptureError(jToken, ErrorNumber.InvalidDependencyType, jToken.Type);
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidDependencyType, jToken.Type);
                 return null;
             }
         }

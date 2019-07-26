@@ -42,8 +42,7 @@ namespace Microsoft.Json.Schema
                 string propertyName = reader.Path?.Split(s_pathSplitChars).LastOrDefault()
                     ?? string.Empty;
 
-                serializer.CaptureError(jToken, ErrorNumber.NotAString, propertyName, reader.TokenType);
-                return string.Empty;
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.NotAString, propertyName, reader.TokenType);
             }
 
             return reader.Value;

@@ -36,7 +36,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                serializer.CaptureError(jToken, ErrorNumber.InvalidAdditionalPropertiesType, jToken.Type);
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidAdditionalPropertiesType, jToken.Type);
                 return null;
             }
         }
