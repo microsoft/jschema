@@ -43,3 +43,13 @@ According to JSON Schema, that is equivalent to `"items": { }`, meaning anything
 ## **1.1.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.0)
 
 * #118: Code gen: Allow generated Init methods to be protected.
+
+## **1.1.1** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.0)
+
+* For the sake of compatibility with consumers who use both (1) JSchema (which depends on Newtonsoft.Json 9.0.1) and (2) other packages which depend on Newtonsoft.Json 11 or later, we remove the internal `ExtensionCapturingTraceWriter` class.
+The visible result is that if you call `SchemaReader.ReadSchema` on a JSON schema file with multiple errors, it will now throw a `SchemaValidationException` containing only the first error.
+Previously, it would have thrown a `SchemaValidationException` containing a list of all the errors encountered.
+
+This change is related to a long-standing problem in Newtonsoft.Json (see https://github.com/JamesNK/Newtonsoft.Json/issues/1616). Version 11 fixed that problem by removing the type `Newtonsoft.Json.TraceLevel` entirely
+(that is, now, both the net461 and netstandard2.0 libraries use `System.Diagnostics.TraceLevel`). But JSchema, relying as it does on 9.0.1, _requires_ `Netwonsoft.Json.TraceLevel` to implement an `ITraceWriter`.
+In an application with the dependencies described above, the higher version of Newtonsoft.Json will be loaded, the type `Newtonsoft.Json.TraceLevel` will not be available, and so the type initializer for `ExtensionCapturingTraceWriter` will fail.

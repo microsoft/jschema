@@ -145,17 +145,4 @@ namespace Microsoft.Json.Schema
             return false;
         }
     }
-
-    public static class JsonSerializerExtensions
-    {
-        public static void CaptureError(
-            this JsonSerializer serializer,
-            JToken jToken,
-            ErrorNumber errorNumber,
-            params object[] args)
-        {
-            var exception = new SchemaValidationException(jToken, errorNumber, args);
-            serializer.TraceWriter.Trace(TraceLevel.Error, exception.Message, exception);
-        }
-    }
 }

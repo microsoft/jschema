@@ -34,8 +34,7 @@ namespace Microsoft.Json.Schema
                 }
                 else
                 {
-                    serializer.CaptureError(jToken, ErrorNumber.InvalidTypeString, typeString);
-                    return null;
+                    throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeString, typeString);
                 }
             }
             else if (jToken.Type == JTokenType.Array)
@@ -54,13 +53,13 @@ namespace Microsoft.Json.Schema
                         else
                         {
                             allValid = false;
-                            serializer.CaptureError(elementToken, ErrorNumber.InvalidTypeString, typeString);
+                            throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeString, typeString);
                         }
                     }
                     else
                     {
                         allValid = false;
-                        serializer.CaptureError(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
+                        throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
                     }
                 }
 
@@ -71,8 +70,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                serializer.CaptureError(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
-                return null;
+                throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
             }
 
             return schemaTypes;
