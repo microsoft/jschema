@@ -12,10 +12,9 @@ namespace Microsoft.Json.Schema
     /// Converts a property of type <see cref="Dependency"/> to or from a string
     /// during serialization or deserialization.
     /// </summary>
-    internal class DependencyConverter : ErrorAccumulatingConverter
+    internal class DependencyConverter : JsonConverter
     {
-        public DependencyConverter(SchemaValidationErrorAccumulator errorAccumulator)
-            : base(errorAccumulator) { }
+        public static readonly DependencyConverter Instance = new DependencyConverter();
 
         public override bool CanConvert(Type objectType)
         {
@@ -42,7 +41,7 @@ namespace Microsoft.Json.Schema
                     }
                     else
                     {
-                        ErrorAccumulator.AddError(elementToken, ErrorNumber.InvalidPropertyDependencyType, elementToken.Type);
+                        SchemaValidationErrorAccumulator.Instance.AddError(elementToken, ErrorNumber.InvalidPropertyDependencyType, elementToken.Type);
                     }
                 }
 
@@ -50,7 +49,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                ErrorAccumulator.AddError(jToken, ErrorNumber.InvalidDependencyType, jToken.Type);
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidDependencyType, jToken.Type);
                 return null;
             }
         }

@@ -10,29 +10,22 @@ namespace Microsoft.Json.Schema
 {
     public class JsonSchemaContractResolver : CamelCasePropertyNamesContractResolver
     {
-        private readonly SchemaValidationErrorAccumulator _errorAccumulator;
-
-        public JsonSchemaContractResolver(SchemaValidationErrorAccumulator errorAccumulator)
-        {
-            _errorAccumulator = errorAccumulator;
-        }
+        private static readonly Dictionary<Type, JsonConverter> s_typeToConverterDictionary =
+            new Dictionary<Type, JsonConverter>
+            {
+                [typeof(UriOrFragment)] = UriOrFragmentConverter.Instance,
+                [typeof(AdditionalItems)] = AdditionalItemsConverter.Instance,
+                [typeof(AdditionalProperties)] = AdditionalPropertiesConverter.Instance,
+                [typeof(Items)] = ItemsConverter.Instance,
+                [typeof(Dependency)] = DependencyConverter.Instance
+            };
 
         public override JsonContract ResolveContract(Type objectType)
         {
-            Dictionary<Type, JsonConverter> typeToConverterDictionary =
-                new Dictionary<Type, JsonConverter>
-                {
-                    [typeof(UriOrFragment)] = new UriOrFragmentConverter(_errorAccumulator),
-                    [typeof(AdditionalItems)] = new AdditionalItemsConverter(_errorAccumulator),
-                    [typeof(AdditionalProperties)] = new AdditionalPropertiesConverter(_errorAccumulator),
-                    [typeof(Items)] = new ItemsConverter(_errorAccumulator),
-                    [typeof(Dependency)] = new DependencyConverter(_errorAccumulator)
-                };
-
             var contract = base.CreateContract(objectType);
 
             JsonConverter converter;
-            if (typeToConverterDictionary.TryGetValue(objectType, out converter))
+            if (s_typeToConverterDictionary.TryGetValue(objectType, out converter))
             {
                 contract.Converter = converter;
             }

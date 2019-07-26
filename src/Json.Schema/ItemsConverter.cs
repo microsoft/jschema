@@ -12,11 +12,9 @@ namespace Microsoft.Json.Schema
     /// Converts a property of type <see cref="Items"/> to or from a string
     /// during serialization or deserialization.
     /// </summary>
-    public class ItemsConverter : ErrorAccumulatingConverter
+    public class ItemsConverter : JsonConverter
     {
-        public ItemsConverter(SchemaValidationErrorAccumulator errorAccumulator)
-            : base(errorAccumulator) { }
-
+        public static readonly ItemsConverter Instance = new ItemsConverter();
 
         public override bool CanConvert(Type objectType)
         {
@@ -39,7 +37,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                ErrorAccumulator.AddError(jToken, ErrorNumber.InvalidItemsType, jToken.Type);
+                SchemaValidationErrorAccumulator.Instance.AddError(jToken, ErrorNumber.InvalidItemsType, jToken.Type);
                 return null;
             }
         }
