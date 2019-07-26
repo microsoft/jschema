@@ -3,16 +3,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
-    internal class SchemaTypeConverter : JsonConverter
+    internal class SchemaTypeConverter : ErrorAccumulatingConverter
     {
-        public static SchemaTypeConverter Instance = new SchemaTypeConverter();
+        public SchemaTypeConverter(SchemaValidationErrorAccumulator errorAccumulator)
+            : base(errorAccumulator) { }
 
         public override bool CanConvert(Type objectType)
         {
@@ -34,7 +34,7 @@ namespace Microsoft.Json.Schema
                 }
                 else
                 {
-                    throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeString, typeString);
+                    ErrorAccumulator.AddError(jToken, ErrorNumber.InvalidTypeString, typeString);
                 }
             }
             else if (jToken.Type == JTokenType.Array)
@@ -53,13 +53,13 @@ namespace Microsoft.Json.Schema
                         else
                         {
                             allValid = false;
-                            throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeString, typeString);
+                            ErrorAccumulator.AddError(elementToken, ErrorNumber.InvalidTypeString, typeString);
                         }
                     }
                     else
                     {
                         allValid = false;
-                        throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
+                        ErrorAccumulator.AddError(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
                     }
                 }
 
@@ -70,7 +70,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
+                ErrorAccumulator.AddError(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
             }
 
             return schemaTypes;

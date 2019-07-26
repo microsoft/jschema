@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -26,7 +27,8 @@ namespace Microsoft.Json.Schema
                     [typeof(AdditionalItems)] = new AdditionalItemsConverter(_errorAccumulator),
                     [typeof(AdditionalProperties)] = new AdditionalPropertiesConverter(_errorAccumulator),
                     [typeof(Items)] = new ItemsConverter(_errorAccumulator),
-                    [typeof(Dependency)] = new DependencyConverter(_errorAccumulator)
+                    [typeof(Dependency)] = new DependencyConverter(_errorAccumulator),
+                    [typeof(IList<SchemaType>)] = new SchemaTypeConverter(_errorAccumulator)
                 };
 
             var contract = base.CreateContract(objectType);

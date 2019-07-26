@@ -175,7 +175,6 @@ namespace Microsoft.Json.Schema
         [JsonConverter(typeof(MustBeStringConverter))]
         public string Description { get; set; }
 
-        [JsonConverter(typeof(SchemaTypeConverter))]
         public IList<SchemaType> Type { get; set; }
 
         /// <summary>
