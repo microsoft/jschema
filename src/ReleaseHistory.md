@@ -44,7 +44,7 @@ According to JSON Schema, that is equivalent to `"items": { }`, meaning anything
 
 * #118: Code gen: Allow generated Init methods to be protected.
 
-## **1.1.1** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.0)
+## **1.1.1** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.1) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.1)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.1)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.1)
 
 * For the sake of compatibility with consumers who use both (1) JSchema (which depends on Newtonsoft.Json 9.0.1) and (2) other packages which depend on Newtonsoft.Json 11 or later, we remove the internal `ExtensionCapturingTraceWriter` class.
 The visible result is that if you call `SchemaReader.ReadSchema` on a JSON schema file with multiple errors, it will now throw a `SchemaValidationException` containing only the first error.
