@@ -9,11 +9,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
-    internal class SchemaTypeConverter : ErrorAccumulatingConverter
+    internal class SchemaTypeConverter : JsonConverter
     {
-        public SchemaTypeConverter(SchemaValidationErrorAccumulator errorAccumulator)
-            : base(errorAccumulator) { }
-
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(SchemaType);
@@ -34,7 +31,7 @@ namespace Microsoft.Json.Schema
                 }
                 else
                 {
-                    ErrorAccumulator.AddError(jToken, ErrorNumber.InvalidTypeString, typeString);
+                    throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeString, typeString);
                 }
             }
             else if (jToken.Type == JTokenType.Array)
@@ -53,13 +50,13 @@ namespace Microsoft.Json.Schema
                         else
                         {
                             allValid = false;
-                            ErrorAccumulator.AddError(elementToken, ErrorNumber.InvalidTypeString, typeString);
+                            throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeString, typeString);
                         }
                     }
                     else
                     {
                         allValid = false;
-                        ErrorAccumulator.AddError(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
+                        throw new SchemaValidationException(elementToken, ErrorNumber.InvalidTypeType, elementToken.Type);
                     }
                 }
 
@@ -70,7 +67,7 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-                ErrorAccumulator.AddError(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
+                throw new SchemaValidationException(jToken, ErrorNumber.InvalidTypeType, jToken.Type);
             }
 
             return schemaTypes;

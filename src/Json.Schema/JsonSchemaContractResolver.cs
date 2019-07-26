@@ -26,8 +26,7 @@ namespace Microsoft.Json.Schema
                     [typeof(AdditionalItems)] = new AdditionalItemsConverter(_errorAccumulator),
                     [typeof(AdditionalProperties)] = new AdditionalPropertiesConverter(_errorAccumulator),
                     [typeof(Items)] = new ItemsConverter(_errorAccumulator),
-                    [typeof(Dependency)] = new DependencyConverter(_errorAccumulator),
-                    [typeof(SchemaType[])] = new SchemaTypeConverter(_errorAccumulator)
+                    [typeof(Dependency)] = new DependencyConverter(_errorAccumulator)
                 };
 
             var contract = base.CreateContract(objectType);
