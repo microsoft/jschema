@@ -37,7 +37,6 @@ namespace Microsoft.Json.Schema
             }
             else
             {
-
                 ErrorAccumulator.AddError(jToken, ErrorNumber.InvalidAdditionalItemsType, jToken.Type);
                 return null;
             }

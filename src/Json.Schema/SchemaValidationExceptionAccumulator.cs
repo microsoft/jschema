@@ -13,11 +13,6 @@ namespace Microsoft.Json.Schema
 
         public bool HasErrors => _schemaValidationExceptions.Any();
 
-        public void Clear()
-        {
-            _schemaValidationExceptions.Clear();
-        }
-
         public void AddError(JToken jToken, ErrorNumber errorNumber, params object[] args)
         {
             _schemaValidationExceptions.Add(new SchemaValidationException(jToken, errorNumber, args));
