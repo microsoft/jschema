@@ -82,7 +82,6 @@ namespace Microsoft.Json.Pointer.UnitTests
 
             builder.Length.Should().Be(0,
                 $"all test cases should pass, but the following test cases failed:\n{builder}");
-
         }
     }
 }
