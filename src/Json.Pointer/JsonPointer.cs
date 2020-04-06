@@ -15,10 +15,9 @@ namespace Microsoft.Json.Pointer
     /// <summary>
     /// Represents a JSON Pointer as defined in RFC 6901.
     /// </summary>
-    public class JsonPointer
+    public class JsonPointer : IEquatable<JsonPointer>
     {
         private const string TokenSeparator = "/";
-        private const string EscapeCharacter = "~";
         private const char UriFragmentDelimiter = '#';
 
         private readonly string _value;
@@ -203,6 +202,69 @@ $",
                         value),
                     nameof(value));
             }
+        }
+
+
+        public bool Equals(JsonPointer other)
+        {
+            if (other == null) { return false; }
+
+            if ((ReferenceTokens == null) != (other.ReferenceTokens == null)) { return false; }
+
+            if (ReferenceTokens == null) { return true; }
+
+            if (ReferenceTokens.Length != other.ReferenceTokens.Length) { return false; }
+
+            for (int i = 0; i < ReferenceTokens.Length; ++i)
+            {
+                if (!ReferenceTokens[i].Equals(other.ReferenceTokens[i], StringComparison.Ordinal)) { return false; }
+            }
+
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) { return false; }
+
+            if (!(obj is JsonPointer otherPointer)) { return false; }
+
+            return Equals(otherPointer);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 13;
+                foreach (string token in ReferenceTokens)
+                {
+                    hashCode = (hashCode * 397) ^ token.GetHashCode();
+                }
+
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(JsonPointer left, JsonPointer right)
+        {
+            if (((object)left) == null || ((object)right) == null)
+                return Equals(left, right);
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(JsonPointer left, JsonPointer right)
+        {
+            if (((object)left) == null || ((object)right) == null)
+                return !Equals(left, right);
+
+            return !(left.Equals(right));
+        }
+
+        public override string ToString()
+        {
+            return TokenSeparator + string.Join(TokenSeparator, ReferenceTokens);
         }
     }
 }
