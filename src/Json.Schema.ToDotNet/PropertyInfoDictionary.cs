@@ -240,6 +240,13 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.Uri;
                 type = MakeNamedType("System.Uri", out namespaceName);
             }
+            else if (propertySchema.IsUuid())
+            {
+                comparisonKind = ComparisonKind.OperatorEquals;
+                hashKind = HashKind.ScalarValueType;
+                initializationKind = InitializationKind.SimpleAssign;
+                type = MakeNamedType("System.Guid", out namespaceName);
+            }
             else if (propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
             {
                 comparisonKind = ComparisonKind.Dictionary;
