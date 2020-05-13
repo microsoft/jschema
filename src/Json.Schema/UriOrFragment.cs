@@ -61,7 +61,7 @@ namespace Microsoft.Json.Schema
 
             if (other.Uri != null)
             {
-                Uri = new Uri(other.Uri.OriginalString);
+                Uri = new Uri(other.Uri.OriginalString, UriKind.RelativeOrAbsolute);
             }
         }
 
