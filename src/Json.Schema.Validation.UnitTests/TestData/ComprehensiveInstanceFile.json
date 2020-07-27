@@ -9,6 +9,9 @@
       },
       "JSON1003_TooFewArrayItems": {
         "arrayProperty": [ 1, 2 ]
+      },
+      "JSON1004_TooManyArrayItems": {
+        "arrayProperty": [ 1, 2 ]
       }
     },
     "negative": {
@@ -19,6 +22,9 @@
       },
       "JSON1003_TooFewArrayItems": {
         "arrayProperty": [ 1 ]
+      },
+      "JSON1004_TooManyArrayItems": {
+        "arrayProperty": [ 1, 2, 3 ]
       }
     }
   }

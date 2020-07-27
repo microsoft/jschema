@@ -50,6 +50,15 @@
               "minItems": 2
             }
           }
+        },
+        "JSON1004_TooManyArrayItems": {
+          "description": "Instance file provides too many array items.",
+          "properties": {
+            "arrayProperty": {
+              "type": "array",
+              "maxItems": 2
+            }
+          }
         }
       },
       "required": [
