@@ -1,0 +1,12 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for comprehensive testing of Json.Schema.Validation",
+  "type": "object",
+  "properties": {
+    "requiredProperty": {
+      "description": "A required property",
+      "type":  "string"
+    }
+  },
+  "required": [ "requiredProperty" ]
+}

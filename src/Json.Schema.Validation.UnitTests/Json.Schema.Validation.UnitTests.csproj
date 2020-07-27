@@ -23,9 +23,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Json.Schema.Validation.Cli\Json.Schema.Validation.Cli.csproj" />
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
     <ProjectReference Include="..\Json.Schema.Validation\Json.Schema.Validation.csproj" />
     <ProjectReference Include="..\Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestData\ComprehensiveInstanceDocument.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\ComprehensiveSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

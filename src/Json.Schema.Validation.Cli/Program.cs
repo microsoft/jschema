@@ -10,13 +10,19 @@ using System.Reflection;
 using CommandLine;
 using Microsoft.CodeAnalysis.Sarif;
 using Microsoft.CodeAnalysis.Sarif.Writers;
-using Microsoft.Json.Schema.Validation;
 
 namespace Microsoft.Json.Schema.Validation.CommandLine
 {
     internal class Program
     {
-        private static int Main(string[] args)
+        internal enum ExitCode
+        {
+            Valid = 0,
+            Invalid = 1,
+            Error = 2
+        }
+
+        internal static int Main(string[] args)
         {
             return Parser.Default.ParseArguments<Options>(args)
                 .MapResult(
@@ -28,7 +34,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
         {
             Banner();
 
-            int exitCode = 1;
+            int exitCode;
 
             using (var logger = new SarifLogger(
                                         options.LogFilePath,
@@ -53,7 +59,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
 
         private static int Validate(string instanceFile, string schemaFile, SarifLogger logger)
         {
-            int returnCode = 1;
+            int returnCode = (int)ExitCode.Error;
 
             try
             {
@@ -69,15 +75,16 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
                 if (results.Any())
                 {
                     ReportResults(results, logger);
+                    returnCode = (int)ExitCode.Invalid;
                 }
                 else
                 {
                     LogToolNotification(logger, ValidatorResources.Success);
-                    returnCode = 0;
+                    returnCode = (int)ExitCode.Valid;
                 }
             }
             catch (JsonSyntaxException ex)
-            {                
+            {
                 ReportResult(ex.ToSarifResult(), logger);
             }
             catch (SchemaValidationException ex)
@@ -157,13 +164,14 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
 
         private static void Banner()
         {
-            Assembly entryAssembly = Assembly.GetEntryAssembly();
-            IEnumerable<Attribute> attributes = entryAssembly.GetCustomAttributes();
+            // Don't use GetEntryAssembly, because in unit tests, that's the test host.
+            Assembly thisAssembly = Assembly.GetExecutingAssembly();
+            IEnumerable<Attribute> attributes = thisAssembly.GetCustomAttributes();
 
             var titleAttribute = attributes.Single(a => a is AssemblyTitleAttribute) as AssemblyTitleAttribute;
             string programName = titleAttribute.Title;
 
-            string version = entryAssembly.GetName().Version.ToString();
+            string version = thisAssembly.GetName().Version.ToString();
 
             var copyrightAttribute = attributes.Single(a => a is AssemblyCopyrightAttribute) as AssemblyCopyrightAttribute;
             string copyright = copyrightAttribute.Copyright;
