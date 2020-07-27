@@ -18,7 +18,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             {
                 "--schema-file-path", @"TestData\ComprehensiveSchema.json",
                 "--instance-file-path", @"TestData\ComprehensiveInstanceDocument.json",
-                "--log-file-path", "ComprehensiveInstanceDocument-validation.sarif"
+                "--log-file-path", @"TestData\ComprehensiveInstanceDocument-validation-actual.sarif"
             });
 
             exitCode.Should().Be((int)Program.ExitCode.Invalid);
