@@ -14,20 +14,25 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
 {
     public class ComprehensiveEndToEnd
     {
+        private const string SchemaFilePath = @"TestData\ComprehensiveSchema.json";
+        private const string InstanceFilePath = @"TestData\ComprehensiveInstanceFile.json";
+        private const string ExpectedOutputFilePath = @"TestData\ComprehensiveInstanceFile-validation-expected.sarif";
+        private const string ActualOutputFilePath = @"TestData\ComprehensiveInstanceFile-validation-actual.sarif";
+
         [Fact]
         public void Validator_WhenRunOnComprehensiveSample_ProducesExpectedOutput()
         {
             int exitCode = Program.Main(new string[]
             {
-                "--schema-file-path", @"TestData\ComprehensiveSchema.json",
-                "--instance-file-path", @"TestData\ComprehensiveInstanceDocument.json",
-                "--log-file-path", @"TestData\ComprehensiveInstanceDocument-validation-actual.sarif"
+                "--schema-file-path", SchemaFilePath,
+                "--instance-file-path", InstanceFilePath,
+                "--log-file-path", ActualOutputFilePath
             });
 
             exitCode.Should().Be((int)Program.ExitCode.Invalid);
 
-            SarifLog actualLog = SarifLog.Load(@"TestData\ComprehensiveInstanceDocument-validation-actual.sarif");
-            SarifLog expectedLog = SarifLog.Load(@"TestData\ComprehensiveInstanceDocument-validation-expected.sarif");
+            SarifLog actualLog = SarifLog.Load(ActualOutputFilePath);
+            SarifLog expectedLog = SarifLog.Load(ExpectedOutputFilePath);
 
             // Just compare the results, because there's lots of non-deterministic stuff in the
             // invocation, driver, and artifacts.

@@ -29,10 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestData\ComprehensiveInstanceDocument-validation-expected.sarif">
+    <None Update="TestData\ComprehensiveInstanceFile-validation-expected.sarif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\ComprehensiveInstanceDocument.json">
+    <None Update="TestData\ComprehensiveInstanceFile.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\ComprehensiveSchema.json">
