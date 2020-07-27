@@ -2,11 +2,17 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Schema for comprehensive testing of Json.Schema.Validation",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
-    "requiredProperty": {
-      "description": "A required property",
-      "type":  "string"
+    "TestCase.JSON1002.RequiredPropertyMissing": {
+      "description": "Schema containing a required property, which the instance document lacks.",
+      "properties": {
+        "requiredProperty": {
+          "description": "A required property",
+          "type": "string"
+        }
+      },
+      "required": [ "requiredProperty" ]
     }
-  },
-  "required": [ "requiredProperty" ]
+  }
 }
