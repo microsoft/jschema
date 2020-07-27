@@ -1,11 +1,17 @@
 {
   "testSuites": {
     "positive": {
+      "JSON1001_WrongType": {
+        "integerProperty": 1
+      },
       "JSON1002_RequiredPropertyMissing": {
         "requiredProperty": "present"
       }
     },
     "negative": {
+      "JSON1001_WrongType": {
+        "integerProperty": "1"
+      },
       "JSON1002_RequiredPropertyMissing": {
       }
     }

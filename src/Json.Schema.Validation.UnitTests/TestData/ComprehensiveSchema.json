@@ -23,8 +23,17 @@
     "testSuite": {
       "description": "Defines sub-schemas for exercising each validation rule",
       "properties": {
+        "JSON1001_WrongType": {
+          "description": "Instance file provides incorrect property type.",
+          "properties": {
+            "integerProperty": {
+              "description": "A property whose type is integer",
+              "type": "integer"
+            }
+          }
+        },
         "JSON1002_RequiredPropertyMissing": {
-          "description": "Schema containing a required property, which the instance document lacks.",
+          "description": "Instance file fails to provide a required property.",
           "properties": {
             "requiredProperty": {
               "description": "A required property",

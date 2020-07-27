@@ -215,7 +215,7 @@
     <value>{1} is less than or equal to the exclusive minimum value of {2}.</value>
   </data>
   <data name="ErrorWrongType" xml:space="preserve">
-    <value>The schema requires one of the types [{1}], but a token of type '{2}' was found.</value>
+    <value>The schema requires one of the types ({1}), but a token of type '{2}' was found.</value>
   </data>
   <data name="RuleDescriptionAdditionalPropertiesProhibited" xml:space="preserve">
     <value>An object contains a property not defined by the schema, and the schema does not permit additional properties.</value>
