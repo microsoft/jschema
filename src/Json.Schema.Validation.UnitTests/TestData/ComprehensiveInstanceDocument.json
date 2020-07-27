@@ -1,4 +1,14 @@
 {
-  "TestCase.JSON1002.RequiredPropertyMissing": {
+  "testSuites": {
+    "positive": {
+      "JSON1002_RequiredPropertyMissing": {
+        "requiredProperty": "present"
+      }
+    },
+    "negative": {
+      "JSON1002_RequiredPropertyMissing": {
+      }
+    }
   }
 }
+

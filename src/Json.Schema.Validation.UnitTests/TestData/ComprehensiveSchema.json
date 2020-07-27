@@ -4,15 +4,39 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "TestCase.JSON1002.RequiredPropertyMissing": {
-      "description": "Schema containing a required property, which the instance document lacks.",
+    "testSuites": {
+      "description": "An object containing two instances, the first of which fails all the checks and second of which passes them.",
+      "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "requiredProperty": {
-          "description": "A required property",
-          "type": "string"
+        "positive": {
+          "$ref": "#/definitions/testSuite"
+        },
+        "negative": {
+          "$ref": "#/definitions/testSuite"
         }
       },
-      "required": [ "requiredProperty" ]
+      "required": [ "positive", "negative" ]
+    }
+  },
+  "definitions": {
+    "testSuite": {
+      "description": "Defines sub-schemas for exercising each validation rule",
+      "properties": {
+        "JSON1002_RequiredPropertyMissing": {
+          "description": "Schema containing a required property, which the instance document lacks.",
+          "properties": {
+            "requiredProperty": {
+              "description": "A required property",
+              "type": "string"
+            }
+          },
+          "required": [ "requiredProperty" ]
+        }
+      },
+      "required": [
+        "JSON1002_RequiredPropertyMissing"
+      ]
     }
   }
 }
