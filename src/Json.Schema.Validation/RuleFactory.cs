@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Microsoft.CodeAnalysis.Sarif;
 
@@ -10,8 +11,6 @@ namespace Microsoft.Json.Schema.Validation
     // TODO Not best name. Maybe RuleDictionary.Instance and have it implement IDictionary.
     public static class RuleFactory
     {
-        // TODO: Make list immutable
-
         public const string DefaultRuleMessageId = "default";
         private const string ErrorCodePrefix = "JSON";
         internal static readonly string ErrorCodeFormat = ErrorCodePrefix + "{0:D4}";
@@ -39,7 +38,7 @@ namespace Microsoft.Json.Schema.Validation
             };
         }
 
-        private static readonly Dictionary<ErrorNumber, ReportingDescriptor> s_ruleDictionary = new Dictionary<ErrorNumber, ReportingDescriptor>
+        private static readonly IReadOnlyDictionary<ErrorNumber, ReportingDescriptor> s_ruleDictionary = new ReadOnlyDictionary<ErrorNumber, ReportingDescriptor>(new  Dictionary<ErrorNumber, ReportingDescriptor>
         {
             [ErrorNumber.SyntaxError] = MakeRule(
                 ErrorNumber.SyntaxError,
@@ -200,7 +199,7 @@ namespace Microsoft.Json.Schema.Validation
                 ErrorNumber.DependentPropertyMissing,
                 RuleResources.RuleDescriptionDependentPropertyMissing,
                 RuleResources.ErrorDependentPropertyMissing)
-        };
+        });
 
         public static ReportingDescriptor GetRuleFromRuleId(string ruleId)
         {
