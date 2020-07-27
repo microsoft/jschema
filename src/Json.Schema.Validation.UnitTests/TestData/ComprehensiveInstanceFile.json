@@ -6,6 +6,9 @@
       },
       "JSON1002_RequiredPropertyMissing": {
         "requiredProperty": "present"
+      },
+      "JSON1003_TooFewArrayItems": {
+        "arrayProperty": [ 1, 2 ]
       }
     },
     "negative": {
@@ -13,6 +16,9 @@
         "integerProperty": "1"
       },
       "JSON1002_RequiredPropertyMissing": {
+      },
+      "JSON1003_TooFewArrayItems": {
+        "arrayProperty": [ 1 ]
       }
     }
   }

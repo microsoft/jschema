@@ -41,6 +41,15 @@
             }
           },
           "required": [ "requiredProperty" ]
+        },
+        "JSON1003_TooFewArrayItems": {
+          "description": "Instance file provides too few array items.",
+          "properties": {
+            "arrayProperty": {
+              "type": "array",
+              "minItems": 2
+            }
+          }
         }
       },
       "required": [

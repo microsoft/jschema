@@ -695,7 +695,7 @@ namespace Microsoft.Json.Schema.Validation
 
         private static string FormatSchemaTypes(IList<SchemaType> schemaTypes)
         {
-            return "'" + string.Join(", '", schemaTypes.Select(t => t.ToString())) + "'";
+            return string.Join(", ", schemaTypes.Select(t => t.ToString()));
         }
 
         private static string FormatList(IList<object> objects)
