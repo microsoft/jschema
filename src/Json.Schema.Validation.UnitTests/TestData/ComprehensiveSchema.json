@@ -5,7 +5,7 @@
   "additionalProperties": false,
   "properties": {
     "testSuites": {
-      "description": "An object containing two instances, the first of which fails all the checks and second of which passes them.",
+      "description": "An object containing two instances, the first of which passes all the checks and second of which fails them.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
