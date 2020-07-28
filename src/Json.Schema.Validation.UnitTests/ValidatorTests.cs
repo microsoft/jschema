@@ -132,6 +132,78 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 ),
 
             new TestCase(
+                "Array: fewer elements than item schemas",
+                @"{
+                  ""type"": ""array"",
+                  ""items"": [
+                    {
+                      ""type"": ""integer""
+                    },
+                    {
+                      ""type"": ""integer"",
+                    }
+                  ],
+                  ""additionalItems"": false
+                }",
+                "[ 1 ]"
+            ),
+
+            new TestCase(
+                "Array: same number of elements than item schemas",
+                @"{
+                  ""type"": ""array"",
+                  ""items"": [
+                    {
+                      ""type"": ""integer""
+                    },
+                    {
+                      ""type"": ""integer"",
+                    }
+                  ],
+                  ""additionalItems"": false
+                }",
+                "[ 1, 2 ]"
+            ),
+
+            new TestCase(
+                "Array: more elements than item schemas",
+                @"{
+                  ""type"": ""array"",
+                  ""items"": [
+                    {
+                      ""type"": ""integer""
+                    },
+                    {
+                      ""type"": ""integer"",
+                    }
+                  ],
+                  ""additionalItems"": false
+                }",
+                "[ 1, 2, 3 ]",
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.TooFewItemSchemas, 3, 2)
+            ),
+
+            new TestCase(
+                "Array: more elements than item schemas, with additionalItems",
+                @"{
+                  ""type"": ""array"",
+                  ""items"": [
+                    {
+                      ""type"": ""integer""
+                    },
+                    {
+                      ""type"": ""integer"",
+                    }
+                  ],
+                  ""additionalItems"":
+                  {
+                    ""type"": ""string""
+                  }
+                }",
+                "[ 1, 2, \"3\" ]"
+            ),
+
+            new TestCase(
                 "String: maxLength: valid",
                 @"{
                   ""type"": ""string"",

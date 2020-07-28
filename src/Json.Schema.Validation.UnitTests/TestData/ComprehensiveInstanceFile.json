@@ -62,6 +62,9 @@
       },
       "JSON1019_InvalidEnumValue": {
         "enumProperty": "a"
+      },
+      "JSON1021_TooFewItemSchemas": {
+        "arrayPropertyWithItemSchemas": [ 1 ]
       }
     },
     "negative": {
@@ -126,6 +129,9 @@
       },
       "JSON1019_InvalidEnumValue": {
         "enumProperty": "c"
+      },
+      "JSON1021_TooFewItemSchemas": {
+        "arrayPropertyWithItemSchemas": [ 1, 2, 3 ]
       }
     }
   }

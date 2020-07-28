@@ -225,6 +225,23 @@
               "enum": [ "a", "b" ]
             }
           }
+        },
+        "JSON1021_TooFewItemSchemas": {
+          "description": "Instance file provides an array property with more elements than item schemas.",
+          "properties": {
+            "arrayPropertyWithItemSchemas": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "additionalItems": false
+            }
+          }
         }
       },
       "required": [
@@ -247,7 +264,8 @@
         "JSON1017_NotAnyOf",
         "JSON1018_NotOneOf_With_Zero",
         "JSON1018_NotOneOf_With_Multiple",
-        "JSON1019_InvalidEnumValue"
+        "JSON1019_InvalidEnumValue",
+        "JSON1021_TooFewItemSchemas"
       ]
     }
   }
