@@ -87,6 +87,15 @@
               "exclusiveMaximum": true
             }
           }
+        },
+        "JSON1008_ValueTooSmall": {
+          "description": "Instance file provides too small a value for a numeric property.",
+          "properties": {
+            "propertyWithMinimum": {
+              "type": "integer",
+              "minimum": 4
+            }
+          }
         }
       },
       "required": [

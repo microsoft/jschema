@@ -21,6 +21,9 @@
       },
       "JSON1007_ValueTooLargeExclusive": {
         "propertyWithExclusiveMaximum": 4
+      },
+      "JSON1008_ValueTooSmall": {
+        "propertyWithMinimum": 4
       }
     },
     "negative": {
@@ -44,6 +47,9 @@
       },
       "JSON1007_ValueTooLargeExclusive": {
         "propertyWithExclusiveMaximum": 5
+      },
+      "JSON1008_ValueTooSmall": {
+        "propertyWithMinimum": 3
       }
     }
   }
