@@ -68,6 +68,9 @@
       },
       "JSON1021_TooFewItemSchemas": {
         "arrayPropertyWithItemSchemas": [ 1 ]
+      },
+      "JSON1022_ValidatesAgainstNotSchema": {
+        "propertyWithNotSchema": "1"
       }
     },
     "negative": {
@@ -138,6 +141,9 @@
       },
       "JSON1021_TooFewItemSchemas": {
         "arrayPropertyWithItemSchemas": [ 1, 2, 3 ]
+      },
+      "JSON1022_ValidatesAgainstNotSchema": {
+        "propertyWithNotSchema": 1
       }
     }
   }
