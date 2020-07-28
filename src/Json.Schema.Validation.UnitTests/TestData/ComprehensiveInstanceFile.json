@@ -25,6 +25,10 @@
       },
       "JSON1004_TooManyArrayItems": {
         "arrayProperty": [ 1, 2, 3 ]
+      },
+      "JSON1005_AdditionalPropertiesProhibited": {
+        "known": 42,
+        "unknown":  54
       }
     }
   }

@@ -59,6 +59,15 @@
               "maxItems": 2
             }
           }
+        },
+        "JSON1005_AdditionalPropertiesProhibited": {
+          "description": "Instance file mentions a property not defined in  the schema.",
+          "properties": {
+            "known": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "required": [
