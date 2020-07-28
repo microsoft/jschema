@@ -44,6 +44,8 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             {
                 // The validator sets the result's location URI to an absolute URI, which
                 // varies across machines. So don't try to compare them.
+                // Filed https://github.com/microsoft/jschema/issues/130, "Don't report validation
+                // error locations or artifact locations as absolute URIs."
                 actualResults[i].Locations[0].PhysicalLocation.ArtifactLocation.Uri = null;
                 expectedResults[i].Locations[0].PhysicalLocation.ArtifactLocation.Uri = null;
 
