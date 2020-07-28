@@ -71,6 +71,10 @@
       },
       "JSON1022_ValidatesAgainstNotSchema": {
         "propertyWithNotSchema": "1"
+      },
+      "JSON1023_DependentPropertyMissing": {
+        "propertyWithDependency": 1,
+        "dependency": 1
       }
     },
     "negative": {
@@ -144,6 +148,9 @@
       },
       "JSON1022_ValidatesAgainstNotSchema": {
         "propertyWithNotSchema": 1
+      },
+      "JSON1023_DependentPropertyMissing": {
+        "propertyWithDependency": 1
       }
     }
   }

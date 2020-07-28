@@ -261,6 +261,18 @@
               }
             }
           }
+        },
+        "JSON1023_DependentPropertyMissing": {
+          "description": "Instance lacks dependent property.",
+          "properties": {
+            "propertyWithDependency": {
+            },
+            "dependency": {
+            }
+          },
+          "dependencies": {
+            "propertyWithDependency": [ "dependency" ]
+          }
         }
       },
       "required": [
@@ -286,7 +298,8 @@
         "JSON1019_InvalidEnumValue",
         "JSON1020_NotUnique",
         "JSON1021_TooFewItemSchemas",
-        "JSON1022_ValidatesAgainstNotSchema"
+        "JSON1022_ValidatesAgainstNotSchema",
+        "JSON1023_DependentPropertyMissing"
       ]
     }
   }
