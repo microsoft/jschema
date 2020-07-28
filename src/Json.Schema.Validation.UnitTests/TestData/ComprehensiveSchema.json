@@ -168,6 +168,22 @@
               ]
             }
           }
+        },
+        "JSON1017_NotAnyOf": {
+          "description": "Instance file provides a property that does not match any of the required schemata.",
+          "properties": {
+            "propertyMatchesAny": {
+              "type": "integer",
+              "anyOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "maximum": 5
+                }
+              ]
+            }
+          }
         }
       },
       "required": [
@@ -186,7 +202,8 @@
         "JSON1013_StringTooLong",
         "JSON1014_StringTooShort",
         "JSON1015_StringDoesNotMatchPattern",
-        "JSON1016_NotAllOf"
+        "JSON1016_NotAllOf",
+        "JSON1017_NotAnyOf"
       ]
     }
   }

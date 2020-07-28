@@ -50,6 +50,9 @@
       },
       "JSON1016_NotAllOf": {
         "propertyMatchesAll": 6
+      },
+      "JSON1017_NotAnyOf": {
+        "propertyMatchesAny": 6
       }
     },
     "negative": {
@@ -102,6 +105,9 @@
       },
       "JSON1016_NotAllOf": {
         "propertyMatchesAll": 8
+      },
+      "JSON1017_NotAnyOf": {
+        "propertyMatchesAny": 8
       }
     }
   }
