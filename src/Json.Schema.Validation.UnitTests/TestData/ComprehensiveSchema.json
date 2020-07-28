@@ -143,6 +143,15 @@
               "minLength": 3
             }
           }
+        },
+        "JSON1015_StringDoesNotMatchPattern": {
+          "description": "Instance file provides string property that does not match the specified pattern.",
+          "properties": {
+            "stringWithPattern": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            }
+          }
         }
       },
       "required": [
@@ -159,7 +168,8 @@
         "JSON1011_TooFewProperties",
         "JSON1012_NotAMultiple",
         "JSON1013_StringTooLong",
-        "JSON1014_StringTooShort"
+        "JSON1014_StringTooShort",
+        "JSON1015_StringDoesNotMatchPattern"
       ]
     }
   }
