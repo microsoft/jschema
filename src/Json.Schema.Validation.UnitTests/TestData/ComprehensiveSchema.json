@@ -125,6 +125,15 @@
               "multipleOf": 2
             }
           }
+        },
+        "JSON1013_StringTooLong": {
+          "description": "Instance file provides string property that is too long.",
+          "properties": {
+            "stringWithMaxLength": {
+              "type": "string",
+              "maxLength": 3
+            }
+          }
         }
       },
       "required": [
@@ -139,7 +148,8 @@
         "JSON1009_ValueTooSmallExclusive",
         "JSON1010_TooManyProperties",
         "JSON1011_TooFewProperties",
-        "JSON1012_NotAMultiple"
+        "JSON1012_NotAMultiple",
+        "JSON1013_StringTooLong"
       ]
     }
   }

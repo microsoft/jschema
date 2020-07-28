@@ -38,6 +38,9 @@
       },
       "JSON1012_NotAMultiple": {
         "evenNumber": 4
+      },
+      "JSON1013_StringTooLong": {
+        "stringWithMaxLength": "abc"
       }
     },
     "negative": {
@@ -78,6 +81,9 @@
       },
       "JSON1012_NotAMultiple": {
         "evenNumber": 4.001
+      },
+      "JSON1013_StringTooLong": {
+        "stringWithMaxLength": "abcd"
       }
     }
   }
