@@ -111,6 +111,11 @@
           "description": "Instance file provides too many properties",
           "additionalProperties": true,
           "maxProperties": 2
+        },
+        "JSON1011_TooFewProperties": {
+          "description": "Instance file provides too few properties",
+          "additionalProperties": true,
+          "minProperties": 2
         }
       },
       "required": [
@@ -123,7 +128,8 @@
         "JSON1007_ValueTooLargeExclusive",
         "JSON1008_ValueTooSmall",
         "JSON1009_ValueTooSmallExclusive",
-        "JSON1010_TooManyProperties"
+        "JSON1010_TooManyProperties",
+        "JSON1011_TooFewProperties"
       ]
     }
   }

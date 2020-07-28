@@ -30,6 +30,10 @@
       },
       "JSON1010_TooManyProperties": {
         "a": 1,
+        "b": 2
+      },
+      "JSON1011_TooFewProperties": {
+        "a": 1,
         "b":  2
       }
     },
@@ -65,6 +69,9 @@
         "a": 1,
         "b": 2,
         "c": 3
+      },
+      "JSON1011_TooFewProperties": {
+        "a": 1
       }
     }
   }
