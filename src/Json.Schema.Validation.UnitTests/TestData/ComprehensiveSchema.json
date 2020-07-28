@@ -152,6 +152,22 @@
               "pattern": "^\\d+$"
             }
           }
+        },
+        "JSON1016_NotAllOf": {
+          "description": "Instance file provides a property that does not match all of the required schemata.",
+          "properties": {
+            "propertyMatchesAll": {
+              "type": "integer",
+              "allOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "minimum": 5
+                }
+              ]
+            }
+          }
         }
       },
       "required": [
@@ -169,7 +185,8 @@
         "JSON1012_NotAMultiple",
         "JSON1013_StringTooLong",
         "JSON1014_StringTooShort",
-        "JSON1015_StringDoesNotMatchPattern"
+        "JSON1015_StringDoesNotMatchPattern",
+        "JSON1016_NotAllOf"
       ]
     }
   }

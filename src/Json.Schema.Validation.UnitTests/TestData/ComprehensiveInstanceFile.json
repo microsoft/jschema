@@ -47,6 +47,9 @@
       },
       "JSON1015_StringDoesNotMatchPattern": {
         "stringWithPattern": "123"
+      },
+      "JSON1016_NotAllOf": {
+        "propertyMatchesAll": 6
       }
     },
     "negative": {
@@ -96,6 +99,9 @@
       },
       "JSON1015_StringDoesNotMatchPattern": {
         "stringWithPattern": "1b3"
+      },
+      "JSON1016_NotAllOf": {
+        "propertyMatchesAll": 8
       }
     }
   }
