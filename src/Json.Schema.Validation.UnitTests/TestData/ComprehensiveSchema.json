@@ -68,6 +68,15 @@
             }
           },
           "additionalProperties": false
+        },
+        "JSON1006_ValueTooLarge": {
+          "description": "Instance file provides too large a value for a numeric property.",
+          "properties": {
+            "propertyWithMaximum": {
+              "type": "integer",
+              "maximum": 5
+            }
+          }
         }
       },
       "required": [

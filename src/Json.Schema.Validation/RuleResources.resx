@@ -203,16 +203,16 @@
     <value>The instance validates successfully against the schema specified by 'not'.</value>
   </data>
   <data name="ErrorValueTooLarge" xml:space="preserve">
-    <value>{1} is greater than the maximum value of {2}.</value>
+    <value>{1} is greater than the maximum permitted value of {2}.</value>
   </data>
   <data name="ErrorValueTooLargeExclusive" xml:space="preserve">
-    <value>{1} is greater than or equal to the exclusive maximum value of {2}.</value>
+    <value>{1} is greater than or equal to the exclusive maximum permitted value of {2}.</value>
   </data>
   <data name="ErrorValueTooSmall" xml:space="preserve">
-    <value>{1} is less than the minimum value of {2}.</value>
+    <value>{1} is less than the minimum permitted value of {2}.</value>
   </data>
   <data name="ErrorValueTooSmallExclusive" xml:space="preserve">
-    <value>{1} is less than or equal to the exclusive minimum value of {2}.</value>
+    <value>{1} is less than or equal to the exclusive minimum permitted value of {2}.</value>
   </data>
   <data name="ErrorWrongType" xml:space="preserve">
     <value>The schema requires one of the types ({1}), but a token of type '{2}' was found.</value>
