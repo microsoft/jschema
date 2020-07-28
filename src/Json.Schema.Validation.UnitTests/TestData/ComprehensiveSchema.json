@@ -184,6 +184,38 @@
               ]
             }
           }
+        },
+        "JSON1018_NotOneOf_With_Zero": {
+          "description": "Instance file provides a property that does not match exactly one of the required schemata (matches zero).",
+          "properties": {
+            "propertyMatchesOne": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "maximum": 5
+                }
+              ]
+            }
+          }
+        },
+        "JSON1018_NotOneOf_With_Multiple": {
+          "description": "Instance file provides a property that does not match exactly one of the required schemata (matches multiple).",
+          "properties": {
+            "propertyMatchesOne": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "maximum": 5
+                }
+              ]
+            }
+          }
         }
       },
       "required": [
@@ -203,7 +235,9 @@
         "JSON1014_StringTooShort",
         "JSON1015_StringDoesNotMatchPattern",
         "JSON1016_NotAllOf",
-        "JSON1017_NotAnyOf"
+        "JSON1017_NotAnyOf",
+        "JSON1018_NotOneOf_With_Zero",
+        "JSON1018_NotOneOf_With_Multiple"
       ]
     }
   }
