@@ -34,7 +34,10 @@
       },
       "JSON1011_TooFewProperties": {
         "a": 1,
-        "b":  2
+        "b": 2
+      },
+      "JSON1012_NotAMultiple": {
+        "evenNumber": 4
       }
     },
     "negative": {
@@ -72,6 +75,9 @@
       },
       "JSON1011_TooFewProperties": {
         "a": 1
+      },
+      "JSON1012_NotAMultiple": {
+        "evenNumber": 4.001
       }
     }
   }

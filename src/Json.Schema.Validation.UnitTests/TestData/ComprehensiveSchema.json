@@ -116,6 +116,15 @@
           "description": "Instance file provides too few properties",
           "additionalProperties": true,
           "minProperties": 2
+        },
+        "JSON1012_NotAMultiple": {
+          "description": "Instance file provides property that is not a multiple of the specified value.",
+          "properties": {
+            "evenNumber": {
+              "type": "number",
+              "multipleOf": 2
+            }
+          }
         }
       },
       "required": [
@@ -129,7 +138,8 @@
         "JSON1008_ValueTooSmall",
         "JSON1009_ValueTooSmallExclusive",
         "JSON1010_TooManyProperties",
-        "JSON1011_TooFewProperties"
+        "JSON1011_TooFewProperties",
+        "JSON1012_NotAMultiple"
       ]
     }
   }
