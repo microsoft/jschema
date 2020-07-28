@@ -133,7 +133,8 @@
     <value>JSON schema requires each property of the 'dependencies' object to be either an schema or an array of strings, but a token of type '{1}' was seen.</value>
   </data>
   <data name="ErrorInvalidEnumValue" xml:space="preserve">
-    <value>'{1}' does not match any of the enum values [{2}].</value>
+    <value>{1} does not match any of the enum values [{2}].</value>
+    <comment>Don't enquote {1}. If it's a string, it's already enquoted, and otherwise, it doesn't need quotes.</comment>
   </data>
   <data name="ErrorInvalidItemsType" xml:space="preserve">
     <value>JSON schema requires 'items' to be either a schema or an array of schemas, but a token of type '{1}' was seen.</value>
@@ -214,7 +215,7 @@
     <value>{1} is less than or equal to the exclusive minimum permitted value of {2}.</value>
   </data>
   <data name="ErrorWrongType" xml:space="preserve">
-    <value>The schema requires one of the types ({1}), but a token of type '{2}' was found.</value>
+    <value>The schema requires one of the types [{1}], but a token of type '{2}' was found.</value>
   </data>
   <data name="RuleDescriptionAdditionalPropertiesProhibited" xml:space="preserve">
     <value>An object contains a property not defined by the schema, and the schema does not permit additional properties.</value>

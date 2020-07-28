@@ -59,6 +59,9 @@
       },
       "JSON1018_NotOneOf_With_Multiple": {
         "propertyMatchesOne": 6
+      },
+      "JSON1019_InvalidEnumValue": {
+        "enumProperty": "a"
       }
     },
     "negative": {
@@ -120,6 +123,9 @@
       },
       "JSON1018_NotOneOf_With_Multiple": {
         "propertyMatchesOne": 4
+      },
+      "JSON1019_InvalidEnumValue": {
+        "enumProperty": "c"
       }
     }
   }
