@@ -226,6 +226,15 @@
             }
           }
         },
+        "JSON1020_NotUnique": {
+          "description": "Instance file provides an array property with non-unique items.",
+          "properties": {
+            "arrayPropertyWithUniquenessConstraint": {
+              "type": "array",
+              "uniqueItems": true
+            }
+          }
+        },
         "JSON1021_TooFewItemSchemas": {
           "description": "Instance file provides an array property with more elements than item schemas.",
           "properties": {
@@ -265,6 +274,7 @@
         "JSON1018_NotOneOf_With_Zero",
         "JSON1018_NotOneOf_With_Multiple",
         "JSON1019_InvalidEnumValue",
+        "JSON1020_NotUnique",
         "JSON1021_TooFewItemSchemas"
       ]
     }

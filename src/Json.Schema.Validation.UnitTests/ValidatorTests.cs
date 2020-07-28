@@ -204,6 +204,33 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
             ),
 
             new TestCase(
+                "Array: with uniqueness constraint: elements are unique.",
+                @"{
+                  ""type"": ""array"",
+                  ""uniqueItems"": true
+                }",
+                "[ 1, 2 ]"
+            ),
+
+            new TestCase(
+                "Array: with uniqueness constraint: elements are not unique.",
+                @"{
+                  ""type"": ""array"",
+                  ""uniqueItems"": true
+                }",
+                "[ 1, 1 ]",
+                MakeErrorMessage(1, 1, string.Empty, ErrorNumber.NotUnique)
+            ),
+
+            new TestCase(
+                "Array: without uniqueness constraint: elements are not unique.",
+                @"{
+                  ""type"": ""array""
+                }",
+                "[ 1, 1 ]"
+            ),
+
+            new TestCase(
                 "String: maxLength: valid",
                 @"{
                   ""type"": ""string"",

@@ -63,6 +63,9 @@
       "JSON1019_InvalidEnumValue": {
         "enumProperty": "a"
       },
+      "JSON1020_NotUnique": {
+        "arrayPropertyWithUniquenessConstraint": [ 1, 2 ]
+      },
       "JSON1021_TooFewItemSchemas": {
         "arrayPropertyWithItemSchemas": [ 1 ]
       }
@@ -129,6 +132,9 @@
       },
       "JSON1019_InvalidEnumValue": {
         "enumProperty": "c"
+      },
+      "JSON1020_NotUnique": {
+        "arrayPropertyWithUniquenessConstraint": [ 1, 1 ]
       },
       "JSON1021_TooFewItemSchemas": {
         "arrayPropertyWithItemSchemas": [ 1, 2, 3 ]
