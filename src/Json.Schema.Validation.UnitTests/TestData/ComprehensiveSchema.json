@@ -77,10 +77,25 @@
               "maximum": 5
             }
           }
+        },
+        "JSON1007_ValueTooLargeExclusive": {
+          "description": "Instance file provides too large a value for a numeric property (exclusive maximum).",
+          "properties": {
+            "propertyWithExclusiveMaximum": {
+              "type": "integer",
+              "maximum": 5,
+              "exclusiveMaximum": true
+            }
+          }
         }
       },
       "required": [
-        "JSON1002_RequiredPropertyMissing"
+        "JSON1001_WrongType",
+        "JSON1002_RequiredPropertyMissing",
+        "JSON1003_TooFewArrayItems",
+        "JSON1004_TooManyArrayItems",
+        "JSON1005_AdditionalPropertiesProhibited",
+        "JSON1006_ValueTooLarge"
       ]
     }
   }

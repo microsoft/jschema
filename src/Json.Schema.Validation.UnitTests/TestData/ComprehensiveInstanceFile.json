@@ -13,8 +13,14 @@
       "JSON1004_TooManyArrayItems": {
         "arrayProperty": [ 1, 2 ]
       },
+      "JSON1005_AdditionalPropertiesProhibited": {
+        "known": 42
+      },
       "JSON1006_ValueTooLarge": {
         "propertyWithMaximum": 5
+      },
+      "JSON1007_ValueTooLargeExclusive": {
+        "propertyWithExclusiveMaximum": 4
       }
     },
     "negative": {
@@ -35,6 +41,9 @@
       },
       "JSON1006_ValueTooLarge": {
         "propertyWithMaximum": 6
+      },
+      "JSON1007_ValueTooLargeExclusive": {
+        "propertyWithExclusiveMaximum": 5
       }
     }
   }
