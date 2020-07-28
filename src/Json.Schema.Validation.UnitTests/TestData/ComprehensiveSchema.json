@@ -96,6 +96,16 @@
               "minimum": 4
             }
           }
+        },
+        "JSON1009_ValueTooSmallExclusive": {
+          "description": "nstance file provides too small a value for a numeric property (exclusive minimum).",
+          "properties": {
+            "propertyWithExclusiveMinimum": {
+              "type": "integer",
+              "minimum": 4,
+              "exclusiveMinimum": true
+            }
+          }
         }
       },
       "required": [
