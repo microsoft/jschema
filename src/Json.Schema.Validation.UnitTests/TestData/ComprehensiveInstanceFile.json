@@ -27,6 +27,10 @@
       },
       "JSON1009_ValueTooSmallExclusive": {
         "propertyWithExclusiveMinimum": 5
+      },
+      "JSON1010_TooManyProperties": {
+        "a": 1,
+        "b":  2
       }
     },
     "negative": {
@@ -56,6 +60,11 @@
       },
       "JSON1009_ValueTooSmallExclusive": {
         "propertyWithExclusiveMinimum": 4
+      },
+      "JSON1010_TooManyProperties": {
+        "a": 1,
+        "b": 2,
+        "c": 3
       }
     }
   }
