@@ -41,6 +41,9 @@
       },
       "JSON1013_StringTooLong": {
         "stringWithMaxLength": "abc"
+      },
+      "JSON1014_StringTooShort": {
+        "stringWithMinLength": "abc"
       }
     },
     "negative": {
@@ -84,6 +87,9 @@
       },
       "JSON1013_StringTooLong": {
         "stringWithMaxLength": "abcd"
+      },
+      "JSON1014_StringTooShort": {
+        "stringWithMinLength": "ab"
       }
     }
   }

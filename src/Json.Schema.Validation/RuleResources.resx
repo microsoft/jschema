@@ -175,8 +175,7 @@
     <value>'{1}' does not match the regular expression '{2}'.</value>
   </data>
   <data name="ErrorStringTooLong" xml:space="preserve">
-    <value>'{1}' has length {2}, which is greater than the maximum permitted length {3}.
-</value>
+    <value>'{1}' has length {2}, which is greater than the maximum permitted length {3}.</value>
   </data>
   <data name="ErrorStringTooShort" xml:space="preserve">
     <value>'{1}' has length {2}, which is less than the minimum permitted length {3}.</value>

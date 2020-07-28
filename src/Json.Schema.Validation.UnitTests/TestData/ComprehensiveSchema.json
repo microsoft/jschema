@@ -134,6 +134,15 @@
               "maxLength": 3
             }
           }
+        },
+        "JSON1014_StringTooShort": {
+          "description": "Instance file provides string property that is too short.",
+          "properties": {
+            "stringWithMinLength": {
+              "type": "string",
+              "minLength": 3
+            }
+          }
         }
       },
       "required": [
@@ -149,7 +158,8 @@
         "JSON1010_TooManyProperties",
         "JSON1011_TooFewProperties",
         "JSON1012_NotAMultiple",
-        "JSON1013_StringTooLong"
+        "JSON1013_StringTooLong",
+        "JSON1014_StringTooShort"
       ]
     }
   }
