@@ -12,8 +12,7 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Sarif.Sdk" Version="2.1.0" />
+    <PackageReference Include="Sarif.Sdk" Version="2.3.3" />
   </ItemGroup>
 
   <ItemGroup>

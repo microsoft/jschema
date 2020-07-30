@@ -133,7 +133,8 @@
     <value>JSON schema requires each property of the 'dependencies' object to be either an schema or an array of strings, but a token of type '{1}' was seen.</value>
   </data>
   <data name="ErrorInvalidEnumValue" xml:space="preserve">
-    <value>'{1}' does not match any of the enum values [{2}].</value>
+    <value>{1} does not match any of the enum values [{2}].</value>
+    <comment>Don't enquote {1}. If it's a string, it's already enquoted, and otherwise, it doesn't need quotes.</comment>
   </data>
   <data name="ErrorInvalidItemsType" xml:space="preserve">
     <value>JSON schema requires 'items' to be either a schema or an array of schemas, but a token of type '{1}' was seen.</value>
@@ -157,7 +158,7 @@
     <value>{1} is not a multiple of {2}.</value>
   </data>
   <data name="ErrorNotAnyOf" xml:space="preserve">
-    <value>The instance does validate successfully against any of the {1} schemas specified by 'anyOf'.</value>
+    <value>The instance does not validate successfully against any of the {1} schemas specified by 'anyOf'.</value>
   </data>
   <data name="ErrorNotAString" xml:space="preserve">
     <value>The property is required to be a string, but the token is of type '{1}'.</value>
@@ -175,11 +176,10 @@
     <value>'{1}' does not match the regular expression '{2}'.</value>
   </data>
   <data name="ErrorStringTooLong" xml:space="preserve">
-    <value>'{1}' has length {2}, which is greater than the maximum length {3}.
-</value>
+    <value>'{1}' has length {2}, which is greater than the maximum permitted length {3}.</value>
   </data>
   <data name="ErrorStringTooShort" xml:space="preserve">
-    <value>'{1}' has length {2}, which is less than the minimum length {3}.</value>
+    <value>'{1}' has length {2}, which is less than the minimum permitted length {3}.</value>
   </data>
   <data name="ErrorSyntaxError" xml:space="preserve">
     <value>JSON syntax error: {1}</value>
@@ -203,16 +203,16 @@
     <value>The instance validates successfully against the schema specified by 'not'.</value>
   </data>
   <data name="ErrorValueTooLarge" xml:space="preserve">
-    <value>{1} is greater than the maximum value of {2}.</value>
+    <value>{1} is greater than the maximum permitted value of {2}.</value>
   </data>
   <data name="ErrorValueTooLargeExclusive" xml:space="preserve">
-    <value>{1} is greater than or equal to the exclusive maximum value of {2}.</value>
+    <value>{1} is greater than or equal to the exclusive maximum permitted value of {2}.</value>
   </data>
   <data name="ErrorValueTooSmall" xml:space="preserve">
-    <value>{1} is less than the minimum value of {2}.</value>
+    <value>{1} is less than the minimum permitted value of {2}.</value>
   </data>
   <data name="ErrorValueTooSmallExclusive" xml:space="preserve">
-    <value>{1} is less than or equal to the exclusive minimum value of {2}.</value>
+    <value>{1} is less than or equal to the exclusive minimum permitted value of {2}.</value>
   </data>
   <data name="ErrorWrongType" xml:space="preserve">
     <value>The schema requires one of the types [{1}], but a token of type '{2}' was found.</value>

@@ -1,0 +1,306 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for comprehensive testing of Json.Schema.Validation",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "testSuites": {
+      "description": "An object containing two instances, the first of which passes all the checks and second of which fails them.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positive": {
+          "$ref": "#/definitions/testSuite"
+        },
+        "negative": {
+          "$ref": "#/definitions/testSuite"
+        }
+      },
+      "required": [ "positive", "negative" ]
+    }
+  },
+  "definitions": {
+    "testSuite": {
+      "description": "Defines sub-schemas for exercising each validation rule",
+      "properties": {
+        "JSON1001_WrongType": {
+          "description": "Instance file provides incorrect property type.",
+          "properties": {
+            "integerProperty": {
+              "description": "A property whose type is integer",
+              "type": "integer"
+            }
+          }
+        },
+        "JSON1002_RequiredPropertyMissing": {
+          "description": "Instance file fails to provide a required property.",
+          "properties": {
+            "requiredProperty": {
+              "description": "A required property",
+              "type": "string"
+            }
+          },
+          "required": [ "requiredProperty" ]
+        },
+        "JSON1003_TooFewArrayItems": {
+          "description": "Instance file provides too few array items.",
+          "properties": {
+            "arrayProperty": {
+              "type": "array",
+              "minItems": 2
+            }
+          }
+        },
+        "JSON1004_TooManyArrayItems": {
+          "description": "Instance file provides too many array items.",
+          "properties": {
+            "arrayProperty": {
+              "type": "array",
+              "maxItems": 2
+            }
+          }
+        },
+        "JSON1005_AdditionalPropertiesProhibited": {
+          "description": "Instance file mentions a property not defined in  the schema.",
+          "properties": {
+            "known": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        },
+        "JSON1006_ValueTooLarge": {
+          "description": "Instance file provides too large a value for a numeric property.",
+          "properties": {
+            "propertyWithMaximum": {
+              "type": "integer",
+              "maximum": 5
+            }
+          }
+        },
+        "JSON1007_ValueTooLargeExclusive": {
+          "description": "Instance file provides too large a value for a numeric property (exclusive maximum).",
+          "properties": {
+            "propertyWithExclusiveMaximum": {
+              "type": "integer",
+              "maximum": 5,
+              "exclusiveMaximum": true
+            }
+          }
+        },
+        "JSON1008_ValueTooSmall": {
+          "description": "Instance file provides too small a value for a numeric property.",
+          "properties": {
+            "propertyWithMinimum": {
+              "type": "integer",
+              "minimum": 4
+            }
+          }
+        },
+        "JSON1009_ValueTooSmallExclusive": {
+          "description": "Instance file provides too small a value for a numeric property (exclusive minimum).",
+          "properties": {
+            "propertyWithExclusiveMinimum": {
+              "type": "integer",
+              "minimum": 4,
+              "exclusiveMinimum": true
+            }
+          }
+        },
+        "JSON1010_TooManyProperties": {
+          "description": "Instance file provides too many properties",
+          "additionalProperties": true,
+          "maxProperties": 2
+        },
+        "JSON1011_TooFewProperties": {
+          "description": "Instance file provides too few properties",
+          "additionalProperties": true,
+          "minProperties": 2
+        },
+        "JSON1012_NotAMultiple": {
+          "description": "Instance file provides property that is not a multiple of the specified value.",
+          "properties": {
+            "evenNumber": {
+              "type": "number",
+              "multipleOf": 2
+            }
+          }
+        },
+        "JSON1013_StringTooLong": {
+          "description": "Instance file provides string property that is too long.",
+          "properties": {
+            "stringWithMaxLength": {
+              "type": "string",
+              "maxLength": 3
+            }
+          }
+        },
+        "JSON1014_StringTooShort": {
+          "description": "Instance file provides string property that is too short.",
+          "properties": {
+            "stringWithMinLength": {
+              "type": "string",
+              "minLength": 3
+            }
+          }
+        },
+        "JSON1015_StringDoesNotMatchPattern": {
+          "description": "Instance file provides string property that does not match the specified pattern.",
+          "properties": {
+            "stringWithPattern": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            }
+          }
+        },
+        "JSON1016_NotAllOf": {
+          "description": "Instance file provides a property that does not match all of the required schemata.",
+          "properties": {
+            "propertyMatchesAll": {
+              "type": "integer",
+              "allOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "minimum": 5
+                }
+              ]
+            }
+          }
+        },
+        "JSON1017_NotAnyOf": {
+          "description": "Instance file provides a property that does not match any of the required schemata.",
+          "properties": {
+            "propertyMatchesAny": {
+              "type": "integer",
+              "anyOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "maximum": 5
+                }
+              ]
+            }
+          }
+        },
+        "JSON1018_NotOneOf_With_Zero": {
+          "description": "Instance file provides a property that does not match exactly one of the required schemata (matches zero).",
+          "properties": {
+            "propertyMatchesOne": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "maximum": 5
+                }
+              ]
+            }
+          }
+        },
+        "JSON1018_NotOneOf_With_Multiple": {
+          "description": "Instance file provides a property that does not match exactly one of the required schemata (matches multiple).",
+          "properties": {
+            "propertyMatchesOne": {
+              "type": "integer",
+              "oneOf": [
+                {
+                  "maximum": 7
+                },
+                {
+                  "maximum": 5
+                }
+              ]
+            }
+          }
+        },
+        "JSON1019_InvalidEnumValue": {
+          "description": "Instance file provides a property that does not match am enum constraint.",
+          "properties": {
+            "enumProperty": {
+              "type": "string",
+              "enum": [ "a", "b" ]
+            }
+          }
+        },
+        "JSON1020_NotUnique": {
+          "description": "Instance file provides an array property with non-unique items.",
+          "properties": {
+            "arrayPropertyWithUniquenessConstraint": {
+              "type": "array",
+              "uniqueItems": true
+            }
+          }
+        },
+        "JSON1021_TooFewItemSchemas": {
+          "description": "Instance file provides an array property with more elements than item schemas.",
+          "properties": {
+            "arrayPropertyWithItemSchemas": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "additionalItems": false
+            }
+          }
+        },
+        "JSON1022_ValidatesAgainstNotSchema": {
+          "description": "Instance file provides property that validates against a 'not' schema",
+          "properties": {
+            "propertyWithNotSchema": {
+              "not": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "JSON1023_DependentPropertyMissing": {
+          "description": "Instance lacks dependent property.",
+          "properties": {
+            "propertyWithDependency": {
+            },
+            "dependency": {
+            }
+          },
+          "dependencies": {
+            "propertyWithDependency": [ "dependency" ]
+          }
+        }
+      },
+      "required": [
+        "JSON1001_WrongType",
+        "JSON1002_RequiredPropertyMissing",
+        "JSON1003_TooFewArrayItems",
+        "JSON1004_TooManyArrayItems",
+        "JSON1005_AdditionalPropertiesProhibited",
+        "JSON1006_ValueTooLarge",
+        "JSON1007_ValueTooLargeExclusive",
+        "JSON1008_ValueTooSmall",
+        "JSON1009_ValueTooSmallExclusive",
+        "JSON1010_TooManyProperties",
+        "JSON1011_TooFewProperties",
+        "JSON1012_NotAMultiple",
+        "JSON1013_StringTooLong",
+        "JSON1014_StringTooShort",
+        "JSON1015_StringDoesNotMatchPattern",
+        "JSON1016_NotAllOf",
+        "JSON1017_NotAnyOf",
+        "JSON1018_NotOneOf_With_Zero",
+        "JSON1018_NotOneOf_With_Multiple",
+        "JSON1019_InvalidEnumValue",
+        "JSON1020_NotUnique",
+        "JSON1021_TooFewItemSchemas",
+        "JSON1022_ValidatesAgainstNotSchema",
+        "JSON1023_DependentPropertyMissing"
+      ]
+    }
+  }
+}

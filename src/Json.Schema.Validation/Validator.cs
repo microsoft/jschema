@@ -268,7 +268,7 @@ namespace Microsoft.Json.Schema.Validation
                 !schema.AdditionalItems.Allowed &&
                 jArray.Count > schema.Items.Schemas.Count)
             {
-                AddResult(jArray, ErrorNumber.TooFewItemSchemas);
+                AddResult(jArray, ErrorNumber.TooFewItemSchemas, jArray.Count, schema.Items.Schemas.Count);
             }
 
             ValidateArrayItems(jArray, schema);
@@ -293,14 +293,15 @@ namespace Microsoft.Json.Schema.Validation
                     ValidateToken(jToken, Resolve(schema.Items.Schema));
                 }
             }
-            else if (schema.Items != null)
+            else
             {
                 // 8.2.3.2 If "items" is an array, then:
                 JsonSchema[] arrayElementSchemas = schema.Items.Schemas
                     .Select(s => Resolve(s))
                     .ToArray();
 
-                for (int i = 0; i < arrayElementSchemas.Length; ++i)
+                int numElementsWithSchemas = Math.Min(arrayElements.Length, arrayElementSchemas.Length);
+                for (int i = 0; i < numElementsWithSchemas; ++i)
                 {
                     ValidateToken(arrayElements[i], arrayElementSchemas[i]);
                 }

@@ -15,17 +15,29 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Sarif.Sdk" Version="2.1.0" />
+    <PackageReference Include="Sarif.Sdk" Version="2.3.3" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Json.Schema.Validation.Cli\Json.Schema.Validation.Cli.csproj" />
     <ProjectReference Include="..\Json.Schema\Json.Schema.csproj" />
     <ProjectReference Include="..\Json.Schema.Validation\Json.Schema.Validation.csproj" />
     <ProjectReference Include="..\Json.Schema.TestUtilities\Json.Schema.TestUtilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestData\ComprehensiveInstanceFile-validation-expected.sarif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\ComprehensiveInstanceFile.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\ComprehensiveSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

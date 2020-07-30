@@ -33,6 +33,9 @@ namespace Microsoft.Json.Schema.Validation
         {
             ReportingDescriptor rule = RuleFactory.GetRuleFromErrorNumber(errorNumber);
 
+            // Handle errors at the root, where the JSON path is empty.
+            if (string.IsNullOrEmpty(jsonPath)) { jsonPath = "root"; }
+
             var messageArguments = new List<string> { jsonPath };
             messageArguments.AddRange(args.Select(a => a.ToString()));
 

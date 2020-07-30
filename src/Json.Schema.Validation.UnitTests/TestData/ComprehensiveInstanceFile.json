@@ -1,0 +1,158 @@
+{
+  "testSuites": {
+    "positive": {
+      "JSON1001_WrongType": {
+        "integerProperty": 1
+      },
+      "JSON1002_RequiredPropertyMissing": {
+        "requiredProperty": "present"
+      },
+      "JSON1003_TooFewArrayItems": {
+        "arrayProperty": [ 1, 2 ]
+      },
+      "JSON1004_TooManyArrayItems": {
+        "arrayProperty": [ 1, 2 ]
+      },
+      "JSON1005_AdditionalPropertiesProhibited": {
+        "known": 42
+      },
+      "JSON1006_ValueTooLarge": {
+        "propertyWithMaximum": 5
+      },
+      "JSON1007_ValueTooLargeExclusive": {
+        "propertyWithExclusiveMaximum": 4
+      },
+      "JSON1008_ValueTooSmall": {
+        "propertyWithMinimum": 4
+      },
+      "JSON1009_ValueTooSmallExclusive": {
+        "propertyWithExclusiveMinimum": 5
+      },
+      "JSON1010_TooManyProperties": {
+        "a": 1,
+        "b": 2
+      },
+      "JSON1011_TooFewProperties": {
+        "a": 1,
+        "b": 2
+      },
+      "JSON1012_NotAMultiple": {
+        "evenNumber": 4
+      },
+      "JSON1013_StringTooLong": {
+        "stringWithMaxLength": "abc"
+      },
+      "JSON1014_StringTooShort": {
+        "stringWithMinLength": "abc"
+      },
+      "JSON1015_StringDoesNotMatchPattern": {
+        "stringWithPattern": "123"
+      },
+      "JSON1016_NotAllOf": {
+        "propertyMatchesAll": 6
+      },
+      "JSON1017_NotAnyOf": {
+        "propertyMatchesAny": 6
+      },
+      "JSON1018_NotOneOf_With_Zero": {
+        "propertyMatchesOne": 6
+      },
+      "JSON1018_NotOneOf_With_Multiple": {
+        "propertyMatchesOne": 6
+      },
+      "JSON1019_InvalidEnumValue": {
+        "enumProperty": "a"
+      },
+      "JSON1020_NotUnique": {
+        "arrayPropertyWithUniquenessConstraint": [ 1, 2 ]
+      },
+      "JSON1021_TooFewItemSchemas": {
+        "arrayPropertyWithItemSchemas": [ 1 ]
+      },
+      "JSON1022_ValidatesAgainstNotSchema": {
+        "propertyWithNotSchema": "1"
+      },
+      "JSON1023_DependentPropertyMissing": {
+        "propertyWithDependency": 1,
+        "dependency": 1
+      }
+    },
+    "negative": {
+      "JSON1001_WrongType": {
+        "integerProperty": "1"
+      },
+      "JSON1002_RequiredPropertyMissing": {
+      },
+      "JSON1003_TooFewArrayItems": {
+        "arrayProperty": [ 1 ]
+      },
+      "JSON1004_TooManyArrayItems": {
+        "arrayProperty": [ 1, 2, 3 ]
+      },
+      "JSON1005_AdditionalPropertiesProhibited": {
+        "known": 42,
+        "unknown": 54
+      },
+      "JSON1006_ValueTooLarge": {
+        "propertyWithMaximum": 6
+      },
+      "JSON1007_ValueTooLargeExclusive": {
+        "propertyWithExclusiveMaximum": 5
+      },
+      "JSON1008_ValueTooSmall": {
+        "propertyWithMinimum": 3
+      },
+      "JSON1009_ValueTooSmallExclusive": {
+        "propertyWithExclusiveMinimum": 4
+      },
+      "JSON1010_TooManyProperties": {
+        "a": 1,
+        "b": 2,
+        "c": 3
+      },
+      "JSON1011_TooFewProperties": {
+        "a": 1
+      },
+      "JSON1012_NotAMultiple": {
+        "evenNumber": 4.001
+      },
+      "JSON1013_StringTooLong": {
+        "stringWithMaxLength": "abcd"
+      },
+      "JSON1014_StringTooShort": {
+        "stringWithMinLength": "ab"
+      },
+      "JSON1015_StringDoesNotMatchPattern": {
+        "stringWithPattern": "1b3"
+      },
+      "JSON1016_NotAllOf": {
+        "propertyMatchesAll": 8
+      },
+      "JSON1017_NotAnyOf": {
+        "propertyMatchesAny": 8
+      },
+      "JSON1018_NotOneOf_With_Zero": {
+        "propertyMatchesOne": 9
+      },
+      "JSON1018_NotOneOf_With_Multiple": {
+        "propertyMatchesOne": 4
+      },
+      "JSON1019_InvalidEnumValue": {
+        "enumProperty": "c"
+      },
+      "JSON1020_NotUnique": {
+        "arrayPropertyWithUniquenessConstraint": [ 1, 1 ]
+      },
+      "JSON1021_TooFewItemSchemas": {
+        "arrayPropertyWithItemSchemas": [ 1, 2, 3 ]
+      },
+      "JSON1022_ValidatesAgainstNotSchema": {
+        "propertyWithNotSchema": 1
+      },
+      "JSON1023_DependentPropertyMissing": {
+        "propertyWithDependency": 1
+      }
+    }
+  }
+}
+
