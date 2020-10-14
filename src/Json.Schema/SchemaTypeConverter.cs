@@ -1,11 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the Apache License,
+// Version 2.0. See License.txt in the project root for license information.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema
 {
@@ -79,7 +79,10 @@ namespace Microsoft.Json.Schema
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            string[] types = (value as SchemaType[]).Select(st => st.ToString().ToLowerInvariant()).ToArray();
+            if (value == null)
+                throw new ArgumentNullException("Type field is required");
+
+            string[] types = (value as IEnumerable<SchemaType>).Select(st => st.ToString().ToLowerInvariant()).ToArray();
 
             if (types.Length == 1)
             {
@@ -92,6 +95,7 @@ namespace Microsoft.Json.Schema
                 {
                     writer.WriteValue(type);
                 }
+                writer.WriteEndArray();
             }
         }
 
