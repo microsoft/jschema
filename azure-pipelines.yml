@@ -1,0 +1,18 @@
+pr:
+- '*'
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: BatchScript@1
+  displayName: 'Run VsDevCmd.bat'
+  inputs:
+    filename: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat'
+    modifyEnvironment: true
+
+- task: PowerShell@2
+  displayName: Build and Test
+  inputs:
+    targetType: filePath
+    filePath: ./scripts/BuildAndTest.ps1
