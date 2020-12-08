@@ -118,7 +118,6 @@ function New-NuGetPackageFromNuspecFile($project, $version, $packageLicenseExpre
 
     $arguments=
         "pack", $nuspecFile,
-        "-Symbols",
         "-Properties", "platform=$Platform;configuration=$Configuration;version=$version;packageLicenseExpression=$packageLicenseExpression",
         "-Verbosity", "Quiet",
         "-BasePath", ".\",
