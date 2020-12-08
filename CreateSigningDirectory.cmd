@@ -23,7 +23,7 @@ set SigningDirectory=%BinaryOutputDirectory%\..\Signing
 
 call :CreateDirIfNotExist %SigningDirectory%
 call :CreateDirIfNotExist %SigningDirectory%\net461\
-call :CreateDirIfNotExist %SigningDirectory%\netcoreapp2.0
+call :CreateDirIfNotExist %SigningDirectory%\netcoreapp2.1
 
 call :CopyUnsignedLibraryToSigningDirectory Json.Schema.dll            || goto :ExitFailed
 call :CopyUnsignedLibraryToSigningDirectory Json.Pointer.dll           || goto :ExitFailed
@@ -36,7 +36,7 @@ call :CopyUnsignedExecutableToSigningDirectory Json.Schema.Validation.Cli || got
 goto :Exit
 
 :CopyUnsignedLibraryToSigningDirectory
-xcopy /Y %BinaryOutputDirectory%\%~n1\netstandard2.0\Microsoft.%1  %SigningDirectory%\netcoreapp2.0\
+xcopy /Y %BinaryOutputDirectory%\%~n1\netstandard2.0\Microsoft.%1  %SigningDirectory%\netcoreapp2.1\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
 
 xcopy /Y %BinaryOutputDirectory%\%~n1\net461\Microsoft.%1  %SigningDirectory%\net461\
@@ -44,7 +44,7 @@ if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed.)
 goto :CopyFilesExit
 
 :CopyUnsignedExecutableToSigningDirectory
-xcopy /Y %BinaryOutputDirectory%\%1\netcoreapp2.0\Microsoft.%1.dll  %SigningDirectory%\netcoreapp2.0\
+xcopy /Y %BinaryOutputDirectory%\%1\netcoreapp2.1\Microsoft.%1.dll  %SigningDirectory%\netcoreapp2.1\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
 
 xcopy /Y %BinaryOutputDirectory%\%1\net461\Microsoft.%1.exe  %SigningDirectory%\net461\
