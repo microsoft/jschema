@@ -16,7 +16,7 @@ The JSchema repo consists of the following components, each of which is document
 
 * `Microsoft.Json.Schema.ToDotNet.Cli`: a command-line tool to generate .NET classes from a JSON schema, built on the `Microsoft.Json.Schema.ToDotNet` library. Documentation: coming soon.
 
-All facilities built from the JSchema repo, including the command line tools, are available for both the net461 and netcoreapp2.0 platforms.
+All facilities built from the JSchema repo, including the command line tools, are available for both the net461 and netcoreapp2.1 platforms.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/),

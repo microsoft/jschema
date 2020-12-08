@@ -28,8 +28,8 @@
           target="tools\net461"
           />
     
-    <file src="bld\bin\$platform$_$configuration$\Json.Schema.ToDotNet.Cli\netcoreapp2.0\publish\**"
-          target="tools\netcoreapp2.0"
+    <file src="bld\bin\$platform$_$configuration$\Json.Schema.ToDotNet.Cli\netcoreapp2.1\publish\**"
+          target="tools\netcoreapp2.1"
           />
 
     <file src="src\ReleaseHistory.md" />
