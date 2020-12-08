@@ -15,4 +15,5 @@ steps:
   displayName: Build and Test
   inputs:
     targetType: filePath
-    filePath: ./scripts/BuildAndTest.ps1
+    filePath: ./BuildAndTest.ps1
+    arguments: -NoPackage
