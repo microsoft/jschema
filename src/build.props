@@ -35,6 +35,25 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Microsoft/jschema</PackageProjectUrl>
     <PackageIconUrl>https://go.microsoft.com/fwlink/?linkid=2009431</PackageIconUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <!-- Configuration specific properties -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' "
+                 Label="Debug build">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;CODE_ANALYSIS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' "
+               Label="Release build">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
