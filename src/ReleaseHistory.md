@@ -1,6 +1,6 @@
 # Microsoft Json Schema Packages
 
-## **1.1.3** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.2) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.3)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.3)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.3)
+## **1.1.3** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.3) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.3)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.3)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.3)
 
 * Improve error messages: Remove unnecessary words; fix some typos; unify on single quotes.
 * Update validator to use latest SARIF SDK (2.3.3).

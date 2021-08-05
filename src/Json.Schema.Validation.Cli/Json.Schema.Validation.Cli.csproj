@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Label="AssemblyAttributes">
     <AssemblyTitle>JSON Schema Validation Tool</AssemblyTitle>
     <Description>Command line tool to validate a JSON instance against a JSON Schema</Description>
     <RootNamespaceOverride>Microsoft.Json.Schema.Validation.CommandLine</RootNamespaceOverride>
-   </PropertyGroup>
+  </PropertyGroup>
 
   <PropertyGroup Label="Package">
     <IsTool>true</IsTool>
@@ -41,5 +41,4 @@
       <LastGenOutput>ValidatorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>
