@@ -79,7 +79,12 @@ namespace Microsoft.Json.Schema
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            string[] types = (value as SchemaType[]).Select(st => st.ToString().ToLowerInvariant()).ToArray();
+            if (!(value is IEnumerable<SchemaType> schemas))
+            {
+                return;
+            }
+
+            string[] types = schemas.Select(st => st.ToString().ToLowerInvariant()).ToArray();
 
             if (types.Length == 1)
             {
@@ -92,6 +97,7 @@ namespace Microsoft.Json.Schema
                 {
                     writer.WriteValue(type);
                 }
+                writer.WriteEndArray();
             }
         }
 
