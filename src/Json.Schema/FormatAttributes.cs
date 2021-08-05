@@ -31,5 +31,11 @@ namespace Microsoft.Json.Schema
         /// URI references as defined by RFC 3986.
         /// </summary>
         public const string UriReference = "uri-reference";
+
+        /// <summary>
+        /// Format attribute specifying that the string instance must be a valid
+        /// UUID as defined by RFC 4122.
+        /// </summary>
+        public const string Uuid = "uuid";
     }
 }

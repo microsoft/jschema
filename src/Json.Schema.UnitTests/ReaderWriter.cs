@@ -246,6 +246,24 @@ namespace Microsoft.Json.Schema.UnitTests
 
             new object[]
             {
+                "Guid",
+                new JsonSchema
+                {
+                    Type = new SchemaType[] { SchemaType.String },
+
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["uuid"] = new JsonSchema
+                        {
+                            Type = new SchemaType[] { SchemaType.String },
+                            Format = FormatAttributes.Uuid
+                        }
+                    }
+                }
+            },
+
+            new object[]
+            {
                 "AdditionalPropertiesBoolean",
                 new JsonSchema
                 {
