@@ -43,7 +43,23 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
                                             options.InstanceFilePath,
                                             options.SchemaFilePath
                                         },
-                                        loggingOptions: LoggingOptions.Verbose,
+                                        kinds: new[]
+                                        {
+                                            ResultKind.Fail,
+                                            ResultKind.Informational,
+                                            ResultKind.None,
+                                            ResultKind.NotApplicable,
+                                            ResultKind.Open,
+                                            ResultKind.Pass,
+                                            ResultKind.Review
+                                        },
+                                        levels: new[]
+                                        {
+                                            FailureLevel.Error,
+                                            FailureLevel.None,
+                                            FailureLevel.Note,
+                                            FailureLevel.Warning,
+                                        },
                                         invocationTokensToRedact: null))
             {
                 DateTime start = DateTime.Now;
