@@ -53,7 +53,7 @@ namespace Microsoft.Json.Schema.Validation.CommandLine
                                             ResultKind.Pass,
                                             ResultKind.Review
                                         },
-                                        levels: new[]
+                                        levels: new FailureLevel?[]
                                         {
                                             FailureLevel.Error,
                                             FailureLevel.None,
