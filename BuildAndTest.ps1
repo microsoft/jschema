@@ -172,7 +172,7 @@ if (-not $NoPackage) {
 
     $nuspecProjects = "Json.Schema.ToDotNet.Cli", "Json.Schema.Validation.Cli"
     foreach ($project in $nuspecProjects) {
-        Publish-Application $project netcoreapp2.1
+        Publish-Application $project netcoreapp3.1
         New-NuGetPackageFromNuSpecFile $project $version $(Get-PackageLicenseExpression)
     }
 }
