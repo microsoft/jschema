@@ -6,8 +6,6 @@ namespace Microsoft.Json.Schema.ToDotNet
     public static class WellKnownMethodNames
     {
         public const string EqualsMethod = "Equals";
-        public const string CompareMethod = "Compare";
-        public const string CompareToMethod = "CompareTo";
         public const string GetHashCodeMethod = "GetHashCode";
         public const string ReferenceEqualsMethod = "ReferenceEquals";
     }
