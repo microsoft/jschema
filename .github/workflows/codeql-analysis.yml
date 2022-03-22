@@ -20,21 +20,21 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-        language: [ 'csharp' ]
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Initializes the CodeQL tools for scanning.
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: ${{ matrix.language }}
+        languages: csharp
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+    - run: |
+        .\BuildAndTest.cmd -NoPackage
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
