@@ -14,6 +14,8 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
     {
         private static readonly string PrimaryOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName);
         private static readonly string PrimaryEqualityComparerOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName + "EqualityComparer");
+        private static readonly string PrimaryComparerOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName + "Comparer");
+        private static readonly string ComparerExtensionsOutputFilePath = TestFileSystem.MakeOutputFilePath("ComparerExtensions");
         private static readonly string SyntaxInterfaceOutputFilePath = TestFileSystem.MakeOutputFilePath("ISNode");
         private static readonly string KindEnumOutputFilePath = TestFileSystem.MakeOutputFilePath("SNodeKind");
         private static readonly string RewritingVisitorOutputFilePath = TestFileSystem.MakeOutputFilePath("SRewritingVisitor");
@@ -130,6 +132,8 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""stringProperty"", IsRequired = false, EmitDefaultValue = false)]
         public string StringProperty { get; set; }
         [DataMember(Name = ""numberProperty"", IsRequired = false, EmitDefaultValue = false)]
@@ -141,7 +145,7 @@ namespace N
     }
 }";
 
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -215,8 +219,60 @@ namespace N
         }
     }
 }";
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = string.Compare(left.StringProperty, right.StringProperty);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = left.NumberProperty.CompareTo(right.NumberProperty);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = left.BooleanProperty.CompareTo(right.BooleanProperty);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = left.IntegerProperty.CompareTo(right.IntegerProperty);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
 
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Properties");
 
@@ -227,6 +283,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
@@ -254,11 +311,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""objectProp"", IsRequired = false, EmitDefaultValue = false)]
         public D ObjectProp { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -314,7 +373,42 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = DComparer.Instance.Compare(left.ObjectProp, right.ObjectProp);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Object");
@@ -326,6 +420,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 },
 
@@ -426,6 +521,8 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""arrayProp"", IsRequired = false, EmitDefaultValue = false)]
         public IList<object> ArrayProp { get; set; }
         [DataMember(Name = ""arrayProp2"", IsRequired = false, EmitDefaultValue = false)]
@@ -435,7 +532,7 @@ namespace N
     }
 }";
 
-            string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -576,8 +673,54 @@ namespace N
         }
     }
 }";
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.ArrayProp.ListCompares(right.ArrayProp);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = left.ArrayProp2.ListCompares(right.ArrayProp2);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = left.ArrayProp3.ListCompares(right.ArrayProp3);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
 
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Array");
 
@@ -590,6 +733,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
@@ -686,6 +830,8 @@ namespace N
         public bool ValueEquals(ConsoleWindow other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<ConsoleWindow> Comparer => ConsoleWindowComparer.Instance;
+
         /// <summary>
         /// The color of the text on the screen.
         /// </summary>
@@ -699,7 +845,7 @@ namespace N
         public Color BackgroundColor { get; set; }
     }
 }";
-            const string ExpectedRootComparerClass =
+            const string ExpectedRootEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -765,6 +911,46 @@ namespace N
     }
 }";
 
+            const string ExpectedRootComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type ConsoleWindow for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class ConsoleWindowComparer : IComparer<ConsoleWindow>
+    {
+        internal static readonly ConsoleWindowComparer Instance = new ConsoleWindowComparer();
+
+        public int Compare(ConsoleWindow left, ConsoleWindow right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = ColorComparer.Instance.Compare(left.ForegroundColor, right.ForegroundColor);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = ColorComparer.Instance.Compare(left.BackgroundColor, right.BackgroundColor);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             const string ExpectedColorClass =
 @"using System;
 using System.CodeDom.Compiler;
@@ -784,6 +970,8 @@ namespace N
 
         public bool ValueEquals(Color other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        public static IComparer<Color> Comparer => ColorComparer.Instance;
 
         /// <summary>
         /// The value of the R component.
@@ -805,7 +993,7 @@ namespace N
     }
 }";
 
-            const string ExpectedColorComparerClass =
+            const string ExpectedColorEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -869,8 +1057,54 @@ namespace N
         }
     }
 }";
+            const string ExpectedColorComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type Color for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class ColorComparer : IComparer<Color>
+    {
+        internal static readonly ColorComparer Instance = new ColorComparer();
+
+        public int Compare(Color left, Color right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.Red.CompareTo(right.Red);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = left.Green.CompareTo(right.Green);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            compareResult = left.Blue.CompareTo(right.Blue);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
 
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             _settings.RootClassName = "ConsoleWindow";
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
@@ -882,11 +1116,13 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedRootClass,
+                    EqualityComparerClassContents = ExpectedRootEqualityComparerClass,
                     ComparerClassContents = ExpectedRootComparerClass
                 },
                 ["Color"] = new ExpectedContents
                 {
                     ClassContents = ExpectedColorClass,
+                    EqualityComparerClassContents = ExpectedColorEqualityComparerClass,
                     ComparerClassContents = ExpectedColorComparerClass
                 }
             };
@@ -1812,12 +2048,14 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""rootProp"", IsRequired = false, EmitDefaultValue = false)]
         public bool RootProp { get; set; }
     }
 }";
 
-            const string ExpectedRootComparerClass =
+            const string ExpectedRootEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -1870,6 +2108,40 @@ namespace N
     }
 }";
 
+            const string ExpectedRootComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.RootProp.CompareTo(right.RootProp);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             const string ExpectedDefinedClass1 =
 @"using System;
 using System.CodeDom.Compiler;
@@ -1887,12 +2159,14 @@ namespace N
         public bool ValueEquals(Def1 other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<Def1> Comparer => Def1Comparer.Instance;
+
         [DataMember(Name = ""prop1"", IsRequired = false, EmitDefaultValue = false)]
         public string Prop1 { get; set; }
     }
 }";
 
-            const string ExpectedComparerClass1 =
+            const string ExpectedEqualityComparerClass1 =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -1948,6 +2222,40 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass1 =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type Def1 for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class Def1Comparer : IComparer<Def1>
+    {
+        internal static readonly Def1Comparer Instance = new Def1Comparer();
+
+        public int Compare(Def1 left, Def1 right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = string.Compare(left.Prop1, right.Prop1);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             const string ExpectedDefinedClass2 =
 @"using System;
 using System.CodeDom.Compiler;
@@ -1965,12 +2273,14 @@ namespace N
         public bool ValueEquals(Def2 other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<Def2> Comparer => Def2Comparer.Instance;
+
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
         public int Prop2 { get; set; }
     }
 }";
 
-            const string ExpectedComparerClass2 =
+            const string ExpectedEqualityComparerClass2 =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2022,7 +2332,43 @@ namespace N
         }
     }
 }";
+
+            const string ExpectedComparerClass2 =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type Def2 for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class Def2Comparer : IComparer<Def2>
+    {
+        internal static readonly Def2Comparer Instance = new Def2Comparer();
+
+        public int Compare(Def2 left, Def2 right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.Prop2.CompareTo(right.Prop2);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Definitions");
@@ -2034,16 +2380,19 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedRootClass,
+                    EqualityComparerClassContents = ExpectedRootEqualityComparerClass,
                     ComparerClassContents = ExpectedRootComparerClass
                 },
                 ["Def1"] = new ExpectedContents
                 {
                     ClassContents = ExpectedDefinedClass1,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass1,
                     ComparerClassContents = ExpectedComparerClass1
                 },
                 ["Def2"] = new ExpectedContents
                 {
                     ClassContents = ExpectedDefinedClass2,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass2,
                     ComparerClassContents = ExpectedComparerClass2
                 }
             };
@@ -2082,11 +2431,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""startTime"", IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2139,7 +2490,42 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.StartTime.CompareTo(right.StartTime);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
@@ -2151,6 +2537,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
@@ -2190,11 +2577,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2250,7 +2639,42 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.TargetFile.UriCompares(right.TargetFile);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
@@ -2261,6 +2685,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
@@ -2299,11 +2724,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""targetFile"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TargetFile { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2359,7 +2786,42 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.TargetFile.UriCompares(right.TargetFile);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
@@ -2370,6 +2832,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
@@ -2412,11 +2875,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
         public int IntDefProp { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2469,7 +2934,42 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.IntDefProp.CompareTo(right.IntDefProp);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
@@ -2480,6 +2980,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 },
                 ["D"] = new ExpectedContents()
@@ -2653,6 +3154,7 @@ namespace N
         public void GeneratesArrayOfPrimitiveTypeByReference()
         {
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
 
             JsonSchema schema = SchemaReader.ReadSchema(
@@ -2691,11 +3193,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""arrayOfIntByRef"", IsRequired = false, EmitDefaultValue = false)]
         public IList<int> ArrayOfIntByRef { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2771,6 +3275,40 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.ArrayOfIntByRef.ListCompares(right.ArrayOfIntByRef);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             string actual = generator.Generate(schema);
 
             TestUtil.WriteTestResultFiles(ExpectedClass, actual, nameof(GeneratesArrayOfPrimitiveTypeByReference));
@@ -2780,7 +3318,8 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
+                    ComparerClassContents = ExpectedComparerClass,
                 },
                 ["D"] = new ExpectedContents()
             };
@@ -2821,6 +3360,8 @@ namespace N
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        public static IComparer<C> Comparer => CComparer.Instance;
 
         /// <summary>
         /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
@@ -2907,7 +3448,7 @@ namespace N
     }
 }";
 
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -2982,6 +3523,40 @@ namespace N
             }
 
             return result;
+        }
+    }
+}";
+
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.UriFormattedStrings.ListCompares(right.UriFormattedStrings);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
         }
     }
 }";
@@ -3106,12 +3681,15 @@ namespace N
 }";
 
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             _settings.GenerateCloningCode = true;
 
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             generator.Generate(schema);
 
             string equalityComparerOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName + "EqualityComparer");
+            string comparerOutputFilePath = TestFileSystem.MakeOutputFilePath(TestSettings.RootClassName + "Comparer");
+            string comparerExtensionFilePath = TestFileSystem.MakeOutputFilePath("ComparerExtensions");
             string syntaxInterfacePath = TestFileSystem.MakeOutputFilePath("ISNode");
             string kindEnumPath = TestFileSystem.MakeOutputFilePath("SNodeKind");
             string rewritingVisitorClassPath = TestFileSystem.MakeOutputFilePath("SRewritingVisitor");
@@ -3120,6 +3698,8 @@ namespace N
             {
                 PrimaryOutputFilePath,
                 equalityComparerOutputFilePath,
+                comparerOutputFilePath,
+                comparerExtensionFilePath,
                 syntaxInterfacePath,
                 kindEnumPath,
                 rewritingVisitorClassPath,
@@ -3129,7 +3709,8 @@ namespace N
             _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
-            _testFileSystem[equalityComparerOutputFilePath].Should().Be(ExpectedComparerClass);
+            _testFileSystem[equalityComparerOutputFilePath].Should().Be(ExpectedEqualityComparerClass);
+            _testFileSystem[comparerOutputFilePath].Should().Be(ExpectedComparerClass);
             _testFileSystem[syntaxInterfacePath].Should().Be(ExpectedSyntaxInterface);
             _testFileSystem[kindEnumPath].Should().Be(ExpectedKindEnum);
             _testFileSystem[rewritingVisitorClassPath].Should().Be(ExpectedRewritingVisitor);
@@ -3176,11 +3757,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""arrayOfArrayOfInt"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<int>> ArrayOfArrayOfInt { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -3278,7 +3861,43 @@ namespace N
         }
     }
 }";
+
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.ArrayOfArrayOfInt.ListCompares(right.ArrayOfArrayOfInt);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
@@ -3291,7 +3910,8 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
-                    ComparerClassContents = ExpectedComparerClass
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
+                    ComparerClassContents = ExpectedComparerClass,
                 }
             };
 
@@ -3339,11 +3959,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""arrayOfArrayOfObject"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<object>> ArrayOfArrayOfObject { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -3445,7 +4067,42 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.ArrayOfArrayOfObject.ListCompares(right.ArrayOfArrayOfObject);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
@@ -3458,6 +4115,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 }
             };
@@ -3510,11 +4168,13 @@ namespace N
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
 
+        public static IComparer<C> Comparer => CComparer.Instance;
+
         [DataMember(Name = ""arrayOfArrayOfD"", IsRequired = false, EmitDefaultValue = false)]
         public IList<IList<D>> ArrayOfArrayOfD { get; set; }
     }
 }";
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -3616,7 +4276,42 @@ namespace N
     }
 }";
 
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = left.ArrayOfArrayOfD.ListCompares(right.ArrayOfArrayOfD);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             _settings.GenerateEqualityComparers = true;
+            _settings.GenerateComparers = true;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = SchemaReader.ReadSchema(Schema, TestUtil.TestFilePath);
 
@@ -3629,6 +4324,7 @@ namespace N
                 [_settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = ExpectedClass,
+                    EqualityComparerClassContents = ExpectedEqualityComparerClass,
                     ComparerClassContents = ExpectedComparerClass
                 },
                 ["D"] = new ExpectedContents()
@@ -3863,6 +4559,7 @@ namespace N
         public void GeneratesVirtualMembersWhenOptionIsSet()
         {
             _settings.VirtualMembers = true;
+            _settings.GenerateComparers = true;
             _settings.GenerateCloningCode = true;
             _settings.GenerateEqualityComparers = true;
 
@@ -3894,6 +4591,8 @@ namespace N
 
         public bool ValueEquals(C other) => ValueComparer.Equals(this, other);
         public int ValueGetHashCode() => ValueComparer.GetHashCode(this);
+
+        public static IComparer<C> Comparer => CComparer.Instance;
 
         /// <summary>
         /// Gets a value indicating the type of object implementing <see cref=""ISNode"" />.
@@ -3971,7 +4670,7 @@ namespace N
     }
 }";
 
-            const string ExpectedComparerClass =
+            const string ExpectedEqualityComparerClass =
 @"using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -4026,6 +4725,41 @@ namespace N
         }
     }
 }";
+
+            const string ExpectedComparerClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+
+namespace N
+{
+    /// <summary>
+    /// Defines methods to support the comparison of objects of type C for sorting.
+    /// </summary>
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    internal sealed class CComparer : IComparer<C>
+    {
+        internal static readonly CComparer Instance = new CComparer();
+
+        public int Compare(C left, C right)
+        {
+            int compareResult = 0;
+            if (left.TryReferenceCompares(right, out compareResult))
+            {
+                return compareResult;
+            }
+
+            compareResult = string.Compare(left.Prop, right.Prop);
+            if (compareResult != 0)
+            {
+                return compareResult;
+            }
+
+            return compareResult;
+        }
+    }
+}";
+
             const string ExpectedSyntaxInterface =
 @"using System.CodeDom.Compiler;
 
@@ -4148,7 +4882,9 @@ namespace N
             var expectedOutputFiles = new List<string>
             {
                 PrimaryOutputFilePath,
+                PrimaryComparerOutputFilePath,
                 PrimaryEqualityComparerOutputFilePath,
+                ComparerExtensionsOutputFilePath,
                 SyntaxInterfaceOutputFilePath,
                 KindEnumOutputFilePath,
                 RewritingVisitorOutputFilePath
@@ -4158,7 +4894,8 @@ namespace N
             _testFileSystem.Files.Should().OnlyContain(path => expectedOutputFiles.Contains(path));
 
             _testFileSystem[PrimaryOutputFilePath].Should().Be(ExpectedClass);
-            _testFileSystem[PrimaryEqualityComparerOutputFilePath].Should().Be(ExpectedComparerClass);
+            _testFileSystem[PrimaryComparerOutputFilePath].Should().Be(ExpectedComparerClass);
+            _testFileSystem[PrimaryEqualityComparerOutputFilePath].Should().Be(ExpectedEqualityComparerClass);
             _testFileSystem[SyntaxInterfaceOutputFilePath].Should().Be(ExpectedSyntaxInterface);
             _testFileSystem[KindEnumOutputFilePath].Should().Be(ExpectedKindEnum);
             _testFileSystem[RewritingVisitorOutputFilePath].Should().Be(ExpectedRewritingVisitor);
@@ -4225,7 +4962,7 @@ namespace N
 
         private void VerifyGeneratedFileContents(IDictionary<string, ExpectedContents> expectedContentsDictionary)
         {
-            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers);
+            Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers, _settings.GenerateComparers);
         }
     }
 }

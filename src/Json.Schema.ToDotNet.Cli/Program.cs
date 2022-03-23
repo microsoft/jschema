@@ -75,6 +75,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     CopyrightNotice = copyrightNotice,
                     HintDictionary = hintDictionary,
                     GenerateEqualityComparers = options.GenerateEqualityComparers,
+                    GenerateComparers = options.GenerateComparers,
                     GenerateCloningCode = options.GenerateCloningCode,
                     SealClasses = options.SealClasses,
                     VirtualMembers = options.VirtualMembers,

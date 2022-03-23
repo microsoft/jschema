@@ -113,12 +113,17 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.PrefixUnaryExpression(
                         SyntaxKind.LogicalNotExpression,
-                        SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName(WellKnownTypeNames.Object),
-                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod)),
-                                ArgumentList(left, right)));
+                        AreSameObjects(left, right));
+        }
+
+        internal static InvocationExpressionSyntax AreSameObjects(ExpressionSyntax left, ExpressionSyntax right)
+        {
+            return SyntaxFactory.InvocationExpression(
+                       SyntaxFactory.MemberAccessExpression(
+                           SyntaxKind.SimpleMemberAccessExpression,
+                           SyntaxFactory.IdentifierName(WellKnownTypeNames.Object),
+                           SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod)),
+                       ArgumentList(left, right));
         }
 
         internal static LiteralExpressionSyntax Null()

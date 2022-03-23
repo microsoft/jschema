@@ -19,6 +19,7 @@ namespace Microsoft.Json.Schema.ToDotNet
     {
         private readonly string _baseInterfaceName;
         private readonly bool _generateEqualityComparers;
+        private readonly bool _generateComparers;
         private readonly bool _generateCloningCode;
         private readonly bool _sealClasses;
         private readonly bool _virtualMembers;
@@ -55,6 +56,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         private const string KeyPropertyName = "Key";
         private const string ValuePropertyName = "Value";
         private const string ValueComparerPropertyName = "ValueComparer";
+        private const string ComparerPropertyName = "Comparer";
 
         private LocalVariableNameGenerator _localVariableNameGenerator;
 
@@ -64,6 +66,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             HintDictionary hintDictionary,
             string interfaceName,
             bool generateEqualityComparers,
+            bool generateComparers,
             bool generateCloningCode,
             bool sealClasses,
             bool virtualMembers,
@@ -75,6 +78,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             _baseInterfaceName = interfaceName;
             _generateEqualityComparers = generateEqualityComparers;
+            _generateComparers = generateComparers;
             _generateCloningCode = generateCloningCode;
             _syntaxInterfaceName = syntaxInterfaceName;
             _sealClasses = sealClasses;
@@ -162,9 +166,15 @@ namespace Microsoft.Json.Schema.ToDotNet
                 members.Add(GenerateValueGetHashCodeMethod());
             }
 
+            if (_generateComparers)
+            {
+                Usings.Add("System.Collections.Generic");
+                members.Add(GenerateComparerProperty());
+            }
+
             if (_generateCloningCode)
             {
-              members.Add(GenerateSyntaxKindProperty());
+                members.Add(GenerateSyntaxKindProperty());
             }
                 
             members.AddRange(GenerateProperties());
@@ -202,6 +212,27 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.IdentifierName(
                                 EqualityComparerGenerator.GetEqualityComparerClassName(SuffixedTypeName)),
+                            SyntaxFactory.IdentifierName(
+                                EqualityComparerGenerator.InstancePropertyName))))
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+        }
+
+        private MemberDeclarationSyntax GenerateComparerProperty()
+        {
+            return SyntaxFactory.PropertyDeclaration(
+                SyntaxFactory.ParseTypeName(
+                    ComparerCodeGenerator.GetComparerBaseType(SuffixedTypeName).ToString()),
+                ComparerPropertyName)
+                .WithModifiers(
+                    SyntaxFactory.TokenList(
+                        SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                        SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
+                .WithExpressionBody(
+                    SyntaxFactory.ArrowExpressionClause(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.IdentifierName(
+                                ComparerCodeGenerator.GetComparerClassName(SuffixedTypeName)),
                             SyntaxFactory.IdentifierName(
                                 EqualityComparerGenerator.InstancePropertyName))))
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));

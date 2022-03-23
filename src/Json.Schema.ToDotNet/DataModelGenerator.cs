@@ -79,6 +79,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 GenerateEqualityComparer(_settings.RootClassName, _rootSchema);
             }
 
+            if (_settings.GenerateComparers)
+            {
+                GenerateComparerHelper();
+                GenerateComparer(_settings.RootClassName, _rootSchema);
+            }
+
             if (_rootSchema.Definitions != null)
             {
                 List<KeyValuePair<string, JsonSchema>> typeDefinitions = _rootSchema.Definitions.Where(ShouldGenerateType).ToList();
@@ -87,6 +93,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 if (_settings.GenerateEqualityComparers)
                 {
                     GenerateEqualityComparers(typeDefinitions);
+                }
+
+                if (_settings.GenerateComparers)
+                {
+                    GenerateComparerHelper();
+                    GenerateComparers(typeDefinitions);
                 }
             }
 
@@ -148,6 +160,14 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
         }
 
+        private void GenerateComparers(IEnumerable<KeyValuePair<string, JsonSchema>> definitions)
+        {
+            foreach (KeyValuePair<string, JsonSchema> definition in definitions)
+            {
+                GenerateComparer(definition.Key, definition.Value);
+            }
+        }
+
         private string GetHintedClassName(string className)
         {
             ClassNameHint classNameHint = _settings.HintDictionary?.GetHint<ClassNameHint>(className);
@@ -171,6 +191,34 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             _pathToFileContentsDictionary[EqualityComparerGenerator.GetEqualityComparerClassName(className)]
                 = equalityComparerText;
+        }
+
+        private void GenerateComparer(string className, JsonSchema schema)
+        {
+            className = GetHintedClassName(className).ToPascalCase() + _settings.TypeNameSuffix;
+
+            var comparerGenerator = new ComparerCodeGenerator(_settings.CopyrightNotice, _settings.SuffixedNamespaceName);
+
+            string comparerText = comparerGenerator.Generate(
+                className,
+                _classInfoDictionary[className]);
+
+            _pathToFileContentsDictionary[ComparerCodeGenerator.GetComparerClassName(className)]
+                = comparerText;
+        }
+
+        private void GenerateComparerHelper()
+        {
+            string comparerExtensionClassName = ComparerCodeGenerator.GetComparerExtensionsClassName();
+
+            if (!_pathToFileContentsDictionary.ContainsKey(comparerExtensionClassName))
+            {
+                var comparerGenerator = new ComparerCodeGenerator(_settings.CopyrightNotice, _settings.SuffixedNamespaceName);
+
+                string comparerText = comparerGenerator.GenerateExtensionClass();
+
+                _pathToFileContentsDictionary[comparerExtensionClassName] = comparerText;
+            }
         }
 
         private string GenerateSyntaxInterface(string schemaName, string enumName, string syntaxInterfaceName)
@@ -288,6 +336,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     _settings.HintDictionary,
                     baseInterfaceName,
                     _settings.GenerateEqualityComparers,
+                    _settings.GenerateComparers,
                     _settings.GenerateCloningCode,
                     _settings.SealClasses,
                     _settings.VirtualMembers,
