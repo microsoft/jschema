@@ -1,0 +1,40 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: "**"
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: windows-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: csharp
+
+    - run: |
+        .\BuildAndTest.cmd -NoPackage
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
