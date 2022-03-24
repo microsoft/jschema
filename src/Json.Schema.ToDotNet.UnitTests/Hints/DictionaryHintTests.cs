@@ -1481,7 +1481,7 @@ namespace N
                 [Settings.RootClassName] = new ExpectedContents
                 {
                     ClassContents = RootClassText,
-                    EqualityComparerClassContents = null // Don't bother to compare the comparer class contents.
+                    EqualityComparerClassContents = null // Don't bother to compare the EqualityComparer class contents.
                 },
 
                 ["Def1"] = new ExpectedContents

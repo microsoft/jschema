@@ -162,7 +162,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             TypeSyntax comparerType = SyntaxFactory.ParseTypeName(GetComparerClassName(_className));
 
-            // public static readonly ComparerType Instance = new ComparerType();
+            /*
+            public static readonly ComparerType Instance = new ComparerType();
+            */
             return SyntaxFactory.FieldDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 SyntaxFactory.TokenList(
@@ -200,7 +202,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(propertyName))));
             }
 
-            // All comparisons succeeded.
             statements.Add(
                 SyntaxFactory.ReturnStatement(
                     SyntaxFactory.IdentifierName(CompareResultVariableName)));
@@ -233,7 +234,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     return GenerateDictionaryComparison(propertyName, left, right);
 
                 default:
-                    throw new ArgumentException($"Property {propertyName} has unknown comparison type {comparisonKind}.");
+                    throw new ArgumentException($"Property {propertyName} has unknown comparison kind {comparisonKind}.");
             }
         }
 
@@ -247,17 +248,23 @@ namespace Microsoft.Json.Schema.ToDotNet
             InvocationExpressionSyntax invocation;
             if (propertyType.Equals("string", StringComparison.OrdinalIgnoreCase))
             {
-                // compareResult = string.Compare(left.Property, right.Property);
+                /*
+                compareResult = string.Compare(left.Property, right.Property);
+                */
                 invocation = GenerateStringCompareInvocation(left, right);
             }
             else if (propertyType.Equals("uri", StringComparison.OrdinalIgnoreCase))
             {
-                // compareResult = left.Property.UriCompares(right.Property);
+                /*
+                compareResult = left.Property.UriCompares(right.Property);
+                */
                 invocation = GenerateUriComparesInvocation(left, right);
             }
             else
             {
-                // compareResult = left.Property.ComapreTo(right.Property);
+                /*
+                compareResult = left.Property.ComapreTo(right.Property);
+                */
                 invocation =
                     SyntaxFactory.InvocationExpression(
                         SyntaxFactory.MemberAccessExpression(
@@ -285,7 +292,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             var statements = new List<StatementSyntax>();
             statements.Add(
-                // compareResult = left.ObjectCompares(right);
+                /*
+                compareResult = left.ObjectCompares(right);
+                */
                 SyntaxFactory.ExpressionStatement(
                     SyntaxFactory.AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
@@ -311,7 +320,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             var statements = new List<StatementSyntax>();
             statements.Add(
-                // compareResult = PropertyComparer.InstancePropertyName.Compare(left.Property, right.Property);
+                /*
+                compareResult = PropertyComparer.InstancePropertyName.Compare(left.Property, right.Property);
+                */
                 SyntaxFactory.ExpressionStatement(
                     SyntaxFactory.AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
@@ -342,9 +353,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             var argumentList = new List<ExpressionSyntax>() { right };
 
-            // decide which extension method to call based on comparisonKind
-            // ListCompares<T>(this IList<T> left, IList<T> right)
-            // ListCompares<T>(this IList<T> left, IList<T> right, IComparer<T> comparer)
             if (comparisonKind == ComparisonKind.EqualityComparerEquals)
             {
                 argumentList.Add(
@@ -367,7 +375,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(ListComparesMethodName)),
                         SyntaxHelper.ArgumentList(argumentList.ToArray())))));
 
-            // if (compareResult != 0) { return compareResult; }
             statements.Add(CheckCompareResultAndReturn());
 
             return statements.ToArray();
@@ -384,9 +391,6 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             var argumentList = new List<ExpressionSyntax>() { right };
 
-            // decide which extension method to call based on comparisonKind
-            // ListCompares<T>(this IList<T> left, IList<T> right)
-            // ListCompares<T>(this IList<T> left, IList<T> right, IComparer<T> comparer)
             if (comparisonKind == ComparisonKind.EqualityComparerEquals)
             {
                 argumentList.Add(
@@ -409,7 +413,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(DictionaryComparesMethodName)),
                         SyntaxHelper.ArgumentList(argumentList.ToArray())))));
 
-            // if (compareResult != 0) { return compareResult; }
             statements.Add(CheckCompareResultAndReturn());
 
             return statements.ToArray();
@@ -445,7 +448,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private InvocationExpressionSyntax GenerateStringCompareInvocation(ExpressionSyntax left, ExpressionSyntax right)
         {
-            // string.Compare(left, right)
+            /*
+            string.Compare(left, right)
+            */
             return SyntaxFactory.InvocationExpression(
                 SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
@@ -457,7 +462,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private InvocationExpressionSyntax GenerateUriComparesInvocation(ExpressionSyntax left, ExpressionSyntax right)
         {
-            // left.UriCompares(right)
+            /*
+            left.UriCompares(right)
+            */
             return SyntaxFactory.InvocationExpression(
                 SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
@@ -1303,7 +1310,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                 .WithArgumentList(
                                                     SyntaxHelper.BracketedArgumentList(
                                                         SyntaxFactory.IdentifierName(loopIndexerName))))))),
-                                // if (compareResult != 0) { return compareResult; }
                                 CheckCompareResultAndReturn(),
                                 SyntaxFactory.ExpressionStatement(
                                     SyntaxFactory.AssignmentExpression(
@@ -1486,7 +1492,9 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax DeclareCompareResultLocalVariable(string variableName)
         {
-            // int compareResult = 0;
+            /*
+            int compareResult = 0;
+            */
             return SyntaxFactory.LocalDeclarationStatement(
                 SyntaxFactory.VariableDeclaration(
                     SyntaxFactory.PredefinedType(
@@ -1503,6 +1511,12 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private StatementSyntax AugumentNullCheck(string argumentName)
         {
+            /*
+            if (argument == null)
+            {
+                throw new ArgumentNullException(nameof(argument));
+            }
+            */
             return SyntaxFactory.IfStatement(
                 SyntaxHelper.IsNull(argumentName),
                 SyntaxFactory.Block(

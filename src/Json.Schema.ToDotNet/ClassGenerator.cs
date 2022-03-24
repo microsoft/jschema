@@ -30,18 +30,19 @@ namespace Microsoft.Json.Schema.ToDotNet
         // Name used for the parameters of the copy ctor.
         private const string OtherParameterName = "other";
 
-        private const string DefaultValueAttributeNamespaceName = "System.ComponentModel";
         private const string DefaultValueAttributeName = "DefaultValue";
+        private const string DefaultValueAttributeNamespaceName = "System.ComponentModel";
+        private const string GenericCollectionsNamespaceName = "System.Collections.Generic";
 
-        private const string JsonPropertyAttributeNamespaceName = "Newtonsoft.Json";
         private const string JsonPropertyAttributeName = "JsonProperty";
+        private const string JsonPropertyAttributeNamespaceName = "Newtonsoft.Json";
+        private const string DefaultValueHandlingValueName = "IgnoreAndPopulate";
         private const string DefaultValueHandlingPropertyName = "DefaultValueHandling";
         private const string DefaultValueHandlingEnumerationName = "DefaultValueHandling";
-        private const string DefaultValueHandlingValueName = "IgnoreAndPopulate";
 
         private const string DataContractAttributeName = "DataContract";
-        private const string DataMemberAttributeName = "DataMember";
         private const string DataMemberNamePropertyName = "Name";
+        private const string DataMemberAttributeName = "DataMember";
         private const string DataMemberIsRequiredPropertyName = "IsRequired";
         private const string DataMemberEmitDefaultValuePropertyName = "EmitDefaultValue";
 
@@ -55,8 +56,8 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private const string KeyPropertyName = "Key";
         private const string ValuePropertyName = "Value";
-        private const string ValueComparerPropertyName = "ValueComparer";
         private const string ComparerPropertyName = "Comparer";
+        private const string ValueComparerPropertyName = "ValueComparer";
 
         private LocalVariableNameGenerator _localVariableNameGenerator;
 
@@ -159,7 +160,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             if (_generateEqualityComparers)
             {
                 // For IEqualityComparer<T>.
-                Usings.Add("System.Collections.Generic");
+                Usings.Add(GenericCollectionsNamespaceName);
 
                 members.Add(GenerateValueComparerProperty());
                 members.Add(GenerateValueEqualsMethod());
@@ -168,7 +169,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             if (_generateComparers)
             {
-                Usings.Add("System.Collections.Generic");
+                Usings.Add(GenericCollectionsNamespaceName);
                 members.Add(GenerateComparerProperty());
             }
 
