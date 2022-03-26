@@ -58,6 +58,11 @@ namespace N
             return ListComparesHelper(left, right, comparer.Compare);
         }
 
+        public static int ListCompares<T>(this IList<T> left, IList<T> right, Func<T, T, int> compareFunction)
+        {
+            return ListComparesHelper(left, right, compareFunction);
+        }
+
         private static int ListComparesHelper<T>(IList<T> left, IList<T> right, Func<T, T, int> compareFunction)
         {
             if (compareFunction == null)
@@ -120,6 +125,7 @@ namespace N
             {
                 throw new ArgumentNullException(nameof(keyCompareFunction));
             }
+
             if (valueCompareFunction == null)
             {
                 throw new ArgumentNullException(nameof(valueCompareFunction));
@@ -167,6 +173,7 @@ namespace N
 
             return left.OriginalString.CompareTo(right.OriginalString);
         }
+
         public static int ObjectCompares(this object left, object right)
         {
             int compareResult = 0;
@@ -175,7 +182,7 @@ namespace N
                 return compareResult;
             }
 
-            return left.GetHashCode().CompareTo(right.GetHashCode());
+            return Comparer<object>.Default.Compare(left, right);
         }
     }
 }";

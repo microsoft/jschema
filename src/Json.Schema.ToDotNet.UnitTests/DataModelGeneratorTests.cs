@@ -696,7 +696,7 @@ namespace N
                 return compareResult;
             }
 
-            compareResult = left.ArrayProp.ListCompares(right.ArrayProp);
+            compareResult = left.ArrayProp.ListCompares(right.ArrayProp, (a, b) => a.ObjectCompares(b));
             if (compareResult != 0)
             {
                 return compareResult;
@@ -708,7 +708,7 @@ namespace N
                 return compareResult;
             }
 
-            compareResult = left.ArrayProp3.ListCompares(right.ArrayProp3);
+            compareResult = left.ArrayProp3.ListCompares(right.ArrayProp3, (a, b) => a.ObjectCompares(b));
             if (compareResult != 0)
             {
                 return compareResult;
@@ -3550,7 +3550,7 @@ namespace N
                 return compareResult;
             }
 
-            compareResult = left.UriFormattedStrings.ListCompares(right.UriFormattedStrings);
+            compareResult = left.UriFormattedStrings.ListCompares(right.UriFormattedStrings, (a, b) => a.UriCompares(b));
             if (compareResult != 0)
             {
                 return compareResult;
@@ -3885,7 +3885,7 @@ namespace N
                 return compareResult;
             }
 
-            compareResult = left.ArrayOfArrayOfInt.ListCompares(right.ArrayOfArrayOfInt);
+            compareResult = left.ArrayOfArrayOfInt.ListCompares(right.ArrayOfArrayOfInt, (a, b) => a.ListCompares(b));
             if (compareResult != 0)
             {
                 return compareResult;
@@ -4090,7 +4090,7 @@ namespace N
                 return compareResult;
             }
 
-            compareResult = left.ArrayOfArrayOfObject.ListCompares(right.ArrayOfArrayOfObject);
+            compareResult = left.ArrayOfArrayOfObject.ListCompares(right.ArrayOfArrayOfObject, (a, b) => a.ListCompares(b));
             if (compareResult != 0)
             {
                 return compareResult;
@@ -4299,7 +4299,7 @@ namespace N
                 return compareResult;
             }
 
-            compareResult = left.ArrayOfArrayOfD.ListCompares(right.ArrayOfArrayOfD);
+            compareResult = left.ArrayOfArrayOfD.ListCompares(right.ArrayOfArrayOfD, (a, b) => a.ListCompares(b));
             if (compareResult != 0)
             {
                 return compareResult;
