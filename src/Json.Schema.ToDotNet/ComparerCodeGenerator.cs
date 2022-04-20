@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -18,32 +19,33 @@ namespace Microsoft.Json.Schema.ToDotNet
     {
         internal const string InstancePropertyName = "Instance";
 
-        private const string UriClassName = "Uri";
+        private const string UriClassName = nameof(Uri);
         private const string GenericTypeName = "T";
         private const string ObjectTypeName = "object";
         private const string CountPropertyName = "Count";
         private const string GenericKeyTypeName = "TKey";
         private const string GenericValueTypeName = "TValue";
-        private const string FirstEqualsArgumentName = "left";
-        private const string SecondEqualsArgumentName = "right";
+        private const string LeftEqualsArgumentName = "left";
+        private const string RightEqualsArgumentName = "right";
+        private const string CompareDelegateName = "compareFunction";
         private const string CompareResultVariableName = "compareResult";
         private const string UriOrignalStringPropertyName = "OriginalString";
+        private const string ComparerExtensionsClassName = "ComparerExtensions";
 
         private const string ComparerSuffix = "Comparer";
-        private const string IListInterfaceName = "IList";
-        private const string IComparerInterfaceName = "IComparer";
-        private const string IComparableInterfaceName = "IComparable";
-        private const string IDictionaryInterfaceName = "IDictionary";
+        private const string IListInterfaceName = nameof(IList);
+        private const string IComparerInterfaceName = nameof(IComparer);
+        private const string IComparableInterfaceName = nameof(IComparable);
+        private const string IDictionaryInterfaceName = nameof(IDictionary);
 
-        private const string UriComparesMethodName = "UriCompares";
-        private const string ListComparesMethodName = "ListCompares";
-        private const string CompareDelegateName = "compareFunction";
-        private const string ObjectComparesMethodName = "ObjectCompares";
-        private const string ComparerExtensionsClassName = "ComparerExtensions";
-        private const string ListComparesHelperMethodName = "ListComparesHelper";
-        private const string DictionaryComparesMethodName = "DictionaryCompares";
-        private const string TryReferenceComparesMethodName = "TryReferenceCompares";
-        private const string DictionaryComparesHelperMethodName = "DictionaryComparesHelper";
+        // method names
+        private const string UriCompares = nameof(UriCompares);
+        private const string ListCompares = nameof(ListCompares);
+        private const string ObjectCompares = nameof(ObjectCompares);
+        private const string ListComparesHelper = nameof(ListComparesHelper);
+        private const string DictionaryCompares = nameof(DictionaryCompares);
+        private const string TryReferenceCompares = nameof(TryReferenceCompares);
+        private const string DictionaryComparesHelper = nameof(DictionaryComparesHelper);
 
         private readonly string _namespaceName;
         private readonly string _copyrightNotice;
@@ -195,11 +197,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                         propertyName,
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName(FirstEqualsArgumentName),
+                            SyntaxFactory.IdentifierName(LeftEqualsArgumentName),
                             SyntaxFactory.IdentifierName(propertyName)),
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                            SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                             SyntaxFactory.IdentifierName(propertyName))));
             }
 
@@ -258,7 +260,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             else
             {
                 /*
-                left.Property.ComapreTo(right.Property);
+                left.Property.CompareTo(right.Property);
                 */
                 invocation =
                     SyntaxFactory.InvocationExpression(
@@ -298,7 +300,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 left,
-                                SyntaxFactory.IdentifierName(ObjectComparesMethodName)),
+                                SyntaxFactory.IdentifierName(ObjectCompares)),
                             SyntaxHelper.ArgumentList(right)))));
 
             statements.Add(CheckCompareResultAndReturn());
@@ -364,7 +366,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             left,
-                            SyntaxFactory.IdentifierName(ListComparesMethodName)),
+                            SyntaxFactory.IdentifierName(ListCompares)),
                         SyntaxHelper.ArgumentList(argumentList.ToArray())))));
 
             statements.Add(CheckCompareResultAndReturn());
@@ -386,14 +388,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                 case ComparisonKind.OperatorEquals:
                     return propertyTypeName.Equals("uri", StringComparison.OrdinalIgnoreCase)
                         ? CompareInvocationLambdaExpression(
-                            UriComparesMethodName,
+                            UriCompares,
                             delegateFirstParamName,
                             delegateSecondParamName)
                         : null;
 
                 case ComparisonKind.ObjectEquals:
                     return CompareInvocationLambdaExpression(
-                        ObjectComparesMethodName,
+                        ObjectCompares,
                         delegateFirstParamName,
                         delegateSecondParamName);
 
@@ -405,13 +407,13 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                 case ComparisonKind.Collection:
                     return CompareInvocationLambdaExpression(
-                        ListComparesMethodName,
+                        ListCompares,
                         delegateFirstParamName,
                         delegateSecondParamName);
 
                 case ComparisonKind.Dictionary:
                     return CompareInvocationLambdaExpression(
-                        DictionaryComparesMethodName,
+                        DictionaryCompares,
                         delegateFirstParamName,
                         delegateSecondParamName);
 
@@ -453,7 +455,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             left,
-                            SyntaxFactory.IdentifierName(DictionaryComparesMethodName)),
+                            SyntaxFactory.IdentifierName(DictionaryCompares)),
                         SyntaxHelper.ArgumentList(argumentList.ToArray())))));
 
             statements.Add(CheckCompareResultAndReturn());
@@ -469,10 +471,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                         .WithType(_classType),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                         .WithType(_classType))
                 .AddBodyStatements(
                     GenerateCompareBody());
@@ -512,7 +514,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
                     left,
-                    SyntaxFactory.IdentifierName(UriComparesMethodName)),
+                    SyntaxFactory.IdentifierName(UriCompares)),
                 SyntaxHelper.ArgumentList(right));
         }
 
@@ -592,24 +594,24 @@ namespace Microsoft.Json.Schema.ToDotNet
                 return false;
             }
             */
-            var firstArgument = SyntaxFactory.IdentifierName(FirstEqualsArgumentName);
-            var secondArgument = SyntaxFactory.IdentifierName(SecondEqualsArgumentName);
+            var firstArgument = SyntaxFactory.IdentifierName(LeftEqualsArgumentName);
+            var secondArgument = SyntaxFactory.IdentifierName(RightEqualsArgumentName);
 
             methods.Add(
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
-                    TryReferenceComparesMethodName)
+                    TryReferenceCompares)
                     .AddModifiers(
                         SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                         SyntaxFactory.Token(SyntaxKind.StaticKeyword))
                     .AddParameterListParameters(
                         SyntaxFactory.Parameter(
-                            SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                            SyntaxFactory.Identifier(LeftEqualsArgumentName))
                             .WithType(SyntaxFactory.PredefinedType(
                                 SyntaxFactory.Token(SyntaxKind.ObjectKeyword)))
                             .AddModifiers(SyntaxFactory.Token(SyntaxKind.ThisKeyword)),
                         SyntaxFactory.Parameter(
-                            SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                            SyntaxFactory.Identifier(RightEqualsArgumentName))
                             .WithType(SyntaxFactory.PredefinedType(
                                 SyntaxFactory.Token(SyntaxKind.ObjectKeyword))),
                         SyntaxFactory.Parameter(
@@ -664,8 +666,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             const string comparerLocalVarName = "comparer";
             var methods = new List<MethodDeclarationSyntax>();
             var loopIndexerVariable = SyntaxFactory.IdentifierName("i");
-            var firstArgument = SyntaxFactory.IdentifierName(FirstEqualsArgumentName);
-            var secondArgument = SyntaxFactory.IdentifierName(SecondEqualsArgumentName);
+            var firstArgument = SyntaxFactory.IdentifierName(LeftEqualsArgumentName);
+            var secondArgument = SyntaxFactory.IdentifierName(RightEqualsArgumentName);
 
             /*
             public static int ListCompares<T>(this IList<T> left, IList<T> right) where T : IComparable
@@ -677,7 +679,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(ListComparesMethodName))
+                    SyntaxFactory.Identifier(ListCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -685,14 +687,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.TypeParameter(SyntaxFactory.Identifier(GenericTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                         .WithType(SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IListInterfaceName))
                         .AddTypeArgumentListArguments(
                             SyntaxFactory.IdentifierName(GenericTypeName)))
                         .AddModifiers(SyntaxFactory.Token(SyntaxKind.ThisKeyword)),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                         .WithType(SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IListInterfaceName))
                         .AddTypeArgumentListArguments(
@@ -706,7 +708,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(ListComparesHelperMethodName))
+                            SyntaxFactory.IdentifierName(ListComparesHelper))
                         .AddArgumentListArguments(
                             SyntaxFactory.Argument(firstArgument),
                             SyntaxFactory.Argument(secondArgument),
@@ -731,7 +733,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(ListComparesMethodName))
+                    SyntaxFactory.Identifier(ListCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -740,7 +742,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Identifier(GenericTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                     .AddModifiers(
                         SyntaxFactory.Token(SyntaxKind.ThisKeyword))
                     .WithType(
@@ -749,7 +751,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         .AddTypeArgumentListArguments(
                             SyntaxFactory.IdentifierName(GenericTypeName))),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IListInterfaceName))
@@ -767,7 +769,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         AugumentNullCheck(comparerLocalVarName),
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(ListComparesHelperMethodName))
+                                SyntaxFactory.IdentifierName(ListComparesHelper))
                             .AddArgumentListArguments(
                                 SyntaxFactory.Argument(firstArgument),
                                 SyntaxFactory.Argument(secondArgument),
@@ -787,7 +789,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(ListComparesMethodName))
+                    SyntaxFactory.Identifier(ListCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -795,14 +797,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.TypeParameter(SyntaxFactory.Identifier(GenericTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                         .WithType(SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IListInterfaceName))
                         .AddTypeArgumentListArguments(
                             SyntaxFactory.IdentifierName(GenericTypeName)))
                         .AddModifiers(SyntaxFactory.Token(SyntaxKind.ThisKeyword)),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                         .WithType(SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IListInterfaceName))
                         .AddTypeArgumentListArguments(
@@ -811,7 +813,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(ListComparesHelperMethodName))
+                            SyntaxFactory.IdentifierName(ListComparesHelper))
                         .AddArgumentListArguments(
                             SyntaxFactory.Argument(firstArgument),
                             SyntaxFactory.Argument(secondArgument),
@@ -821,7 +823,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(ListComparesHelperMethodName))
+                    SyntaxFactory.Identifier(ListComparesHelper))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PrivateKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -830,14 +832,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Identifier(GenericTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IListInterfaceName))
                         .AddTypeArgumentListArguments(
                             SyntaxFactory.IdentifierName(GenericTypeName))),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IListInterfaceName))
@@ -865,7 +867,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.Argument(
                                         SyntaxFactory.MemberAccessExpression(
                                             SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                                            SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                             SyntaxFactory.IdentifierName(CountPropertyName)))))),
                         CheckCompareResultAndReturn(),
                         SyntaxFactory.ForStatement(
@@ -879,11 +881,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                 SyntaxFactory.ElementAccessExpression(
                                                     firstArgument,
                                                     SyntaxHelper.BracketedArgumentList(loopIndexerVariable)),
-                                                SyntaxFactory.IdentifierName(TryReferenceComparesMethodName)))
+                                                SyntaxFactory.IdentifierName(TryReferenceCompares)))
                                         .AddArgumentListArguments(
                                             SyntaxFactory.Argument(
                                                 SyntaxFactory.ElementAccessExpression(
-                                                    SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                                                    SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                                     SyntaxHelper.BracketedArgumentList(loopIndexerVariable))),
                                             SyntaxFactory.Argument(
                                                 SyntaxFactory.IdentifierName(CompareResultVariableName))
@@ -912,7 +914,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                     SyntaxHelper.BracketedArgumentList(loopIndexerVariable))),
                                             SyntaxFactory.Argument(
                                                 SyntaxFactory.ElementAccessExpression(
-                                                    SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                                                    SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                                     SyntaxHelper.BracketedArgumentList(loopIndexerVariable)))))),
                                 CheckCompareResultAndReturn()))
                         .WithDeclaration(
@@ -958,8 +960,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             const string keyCompareDelegateName = "keyCompareFunction";
             const string valueCompareDelegateName = "valueCompareFunction";
 
-            var firstArgument = SyntaxFactory.IdentifierName(FirstEqualsArgumentName);
-            var secondArgument = SyntaxFactory.IdentifierName(SecondEqualsArgumentName);
+            var firstArgument = SyntaxFactory.IdentifierName(LeftEqualsArgumentName);
+            var secondArgument = SyntaxFactory.IdentifierName(RightEqualsArgumentName);
             var methods = new List<MethodDeclarationSyntax>();
 
             /*
@@ -972,7 +974,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(DictionaryComparesMethodName))
+                    SyntaxFactory.Identifier(DictionaryCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -980,7 +982,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.TypeParameter(SyntaxFactory.Identifier(GenericTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                         .WithType(SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IDictionaryInterfaceName))
                         .AddTypeArgumentListArguments(
@@ -989,7 +991,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(GenericTypeName)))
                         .AddModifiers(SyntaxFactory.Token(SyntaxKind.ThisKeyword)),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                         .WithType(SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IDictionaryInterfaceName))
                         .AddTypeArgumentListArguments(
@@ -1005,7 +1007,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 .AddBodyStatements(
                     SyntaxFactory.ReturnStatement(
                         SyntaxFactory.InvocationExpression(
-                            SyntaxFactory.IdentifierName(DictionaryComparesHelperMethodName))
+                            SyntaxFactory.IdentifierName(DictionaryComparesHelper))
                         .AddArgumentListArguments(
                             SyntaxFactory.Argument(firstArgument),
                             SyntaxFactory.Argument(secondArgument),
@@ -1035,7 +1037,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(DictionaryComparesMethodName))
+                    SyntaxFactory.Identifier(DictionaryCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -1044,7 +1046,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Identifier(GenericTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                     .AddModifiers(
                         SyntaxFactory.Token(SyntaxKind.ThisKeyword))
                     .WithType(
@@ -1055,7 +1057,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.Token(SyntaxKind.StringKeyword)),
                             SyntaxFactory.IdentifierName(GenericTypeName))),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IDictionaryInterfaceName))
@@ -1075,7 +1077,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         AugumentNullCheck(comparerLocalVarName),
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(DictionaryComparesHelperMethodName))
+                                SyntaxFactory.IdentifierName(DictionaryComparesHelper))
                             .AddArgumentListArguments(
                                 SyntaxFactory.Argument(firstArgument),
                                 SyntaxFactory.Argument(secondArgument),
@@ -1099,7 +1101,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(DictionaryComparesMethodName))
+                    SyntaxFactory.Identifier(DictionaryCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -1110,7 +1112,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Identifier(GenericValueTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                     .AddModifiers(
                         SyntaxFactory.Token(SyntaxKind.ThisKeyword))
                     .WithType(
@@ -1120,7 +1122,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(GenericKeyTypeName),
                             SyntaxFactory.IdentifierName(GenericValueTypeName))),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IDictionaryInterfaceName))
@@ -1133,7 +1135,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxFactory.Block(
                         SyntaxFactory.ReturnStatement(
                             SyntaxFactory.InvocationExpression(
-                                SyntaxFactory.IdentifierName(DictionaryComparesHelperMethodName))
+                                SyntaxFactory.IdentifierName(DictionaryComparesHelper))
                             .AddArgumentListArguments(
                                 SyntaxFactory.Argument(firstArgument),
                                 SyntaxFactory.Argument(secondArgument),
@@ -1146,7 +1148,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(DictionaryComparesHelperMethodName))
+                    SyntaxFactory.Identifier(DictionaryComparesHelper))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PrivateKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
@@ -1157,7 +1159,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.Identifier(GenericValueTypeName)))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IDictionaryInterfaceName))
@@ -1165,7 +1167,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.IdentifierName(GenericKeyTypeName),
                             SyntaxFactory.IdentifierName(GenericValueTypeName))),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.GenericName(
                             SyntaxFactory.Identifier(IDictionaryInterfaceName))
@@ -1196,7 +1198,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.Argument(
                                         SyntaxFactory.MemberAccessExpression(
                                             SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                                            SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                             SyntaxFactory.IdentifierName(CountPropertyName)))))),
                         CheckCompareResultAndReturn(),
                         SyntaxFactory.LocalDeclarationStatement(
@@ -1234,7 +1236,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                 SyntaxKind.SimpleMemberAccessExpression,
                                                 SyntaxFactory.MemberAccessExpression(
                                                     SyntaxKind.SimpleMemberAccessExpression,
-                                                    SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                                                    SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                                     SyntaxFactory.IdentifierName("Keys")),
                                                 SyntaxFactory.IdentifierName(WellKnownMethodNames.ToListMethod))))))),
                         SyntaxFactory.ForStatement(
@@ -1274,7 +1276,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                                 SyntaxFactory.IdentifierName(loopIndexerName)))))),
                                             SyntaxFactory.Argument(
                                                 SyntaxFactory.ElementAccessExpression(
-                                                    SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                                                    SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                                     SyntaxHelper.BracketedArgumentList(
                                                         SyntaxFactory.ElementAccessExpression(
                                                             SyntaxFactory.IdentifierName(secondKeyListVariableName),
@@ -1331,19 +1333,19 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(UriComparesMethodName))
+                    SyntaxFactory.Identifier(UriCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                     .AddModifiers(
                         SyntaxFactory.Token(SyntaxKind.ThisKeyword))
                     .WithType(
                         SyntaxFactory.IdentifierName(UriClassName)),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.IdentifierName(UriClassName)))
                 .WithBody(
@@ -1356,14 +1358,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(FirstEqualsArgumentName),
+                                        SyntaxFactory.IdentifierName(LeftEqualsArgumentName),
                                         SyntaxFactory.IdentifierName(UriOrignalStringPropertyName)),
                                     SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareToMethod)))
                             .AddArgumentListArguments(
                                 SyntaxFactory.Argument(
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
+                                        SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                         SyntaxFactory.IdentifierName(UriOrignalStringPropertyName))))))));
 
             return methods;
@@ -1389,19 +1391,19 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.MethodDeclaration(
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                    SyntaxFactory.Identifier(ObjectComparesMethodName))
+                    SyntaxFactory.Identifier(ObjectCompares))
                 .AddModifiers(
                     SyntaxFactory.Token(SyntaxKind.PublicKeyword),
                     SyntaxFactory.Token(SyntaxKind.StaticKeyword))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(FirstEqualsArgumentName))
+                        SyntaxFactory.Identifier(LeftEqualsArgumentName))
                     .AddModifiers(
                         SyntaxFactory.Token(SyntaxKind.ThisKeyword))
                     .WithType(
                         SyntaxFactory.IdentifierName(ObjectTypeName)),
                     SyntaxFactory.Parameter(
-                        SyntaxFactory.Identifier(SecondEqualsArgumentName))
+                        SyntaxFactory.Identifier(RightEqualsArgumentName))
                     .WithType(
                         SyntaxFactory.IdentifierName(ObjectTypeName)))
                 .WithBody(
@@ -1422,9 +1424,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareMethod)))
                             .AddArgumentListArguments(
                                 SyntaxFactory.Argument(
-                                    SyntaxFactory.IdentifierName(FirstEqualsArgumentName)),
+                                    SyntaxFactory.IdentifierName(LeftEqualsArgumentName)),
                                 SyntaxFactory.Argument(
-                                    SyntaxFactory.IdentifierName(SecondEqualsArgumentName)))))));
+                                    SyntaxFactory.IdentifierName(RightEqualsArgumentName)))))));
 
             return methods;
         }
@@ -1483,6 +1485,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         private StatementSyntax CallTryReferenceComparesMethod()
         {
             /*
+            // TryReferenceCompares is an autogenerated extension method
+            // that will properly handle the case when 'left' is null.
             if (left.TryReferenceCompares(right, out compareResult))
             {
                 return compareResult;
@@ -1492,11 +1496,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.InvocationExpression(
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName(FirstEqualsArgumentName),
-                        SyntaxFactory.IdentifierName(TryReferenceComparesMethodName)))
+                        SyntaxFactory.IdentifierName(LeftEqualsArgumentName),
+                        SyntaxFactory.IdentifierName(TryReferenceCompares)))
                 .AddArgumentListArguments(
                     SyntaxFactory.Argument(
-                        SyntaxFactory.IdentifierName(SecondEqualsArgumentName)),
+                        SyntaxFactory.IdentifierName(RightEqualsArgumentName)),
                     SyntaxFactory.Argument(
                         SyntaxFactory.IdentifierName(CompareResultVariableName))
                     .WithRefOrOutKeyword(
@@ -1504,7 +1508,19 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.Block(
                     SyntaxFactory.SingletonList<StatementSyntax>(
                         SyntaxFactory.ReturnStatement(
-                            SyntaxFactory.IdentifierName(CompareResultVariableName)))));
+                            SyntaxFactory.IdentifierName(CompareResultVariableName)))))
+                .WithIfKeyword(
+                    SyntaxFactory.Token(
+                        SyntaxFactory.TriviaList(new SyntaxTrivia[]
+                        {
+                            SyntaxFactory.CarriageReturnLineFeed,
+                            SyntaxFactory.Comment("// TryReferenceCompares is an autogenerated extension method"),
+                            SyntaxFactory.ElasticCarriageReturnLineFeed,
+                            SyntaxFactory.Comment("// that will properly handle the case when 'left' is null."),
+                            SyntaxFactory.ElasticCarriageReturnLineFeed,
+                        }),
+                        SyntaxKind.IfKeyword,
+                        SyntaxFactory.TriviaList()));
         }
 
         private StatementSyntax CheckCompareResultAndReturn()

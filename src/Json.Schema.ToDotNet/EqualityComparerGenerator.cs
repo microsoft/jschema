@@ -792,9 +792,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
         }
 
-        private StatementSyntax Xor(string xorValueVariableName, ExpressionSyntax expression, string getHashCodeMethod)
+        private StatementSyntax Xor(string xorValueVariableName, ExpressionSyntax expression, string method)
         {
-            // {xor} ^= {expression}.{getHashCodeMethod}()
+            // {xor} ^= {expression}.{method}()
             return SyntaxFactory.ExpressionStatement(
                 SyntaxFactory.AssignmentExpression(
                     SyntaxKind.ExclusiveOrAssignmentExpression,
@@ -803,7 +803,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             expression,
-                        SyntaxFactory.IdentifierName(getHashCodeMethod)))));
+                        SyntaxFactory.IdentifierName(method)))));
         }
     }
 }
