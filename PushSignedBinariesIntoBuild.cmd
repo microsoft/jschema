@@ -34,7 +34,7 @@ goto :Exit
 
 :CopySignedLibraryToBuildOutputDirectory
 
-xcopy /Y %SigningDirectory%\netcoreapp2.1\Microsoft.%1 %BinaryOutputDirectory%\%~n1\netstandard2.0\
+xcopy /Y %SigningDirectory%\netcoreapp3.1\Microsoft.%1 %BinaryOutputDirectory%\%~n1\netstandard2.0\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
 
 xcopy /Y %SigningDirectory%\net461\Microsoft.%1 %BinaryOutputDirectory%\%~n1\net461\
@@ -43,7 +43,7 @@ goto :CopyFilesExit
 
 :CopySignedExecutableToBuildOutputDirectory
 
-xcopy /Y %SigningDirectory%\netcoreapp2.1\Microsoft.%1.dll %BinaryOutputDirectory%\%1\netstandard2.0\
+xcopy /Y %SigningDirectory%\netcoreapp3.1\Microsoft.%1.dll %BinaryOutputDirectory%\%1\netstandard2.0\
 if "%ERRORLEVEL%" NEQ "0" (echo %1 assembly copy failed. && goto :CopyFilesExit)
 
 xcopy /Y %SigningDirectory%\net461\Microsoft.%1.exe %BinaryOutputDirectory%\%1\net461\
