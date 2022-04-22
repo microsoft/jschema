@@ -1,8 +1,8 @@
 # Microsoft Json Schema Packages
 
-## **1.1.4** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.4) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.4)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.4)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.4)
+## **Unreleased**
 
-* Update validator to use latest SARIF SDK (2.4.12).
+* Update validator to use latest SARIF SDK (2.4.14).
 * Fixing wrong array logic.
 * Enable symbols.
 * Set up CI with Azure Pipelines.

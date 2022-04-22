@@ -20,7 +20,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 82,
@@ -48,7 +49,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 84,
@@ -77,7 +79,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 87,
@@ -106,7 +109,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 90,
@@ -134,7 +138,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 94,
@@ -163,7 +168,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 97,
@@ -192,7 +198,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 100,
@@ -221,7 +228,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 103,
@@ -250,7 +258,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 106,
@@ -279,7 +288,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 108,
@@ -308,7 +318,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 113,
@@ -337,7 +348,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 117,
@@ -367,7 +379,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 120,
@@ -397,7 +410,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 123,
@@ -426,7 +440,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 126,
@@ -454,7 +469,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 129,
@@ -482,7 +498,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 132,
@@ -511,7 +528,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 135,
@@ -540,7 +558,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 138,
@@ -569,7 +588,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 141,
@@ -596,7 +616,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 144,
@@ -625,7 +646,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 147,
@@ -652,7 +674,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 150,
@@ -682,7 +705,8 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
+                  "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json",
+                  "index": 2
                 },
                 "region": {
                   "startLine": 152,
@@ -698,12 +722,11 @@
       ],
       "tool": {
         "driver": {
-          "name": "Microsoft.Json.Schema.Validation.Cli",
-          "organization": "Microsoft",
-          "product": "JSON Schema",
-          "fullName": "Microsoft.Json.Schema.Validation.Cli 1.1.3.0",
-          "version": "1.1.3.0",
-          "semanticVersion": "1.1.3",
+          "name": "testhost",
+          "product": "Microsoft.TestHost",
+          "fullName": "testhost 15.0.0.0",
+          "version": "15.0.0.0",
+          "semanticVersion": "15.0.0",
           "rules": [
             {
               "id": "JSON1001",
@@ -1050,20 +1073,17 @@
                 "level": "error"
               }
             }
-          ],
-          "properties": {
-            "Comments": "Command line tool to validate a JSON instance against a JSON Schema"
-          }
+          ]
         }
       },
       "invocations": [
         {
-          "startTimeUtc": "2020-07-28T15:22:49.841Z",
-          "endTimeUtc": "2020-07-28T15:22:50.230Z",
+          "startTimeUtc": "2022-04-22T20:26:56.699Z",
+          "endTimeUtc": "2022-04-22T20:26:56.802Z",
           "toolExecutionNotifications": [
             {
               "message": {
-                "text": "Validation time: 00:00:00.3672531"
+                "text": "Validation time: 00:00:00.0954495"
               },
               "level": "note"
             }
@@ -1080,6 +1100,11 @@
         {
           "location": {
             "uri": "TestData/ComprehensiveSchema.json"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/dev/jschema/src/Json.Schema.Validation.UnitTests/TestData/ComprehensiveInstanceFile.json"
           }
         }
       ],
