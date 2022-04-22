@@ -109,7 +109,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 ReportMissingProperty(nameof(NamespaceName), sb);
             }
 
-            if (string.IsNullOrWhiteSpace(NamespaceName))
+            if (string.IsNullOrWhiteSpace(RootClassName))
             {
                 ReportMissingProperty(nameof(RootClassName), sb);
             }
