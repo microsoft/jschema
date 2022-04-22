@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis.Sarif;
 using Newtonsoft.Json;
@@ -197,7 +198,7 @@ namespace Microsoft.Json.Schema.Validation
                 double maximum = schema.Maximum.Value;
                 double value = jValue.Type == JTokenType.Float
                     ? (double)jValue.Value
-                    : (long)jValue.Value;
+                    : BigInteger.Parse(jValue.Value.ToString());
 
                 if (schema.ExclusiveMaximum == true && value >= maximum)
                 {
