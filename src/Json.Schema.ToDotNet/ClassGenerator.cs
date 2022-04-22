@@ -259,7 +259,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(ValueComparerPropertyName),
-                                SyntaxFactory.IdentifierName(WellKnownMethodNames.EqualsMethod)),
+                                SyntaxFactory.IdentifierName(WellKnownMethodNames.Equals)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.ThisExpression(),
                                 SyntaxFactory.IdentifierName(OtherParameterName)))))
@@ -282,7 +282,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.IdentifierName(ValueComparerPropertyName),
-                                SyntaxFactory.IdentifierName(WellKnownMethodNames.GetHashCodeMethod)),
+                                SyntaxFactory.IdentifierName(WellKnownMethodNames.GetHashCode)),
                             SyntaxHelper.ArgumentList(
                                 SyntaxFactory.ThisExpression()))))
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));

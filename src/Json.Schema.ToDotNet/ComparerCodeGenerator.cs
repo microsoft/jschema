@@ -267,7 +267,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             left,
-                            SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareToMethod)),
+                            SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareTo)),
                         SyntaxHelper.ArgumentList(right));
             }
 
@@ -331,7 +331,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     SyntaxFactory.ParseTypeName(typeName),
                                     SyntaxFactory.IdentifierName(InstancePropertyName)),
-                                SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareMethod)),
+                                SyntaxFactory.IdentifierName(WellKnownMethodNames.Compare)),
                             SyntaxHelper.ArgumentList(left, right)))));
 
             statements.Add(CheckCompareResultAndReturn());
@@ -467,7 +467,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                WellKnownMethodNames.CompareMethod)
+                WellKnownMethodNames.Compare)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
@@ -501,7 +501,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     SyntaxKind.SimpleMemberAccessExpression,
                     SyntaxFactory.PredefinedType(
                         SyntaxFactory.Token(SyntaxKind.StringKeyword)),
-                    SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareMethod)),
+                    SyntaxFactory.IdentifierName(WellKnownMethodNames.Compare)),
                 SyntaxHelper.ArgumentList(left, right));
         }
 
@@ -714,7 +714,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.Argument(secondArgument),
                             SyntaxFactory.Argument(
                                 CompareInvocationLambdaExpression(
-                                    WellKnownMethodNames.CompareToMethod,
+                                    WellKnownMethodNames.CompareTo,
                                     delegateFirstParamName,
                                     delegateSecondParamName))))));
 
@@ -777,7 +777,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(comparerLocalVarName),
-                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareMethod))))))));
+                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.Compare))))))));
 
             /*
             public static int ListCompares<T>(this IList<T> left, IList<T> right, Func<T, T, int> compareFunction)
@@ -862,7 +862,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                             SyntaxKind.SimpleMemberAccessExpression,
                                             firstArgument,
                                             SyntaxFactory.IdentifierName(CountPropertyName)),
-                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareToMethod)))
+                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareTo)))
                                 .AddArgumentListArguments(
                                     SyntaxFactory.Argument(
                                         SyntaxFactory.MemberAccessExpression(
@@ -1013,12 +1013,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                             SyntaxFactory.Argument(secondArgument),
                             SyntaxFactory.Argument(
                                 CompareInvocationLambdaExpression(
-                                    WellKnownMethodNames.CompareToMethod,
+                                    WellKnownMethodNames.CompareTo,
                                     keyDelegateFirstParamName,
                                     keyDelegateSecondParamName)),
                             SyntaxFactory.Argument(
                                 CompareInvocationLambdaExpression(
-                                    WellKnownMethodNames.CompareToMethod,
+                                    WellKnownMethodNames.CompareTo,
                                     valDelegateFirstParamName,
                                     valDelegateSecondParamName))))));
 
@@ -1083,14 +1083,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.Argument(secondArgument),
                                 SyntaxFactory.Argument(
                                     CompareInvocationLambdaExpression(
-                                        WellKnownMethodNames.CompareToMethod,
+                                        WellKnownMethodNames.CompareTo,
                                         keyDelegateFirstParamName,
                                         keyDelegateSecondParamName)),
                                 SyntaxFactory.Argument(
                                     SyntaxFactory.MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(comparerLocalVarName),
-                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareMethod))))))));
+                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.Compare))))))));
             /*
             public static int DictionaryCompares<TKey, TValue>(this IDictionary<TKey, TValue> left, IDictionary<TKey, TValue> right, Func<TKey, TKey, int> keyCompareFunction, Func<TValue, TValue, int> valueCompareFunction)
             {
@@ -1193,7 +1193,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                             SyntaxKind.SimpleMemberAccessExpression,
                                             firstArgument,
                                             SyntaxFactory.IdentifierName(CountPropertyName)),
-                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareToMethod)))
+                                        SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareTo)))
                                 .AddArgumentListArguments(
                                     SyntaxFactory.Argument(
                                         SyntaxFactory.MemberAccessExpression(
@@ -1219,7 +1219,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                     SyntaxKind.SimpleMemberAccessExpression,
                                                     firstArgument,
                                                     SyntaxFactory.IdentifierName("Keys")),
-                                                SyntaxFactory.IdentifierName(WellKnownMethodNames.ToListMethod))))))),
+                                                SyntaxFactory.IdentifierName(WellKnownMethodNames.ToList))))))),
                         SyntaxFactory.LocalDeclarationStatement(
                             SyntaxFactory.VariableDeclaration(
                                 SyntaxFactory.GenericName(
@@ -1238,7 +1238,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                                     SyntaxKind.SimpleMemberAccessExpression,
                                                     SyntaxFactory.IdentifierName(RightEqualsArgumentName),
                                                     SyntaxFactory.IdentifierName("Keys")),
-                                                SyntaxFactory.IdentifierName(WellKnownMethodNames.ToListMethod))))))),
+                                                SyntaxFactory.IdentifierName(WellKnownMethodNames.ToList))))))),
                         SyntaxFactory.ForStatement(
                             SyntaxFactory.Block(
                                 SyntaxFactory.ExpressionStatement(
@@ -1360,7 +1360,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         SyntaxFactory.IdentifierName(LeftEqualsArgumentName),
                                         SyntaxFactory.IdentifierName(UriOrignalStringPropertyName)),
-                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareToMethod)))
+                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareTo)))
                             .AddArgumentListArguments(
                                 SyntaxFactory.Argument(
                                     SyntaxFactory.MemberAccessExpression(
@@ -1421,7 +1421,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                             .AddTypeArgumentListArguments(
                                                 SyntaxFactory.IdentifierName(ObjectTypeName)),
                                             SyntaxFactory.IdentifierName("Default")),
-                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.CompareMethod)))
+                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.Compare)))
                             .AddArgumentListArguments(
                                 SyntaxFactory.Argument(
                                     SyntaxFactory.IdentifierName(LeftEqualsArgumentName)),

@@ -122,7 +122,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                        SyntaxFactory.MemberAccessExpression(
                            SyntaxKind.SimpleMemberAccessExpression,
                            SyntaxFactory.IdentifierName(WellKnownTypeNames.Object),
-                           SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod)),
+                           SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEquals)),
                        ArgumentList(left, right));
         }
 

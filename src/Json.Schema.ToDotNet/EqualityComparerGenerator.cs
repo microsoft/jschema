@@ -179,7 +179,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.BoolKeyword)),
-                WellKnownMethodNames.EqualsMethod)
+                WellKnownMethodNames.Equals)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
@@ -196,7 +196,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
-                WellKnownMethodNames.GetHashCodeMethod)
+                WellKnownMethodNames.GetHashCode)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(
                     SyntaxFactory.Parameter(
@@ -221,7 +221,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             return SyntaxFactory.IfStatement(
                 SyntaxFactory.InvocationExpression(
-                    SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod),
+                    SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEquals),
                     SyntaxHelper.ArgumentList(
                         SyntaxFactory.IdentifierName(FirstEqualsAgumentName),
                         SyntaxFactory.IdentifierName(SecondEqualsArgumentName))),
@@ -235,12 +235,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.BinaryExpression(
                     SyntaxKind.LogicalOrExpression,
                     SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod),
+                        SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEquals),
                         SyntaxHelper.ArgumentList(
                             SyntaxFactory.IdentifierName(FirstEqualsAgumentName),
                             SyntaxHelper.Null())),
                     SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod),
+                        SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEquals),
                         SyntaxHelper.ArgumentList(
                             SyntaxFactory.IdentifierName(SecondEqualsArgumentName),
                             SyntaxHelper.Null()))),
@@ -321,7 +321,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.IdentifierName(WellKnownTypeNames.Object),
-                            SyntaxFactory.IdentifierName(WellKnownMethodNames.EqualsMethod)),
+                            SyntaxFactory.IdentifierName(WellKnownMethodNames.Equals)),
                         SyntaxHelper.ArgumentList(left, right))),
                 SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
@@ -350,7 +350,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxKind.SimpleMemberAccessExpression,
                                 SyntaxFactory.ParseTypeName(typeName),
                                 SyntaxFactory.IdentifierName(ValueComparerPropertyName)),
-                            SyntaxFactory.IdentifierName(WellKnownMethodNames.EqualsMethod)),
+                            SyntaxFactory.IdentifierName(WellKnownMethodNames.Equals)),
                         SyntaxHelper.ArgumentList(left, right))),
                 SyntaxFactory.Block(SyntaxHelper.Return(false)));
         }
@@ -535,7 +535,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             statements.Add(SyntaxFactory.IfStatement(
                 SyntaxFactory.InvocationExpression(
-                    SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEqualsMethod),
+                    SyntaxFactory.IdentifierName(WellKnownMethodNames.ReferenceEquals),
                     SyntaxHelper.ArgumentList(
                         SyntaxFactory.IdentifierName(GetHashCodeArgumentName),
                         SyntaxHelper.Null())),
@@ -624,7 +624,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                                 SyntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     expression,
-                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.GetHashCodeMethod))))));
+                                    SyntaxFactory.IdentifierName(WellKnownMethodNames.GetHashCode))))));
         }
 
         private StatementSyntax GenerateScalarReferenceTypeHashCodeContribution(ExpressionSyntax expression)
@@ -745,7 +745,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         expression,
                         SyntaxFactory.Block(
                             // xor_0 ^= value_0.Key.GetHashCode();
-                            Xor(xorValueVariableName, keyExpression, WellKnownMethodNames.GetHashCodeMethod),
+                            Xor(xorValueVariableName, keyExpression, WellKnownMethodNames.GetHashCode),
                             hashCodeContribution)),
 
                     SyntaxFactory.ExpressionStatement(
@@ -776,7 +776,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     return SyntaxFactory.IfStatement(
                         SyntaxHelper.IsNotNull(valueExpression),
                         SyntaxFactory.Block(
-                            Xor(xorVariableName, valueExpression, WellKnownMethodNames.GetHashCodeMethod)));
+                            Xor(xorVariableName, valueExpression, WellKnownMethodNames.GetHashCode)));
 
                 case HashKind.ObjectModelType:
                     return SyntaxFactory.IfStatement(
