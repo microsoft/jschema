@@ -715,6 +715,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 SyntaxFactory.IdentifierName(ValuePropertyName));
 
             string elementHashTypeKey = PropertyInfoDictionary.MakeDictionaryItemKeyName(hashKindKey);
+
+            // if (value_0.Value != null)
+            // {
+            //     xor_0 ^= value_0.Value.GetHashCode(); // or
+            //     xor_0 ^= value_0.Value.ValueGetHashCode(); // if Value type is data model
+            // }
             StatementSyntax hashCodeContribution =
                 GenerateXorHashCodeContribution(
                     elementHashTypeKey,
