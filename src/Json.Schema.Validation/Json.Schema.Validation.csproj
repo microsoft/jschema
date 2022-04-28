@@ -12,7 +12,7 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
 
   <ItemGroup>
-    <PackageReference Include="Sarif.Sdk" Version="2.3.3" />
+    <PackageReference Include="Sarif.Sdk" Version="2.4.14" />
   </ItemGroup>
 
   <ItemGroup>
