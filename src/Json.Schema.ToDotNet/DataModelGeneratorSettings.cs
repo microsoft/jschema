@@ -71,6 +71,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         public bool GenerateEqualityComparers { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether implementations of
+        /// <see cref="System.Collections.Generic.IComparer{T}"/> are to be generated.
+        /// </summary>
+        public bool GenerateComparers { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the code necessary to clone
         /// instances of the classes in the object model is to be generated.
         /// </summary>

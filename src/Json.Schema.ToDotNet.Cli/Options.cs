@@ -79,6 +79,13 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         public bool GenerateEqualityComparers { get; set; }
 
         [Option(
+            "generate-comparers",
+            HelpText = "Generate classes that implement IComparer<T>.",
+            Default = true,
+            Required = false)]
+        public bool GenerateComparers { get; set; }
+
+        [Option(
             'k',
             "generate-cloning-code",
             HelpText = "Generate code necessary to clone instances.",

@@ -11,12 +11,14 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
         internal static void FileContentsMatchExpectedContents(
             TestFileSystem testFileSystem,
             IDictionary<string, ExpectedContents> expectedContentsDictionary,
-            bool generateEqualityComparers)
+            bool generateEqualityComparers,
+            bool generateComparers)
         {
             // Each type in the schema generates a class and, optionally, an equality comparer class.
-            int filesPerType = generateEqualityComparers ? 2 : 1;
+            int filesPerType = 1 + (generateEqualityComparers ? 1 : 0) + (generateComparers ? 1 : 0);
+            int extensionClassCount = generateComparers ? 1 : 0;
 
-            testFileSystem.Files.Count.Should().Be(expectedContentsDictionary.Count * filesPerType);
+            testFileSystem.Files.Count.Should().Be(expectedContentsDictionary.Count * filesPerType + extensionClassCount);
 
             foreach (string className in expectedContentsDictionary.Keys)
             {
@@ -31,15 +33,32 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
 
                 if (generateEqualityComparers)
                 {
-                    string comparerClassName = EqualityComparerGenerator.GetEqualityComparerClassName(className);
+                    string equalityComparerClassName = EqualityComparerGenerator.GetEqualityComparerClassName(className);
+                    string equalityComparerClassPath = TestFileSystem.MakeOutputFilePath(equalityComparerClassName);
+                    testFileSystem.Files.Should().Contain(equalityComparerClassPath);
+
+                    string expectedComparerClassContents = expectedContentsDictionary[className].EqualityComparerClassContents;
+                    if (expectedComparerClassContents != null)
+                    {
+                        testFileSystem[equalityComparerClassPath].Should().Be(expectedComparerClassContents);
+                    }
+                }
+
+                if (generateComparers)
+                {
+                    string comparerClassName = ComparerCodeGenerator.GetComparerClassName(className);
                     string comparerClassPath = TestFileSystem.MakeOutputFilePath(comparerClassName);
+                    string comparerExtensionsClassName = ComparerCodeGenerator.GetComparerExtensionsClassName();
+                    string comparerExtensionsClassPath = TestFileSystem.MakeOutputFilePath(comparerExtensionsClassName);
                     testFileSystem.Files.Should().Contain(comparerClassPath);
+                    testFileSystem.Files.Should().Contain(comparerExtensionsClassPath);
 
                     string expectedComparerClassContents = expectedContentsDictionary[className].ComparerClassContents;
                     if (expectedComparerClassContents != null)
                     {
                         testFileSystem[comparerClassPath].Should().Be(expectedComparerClassContents);
                     }
+                    testFileSystem[comparerExtensionsClassPath].Should().Be(ExpectedContents.ComparerExtensionsClassContents);
                 }
             }
         }
