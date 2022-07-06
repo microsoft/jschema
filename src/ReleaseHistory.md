@@ -1,5 +1,8 @@
 # Microsoft Json Schema Packages
 
+## **Unreleased**
+* Updating to use Newtonsoft v13.0.1. []()
+
 ## **1.1.4** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.4) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.4)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.4)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.4)
 
 * Update validator to use latest SARIF SDK (2.4.14).
