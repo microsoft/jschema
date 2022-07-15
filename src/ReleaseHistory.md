@@ -1,6 +1,6 @@
 # Microsoft Json Schema Packages
 
-## **Unreleased**
+## **1.1.5** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.5) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.4)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.4)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.5)
 * Updating [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/13.0.1) from v9.0.1 to v13.0.1 in response to [Advisory: Improper Handling of Exceptional Conditions in Newtonsoft.Json](https://github.com/advisories/GHSA-5crp-9r3c-p9vr). [#155](https://github.com/microsoft/jschema/pull/155)
 
 ## **1.1.4** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.4) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.4)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.4)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.4)
