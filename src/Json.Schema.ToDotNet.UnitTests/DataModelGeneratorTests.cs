@@ -294,6 +294,191 @@ namespace N
             VerifyGeneratedFileContents(expectedContentsDictionary);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates properties with integer types")]
+        public void GeneratesPropertiesWithIntegerTypes()
+        {
+            // Arrange.
+            const string ExpectedClass_Auto =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Numerics;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_default { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_minus1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_na_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_int64times10 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_int64 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_int32add1 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_0_max_int32 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_int32_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_int32minus1_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_int64_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_int64times10_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_huge_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_huge"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_huge { get; set; }
+    }
+}";
+            const string ExpectedClass_BigInteger =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Numerics;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_default { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_minus1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_na_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_int64times10 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_int64 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_int32add1 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_int32 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_int32_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_int32minus1_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_int64_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_int64times10_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_huge_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_huge"", IsRequired = false, EmitDefaultValue = false)]
+        public BigInteger IntegerProperty_min_0_max_huge { get; set; }
+    }
+}";
+            const string ExpectedClass_Long =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_default { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_minus1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_na_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_int64times10 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_int64 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_int32add1 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_int32 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_int32_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_int32minus1_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_int64_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_int64times10_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_huge_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_huge"", IsRequired = false, EmitDefaultValue = false)]
+        public long IntegerProperty_min_0_max_huge { get; set; }
+    }
+}";
+            const string ExpectedClass_Int =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_default { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_0_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_minus1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_1_max_na { get; set; }
+        [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_na_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_0_max_int64times10 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_0_max_int64 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_0_max_int32add1 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_0_max_int32 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_int32_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_int32minus1_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_int64_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_int64times10_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_huge_max_0 { get; set; }
+        [DataMember(Name = ""integerProperty_min_0_max_huge"", IsRequired = false, EmitDefaultValue = false)]
+        public int IntegerProperty_min_0_max_huge { get; set; }
+    }
+}";
+            GeneratesPropertiesWithIntegerTypes_Helper("auto", ExpectedClass_Auto);
+            GeneratesPropertiesWithIntegerTypes_Helper("biginteger", ExpectedClass_BigInteger);
+            GeneratesPropertiesWithIntegerTypes_Helper("long", ExpectedClass_Long);
+            GeneratesPropertiesWithIntegerTypes_Helper("int", ExpectedClass_Int);
+        }
+
+
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
@@ -2004,7 +2189,7 @@ namespace N
     /// <summary>
     /// Some colors.
     /// </summary>
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """+ VersionConstants.FileVersion + @""")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public enum Color
     {
         Red,
@@ -2571,7 +2756,6 @@ namespace N
 
             VerifyGeneratedFileContents(expectedContentsDictionary);
         }
-
 
         [Fact(DisplayName = "DataModelGenerator generates URI-valued properties from uri format")]
         public void GeneratesUriValuedPropertiesFromUriFormat()
@@ -5017,6 +5201,30 @@ namespace N
         private void VerifyGeneratedFileContents(IDictionary<string, ExpectedContents> expectedContentsDictionary)
         {
             Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers, _settings.GenerateComparers);
+        }
+
+        private void GeneratesPropertiesWithIntegerTypes_Helper(string generateIntegerAs, string expectedClass)
+        {
+            // Arrange.
+            _settings.GenerateEqualityComparers = false;
+            _settings.GenerateComparers = false;
+            _settings.GenerateIntegerAs = generateIntegerAs;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Integer");
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = expectedClass
+                }
+            };
+
+            // Act.
+            generator.Generate(schema);
+
+            // Assert.
+            VerifyGeneratedFileContents(expectedContentsDictionary);
+            _testFileSystem = new TestFileSystem();
         }
     }
 }
