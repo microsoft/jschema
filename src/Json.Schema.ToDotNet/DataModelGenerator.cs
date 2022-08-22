@@ -308,7 +308,8 @@ namespace Microsoft.Json.Schema.ToDotNet
                 _settings.TypeNameSuffix,
                 schema,
                 _settings.HintDictionary,
-                OnAdditionalTypeRequired);
+                OnAdditionalTypeRequired,
+                _settings.GenerateIntegerAs);
 
             _classInfoDictionary.Add(suffixedClassName, propertyInfoDictionary);
 

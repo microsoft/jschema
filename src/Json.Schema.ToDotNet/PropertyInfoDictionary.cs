@@ -44,6 +44,8 @@ namespace Microsoft.Json.Schema.ToDotNet
         // <code>Location{}[]</code> is a dictionary property whose elements are arrays.
         internal const string DictionaryMarker = "{}";
 
+        internal const string BigIntegerType = "System.Numerics.BigInteger";
+
         /// <summary>
         /// Callback invoked when the dictionary discovers that another type must be
         /// generated, in addition to the one whose properties it is already generating.
@@ -56,6 +58,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public delegate void AdditionalTypeRequiredDelegate(AdditionalTypeRequiredInfo additionalTypeRequiredInfo);
 
         private readonly AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
+        private readonly string _generateIntegerAs;
         private readonly string _typeNameSuffix;
 
         /// <summary>
@@ -75,13 +78,15 @@ namespace Microsoft.Json.Schema.ToDotNet
             string typeNameSuffix,
             JsonSchema schema,
             HintDictionary hintDictionary,
-            AdditionalTypeRequiredDelegate additionalTypeRequiredDelegate)
+            AdditionalTypeRequiredDelegate additionalTypeRequiredDelegate,
+            string generateIntegerAs)
         {
             _typeName = typeName;
             _typeNameSuffix = typeNameSuffix;
             _schema = schema;
             _hintDictionary = hintDictionary;
             _additionalTypeRequiredDelegate = additionalTypeRequiredDelegate;
+            _generateIntegerAs = generateIntegerAs;
 
             _dictionary = PropertyInfoDictionaryFromSchema();
         }
@@ -284,7 +289,6 @@ namespace Microsoft.Json.Schema.ToDotNet
                 switch (propertyType)
                 {
                     case SchemaType.Boolean:
-                    case SchemaType.Integer:
                     case SchemaType.Number:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarValueType;
@@ -292,6 +296,16 @@ namespace Microsoft.Json.Schema.ToDotNet
                         type = MakePrimitiveType(propertyType);
                         break;
 
+                    case SchemaType.Integer:
+                        comparisonKind = ComparisonKind.OperatorEquals;
+                        hashKind = HashKind.ScalarValueType;
+                        initializationKind = InitializationKind.SimpleAssign;
+                        type = MakeProperIntegerType(_generateIntegerAs,
+                            propertySchema.Minimum, propertySchema.ExclusiveMinimum,
+                            propertySchema.Maximum, propertySchema.ExclusiveMaximum,
+                            out namespaceName);
+                        break;
+                        
                     case SchemaType.String:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarReferenceType;
@@ -653,6 +667,51 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
 
             return type;
+        }
+
+        internal TypeSyntax MakeProperIntegerType(string generateIntegerAs,
+            double? minimum, bool? exclusiveMinimum,
+            double? maximum, bool? exclusiveMaximum,
+            out string namespaceName)
+        {
+            namespaceName = null;
+
+            switch (generateIntegerAs)
+            {
+                case WellKnownTypeNames.Long:
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.LongKeyword));
+                case WellKnownTypeNames.BigInteger:
+                    return MakeNamedType(BigIntegerType, out namespaceName);
+                case "auto":
+                    if (!minimum.HasValue || !maximum.HasValue)
+                    {
+                        return MakeNamedType(BigIntegerType, out namespaceName);
+                    }
+
+                    if (exclusiveMinimum == true)
+                    {
+                        minimum++;
+                    }
+
+                    if (exclusiveMaximum == true)
+                    {
+                        maximum--;
+                    }
+
+                    if (minimum.Value < long.MinValue || maximum.Value > long.MaxValue)
+                    {
+                        return MakeNamedType(BigIntegerType, out namespaceName);
+                    }
+
+                    if (minimum.Value < int.MinValue || maximum.Value > int.MaxValue)
+                    {
+                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.LongKeyword));
+                    }
+
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword));
+                default:
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword));
+            }
         }
     }
 }

@@ -83,6 +83,12 @@ namespace Microsoft.Json.Schema.ToDotNet
         public bool GenerateCloningCode { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating what C# type to generate for Json type
+        /// <code>Integer</code>.
+        /// </summary>
+        public string GenerateIntegerAs { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the generated classes should
         /// be declared <code>sealed</code>. If <code>false</code>, the generated
         /// classes are declared <code>partial</code>.

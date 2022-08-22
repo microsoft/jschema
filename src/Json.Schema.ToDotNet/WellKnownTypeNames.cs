@@ -6,7 +6,9 @@ namespace Microsoft.Json.Schema.ToDotNet
     public static class WellKnownTypeNames
     {
         public const string Int = "int";
+        public const string Long = "long";
         public const string String = "string";
         public const string Object = "object";
+        public const string BigInteger = "biginteger";
     }
 }

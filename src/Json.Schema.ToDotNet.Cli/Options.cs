@@ -93,6 +93,13 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         public bool GenerateCloningCode { get; set; }
 
         [Option(
+            "generate-integer-as",
+            HelpText = "Generate Json interger as C# type: int|long|biginteger|auto.",
+            Default = "int",
+            Required = false)]
+        public string GenerateIntegerAs { get; set; }
+
+        [Option(
             "seal-classes",
             HelpText = "Seal generated classes.",
             Default = false,
