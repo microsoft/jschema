@@ -58,7 +58,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public delegate void AdditionalTypeRequiredDelegate(AdditionalTypeRequiredInfo additionalTypeRequiredInfo);
 
         private readonly AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
-        private readonly string _generateIntegerAs;
+        private readonly GenerateIntegerOption _generateIntegerAs;
         private readonly string _typeNameSuffix;
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema,
             HintDictionary hintDictionary,
             AdditionalTypeRequiredDelegate additionalTypeRequiredDelegate,
-            string generateIntegerAs)
+            GenerateIntegerOption generateIntegerAs)
         {
             _typeName = typeName;
             _typeNameSuffix = typeNameSuffix;
@@ -669,7 +669,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return type;
         }
 
-        internal TypeSyntax MakeProperIntegerType(string generateIntegerAs,
+        internal TypeSyntax MakeProperIntegerType(GenerateIntegerOption generateIntegerAs,
             double? minimum, bool? exclusiveMinimum,
             double? maximum, bool? exclusiveMaximum,
             out string namespaceName)
@@ -678,11 +678,11 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             switch (generateIntegerAs)
             {
-                case WellKnownTypeNames.Long:
+                case GenerateIntegerOption.Long:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.LongKeyword));
-                case WellKnownTypeNames.BigInteger:
+                case GenerateIntegerOption.BigInteger:
                     return MakeNamedType(BigIntegerType, out namespaceName);
-                case "auto":
+                case GenerateIntegerOption.Auto:
                     if (!minimum.HasValue || !maximum.HasValue)
                     {
                         return MakeNamedType(BigIntegerType, out namespaceName);

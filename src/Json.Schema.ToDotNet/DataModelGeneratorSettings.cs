@@ -86,7 +86,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// Gets or sets a value indicating what C# type to generate for Json type
         /// <code>Integer</code>.
         /// </summary>
-        public string GenerateIntegerAs { get; set; }
+        public GenerateIntegerOption GenerateIntegerAs { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the generated classes should

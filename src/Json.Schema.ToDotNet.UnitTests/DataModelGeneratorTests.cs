@@ -472,10 +472,10 @@ namespace N
         public int IntegerProperty_min_0_max_huge { get; set; }
     }
 }";
-            GeneratesPropertiesWithIntegerTypes_Helper("auto", ExpectedClass_Auto);
-            GeneratesPropertiesWithIntegerTypes_Helper("biginteger", ExpectedClass_BigInteger);
-            GeneratesPropertiesWithIntegerTypes_Helper("long", ExpectedClass_Long);
-            GeneratesPropertiesWithIntegerTypes_Helper("int", ExpectedClass_Int);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.Auto, ExpectedClass_Auto);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.BigInteger, ExpectedClass_BigInteger);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.Long, ExpectedClass_Long);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.Int, ExpectedClass_Int);
         }
 
 
@@ -5203,7 +5203,7 @@ namespace N
             Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers, _settings.GenerateComparers);
         }
 
-        private void GeneratesPropertiesWithIntegerTypes_Helper(string generateIntegerAs, string expectedClass)
+        private void GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption generateIntegerAs, string expectedClass)
         {
             // Arrange.
             _settings.GenerateEqualityComparers = false;

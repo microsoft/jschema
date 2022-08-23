@@ -18,7 +18,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         {
             Banner();
 
-            return Parser.Default.ParseArguments<Options>(args)
+            return new Parser(cfg => cfg.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
                 .MapResult(
                     options => Run(options),
                     err => 1);
@@ -77,7 +77,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     GenerateEqualityComparers = options.GenerateEqualityComparers,
                     GenerateComparers = options.GenerateComparers,
                     GenerateCloningCode = options.GenerateCloningCode,
-                    GenerateIntegerAs = options.GenerateIntegerAs.ToLower(),
+                    GenerateIntegerAs = options.GenerateIntegerAs,
                     SealClasses = options.SealClasses,
                     VirtualMembers = options.VirtualMembers,
                     ProtectedInitMethods = options.ProtectedInitMethods
