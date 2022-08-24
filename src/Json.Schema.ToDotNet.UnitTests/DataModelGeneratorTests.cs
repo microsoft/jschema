@@ -478,7 +478,6 @@ namespace N
             GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.Int, ExpectedClass_Int);
         }
 
-
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {

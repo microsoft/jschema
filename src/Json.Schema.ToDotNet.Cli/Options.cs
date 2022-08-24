@@ -5,7 +5,7 @@ using CommandLine;
 
 namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 {
-    internal class Options
+    public class Options
     {
         [Option(
             's',
