@@ -7,7 +7,7 @@ namespace Microsoft.Json.Schema.ToDotNet
     /// Values that specify the C# type to be generated
     /// for each Json Interger property.
     /// </summary>
-    public enum GenerateIntegerOption
+    public enum GenerateJsonIntegerOption
     {
         /// <summary>
         /// C# int type

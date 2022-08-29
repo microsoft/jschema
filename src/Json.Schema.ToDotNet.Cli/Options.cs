@@ -95,9 +95,9 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
         [Option(
             "generate-json-integer-as",
             HelpText = "Generate Json interger as C# type: int|long|biginteger|auto.",
-            Default = GenerateIntegerOption.Int,
+            Default = GenerateJsonIntegerOption.Int,
             Required = false)]
-        public GenerateIntegerOption GenerateJsonIntegerAs { get; set; }
+        public GenerateJsonIntegerOption GenerateJsonIntegerAs { get; set; }
 
         [Option(
             "seal-classes",

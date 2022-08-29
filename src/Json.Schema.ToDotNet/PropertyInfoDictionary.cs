@@ -58,7 +58,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public delegate void AdditionalTypeRequiredDelegate(AdditionalTypeRequiredInfo additionalTypeRequiredInfo);
 
         private readonly AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
-        private readonly GenerateIntegerOption _generateJsonIntegerAs;
+        private readonly GenerateJsonIntegerOption _generateJsonIntegerAs;
         private readonly string _typeNameSuffix;
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema,
             HintDictionary hintDictionary,
             AdditionalTypeRequiredDelegate additionalTypeRequiredDelegate,
-            GenerateIntegerOption generateJsonIntegerAs)
+            GenerateJsonIntegerOption generateJsonIntegerAs)
         {
             _typeName = typeName;
             _typeNameSuffix = typeNameSuffix;
@@ -669,7 +669,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             return type;
         }
 
-        internal TypeSyntax MakeProperIntegerType(GenerateIntegerOption generateJsonIntegerAs,
+        internal TypeSyntax MakeProperIntegerType(GenerateJsonIntegerOption generateJsonIntegerAs,
             double? minimum, bool? exclusiveMinimum,
             double? maximum, bool? exclusiveMaximum,
             out string namespaceName)
@@ -678,11 +678,11 @@ namespace Microsoft.Json.Schema.ToDotNet
 
             switch (generateJsonIntegerAs)
             {
-                case GenerateIntegerOption.Long:
+                case GenerateJsonIntegerOption.Long:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.LongKeyword));
-                case GenerateIntegerOption.BigInteger:
+                case GenerateJsonIntegerOption.BigInteger:
                     return MakeNamedType(BigIntegerType, out namespaceName);
-                case GenerateIntegerOption.Auto:
+                case GenerateJsonIntegerOption.Auto:
                     if (!minimum.HasValue || !maximum.HasValue)
                     {
                         return MakeNamedType(BigIntegerType, out namespaceName);

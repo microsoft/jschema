@@ -471,10 +471,10 @@ namespace N
         public int IntegerProperty_min_0_max_huge { get; set; }
     }
 }";
-            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.Auto, ExpectedClass_Auto);
-            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.BigInteger, ExpectedClass_BigInteger);
-            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.Long, ExpectedClass_Long);
-            GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption.Int, ExpectedClass_Int);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateJsonIntegerOption.Auto, ExpectedClass_Auto);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateJsonIntegerOption.BigInteger, ExpectedClass_BigInteger);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateJsonIntegerOption.Long, ExpectedClass_Long);
+            GeneratesPropertiesWithIntegerTypes_Helper(GenerateJsonIntegerOption.Int, ExpectedClass_Int);
         }
 
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
@@ -5201,7 +5201,7 @@ namespace N
             Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers, _settings.GenerateComparers);
         }
 
-        private void GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption generateJsonIntegerAs, string expectedClass)
+        private void GeneratesPropertiesWithIntegerTypes_Helper(GenerateJsonIntegerOption generateJsonIntegerAs, string expectedClass)
         {
             _settings.GenerateEqualityComparers = false;
             _settings.GenerateComparers = false;
