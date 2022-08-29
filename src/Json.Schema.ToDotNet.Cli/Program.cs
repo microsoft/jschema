@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using CommandLine;
 using Microsoft.Json.Schema.ToDotNet.Hints;
+using Newtonsoft.Json;
 
 namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 {
@@ -16,6 +17,9 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
     {
         private static int Main(string[] args)
         {
+            // Mitigation for Newtonsoft.Json < v13 vulnerability GHSA-5crp-9r3c-p9vr
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings { MaxDepth = 64 };
+
             Banner();
 
             return new Parser(cfg => cfg.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
