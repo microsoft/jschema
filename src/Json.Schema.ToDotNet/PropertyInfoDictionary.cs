@@ -58,7 +58,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public delegate void AdditionalTypeRequiredDelegate(AdditionalTypeRequiredInfo additionalTypeRequiredInfo);
 
         private readonly AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
-        private readonly GenerateIntegerOption _generateIntegerAs;
+        private readonly GenerateIntegerOption _generateJsonIntegerAs;
         private readonly string _typeNameSuffix;
 
         /// <summary>
@@ -79,14 +79,14 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema,
             HintDictionary hintDictionary,
             AdditionalTypeRequiredDelegate additionalTypeRequiredDelegate,
-            GenerateIntegerOption generateIntegerAs)
+            GenerateIntegerOption generateJsonIntegerAs)
         {
             _typeName = typeName;
             _typeNameSuffix = typeNameSuffix;
             _schema = schema;
             _hintDictionary = hintDictionary;
             _additionalTypeRequiredDelegate = additionalTypeRequiredDelegate;
-            _generateIntegerAs = generateIntegerAs;
+            _generateJsonIntegerAs = generateJsonIntegerAs;
 
             _dictionary = PropertyInfoDictionaryFromSchema();
         }
@@ -300,7 +300,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarValueType;
                         initializationKind = InitializationKind.SimpleAssign;
-                        type = MakeProperIntegerType(_generateIntegerAs,
+                        type = MakeProperIntegerType(_generateJsonIntegerAs,
                             propertySchema.Minimum, propertySchema.ExclusiveMinimum,
                             propertySchema.Maximum, propertySchema.ExclusiveMaximum,
                             out namespaceName);
@@ -669,14 +669,14 @@ namespace Microsoft.Json.Schema.ToDotNet
             return type;
         }
 
-        internal TypeSyntax MakeProperIntegerType(GenerateIntegerOption generateIntegerAs,
+        internal TypeSyntax MakeProperIntegerType(GenerateIntegerOption generateJsonIntegerAs,
             double? minimum, bool? exclusiveMinimum,
             double? maximum, bool? exclusiveMaximum,
             out string namespaceName)
         {
             namespaceName = null;
 
-            switch (generateIntegerAs)
+            switch (generateJsonIntegerAs)
             {
                 case GenerateIntegerOption.Long:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.LongKeyword));

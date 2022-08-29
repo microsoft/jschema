@@ -309,7 +309,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 schema,
                 _settings.HintDictionary,
                 OnAdditionalTypeRequired,
-                _settings.GenerateIntegerAs);
+                _settings.GenerateJsonIntegerAs);
 
             _classInfoDictionary.Add(suffixedClassName, propertyInfoDictionary);
 

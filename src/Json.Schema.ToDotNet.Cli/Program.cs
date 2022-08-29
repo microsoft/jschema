@@ -77,7 +77,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
                     GenerateEqualityComparers = options.GenerateEqualityComparers,
                     GenerateComparers = options.GenerateComparers,
                     GenerateCloningCode = options.GenerateCloningCode,
-                    GenerateIntegerAs = options.GenerateIntegerAs,
+                    GenerateJsonIntegerAs = options.GenerateJsonIntegerAs,
                     SealClasses = options.SealClasses,
                     VirtualMembers = options.VirtualMembers,
                     ProtectedInitMethods = options.ProtectedInitMethods

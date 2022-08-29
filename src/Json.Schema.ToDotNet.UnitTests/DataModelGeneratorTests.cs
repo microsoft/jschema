@@ -297,7 +297,6 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates properties with integer types")]
         public void GeneratesPropertiesWithIntegerTypes()
         {
-            // Arrange.
             const string ExpectedClass_Auto =
 @"using System;
 using System.CodeDom.Compiler;
@@ -5202,12 +5201,11 @@ namespace N
             Assert.FileContentsMatchExpectedContents(_testFileSystem, expectedContentsDictionary, _settings.GenerateEqualityComparers, _settings.GenerateComparers);
         }
 
-        private void GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption generateIntegerAs, string expectedClass)
+        private void GeneratesPropertiesWithIntegerTypes_Helper(GenerateIntegerOption generateJsonIntegerAs, string expectedClass)
         {
-            // Arrange.
             _settings.GenerateEqualityComparers = false;
             _settings.GenerateComparers = false;
-            _settings.GenerateIntegerAs = generateIntegerAs;
+            _settings.GenerateJsonIntegerAs = generateJsonIntegerAs;
             var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
             JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Integer");
             var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
@@ -5218,10 +5216,8 @@ namespace N
                 }
             };
 
-            // Act.
             generator.Generate(schema);
 
-            // Assert.
             VerifyGeneratedFileContents(expectedContentsDictionary);
             _testFileSystem = new TestFileSystem();
         }
