@@ -43,7 +43,7 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
                 new GenerateJsonIntegerAsTestCase("long", (GenerateJsonIntegerOption?)GenerateJsonIntegerOption.Long, null),
                 new GenerateJsonIntegerAsTestCase("biginteger", (GenerateJsonIntegerOption?)GenerateJsonIntegerOption.BigInteger, null),
                 new GenerateJsonIntegerAsTestCase("auto", (GenerateJsonIntegerOption?)GenerateJsonIntegerOption.Auto, null),
-                new GenerateJsonIntegerAsTestCase("unknown", (GenerateJsonIntegerOption?)null, "generate-json-integer-as"),
+                new GenerateJsonIntegerAsTestCase("unknown", null, "generate-json-integer-as")
             };
 
             var builder = new StringBuilder();
