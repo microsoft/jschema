@@ -83,8 +83,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         public bool GenerateCloningCode { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating what C# type to generate for Json type
-        /// <code>Integer</code>.
+        /// Gets or sets a value indicating what C# type to emit for Json integers.
         /// </summary>
         public GenerateJsonIntegerOption GenerateJsonIntegerAs { get; set; }
 
