@@ -5,7 +5,7 @@ using CommandLine;
 
 namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 {
-    internal class Options
+    public class Options
     {
         [Option(
             's',
@@ -91,6 +91,13 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
             HelpText = "Generate code necessary to clone instances.",
             Required = false)]
         public bool GenerateCloningCode { get; set; }
+
+        [Option(
+            "generate-json-integer-as",
+            HelpText = "Generate Json interger as C# type: int|long|biginteger|auto.",
+            Default = GenerateJsonIntegerOption.Int,
+            Required = false)]
+        public GenerateJsonIntegerOption GenerateJsonIntegerAs { get; set; }
 
         [Option(
             "seal-classes",
