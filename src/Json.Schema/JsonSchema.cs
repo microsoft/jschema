@@ -108,7 +108,9 @@ namespace Microsoft.Json.Schema
             MinLength = other.MinLength;
             Format = other.Format;
             MultipleOf = other.MultipleOf;
+            Minimum = other.Minimum;
             Maximum = other.Maximum;
+            ExclusiveMinimum = other.ExclusiveMinimum;
             ExclusiveMaximum = other.ExclusiveMaximum;
             MinItems = other.MinItems;
             MaxItems = other.MaxItems;

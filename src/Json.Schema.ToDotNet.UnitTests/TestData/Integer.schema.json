@@ -1,0 +1,74 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "integerProperty_default": {
+      "type": "integer"
+    },
+    "integerProperty_min_0_max_na": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "integerProperty_min_minus1_max_na": {
+      "type": "integer",
+      "minimum": -1
+    },
+    "integerProperty_min_1_max_na": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "integerProperty_min_na_max_0": {
+      "type": "integer",
+      "maximum": 0
+    },
+    "integerProperty_min_0_max_int64times10": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 92233720368547758070
+    },
+    "integerProperty_min_0_max_int64": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "integerProperty_min_0_max_int32add1": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483648
+    },
+    "integerProperty_min_0_max_int32": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    },
+    "integerProperty_min_int32_max_0": {
+      "type": "integer",
+      "minimum": -2147483648,
+      "maximum": 0
+    },
+    "integerProperty_min_int32minus1_max_0": {
+      "type": "integer",
+      "minimum": -2147483649,
+      "maximum": 0
+    },
+    "integerProperty_min_int64_max_0": {
+      "type": "integer",
+      "minimum": -9223372036854775808,
+      "maximum": 0
+    },
+    "integerProperty_min_int64times10_max_0": {
+      "type": "integer",
+      "minimum": -92233720368547758080,
+      "maximum": 0
+    },
+    "integerProperty_min_huge_max_0": {
+      "type": "integer",
+      "minimum": -92233720368547758080000000000000000000000000000000000000000000000000000000000000000000000,
+      "maximum": 0
+    },
+    "integerProperty_min_0_max_huge": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 92233720368547758080000000000000000000000000000000000000000000000000000000000000000000000
+    }
+  }
+}
