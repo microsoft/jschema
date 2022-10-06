@@ -19,6 +19,11 @@ namespace Microsoft.Json.Schema.ToDotNet
                 schema.IsStringWithFormat(FormatAttributes.UriReference);
         }
 
+        internal static bool IsUuid(this JsonSchema schema)
+        {
+            return schema.IsStringWithFormat(FormatAttributes.Uuid);
+        }
+
         private static bool IsStringWithFormat(this JsonSchema schema, string format)
         {
             return

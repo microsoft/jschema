@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Json.Schema.UnitTests
 {
@@ -240,6 +239,24 @@ namespace Microsoft.Json.Schema.UnitTests
                              Type = new SchemaType[] { SchemaType.String },
                              Format = FormatAttributes.DateTime
                          }
+                    }
+                }
+            },
+
+            new object[]
+            {
+                "Uuid",
+                new JsonSchema
+                {
+                    Type = new SchemaType[] { SchemaType.Object },
+
+                    Properties = new Dictionary<string, JsonSchema>
+                    {
+                        ["uuid"] = new JsonSchema
+                        {
+                            Type = new SchemaType[] { SchemaType.String },
+                            Format = FormatAttributes.Uuid
+                        }
                     }
                 }
             },

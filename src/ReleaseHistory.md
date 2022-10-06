@@ -2,6 +2,7 @@
 
 ## **Unreleased**
 * Loosen Newtonsoft.JSON minimum version requirement from v13.0.1 to v9.0.1 [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/9.0.1). [#157](https://github.com/microsoft/jschema/pull/157)
+* FEATURE: Add support for JSON Schema type `uuid`. [#132](https://github.com/microsoft/jschema/pull/132)
 * FEATURE: Add new option for specifying .NET type to express Json integers: `--generate-json-integer-as = int | long | biginteger | auto` with a default of `int`. [#158](https://github.com/microsoft/jschema/pull/158)
 
 ## **1.1.5** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/1.1.5) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/1.1.4)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/1.1.4)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/1.1.5)
