@@ -1,0 +1,14 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "uuid_not_required": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "uuid_required": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "required": [ "uuid_required" ]
+}

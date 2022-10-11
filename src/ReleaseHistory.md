@@ -1,5 +1,8 @@
 # Microsoft Json Schema Packages
 
+## **Unreleased**
+* FEATURE: Add support for JSON Schema type `uuid` generate as C# nullable `Guid?`. [#164](https://github.com/microsoft/jschema/pull/164)
+
 ## **2.0.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.0.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.0.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.0.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.0.0)
 * Loosen Newtonsoft.JSON minimum version requirement from v13.0.1 to v9.0.1 [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/9.0.1). [#157](https://github.com/microsoft/jschema/pull/157)
 * FEATURE: Add support for JSON Schema type `uuid`. [#132](https://github.com/microsoft/jschema/pull/132)

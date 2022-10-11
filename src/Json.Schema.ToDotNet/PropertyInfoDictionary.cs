@@ -248,9 +248,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             else if (propertySchema.IsUuid())
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
-                hashKind = HashKind.ScalarValueType;
+                hashKind = isRequired ? HashKind.ScalarValueType : HashKind.ScalarReferenceType;
                 initializationKind = InitializationKind.SimpleAssign;
-                type = MakeNamedType("System.Guid", out namespaceName);
+                type = MakeNamedType(isRequired ? "System.Guid" : "System.Guid?", out namespaceName);
             }
             else if (propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
             {
