@@ -1,6 +1,6 @@
 # Microsoft Json Schema Packages
 
-## **Unreleased**
+## **2.1.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.1.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.1.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.1.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.1.0)
 * FEATURE: Add support for JSON Schema type `uuid` generate as C# nullable `Guid?`. [#164](https://github.com/microsoft/jschema/pull/164)
 
 ## **2.0.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.0.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.0.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.0.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.0.0)
