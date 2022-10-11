@@ -477,6 +477,44 @@ namespace N
             GeneratesPropertiesWithIntegerTypes_Helper(GenerateJsonIntegerOption.Int, ExpectedClass_Int);
         }
 
+        [Fact(DisplayName = "DataModelGenerator generates properties with Uuid types")]
+        public void GeneratesPropertiesWithUuidTypes()
+        {
+            const string ExpectedClass =
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""2.0.0.0"")]
+    public partial class C
+    {
+        [DataMember(Name = ""uuid_not_required"", IsRequired = false, EmitDefaultValue = false)]
+        public Guid? Uuid_not_required { get; set; }
+        [DataMember(Name = ""uuid_required"", IsRequired = true)]
+        public Guid Uuid_required { get; set; }
+    }
+}";
+            _settings.GenerateEqualityComparers = false;
+            _settings.GenerateComparers = false;
+            var generator = new DataModelGenerator(_settings, _testFileSystem.FileSystem);
+            JsonSchema schema = TestUtil.CreateSchemaFromTestDataFile("Uuid");
+            var expectedContentsDictionary = new Dictionary<string, ExpectedContents>
+            {
+                [_settings.RootClassName] = new ExpectedContents
+                {
+                    ClassContents = ExpectedClass
+                }
+            };
+
+            generator.Generate(schema);
+
+            VerifyGeneratedFileContents(expectedContentsDictionary);
+            _testFileSystem = new TestFileSystem();
+        }
+
         [Fact(DisplayName = "DataModelGenerator generates object-valued property with correct type")]
         public void GeneratesObjectValuedPropertyWithCorrectType()
         {
