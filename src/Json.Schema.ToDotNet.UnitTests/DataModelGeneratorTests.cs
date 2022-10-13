@@ -488,7 +488,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""2.0.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
         [DataMember(Name = ""uuid_not_required"", IsRequired = false, EmitDefaultValue = false)]
