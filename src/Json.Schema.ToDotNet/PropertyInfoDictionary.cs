@@ -59,6 +59,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
         private readonly AdditionalTypeRequiredDelegate _additionalTypeRequiredDelegate;
         private readonly GenerateJsonIntegerOption _generateJsonIntegerAs;
+        private readonly GenerateJsonNumberOption _generateJsonNumberAs;
         private readonly string _typeNameSuffix;
 
         /// <summary>
@@ -79,7 +80,8 @@ namespace Microsoft.Json.Schema.ToDotNet
             JsonSchema schema,
             HintDictionary hintDictionary,
             AdditionalTypeRequiredDelegate additionalTypeRequiredDelegate,
-            GenerateJsonIntegerOption generateJsonIntegerAs)
+            GenerateJsonIntegerOption generateJsonIntegerAs,
+            GenerateJsonNumberOption generateJsonNumberAs)
         {
             _typeName = typeName;
             _typeNameSuffix = typeNameSuffix;
@@ -87,6 +89,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             _hintDictionary = hintDictionary;
             _additionalTypeRequiredDelegate = additionalTypeRequiredDelegate;
             _generateJsonIntegerAs = generateJsonIntegerAs;
+            _generateJsonNumberAs = generateJsonNumberAs;
 
             _dictionary = PropertyInfoDictionaryFromSchema();
         }
@@ -296,11 +299,17 @@ namespace Microsoft.Json.Schema.ToDotNet
                 switch (propertyType)
                 {
                     case SchemaType.Boolean:
-                    case SchemaType.Number:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarValueType;
                         initializationKind = InitializationKind.SimpleAssign;
                         type = MakePrimitiveType(propertyType);
+                        break;
+                    case SchemaType.Number:
+                        comparisonKind = ComparisonKind.OperatorEquals;
+                        hashKind = HashKind.ScalarValueType;
+                        initializationKind = InitializationKind.SimpleAssign;
+                        type = MakeProperNumberType(_generateJsonNumberAs,
+                            propertySchema.Minimum, propertySchema.Maximum);
                         break;
 
                     case SchemaType.Integer:
@@ -718,6 +727,37 @@ namespace Microsoft.Json.Schema.ToDotNet
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword));
                 default:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword));
+            }
+        }
+
+        internal TypeSyntax MakeProperNumberType(GenerateJsonNumberOption generateJsonNumberAs,
+            double? minimum, double? maximum)
+        {
+            switch (generateJsonNumberAs)
+            {
+                case GenerateJsonNumberOption.Float:
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.FloatKeyword));
+                case GenerateJsonNumberOption.Decimal:
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DecimalKeyword));
+                case GenerateJsonNumberOption.Auto:
+                    if (!minimum.HasValue || !maximum.HasValue)
+                    {
+                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DoubleKeyword));
+                    }
+
+                    if (minimum.Value < float.MinValue || maximum.Value > float.MaxValue)
+                    {
+                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DoubleKeyword));
+                    }
+
+                    if (minimum.Value < (double)decimal.MinValue || maximum.Value > (double)decimal.MaxValue)
+                    {
+                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.FloatKeyword));
+                    }
+
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DecimalKeyword));
+                default:
+                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DoubleKeyword));
             }
         }
     }

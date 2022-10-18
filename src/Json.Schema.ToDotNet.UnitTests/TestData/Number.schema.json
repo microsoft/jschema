@@ -1,0 +1,74 @@
+﻿{
+  "type": "object",
+  "properties": {
+    "numberProperty_default": {
+      "type": "number"
+    },
+    "numberProperty_min_0_max_na": {
+      "type": "number",
+      "minimum": 0
+    },
+    "numberProperty_min_minus1_max_na": {
+      "type": "number",
+      "minimum": -1
+    },
+    "numberProperty_min_1_max_na": {
+      "type": "number",
+      "minimum": 1
+    },
+    "numberProperty_min_na_max_0": {
+      "type": "number",
+      "maximum": 0
+    },
+    "numberProperty_min_0_max_floattimes10": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 3.40282347E+39
+    },
+    "numberProperty_min_0_max_float": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 3.40282347E+38
+    },
+    "numberProperty_min_0_max_decimaladd1": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 79228162514264337593543950336
+    },
+    "numberProperty_min_0_max_decimal": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 79228162514264337593543950335
+    },
+    "numberProperty_min_decimal_max_0": {
+      "type": "number",
+      "minimum": -79228162514264337593543950335,
+      "maximum": 0
+    },
+    "numberProperty_min_decimalminus1_max_0": {
+      "type": "number",
+      "minimum": -79228162514264337593543950336,
+      "maximum": 0
+    },
+    "numberProperty_min_float_max_0": {
+      "type": "number",
+      "minimum": -3.40282347E+38,
+      "maximum": 0
+    },
+    "numberProperty_min_floattimes10_max_0": {
+      "type": "number",
+      "minimum": -3.40282347E+39,
+      "maximum": 0
+    },
+    "numberProperty_min_double_max_0": {
+      "type": "number",
+      "minimum": -1.7976931348623157E+308,
+      "maximum": 0
+    },
+    "numberProperty_min_0_max_double": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1.7976931348623157E+308
+    }
+  }
+}
