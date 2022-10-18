@@ -480,49 +480,6 @@ namespace N
         [Fact(DisplayName = "DataModelGenerator generates properties with number types")]
         public void GeneratesPropertiesWithNumberTypes()
         {
-            const string ExpectedClass_Auto =
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""2.1.0.0"")]
-    public partial class C
-    {
-        [DataMember(Name = ""numberProperty_default"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_default { get; set; }
-        [DataMember(Name = ""numberProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_0_max_na { get; set; }
-        [DataMember(Name = ""numberProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_minus1_max_na { get; set; }
-        [DataMember(Name = ""numberProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_1_max_na { get; set; }
-        [DataMember(Name = ""numberProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_na_max_0 { get; set; }
-        [DataMember(Name = ""numberProperty_min_0_max_floattimes10"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_0_max_floattimes10 { get; set; }
-        [DataMember(Name = ""numberProperty_min_0_max_float"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_0_max_float { get; set; }
-        [DataMember(Name = ""numberProperty_min_0_max_decimaladd1"", IsRequired = false, EmitDefaultValue = false)]
-        public decimal NumberProperty_min_0_max_decimaladd1 { get; set; }
-        [DataMember(Name = ""numberProperty_min_0_max_decimal"", IsRequired = false, EmitDefaultValue = false)]
-        public decimal NumberProperty_min_0_max_decimal { get; set; }
-        [DataMember(Name = ""numberProperty_min_decimal_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public decimal NumberProperty_min_decimal_max_0 { get; set; }
-        [DataMember(Name = ""numberProperty_min_decimalminus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public decimal NumberProperty_min_decimalminus1_max_0 { get; set; }
-        [DataMember(Name = ""numberProperty_min_float_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_float_max_0 { get; set; }
-        [DataMember(Name = ""numberProperty_min_floattimes10_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_floattimes10_max_0 { get; set; }
-        [DataMember(Name = ""numberProperty_min_double_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_double_max_0 { get; set; }
-        [DataMember(Name = ""numberProperty_min_0_max_double"", IsRequired = false, EmitDefaultValue = false)]
-        public double NumberProperty_min_0_max_double { get; set; }
-    }
-}";
             const string ExpectedClass_Double =
 @"using System;
 using System.CodeDom.Compiler;
@@ -652,7 +609,6 @@ namespace N
         public decimal NumberProperty_min_0_max_double { get; set; }
     }
 }";
-            GeneratesPropertiesWithNumberTypes_Helper(GenerateJsonNumberOption.Auto, ExpectedClass_Auto);
             GeneratesPropertiesWithNumberTypes_Helper(GenerateJsonNumberOption.Double, ExpectedClass_Double);
             GeneratesPropertiesWithNumberTypes_Helper(GenerateJsonNumberOption.Float, ExpectedClass_Float);
             GeneratesPropertiesWithNumberTypes_Helper(GenerateJsonNumberOption.Decimal, ExpectedClass_Decimal);

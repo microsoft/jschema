@@ -308,8 +308,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarValueType;
                         initializationKind = InitializationKind.SimpleAssign;
-                        type = MakeProperNumberType(_generateJsonNumberAs,
-                            propertySchema.Minimum, propertySchema.Maximum);
+                        type = MakeProperNumberType(_generateJsonNumberAs);
                         break;
 
                     case SchemaType.Integer:
@@ -730,31 +729,13 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
         }
 
-        internal TypeSyntax MakeProperNumberType(GenerateJsonNumberOption generateJsonNumberAs,
-            double? minimum, double? maximum)
+        internal TypeSyntax MakeProperNumberType(GenerateJsonNumberOption generateJsonNumberAs)
         {
             switch (generateJsonNumberAs)
             {
                 case GenerateJsonNumberOption.Float:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.FloatKeyword));
                 case GenerateJsonNumberOption.Decimal:
-                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DecimalKeyword));
-                case GenerateJsonNumberOption.Auto:
-                    if (!minimum.HasValue || !maximum.HasValue)
-                    {
-                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DoubleKeyword));
-                    }
-
-                    if (minimum.Value < float.MinValue || maximum.Value > float.MaxValue)
-                    {
-                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DoubleKeyword));
-                    }
-
-                    if (minimum.Value < (double)decimal.MinValue || maximum.Value > (double)decimal.MaxValue)
-                    {
-                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.FloatKeyword));
-                    }
-
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DecimalKeyword));
                 default:
                     return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.DoubleKeyword));

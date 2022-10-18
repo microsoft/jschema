@@ -101,7 +101,7 @@ namespace Microsoft.Json.Schema.ToDotNet.CommandLine
 
         [Option(
             "generate-json-number-as",
-            HelpText = "Generate Json number as C# type: double|float|decimal|auto.",
+            HelpText = "Generate Json number as C# type: double|float|decimal.",
             Default = GenerateJsonNumberOption.Double,
             Required = false)]
         public GenerateJsonNumberOption GenerateJsonNumberAs { get; set; }

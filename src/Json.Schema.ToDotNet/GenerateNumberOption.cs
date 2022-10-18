@@ -23,10 +23,5 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// C# decimal type
         /// </summary>
         Decimal,
-
-        /// <summary>
-        /// Generate type base on the Minimum and Maximum combination
-        /// </summary>
-        Auto
     }
 }

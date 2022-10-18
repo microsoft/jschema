@@ -106,7 +106,6 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
                 new GenerateJsonNumberAsTestCase("double", (GenerateJsonNumberOption?)GenerateJsonNumberOption.Double, null),
                 new GenerateJsonNumberAsTestCase("float", (GenerateJsonNumberOption?)GenerateJsonNumberOption.Float, null),
                 new GenerateJsonNumberAsTestCase("decimal", (GenerateJsonNumberOption?)GenerateJsonNumberOption.Decimal, null),
-                new GenerateJsonNumberAsTestCase("auto", (GenerateJsonNumberOption?)GenerateJsonNumberOption.Auto, null),
                 new GenerateJsonNumberAsTestCase("unknown", null, "generate-json-number-as"),
                 new GenerateJsonNumberAsTestCase("string", null, "generate-json-number-as")
             };
