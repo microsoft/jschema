@@ -31,6 +31,22 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
             }
         }
 
+        private class GenerateJsonNumberAsTestCase
+        {
+            internal string InputGenerateJsonNumberAs { get; }
+            internal string ArgsString { get; }
+            internal GenerateJsonNumberOption? ExpectedGenerateJsonNumberAs { get; }
+            internal string ExpectedErrorParameter { get; }
+
+            internal GenerateJsonNumberAsTestCase(string inputGenerateJsonNumberAs, GenerateJsonNumberOption? expectedGenerateJsonNumberAs, string expectedErrorParameter)
+            {
+                InputGenerateJsonNumberAs = inputGenerateJsonNumberAs;
+                ArgsString = inputGenerateJsonNumberAs == null ? argsStringBase : argsStringBase + " --generate-json-number-as=" + inputGenerateJsonNumberAs;
+                ExpectedGenerateJsonNumberAs = expectedGenerateJsonNumberAs;
+                ExpectedErrorParameter = expectedErrorParameter;
+            }
+        }
+
         [Fact]
         public void CorrectlyParseGenerateJsonIntegerAs()
         {
@@ -67,6 +83,54 @@ namespace Microsoft.Json.Schema.ToDotNet.UnitTests
                     {
                         var allErrors = err.ToList();
                         if (testCase.ExpectedGenerateJsonIntegerAs != null
+                        || testCase.ExpectedErrorParameter == null
+                        || allErrors.Count != 1
+                        || !(allErrors[0] is BadFormatConversionError)
+                        || ((NamedError)allErrors[0]).NameInfo.NameText != testCase.ExpectedErrorParameter)
+                        {
+                            builder.AppendLine($"\u2022 {testCase.ArgsString}");
+                        }
+                        return true;
+                    });
+            }
+            builder.Length.Should().Be(0,
+                $"all test cases should pass, but the following test cases failed:\n{builder}");
+        }
+
+        [Fact]
+        public void CorrectlyParseGenerateJsonNumberAs()
+        {
+            var testCases = new List<GenerateJsonNumberAsTestCase>()
+            {
+                new GenerateJsonNumberAsTestCase(null, (GenerateJsonNumberOption?)GenerateJsonNumberOption.Double, null),
+                new GenerateJsonNumberAsTestCase("double", (GenerateJsonNumberOption?)GenerateJsonNumberOption.Double, null),
+                new GenerateJsonNumberAsTestCase("float", (GenerateJsonNumberOption?)GenerateJsonNumberOption.Float, null),
+                new GenerateJsonNumberAsTestCase("decimal", (GenerateJsonNumberOption?)GenerateJsonNumberOption.Decimal, null),
+                new GenerateJsonNumberAsTestCase("unknown", null, "generate-json-number-as"),
+                new GenerateJsonNumberAsTestCase("string", null, "generate-json-number-as")
+            };
+
+            var builder = new StringBuilder();
+
+            foreach (GenerateJsonNumberAsTestCase testCase in testCases)
+            {
+                var args = testCase.ArgsString.Split(' ');
+                var parser = new Parser(cfg => cfg.CaseInsensitiveEnumValues = true).ParseArguments<Options>(args)
+                    .MapResult(
+                    options =>
+                    {
+                        if (testCase.ExpectedGenerateJsonNumberAs == null
+                        || testCase.ExpectedErrorParameter != null
+                        || options.GenerateJsonNumberAs != testCase.ExpectedGenerateJsonNumberAs)
+                        {
+                            builder.AppendLine($"\u2022 {testCase.ArgsString}");
+                        }
+                        return true;
+                    },
+                    err =>
+                    {
+                        var allErrors = err.ToList();
+                        if (testCase.ExpectedGenerateJsonNumberAs != null
                         || testCase.ExpectedErrorParameter == null
                         || allErrors.Count != 1
                         || !(allErrors[0] is BadFormatConversionError)
