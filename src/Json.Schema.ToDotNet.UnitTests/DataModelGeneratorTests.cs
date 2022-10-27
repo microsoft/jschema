@@ -3420,11 +3420,11 @@ namespace N
     },
     ""integerPropertyRequired"": {
       ""type"": ""integer"",
-      ""description"": ""An integer property with a default value.""
+      ""description"": ""An integer property, required.""
     },
     ""integerPropertyRequiredAndWithDefault"": {
       ""type"": ""integer"",
-      ""description"": ""An integer property with a default value."",
+      ""description"": ""An integer property, required and with a default value."",
       ""default"": 42
     },
     ""numberProperty"": {
@@ -3499,13 +3499,13 @@ namespace N
         public int IntegerPropertyWithDefault { get; set; }
 
         /// <summary>
-        /// An integer property with a default value.
+        /// An integer property, required.
         /// </summary>
         [DataMember(Name = ""integerPropertyRequired"", IsRequired = true)]
         public int IntegerPropertyRequired { get; set; }
 
         /// <summary>
-        /// An integer property with a default value.
+        /// An integer property, required and with a default value.
         /// </summary>
         [DataMember(Name = ""integerPropertyRequiredAndWithDefault"", IsRequired = true)]
         [DefaultValue(42)]
