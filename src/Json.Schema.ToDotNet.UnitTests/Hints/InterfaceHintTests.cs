@@ -69,13 +69,13 @@ namespace N
         /// The value.
         /// </summary>
         [DataMember(Name = ""value"", IsRequired = false, EmitDefaultValue = false)]
-        public int Value { get; set; }
+        public int? Value { get; set; }
 
         /// <summary>
         /// Internal value.
         /// </summary>
         [DataMember(Name = ""value2"", IsRequired = false, EmitDefaultValue = false)]
-        internal int Value2 { get; set; }
+        internal int? Value2 { get; set; }
     }
 }",
 
@@ -92,7 +92,7 @@ namespace N
         /// <summary>
         /// The value.
         /// </summary>
-        int Value { get; }
+        int? Value { get; }
     }
 }"
             }

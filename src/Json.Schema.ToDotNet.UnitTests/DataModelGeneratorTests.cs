@@ -141,7 +141,7 @@ namespace N
         [DataMember(Name = ""booleanProperty"", IsRequired = false, EmitDefaultValue = false)]
         public bool BooleanProperty { get; set; }
         [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty { get; set; }
+        public int? IntegerProperty { get; set; }
     }
 }";
 
@@ -212,7 +212,10 @@ namespace N
 
                 result = (result * 31) + obj.NumberProperty.GetHashCode();
                 result = (result * 31) + obj.BooleanProperty.GetHashCode();
-                result = (result * 31) + obj.IntegerProperty.GetHashCode();
+                if (obj.IntegerProperty != null)
+                {
+                    result = (result * 31) + obj.IntegerProperty.GetHashCode();
+                }
             }
 
             return result;
@@ -310,29 +313,29 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_default { get; set; }
+        public BigInteger? IntegerProperty_default { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_0_max_na { get; set; }
+        public BigInteger? IntegerProperty_min_0_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_minus1_max_na { get; set; }
+        public BigInteger? IntegerProperty_min_minus1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_1_max_na { get; set; }
+        public BigInteger? IntegerProperty_min_1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_na_max_0 { get; set; }
+        public BigInteger? IntegerProperty_min_na_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
         public BigInteger IntegerProperty_min_0_max_int64times10 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_int64 { get; set; }
+        public long? IntegerProperty_min_0_max_int64 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_int32add1 { get; set; }
+        public long? IntegerProperty_min_0_max_int32add1 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_0_max_int32 { get; set; }
+        public int? IntegerProperty_min_0_max_int32 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_int32_max_0 { get; set; }
+        public int? IntegerProperty_min_int32_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_int32minus1_max_0 { get; set; }
+        public long? IntegerProperty_min_int32minus1_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_int64_max_0 { get; set; }
+        public long? IntegerProperty_min_int64_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
         public BigInteger IntegerProperty_min_int64times10_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
@@ -354,35 +357,35 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_default { get; set; }
+        public BigInteger? IntegerProperty_default { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_0_max_na { get; set; }
+        public BigInteger? IntegerProperty_min_0_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_minus1_max_na { get; set; }
+        public BigInteger? IntegerProperty_min_minus1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_1_max_na { get; set; }
+        public BigInteger? IntegerProperty_min_1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_na_max_0 { get; set; }
+        public BigInteger? IntegerProperty_min_na_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_0_max_int64times10 { get; set; }
+        public BigInteger? IntegerProperty_min_0_max_int64times10 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_0_max_int64 { get; set; }
+        public BigInteger? IntegerProperty_min_0_max_int64 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_0_max_int32add1 { get; set; }
+        public BigInteger? IntegerProperty_min_0_max_int32add1 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_0_max_int32 { get; set; }
+        public BigInteger? IntegerProperty_min_0_max_int32 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_int32_max_0 { get; set; }
+        public BigInteger? IntegerProperty_min_int32_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_int32minus1_max_0 { get; set; }
+        public BigInteger? IntegerProperty_min_int32minus1_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_int64_max_0 { get; set; }
+        public BigInteger? IntegerProperty_min_int64_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_int64times10_max_0 { get; set; }
+        public BigInteger? IntegerProperty_min_int64times10_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_huge_max_0 { get; set; }
+        public BigInteger? IntegerProperty_min_huge_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_huge"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger IntegerProperty_min_0_max_huge { get; set; }
+        public BigInteger? IntegerProperty_min_0_max_huge { get; set; }
     }
 }";
             const string ExpectedClass_Long =
@@ -397,35 +400,35 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_default { get; set; }
+        public long? IntegerProperty_default { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_na { get; set; }
+        public long? IntegerProperty_min_0_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_minus1_max_na { get; set; }
+        public long? IntegerProperty_min_minus1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_1_max_na { get; set; }
+        public long? IntegerProperty_min_1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_na_max_0 { get; set; }
+        public long? IntegerProperty_min_na_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_int64times10 { get; set; }
+        public long? IntegerProperty_min_0_max_int64times10 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_int64 { get; set; }
+        public long? IntegerProperty_min_0_max_int64 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_int32add1 { get; set; }
+        public long? IntegerProperty_min_0_max_int32add1 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_int32 { get; set; }
+        public long? IntegerProperty_min_0_max_int32 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_int32_max_0 { get; set; }
+        public long? IntegerProperty_min_int32_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_int32minus1_max_0 { get; set; }
+        public long? IntegerProperty_min_int32minus1_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_int64_max_0 { get; set; }
+        public long? IntegerProperty_min_int64_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_int64times10_max_0 { get; set; }
+        public long? IntegerProperty_min_int64times10_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_huge_max_0 { get; set; }
+        public long? IntegerProperty_min_huge_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_huge"", IsRequired = false, EmitDefaultValue = false)]
-        public long IntegerProperty_min_0_max_huge { get; set; }
+        public long? IntegerProperty_min_0_max_huge { get; set; }
     }
 }";
             const string ExpectedClass_Int =
@@ -440,35 +443,35 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""integerProperty_default"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_default { get; set; }
+        public int? IntegerProperty_default { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_0_max_na { get; set; }
+        public int? IntegerProperty_min_0_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_minus1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_minus1_max_na { get; set; }
+        public int? IntegerProperty_min_minus1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_1_max_na"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_1_max_na { get; set; }
+        public int? IntegerProperty_min_1_max_na { get; set; }
         [DataMember(Name = ""integerProperty_min_na_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_na_max_0 { get; set; }
+        public int? IntegerProperty_min_na_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64times10"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_0_max_int64times10 { get; set; }
+        public int? IntegerProperty_min_0_max_int64times10 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int64"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_0_max_int64 { get; set; }
+        public int? IntegerProperty_min_0_max_int64 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32add1"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_0_max_int32add1 { get; set; }
+        public int? IntegerProperty_min_0_max_int32add1 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_int32"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_0_max_int32 { get; set; }
+        public int? IntegerProperty_min_0_max_int32 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_int32_max_0 { get; set; }
+        public int? IntegerProperty_min_int32_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int32minus1_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_int32minus1_max_0 { get; set; }
+        public int? IntegerProperty_min_int32minus1_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_int64_max_0 { get; set; }
+        public int? IntegerProperty_min_int64_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_int64times10_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_int64times10_max_0 { get; set; }
+        public int? IntegerProperty_min_int64times10_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_huge_max_0"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_huge_max_0 { get; set; }
+        public int? IntegerProperty_min_huge_max_0 { get; set; }
         [DataMember(Name = ""integerProperty_min_0_max_huge"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty_min_0_max_huge { get; set; }
+        public int? IntegerProperty_min_0_max_huge { get; set; }
     }
 }";
             GeneratesPropertiesWithIntegerTypes_Helper(GenerateJsonIntegerOption.Auto, ExpectedClass_Auto);
@@ -1347,19 +1350,19 @@ namespace N
         /// The value of the R component.
         /// </summary>
         [DataMember(Name = ""red"", IsRequired = false, EmitDefaultValue = false)]
-        public int Red { get; set; }
+        public int? Red { get; set; }
 
         /// <summary>
         /// The value of the G component.
         /// </summary>
         [DataMember(Name = ""green"", IsRequired = false, EmitDefaultValue = false)]
-        public int Green { get; set; }
+        public int? Green { get; set; }
 
         /// <summary>
         /// The value of the B component.
         /// </summary>
         [DataMember(Name = ""blue"", IsRequired = false, EmitDefaultValue = false)]
-        public int Blue { get; set; }
+        public int? Blue { get; set; }
     }
 }";
 
@@ -1418,9 +1421,20 @@ namespace N
             int result = 17;
             unchecked
             {
-                result = (result * 31) + obj.Red.GetHashCode();
-                result = (result * 31) + obj.Green.GetHashCode();
-                result = (result * 31) + obj.Blue.GetHashCode();
+                if (obj.Red != null)
+                {
+                    result = (result * 31) + obj.Red.GetHashCode();
+                }
+
+                if (obj.Green != null)
+                {
+                    result = (result * 31) + obj.Green.GetHashCode();
+                }
+
+                if (obj.Blue != null)
+                {
+                    result = (result * 31) + obj.Blue.GetHashCode();
+                }
             }
 
             return result;
@@ -1758,7 +1772,7 @@ namespace N
         /// An integer property.
         /// </summary>
         [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty { get; set; }
+        public int? IntegerProperty { get; set; }
 
         /// <summary>
         /// An integer property with a default value.
@@ -1976,7 +1990,7 @@ namespace N
         /// <param name=""dictionaryWithHintedValueProp"">
         /// An initialization value for the <see cref=""P:DictionaryWithHintedValueProp"" /> property.
         /// </param>
-        public C(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, Color enumeratedPropertyWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        public C(int? integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, Color enumeratedPropertyWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
             Init(integerProperty, integerPropertyWithDefault, numberProperty, numberPropertyWithDefault, stringProperty, stringPropertyWithDefault, booleanProperty, booleanPropertyWithTrueDefault, booleanPropertyWithFalseDefault, enumeratedPropertyWithDefault, arrayProp, uriProp, dateTimeProp, referencedTypeProp, arrayOfRefProp, arrayOfArrayProp, dictionaryProp, dictionaryWithPrimitiveSchemaProp, dictionaryWithObjectSchemaProp, dictionaryWithObjectArraySchemaProp, dictionaryWithUriKeyProp, dictionaryWithHintedValueProp);
         }
@@ -2018,7 +2032,7 @@ namespace N
             return new C(this);
         }
 
-        private void Init(int integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, Color enumeratedPropertyWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
+        private void Init(int? integerProperty, int integerPropertyWithDefault, double numberProperty, double numberPropertyWithDefault, string stringProperty, string stringPropertyWithDefault, bool booleanProperty, bool booleanPropertyWithTrueDefault, bool booleanPropertyWithFalseDefault, Color enumeratedPropertyWithDefault, IEnumerable<double> arrayProp, Uri uriProp, DateTime dateTimeProp, D referencedTypeProp, IEnumerable<D> arrayOfRefProp, IEnumerable<IEnumerable<D>> arrayOfArrayProp, IDictionary<string, string> dictionaryProp, IDictionary<string, double> dictionaryWithPrimitiveSchemaProp, IDictionary<string, D> dictionaryWithObjectSchemaProp, IDictionary<string, IList<D>> dictionaryWithObjectArraySchemaProp, IDictionary<Uri, D> dictionaryWithUriKeyProp, IDictionary<string, V> dictionaryWithHintedValueProp)
         {
             IntegerProperty = integerProperty;
             IntegerPropertyWithDefault = integerPropertyWithDefault;
@@ -2655,7 +2669,7 @@ namespace N
         public static IComparer<Def2> Comparer => Def2Comparer.Instance;
 
         [DataMember(Name = ""prop2"", IsRequired = false, EmitDefaultValue = false)]
-        public int Prop2 { get; set; }
+        public int? Prop2 { get; set; }
     }
 }";
 
@@ -2704,7 +2718,10 @@ namespace N
             int result = 17;
             unchecked
             {
-                result = (result * 31) + obj.Prop2.GetHashCode();
+                if (obj.Prop2 != null)
+                {
+                    result = (result * 31) + obj.Prop2.GetHashCode();
+                }
             }
 
             return result;
@@ -3268,7 +3285,7 @@ namespace N
         public static IComparer<C> Comparer => CComparer.Instance;
 
         [DataMember(Name = ""intDefProp"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntDefProp { get; set; }
+        public int? IntDefProp { get; set; }
     }
 }";
             const string ExpectedEqualityComparerClass =
@@ -3316,7 +3333,10 @@ namespace N
             int result = 17;
             unchecked
             {
-                result = (result * 31) + obj.IntDefProp.GetHashCode();
+                if (obj.IntDefProp != null)
+                {
+                    result = (result * 31) + obj.IntDefProp.GetHashCode();
+                }
             }
 
             return result;
@@ -3398,6 +3418,15 @@ namespace N
       ""description"": ""An integer property with a default value."",
       ""default"": 42
     },
+    ""integerPropertyRequired"": {
+      ""type"": ""integer"",
+      ""description"": ""An integer property with a default value.""
+    },
+    ""integerPropertyRequiredAndWithDefault"": {
+      ""type"": ""integer"",
+      ""description"": ""An integer property with a default value."",
+      ""default"": 42
+    },
     ""numberProperty"": {
       ""type"": ""number"",
       ""description"": ""A number property.""
@@ -3438,7 +3467,8 @@ namespace N
       },
       ""default"": []
     }
-  }
+  },
+  ""required"": [ ""integerPropertyRequired"", ""integerPropertyRequiredAndWithDefault"" ]
 }";
             const string ExpectedClass =
 @"using System;
@@ -3458,7 +3488,7 @@ namespace N
         /// An integer property.
         /// </summary>
         [DataMember(Name = ""integerProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public int IntegerProperty { get; set; }
+        public int? IntegerProperty { get; set; }
 
         /// <summary>
         /// An integer property with a default value.
@@ -3467,6 +3497,20 @@ namespace N
         [DefaultValue(42)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public int IntegerPropertyWithDefault { get; set; }
+
+        /// <summary>
+        /// An integer property with a default value.
+        /// </summary>
+        [DataMember(Name = ""integerPropertyRequired"", IsRequired = true)]
+        public int IntegerPropertyRequired { get; set; }
+
+        /// <summary>
+        /// An integer property with a default value.
+        /// </summary>
+        [DataMember(Name = ""integerPropertyRequiredAndWithDefault"", IsRequired = true)]
+        [DefaultValue(42)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public int IntegerPropertyRequiredAndWithDefault { get; set; }
 
         /// <summary>
         /// A number property.
