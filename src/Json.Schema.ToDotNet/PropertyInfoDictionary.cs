@@ -44,6 +44,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         // <code>Location{}[]</code> is a dictionary property whose elements are arrays.
         internal const string DictionaryMarker = "{}";
 
+        internal const string IntType = "System.int";
+        internal const string LongType = "System.long";
+        internal const string GuidType = "System.Guid";
         internal const string BigIntegerType = "System.Numerics.BigInteger";
 
         /// <summary>
@@ -234,6 +237,10 @@ namespace Microsoft.Json.Schema.ToDotNet
             bool isOfSchemaDefinedType = false;
             int arrayRank = 0;
 
+            bool scalarValueTypeNullable = !isRequired && propertySchema.Default == null;
+            HashKind scalarValueTypeHashKind =
+                scalarValueTypeNullable ? HashKind.ScalarReferenceType : HashKind.ScalarValueType;
+
             if (propertySchema.IsDateTime())
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
@@ -251,9 +258,9 @@ namespace Microsoft.Json.Schema.ToDotNet
             else if (propertySchema.IsUuid())
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
-                hashKind = isRequired ? HashKind.ScalarValueType : HashKind.ScalarReferenceType;
+                hashKind = scalarValueTypeHashKind;
                 initializationKind = InitializationKind.SimpleAssign;
-                type = MakeNamedType(isRequired ? "System.Guid" : "System.Guid?", out namespaceName);
+                type = MakeNamedType(GuidType, out namespaceName, scalarValueTypeNullable);
             }
             else if (propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
             {
@@ -280,7 +287,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(referencedEnumTypeName, out namespaceName);
             }
-            else if (propertySchema.ShouldBeEnum(_typeName, schemaPropertyName,  _hintDictionary, out EnumHint enumHint))
+            else if (propertySchema.ShouldBeEnum(_typeName, schemaPropertyName, _hintDictionary, out EnumHint enumHint))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
@@ -313,14 +320,15 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                     case SchemaType.Integer:
                         comparisonKind = ComparisonKind.OperatorEquals;
-                        hashKind = HashKind.ScalarValueType;
+                        hashKind = scalarValueTypeHashKind;
                         initializationKind = InitializationKind.SimpleAssign;
                         type = MakeProperIntegerType(_generateJsonIntegerAs,
                             propertySchema.Minimum, propertySchema.ExclusiveMinimum,
                             propertySchema.Maximum, propertySchema.ExclusiveMaximum,
+                            scalarValueTypeNullable,
                             out namespaceName);
                         break;
-                        
+
                     case SchemaType.String:
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarReferenceType;
@@ -445,8 +453,13 @@ namespace Microsoft.Json.Schema.ToDotNet
             return MakeNamedType(className, out namespaceName);
         }
 
-        private TypeSyntax MakeNamedType(string typeName, out string namespaceName)
+        private TypeSyntax MakeNamedType(string typeName, out string namespaceName, bool nullable = false)
         {
+            if (nullable)
+            {
+                typeName += "?";
+            }
+
             string unqualifiedTypeName = GetUnqualifiedTypeName(typeName, out namespaceName);
 
             return SyntaxFactory.ParseTypeName(unqualifiedTypeName);
@@ -630,7 +643,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 namespaceName = null;
             }
 
-            return unqualifiedTypeName.ToPascalCase();
+            namespaceName = namespaceName == "System" ? null : namespaceName;
+
+            return typeName.StartsWith("System.") ? unqualifiedTypeName : unqualifiedTypeName.ToPascalCase();
         }
 
         private void OnAdditionalTypeRequired(CodeGenHint hint, JsonSchema schema)
@@ -687,6 +702,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         internal TypeSyntax MakeProperIntegerType(GenerateJsonIntegerOption generateJsonIntegerAs,
             double? minimum, bool? exclusiveMinimum,
             double? maximum, bool? exclusiveMaximum,
+            bool nullable,
             out string namespaceName)
         {
             namespaceName = null;
@@ -694,13 +710,13 @@ namespace Microsoft.Json.Schema.ToDotNet
             switch (generateJsonIntegerAs)
             {
                 case GenerateJsonIntegerOption.Long:
-                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.LongKeyword));
+                    return MakeNamedType(LongType, out namespaceName, nullable);
                 case GenerateJsonIntegerOption.BigInteger:
-                    return MakeNamedType(BigIntegerType, out namespaceName);
+                    return MakeNamedType(BigIntegerType, out namespaceName, nullable);
                 case GenerateJsonIntegerOption.Auto:
                     if (!minimum.HasValue || !maximum.HasValue)
                     {
-                        return MakeNamedType(BigIntegerType, out namespaceName);
+                        return MakeNamedType(BigIntegerType, out namespaceName, nullable);
                     }
 
                     if (exclusiveMinimum == true)
@@ -720,12 +736,12 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                     if (minimum.Value < int.MinValue || maximum.Value > int.MaxValue)
                     {
-                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.LongKeyword));
+                        return MakeNamedType(LongType, out namespaceName, nullable);
                     }
 
-                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword));
+                    return MakeNamedType(IntType, out namespaceName, nullable);
                 default:
-                    return SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword));
+                    return MakeNamedType(IntType, out namespaceName, nullable);
             }
         }
 

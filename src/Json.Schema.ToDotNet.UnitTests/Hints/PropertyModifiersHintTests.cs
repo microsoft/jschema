@@ -43,7 +43,7 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
-        int TheProperty { get; set; }
+        int? TheProperty { get; set; }
     }
 }"
             ),
@@ -83,7 +83,7 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
-        internal int TheProperty { get; set; }
+        internal int? TheProperty { get; set; }
     }
 }"
             ),
@@ -124,7 +124,7 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
-        internal override int TheProperty { get; set; }
+        internal override int? TheProperty { get; set; }
     }
 }"
             ),
@@ -194,7 +194,7 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
-        internal override int TheProperty { get; set; }
+        internal override int? TheProperty { get; set; }
     }
 }"
             ),

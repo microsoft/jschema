@@ -43,7 +43,7 @@ namespace N
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test]
-        public int TheProperty { get; set; }
+        public int? TheProperty { get; set; }
     }
 }"
             ),
@@ -85,7 +85,7 @@ namespace N
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test(typeof(string))]
-        public int TheProperty { get; set; }
+        public int? TheProperty { get; set; }
     }
 }"
             ),
@@ -129,7 +129,7 @@ namespace N
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test(typeof(string), 42, ""a"")]
-        public int TheProperty { get; set; }
+        public int? TheProperty { get; set; }
     }
 }"
             ),
@@ -171,7 +171,7 @@ namespace N
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public int TheProperty { get; set; }
+        public int? TheProperty { get; set; }
     }
 }"
             ),
@@ -214,7 +214,7 @@ namespace N
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test(DefaultValueHandling = DefaultValueHandling.Ignore, DefaultValue = 42)]
-        public int TheProperty { get; set; }
+        public int? TheProperty { get; set; }
     }
 }"
             ),
@@ -260,7 +260,7 @@ namespace N
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test1]
         [Test2]
-        public int TheProperty { get; set; }
+        public int? TheProperty { get; set; }
     }
 }"
             ),
@@ -301,7 +301,7 @@ namespace N
     {
         [DataMember(Name = ""theProperty"", IsRequired = false, EmitDefaultValue = false)]
         [Test]
-        public int TheProperty { get; set; }
+        public int? TheProperty { get; set; }
     }
 }"
             ),
