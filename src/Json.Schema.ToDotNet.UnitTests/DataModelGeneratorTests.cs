@@ -491,7 +491,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""2.1.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
         [DataMember(Name = ""numberProperty_default"", IsRequired = false, EmitDefaultValue = false)]
@@ -534,7 +534,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""2.1.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
         [DataMember(Name = ""numberProperty_default"", IsRequired = false, EmitDefaultValue = false)]
@@ -577,7 +577,7 @@ using System.Runtime.Serialization;
 namespace N
 {
     [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", ""2.1.0.0"")]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
     public partial class C
     {
         [DataMember(Name = ""numberProperty_default"", IsRequired = false, EmitDefaultValue = false)]
