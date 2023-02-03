@@ -9,6 +9,7 @@ using Microsoft.Json.Schema.TestUtilities;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Microsoft.Json.Schema.Validation.UnitTests
 {
@@ -1064,6 +1065,82 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
   }
 }",
                 MakeErrorMessage(2, 8, "a", ErrorNumber.DependentPropertyMissing, "x", "\"y\"", "\"y\"")
+                ),
+            new TestCase(
+                "String: format: valid with date-time format constraints",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""date-time""
+                }",
+                "\"2023-02-03T12:34:56.789Z\""
+                ),
+            new TestCase(
+                "String: format: invalid date-time format string",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""date-time""
+                }",
+                "\"failure-string\"",
+                MakeErrorMessage(1, 16, string.Empty, ErrorNumber.StringDoesNotMatchFormat, FormatAttributes.DateTime, "failure-string")
+                ),
+            new TestCase(
+                "String: format: valid with uri format constraint",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uri""
+                }",
+                "\"https://www.example.com\""
+                ),
+            new TestCase(
+                "String: format: Invalid uri value",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uri""
+                }",
+                "\"sites/files/images/picture.png\"",
+                MakeErrorMessage(1, 32, string.Empty, ErrorNumber.StringDoesNotMatchFormat, FormatAttributes.Uri, "sites/files/images/picture.png")
+                ),
+            new TestCase(
+                "String: format: valid with uri-reference format constraint",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uri-reference""
+                }",
+                "\"sites/files/images/picture.png\""
+                ),
+            new TestCase(
+                "String: format: Invalid with uri-reference format constraint",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uri-reference""
+                }",
+                "\"````\"",
+                MakeErrorMessage(1, 6, string.Empty, ErrorNumber.StringDoesNotMatchFormat, FormatAttributes.UriReference, "````")
+                ),
+            new TestCase(
+                "String: format: valid with uuid format constraint - lowercase",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uuid""
+                }",
+                "\"8b524014-4666-449e-afc4-1b82fbfb27ad\""
+                ),
+            new TestCase(
+                "String: format: valid with uuid format constraint - uppercase",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uuid""
+                }",
+                "\"6303D187-07A8-4164-864F-0C01D6F8E5C4\""
+                ),
+            new TestCase(
+                "String: format: Invalid with uuid format constraint",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uuid""
+                }",
+                "\"4014-4666-449e-afc4-1b82fbfb27ad\"",
+                MakeErrorMessage(1, 34, string.Empty, ErrorNumber.StringDoesNotMatchFormat, FormatAttributes.Uuid, "4014-4666-449e-afc4-1b82fbfb27ad")
                 )
         };
 
