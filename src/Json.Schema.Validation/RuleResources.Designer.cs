@@ -357,7 +357,18 @@ namespace Microsoft.Json.Schema.Validation {
                 return ResourceManager.GetString("ErrorWrongType", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The schema requires string value of the format &quot;{1}&quot;, but a token value &quot;{2}&quot; was found...
+        /// </summary>
+        internal static string ErrorStringDoesNotMatchFormat
+        {
+            get
+            {
+                return ResourceManager.GetString("ErrorStringDoesNotMatchFormat", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to An object contains a property not defined by the schema is present, and the schema does not permit additional properties..
         /// </summary>
@@ -643,6 +654,17 @@ namespace Microsoft.Json.Schema.Validation {
         internal static string RuleDescriptionWrongType {
             get {
                 return ResourceManager.GetString("RuleDescriptionWrongType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An string value has a format that is not permitted by the schema&apos;s &quot;format&quot; property..
+        /// </summary>
+        internal static string RuleDescriptionStringDoesNotMatchFormat
+        {
+            get
+            {
+                return ResourceManager.GetString("RuleDescriptionStringDoesNotMatchFormat", resourceCulture);
             }
         }
     }

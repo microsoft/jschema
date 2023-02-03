@@ -474,7 +474,27 @@ namespace Microsoft.Json.Schema
         /// The instance contains a property specified by "dependencies", but it does
         /// not contain all the properties specified by the corresponding property dependency.
         /// </summary>
-        DependentPropertyMissing = 1023
+        DependentPropertyMissing = 1023,
+
+
+        /// <summary>
+        /// A string instance does not match the required format.
+        /// </summary>
+        /// <example>
+        /// Schema:
+        /// <code>
+        /// {
+        ///   "type": "string",
+        ///   "format": "date-time"
+        /// }
+        /// </code>
+        /// 
+        /// Instance:
+        /// <code>
+        /// "2023-02-03:T12:00:00Z"
+        /// </code>
+        /// </example>
+        StringDoesNotMatchFormat = 1024,
 
         #endregion Errors in instance document
     }
