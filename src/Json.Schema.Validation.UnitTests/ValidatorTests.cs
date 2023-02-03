@@ -9,7 +9,6 @@ using Microsoft.Json.Schema.TestUtilities;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Microsoft.Json.Schema.Validation.UnitTests
 {
