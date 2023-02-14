@@ -1091,6 +1091,22 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 "\"https://www.example.com\""
                 ),
             new TestCase(
+                "String: format: valid with file uri format constraint",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uri""
+                }",
+                "\"file://localhost/absolute/path/to/file\""
+                ),
+            new TestCase(
+                "String: format: valid with email uri format constraint",
+                @"{
+                  ""type"": ""string"",
+                  ""format"": ""uri""
+                }",
+                "\"mailto:jsmith@example.com?subject=A%20Test&body=My%20idea%20is%3A%20%0A\""
+                ),
+            new TestCase(
                 "String: format: Invalid uri value",
                 @"{
                   ""type"": ""string"",
@@ -1142,7 +1158,7 @@ namespace Microsoft.Json.Schema.Validation.UnitTests
                 MakeErrorMessage(1, 34, string.Empty, ErrorNumber.StringDoesNotMatchFormat, FormatAttributes.Uuid, "4014-4666-449e-afc4-1b82fbfb27ad")
                 )
         };
-
+        
         [Theory(DisplayName = "Validation")]
         [MemberData(nameof(TestCases))]
         public void Tests(TestCase test)
