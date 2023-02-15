@@ -198,7 +198,12 @@ namespace Microsoft.Json.Schema.Validation
             [ErrorNumber.DependentPropertyMissing] = MakeRule(
                 ErrorNumber.DependentPropertyMissing,
                 RuleResources.RuleDescriptionDependentPropertyMissing,
-                RuleResources.ErrorDependentPropertyMissing)
+                RuleResources.ErrorDependentPropertyMissing),
+
+            [ErrorNumber.StringDoesNotMatchFormat] = MakeRule(
+                ErrorNumber.StringDoesNotMatchFormat,
+                RuleResources.RuleDescriptionStringDoesNotMatchFormat,
+                RuleResources.ErrorStringDoesNotMatchFormat)
         });
 
         public static ReportingDescriptor GetRuleFromRuleId(string ruleId)

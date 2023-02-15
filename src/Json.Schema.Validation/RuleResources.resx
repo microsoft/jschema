@@ -217,6 +217,9 @@
   <data name="ErrorWrongType" xml:space="preserve">
     <value>The schema requires one of the types [{1}], but a token of type '{2}' was found.</value>
   </data>
+  <data name="ErrorStringDoesNotMatchFormat" xml:space="preserve">
+    <value>The schema requires string value of the format '{1}', but a token value '{2}' was found.</value>
+  </data>
   <data name="RuleDescriptionAdditionalPropertiesProhibited" xml:space="preserve">
     <value>An object contains a property not defined by the schema, and the schema does not permit additional properties.</value>
   </data>
@@ -312,5 +315,8 @@
   </data>
   <data name="RuleDescriptionWrongType" xml:space="preserve">
     <value>An instance has a type that is not permitted by the schema's 'type' property.</value>
+  </data>
+  <data name="RuleDescriptionStringDoesNotMatchFormat" xml:space="preserve">
+    <value>A string value has a format that is not permitted by the schema's 'format' property.</value>
   </data>
 </root>

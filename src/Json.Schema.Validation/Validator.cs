@@ -181,6 +181,44 @@ namespace Microsoft.Json.Schema.Validation
                     AddResult(jValue, ErrorNumber.StringDoesNotMatchPattern, value, schema.Pattern);
                 }
             }
+
+            if(!string.IsNullOrEmpty(schema.Format))
+            {
+                ValidateStringFormat(jValue, schema.Format);
+            }
+        }
+
+        private void ValidateStringFormat(JValue jValue, string format)
+        {
+            string value = jValue.Value<string>();
+            if (string.Compare(format, FormatAttributes.DateTime) == 0)
+            {
+                if (!DateTime.TryParse(value, out DateTime _))
+                {
+                    AddResult(jValue, ErrorNumber.StringDoesNotMatchFormat, format, value);
+                }
+            } 
+            else if(string.Compare(format, FormatAttributes.Uri) == 0)
+            {
+                if (!Uri.IsWellFormedUriString(value, UriKind.Absolute))
+                {
+                    AddResult(jValue, ErrorNumber.StringDoesNotMatchFormat, format, value);
+                }
+            }
+            else if(string.Compare(format, FormatAttributes.UriReference) == 0)
+            {
+                if (!Uri.IsWellFormedUriString(value, UriKind.RelativeOrAbsolute))
+                {
+                    AddResult(jValue, ErrorNumber.StringDoesNotMatchFormat, format, value);
+                }
+            }
+            else if (string.Compare(format, FormatAttributes.Uuid) == 0)
+            {
+                if (!Guid.TryParse(value, out Guid _))
+                {
+                    AddResult(jValue, ErrorNumber.StringDoesNotMatchFormat, format, value);
+                }
+            }
         }
 
         // Compute the length of a string, counting surrogate pairs as one
