@@ -1,5 +1,8 @@
 # Microsoft Json Schema Packages
 
+## **2.3.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.3.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.3.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.3.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.3.0)
+* FEATURE: Added support to validate JSON against string format attribute from JSON Schema. [#169](https://github.com/microsoft/jschema/pull/169)
+
 ## **2.2.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.2.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.2.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.2.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.2.0)
 * BREAKING: .NET type to express Json integers now will be nullable if the property is not required and also without default. [#167](https://github.com/microsoft/jschema/pull/167)
 * FEATURE: Add new option for specifying .NET type to express Json numbers: `--generate-json-number-as = double | float | decimal` with a default of `double`. [#166](https://github.com/microsoft/jschema/pull/166)
