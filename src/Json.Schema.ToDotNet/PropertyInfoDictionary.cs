@@ -322,7 +322,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = scalarValueTypeHashKind;
                         initializationKind = InitializationKind.SimpleAssign;
-                        type = MakeProperIntegerType(_generateJsonIntegerAs,
+                        type = MakeProperIntegerType(
+                            schemaPropertyName,
+                            _generateJsonIntegerAs,
                             propertySchema.Minimum, propertySchema.ExclusiveMinimum,
                             propertySchema.Maximum, propertySchema.ExclusiveMaximum,
                             scalarValueTypeNullable,
@@ -699,12 +701,24 @@ namespace Microsoft.Json.Schema.ToDotNet
             return type;
         }
 
-        internal TypeSyntax MakeProperIntegerType(GenerateJsonIntegerOption generateJsonIntegerAs,
+        internal TypeSyntax MakeProperIntegerType(
+            string schemaPropertyName,
+            GenerateJsonIntegerOption generateJsonIntegerAs,
             double? minimum, bool? exclusiveMinimum,
             double? maximum, bool? exclusiveMaximum,
             bool nullable,
             out string namespaceName)
         {
+            var generateJsonIntegerAsHint = _hintDictionary?.GetHint<GenerateJsonIntegerAsHint>(_typeName + "." + schemaPropertyName);
+
+            if (generateJsonIntegerAsHint?.DotNetPropertyType != null)
+            {
+                if (Enum.TryParse(generateJsonIntegerAsHint.DotNetPropertyType, true, out GenerateJsonIntegerOption hintGenerateJsonIntegerAs))
+                {
+                    generateJsonIntegerAs = hintGenerateJsonIntegerAs;
+                }
+            }
+
             namespaceName = null;
 
             switch (generateJsonIntegerAs)

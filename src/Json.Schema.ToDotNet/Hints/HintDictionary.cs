@@ -41,6 +41,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
                     [HintKind.ClassNameHint] = CreateClassNameHint,
                     [HintKind.DictionaryHint] = CreateDictionaryHint,
                     [HintKind.EnumHint] = CreateEnumHint,
+                    [HintKind.GenerateJsonIntegerAsHint] = CreateGenerateJsonIntegerAsHint,
                     [HintKind.InterfaceHint] = CreateInterfaceHint,
                     [HintKind.PropertyModifiersHint] = CreatePropertyModifiersHint,
                     [HintKind.PropertyNameHint] = CreatePropertyNameHint
@@ -205,6 +206,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             string dotNetPropertyName = GetArgument<string>(arguments, nameof(PropertyNameHint.DotNetPropertyName));
 
             return new PropertyNameHint(dotNetPropertyName);
+        }
+
+        private static CodeGenHint CreateGenerateJsonIntegerAsHint(JObject arguments)
+        {
+            string dotNetPropertyType = GetArgument<string>(arguments, nameof(GenerateJsonIntegerAsHint.DotNetPropertyType));
+
+            return new GenerateJsonIntegerAsHint(dotNetPropertyType);
         }
 
         private static T GetArgument<T>(JObject arguments, string dotNetPropertyName)
