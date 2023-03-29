@@ -19,7 +19,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
     },
     ""TheBigIntegerProperty"": {
       ""type"": ""integer"",
-      ""default"": ""-1"",
+      ""default"": ""-1""
     },
     ""TheIntegerProperty"": {
       ""type"": ""integer"",
@@ -27,11 +27,11 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
     },
     ""TheLongProperty"": {
       ""type"": ""integer"",
-      ""default"": ""-1"",
+      ""default"": ""-1""
     },
     ""TheStringProperty"": {
       ""type"": ""integer"",
-      ""default"": ""-1"",
+      ""default"": ""-1""
     },
     ""TheNullableGuidProperty"": {
       ""type"": ""string""
@@ -39,8 +39,17 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
     ""TheUriProperty"": {
       ""type"": ""string""
     },
-    ""TheNullableBoolProperty"": {
-      ""type"": ""string""
+    ""TheBoolProperty"": {
+      ""type"": ""string"",
+      ""default"": true
+    },
+    ""TheDecimalProperty"": {
+      ""type"": ""number"",
+      ""default"": ""1.11111""
+    },
+    ""TheDoubleProperty"": {
+      ""type"": ""number"",
+      ""default"": ""1.11111""
     },
   }
 }",
@@ -86,11 +95,19 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
       }
     }
   ],
-  ""C.TheNullableBoolProperty"": [
+  ""C.TheBoolProperty"": [
     {
       ""kind"": ""PropertyTypeHint"",
       ""arguments"": {
         ""typeName"": ""Bool""
+      }
+    }
+  ],
+  ""C.TheDecimalProperty"": [
+    {
+      ""kind"": ""PropertyTypeHint"",
+      ""arguments"": {
+        ""typeName"": ""Decimal""
       }
     }
   ]
@@ -131,8 +148,18 @@ namespace N
         public Guid? TheNullableGuidProperty { get; set; }
         [DataMember(Name = ""TheUriProperty"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TheUriProperty { get; set; }
-        [DataMember(Name = ""TheNullableBoolProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public bool TheNullableBoolProperty { get; set; }
+        [DataMember(Name = ""TheBoolProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public bool TheBoolProperty { get; set; }
+        [DataMember(Name = ""TheDecimalProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""1.11111"")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public decimal TheDecimalProperty { get; set; }
+        [DataMember(Name = ""TheDoubleProperty"", IsRequired = false, EmitDefaultValue = false)]
+        [DefaultValue(""1.11111"")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        public double TheDoubleProperty { get; set; }
     }
 }"
             )

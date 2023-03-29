@@ -4,8 +4,7 @@
 namespace Microsoft.Json.Schema.ToDotNet
 {
     /// <summary>
-    /// Supported C# type to be generated
-    /// for each Json property.
+    /// Supported C# types for <see cref="Hints.PropertyTypeHint"/>.
     /// </summary>
     public enum SupportedPropertyTypeHint
     {
