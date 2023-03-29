@@ -39,9 +39,11 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
     ""TheUriProperty"": {
       ""type"": ""string""
     },
-    ""TheBoolProperty"": {
-      ""type"": ""string"",
-      ""default"": true
+    ""TheBoolStringProperty"": {
+      ""type"": ""boolean""
+    },
+    ""TheStringBoolProperty"": {
+      ""type"": ""string""
     },
     ""TheDecimalProperty"": {
       ""type"": ""number"",
@@ -95,7 +97,15 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
       }
     }
   ],
-  ""C.TheBoolProperty"": [
+  ""C.TheBoolStringProperty"": [
+    {
+      ""kind"": ""PropertyTypeHint"",
+      ""arguments"": {
+        ""typeName"": ""String""
+      }
+    }
+  ],
+  ""C.TheStringBoolProperty"": [
     {
       ""kind"": ""PropertyTypeHint"",
       ""arguments"": {
@@ -148,10 +158,10 @@ namespace N
         public Guid? TheNullableGuidProperty { get; set; }
         [DataMember(Name = ""TheUriProperty"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TheUriProperty { get; set; }
-        [DataMember(Name = ""TheBoolProperty"", IsRequired = false, EmitDefaultValue = false)]
-        [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public bool TheBoolProperty { get; set; }
+        [DataMember(Name = ""TheBoolStringProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public string TheBoolStringProperty { get; set; }
+        [DataMember(Name = ""TheStringBoolProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool TheStringBoolProperty { get; set; }
         [DataMember(Name = ""TheDecimalProperty"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(""1.11111"")]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
