@@ -711,9 +711,9 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             var propertyTypeHint = _hintDictionary?.GetHint<PropertyTypeHint>(_typeName + "." + schemaPropertyName);
 
-            if (propertyTypeHint?.DotNetPropertyType != null)
+            if (propertyTypeHint?.TypeName != null)
             {
-                if (Enum.TryParse(propertyTypeHint.DotNetPropertyType, true, out GenerateJsonIntegerOption hintGenerateJsonIntegerAs))
+                if (Enum.TryParse(propertyTypeHint.TypeName, true, out GenerateJsonIntegerOption hintGenerateJsonIntegerAs))
                 {
                     generateJsonIntegerAs = hintGenerateJsonIntegerAs;
                 }

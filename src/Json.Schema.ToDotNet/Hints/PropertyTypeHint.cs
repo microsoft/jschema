@@ -15,22 +15,22 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyTypeHint"/> class.
         /// </summary>
-        /// <param name="dotNetPropertyType">
+        /// <param name="typeName">
         /// The type of the .NET property to generate.
         /// </param>
-        public PropertyTypeHint(string dotNetPropertyType)
+        public PropertyTypeHint(string typeName)
         {
-            if (dotNetPropertyType == null)
+            if (typeName == null)
             {
-                throw new ArgumentNullException(nameof(dotNetPropertyType));
+                throw new ArgumentNullException(nameof(typeName));
             }
 
-            DotNetPropertyType = dotNetPropertyType;
+            TypeName = typeName;
         }
 
         /// <summary>
         /// Gets the type of the .NET property to generate.
         /// </summary>
-        public string DotNetPropertyType { get; }
+        public string TypeName { get; }
     }
 }

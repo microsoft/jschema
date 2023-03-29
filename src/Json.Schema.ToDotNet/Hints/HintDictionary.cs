@@ -210,7 +210,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
 
         private static CodeGenHint CreatePropertyTypeHint(JObject arguments)
         {
-            string dotNetPropertyType = GetArgument<string>(arguments, nameof(PropertyTypeHint.DotNetPropertyType));
+            string dotNetPropertyType = GetArgument<string>(arguments, nameof(PropertyTypeHint.TypeName));
 
             return new PropertyTypeHint(dotNetPropertyType);
         }
