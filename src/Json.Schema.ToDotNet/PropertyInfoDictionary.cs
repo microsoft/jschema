@@ -317,7 +317,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     comparisonKind = ComparisonKind.OperatorEquals;
                     hashKind = HashKind.ScalarValueType;
                     initializationKind = InitializationKind.SimpleAssign;
-                    type = MakePrimitiveType(propertyType);
+                    type = MakePrimitiveType(SchemaType.Boolean);
                 }
                 else if (
                     hintTypeName == SupportedPropertyTypeHint.Float ||
@@ -353,7 +353,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                     comparisonKind = ComparisonKind.OperatorEquals;
                     hashKind = HashKind.ScalarReferenceType;
                     initializationKind = InitializationKind.SimpleAssign;
-                    type = MakePrimitiveType(propertyType);
+                    type = MakePrimitiveType(SchemaType.String);
                 }
                 else if (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Object)
                 {

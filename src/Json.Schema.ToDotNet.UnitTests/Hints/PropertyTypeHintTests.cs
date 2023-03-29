@@ -33,6 +33,12 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
       ""type"": ""integer"",
       ""default"": ""-1"",
     },
+    ""TheNullableGuidProperty"": {
+      ""type"": ""string""
+    },
+    ""TheUriProperty"": {
+      ""type"": ""string""
+    }
   }
 }",
 
@@ -58,6 +64,23 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
       ""kind"": ""PropertyTypeHint"",
       ""arguments"": {
         ""typeName"": ""String""
+      }
+    }
+  ],
+  ""C.TheNullableGuidProperty"": [
+    {
+      ""kind"": ""PropertyTypeHint"",
+      ""arguments"": {
+        ""typeName"": ""Guid""
+      }
+    }
+  ]
+,
+  ""C.TheUriProperty"": [
+    {
+      ""kind"": ""PropertyTypeHint"",
+      ""arguments"": {
+        ""typeName"": ""Uri""
       }
     }
   ]
@@ -93,7 +116,11 @@ namespace N
         [DataMember(Name = ""TheStringProperty"", IsRequired = false, EmitDefaultValue = false)]
         [DefaultValue(""-1"")]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public int TheStringProperty { get; set; }
+        public string TheStringProperty { get; set; }
+        [DataMember(Name = ""TheNullableGuidProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public Guid? TheNullableGuidProperty { get; set; }
+        [DataMember(Name = ""TheUriProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public Uri TheUriProperty { get; set; }
     }
 }"
             )
