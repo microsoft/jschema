@@ -312,7 +312,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 SchemaType propertyType = propertySchema.SafeGetType();
 
-                if (hintTypeName == SupportedPropertyTypeHint.Boolean || (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Boolean))
+                if (hintTypeName == SupportedPropertyTypeHint.Bool || (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Boolean))
                 {
                     comparisonKind = ComparisonKind.OperatorEquals;
                     hashKind = HashKind.ScalarValueType;

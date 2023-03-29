@@ -38,7 +38,10 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
     },
     ""TheUriProperty"": {
       ""type"": ""string""
-    }
+    },
+    ""TheNullableBoolProperty"": {
+      ""type"": ""string""
+    },
   }
 }",
 
@@ -82,6 +85,14 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
         ""typeName"": ""Uri""
       }
     }
+  ],
+  ""C.TheNullableBoolProperty"": [
+    {
+      ""kind"": ""PropertyTypeHint"",
+      ""arguments"": {
+        ""typeName"": ""Bool""
+      }
+    }
   ]
 }",
 
@@ -120,6 +131,8 @@ namespace N
         public Guid? TheNullableGuidProperty { get; set; }
         [DataMember(Name = ""TheUriProperty"", IsRequired = false, EmitDefaultValue = false)]
         public Uri TheUriProperty { get; set; }
+        [DataMember(Name = ""TheNullableBoolProperty"", IsRequired = false, EmitDefaultValue = false)]
+        public bool TheNullableBoolProperty { get; set; }
     }
 }"
             )

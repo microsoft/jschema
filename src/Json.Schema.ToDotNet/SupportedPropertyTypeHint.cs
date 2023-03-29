@@ -19,7 +19,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         DateTime,
         Uri,
         Guid,
-        Boolean,
+        Bool,
         String
     }
 }
