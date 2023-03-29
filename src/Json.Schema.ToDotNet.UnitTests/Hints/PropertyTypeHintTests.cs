@@ -74,8 +74,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
         ""typeName"": ""Guid""
       }
     }
-  ]
-,
+  ],
   ""C.TheUriProperty"": [
     {
       ""kind"": ""PropertyTypeHint"",
