@@ -1,5 +1,8 @@
 # Microsoft Json Schema Packages
 
+## **2.4.0** UNRELEASED
+* FEATURE: Added a new HintKind: `PropertyTypeHint` to generate the specified .NET type, instead of deriving from the JSON schema. Supported values: `int`, `long`, `BigInteger`, `double`, `float`, `decimal`, `DateTime`, `Uri`, `Guid`, `bool`, `string`. [#171](https://github.com/microsoft/jschema/pull/171)
+
 ## **2.3.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.3.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.3.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.3.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.3.0)
 * FEATURE: Added support to validate JSON against string format attribute from JSON Schema. [#169](https://github.com/microsoft/jschema/pull/169)
 
