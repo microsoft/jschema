@@ -26,6 +26,6 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         InterfaceHint,
         PropertyModifiersHint,
         PropertyNameHint,
-        GenerateJsonIntegerAsHint
+        PropertyTypeHint
     }
 }

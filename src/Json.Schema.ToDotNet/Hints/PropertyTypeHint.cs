@@ -7,18 +7,18 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
 {
     /// <summary>
     /// Represents a code generation hint that tells the code generator to generate a
-    /// JSON integer property with the specified .NET type, instead of deriving the .NET property type
+    /// JSON property with the specified .NET type, instead of deriving the .NET property type
     /// from the schema property.
     /// </summary>
-    public class GenerateJsonIntegerAsHint : CodeGenHint
+    public class PropertyTypeHint : CodeGenHint
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenerateJsonIntegerAsHint"/> class.
+        /// Initializes a new instance of the <see cref="PropertyTypeHint"/> class.
         /// </summary>
         /// <param name="dotNetPropertyType">
         /// The type of the .NET property to generate.
         /// </param>
-        public GenerateJsonIntegerAsHint(string dotNetPropertyType)
+        public PropertyTypeHint(string dotNetPropertyType)
         {
             if (dotNetPropertyType == null)
             {

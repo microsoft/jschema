@@ -709,11 +709,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             bool nullable,
             out string namespaceName)
         {
-            var generateJsonIntegerAsHint = _hintDictionary?.GetHint<GenerateJsonIntegerAsHint>(_typeName + "." + schemaPropertyName);
+            var propertyTypeHint = _hintDictionary?.GetHint<PropertyTypeHint>(_typeName + "." + schemaPropertyName);
 
-            if (generateJsonIntegerAsHint?.DotNetPropertyType != null)
+            if (propertyTypeHint?.DotNetPropertyType != null)
             {
-                if (Enum.TryParse(generateJsonIntegerAsHint.DotNetPropertyType, true, out GenerateJsonIntegerOption hintGenerateJsonIntegerAs))
+                if (Enum.TryParse(propertyTypeHint.DotNetPropertyType, true, out GenerateJsonIntegerOption hintGenerateJsonIntegerAs))
                 {
                     generateJsonIntegerAs = hintGenerateJsonIntegerAs;
                 }
