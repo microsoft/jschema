@@ -195,8 +195,8 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         private static CodeGenHint CreatePropertyHint(JObject arguments)
         {
             string[] modifiers = GetArrayArgument<string>(arguments, nameof(PropertyHint.Modifiers));
-            string name = GetArgument<string>(arguments, nameof(PropertyHint.Name));
             string typeName = GetArgument<string>(arguments, nameof(PropertyHint.TypeName));
+            string name = GetArgument<string>(arguments, nameof(PropertyHint.Name));
 
             return new PropertyHint(modifiers, typeName, name);
         }

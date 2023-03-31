@@ -12,7 +12,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
 {
     /// <summary>
     /// Represents a code generation hint that tells the code generator to declare a
-    /// property with the specified modifiers, typeName, propertyName
+    /// property with the specified modifiers, type and name.
     /// </summary>
     public class PropertyHint : CodeGenHint
     {
