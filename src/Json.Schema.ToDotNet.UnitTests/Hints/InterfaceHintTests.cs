@@ -42,7 +42,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.Value2"": [
     {
-      ""kind"": ""PropertyModifiersHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""modifiers"": [
           ""internal""

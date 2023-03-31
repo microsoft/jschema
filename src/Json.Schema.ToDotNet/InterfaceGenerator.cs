@@ -73,11 +73,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             const string WildCard = "*";
 
             string hintDictionaryKey = MakeHintDictionaryKey(propertyName);
-            PropertyModifiersHint propertyModifiersHint = HintDictionary.GetHint<PropertyModifiersHint>(hintDictionaryKey);
+            PropertyHint propertyModifiersHint = HintDictionary.GetHint<PropertyHint>(hintDictionaryKey);
             if (propertyModifiersHint == null)
             {
                 hintDictionaryKey = WildCard + "." + propertyName.ToPascalCase();
-                propertyModifiersHint = HintDictionary.GetHint<PropertyModifiersHint>(hintDictionaryKey);
+                propertyModifiersHint = HintDictionary.GetHint<PropertyHint>(hintDictionaryKey);
             }
 
             if (propertyModifiersHint?.Modifiers.Count > 0)

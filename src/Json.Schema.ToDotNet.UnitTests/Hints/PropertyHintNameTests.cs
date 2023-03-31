@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class PropertyNameHintTests : HintTestBase
+    public class PropertyHintNameTests : HintTestBase
     {
         public static readonly TheoryData<HintTestCase> TestCases = new TheoryData<HintTestCase>
         {
@@ -24,9 +24,9 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""C.$schema"": [
     {
-      ""kind"": ""PropertyNameHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
-        ""dotNetPropertyName"": ""SchemaUri""
+        ""name"": ""SchemaUri""
       }
     }
   ]
@@ -49,9 +49,9 @@ namespace N
             )
         };
 
-        [Theory(DisplayName = nameof(PropertyNameHint))]
+        [Theory(DisplayName = nameof(PropertyHintNameTest))]
         [MemberData(nameof(TestCases))]
-        public void PropertyNameHint(HintTestCase testCase)
+        public void PropertyHintNameTest(HintTestCase testCase)
         {
             RunHintTestCase(testCase);
         }

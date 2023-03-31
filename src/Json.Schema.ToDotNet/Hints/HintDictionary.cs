@@ -41,10 +41,8 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
                     [HintKind.ClassNameHint] = CreateClassNameHint,
                     [HintKind.DictionaryHint] = CreateDictionaryHint,
                     [HintKind.EnumHint] = CreateEnumHint,
-                    [HintKind.PropertyTypeHint] = CreatePropertyTypeHint,
                     [HintKind.InterfaceHint] = CreateInterfaceHint,
-                    [HintKind.PropertyModifiersHint] = CreatePropertyModifiersHint,
-                    [HintKind.PropertyNameHint] = CreatePropertyNameHint
+                    [HintKind.PropertyHint] = CreatePropertyHint
                 });
 
         var infoDictionary = HintInstantiationInfoDictionary.Deserialize(dictionaryText);
@@ -194,25 +192,13 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             };
         }
 
-        private static CodeGenHint CreatePropertyModifiersHint(JObject arguments)
+        private static CodeGenHint CreatePropertyHint(JObject arguments)
         {
-            string[] modifiers = GetArrayArgument<string>(arguments, nameof(PropertyModifiersHint.Modifiers));
+            string[] modifiers = GetArrayArgument<string>(arguments, nameof(PropertyHint.Modifiers));
+            string dotNetPropertyName = GetArgument<string>(arguments, nameof(PropertyHint.Name));
+            string dotNetPropertyType = GetArgument<string>(arguments, nameof(PropertyHint.TypeName));
 
-            return new PropertyModifiersHint(modifiers);
-        }
-
-        private static CodeGenHint CreatePropertyNameHint(JObject arguments)
-        {
-            string dotNetPropertyName = GetArgument<string>(arguments, nameof(PropertyNameHint.DotNetPropertyName));
-
-            return new PropertyNameHint(dotNetPropertyName);
-        }
-
-        private static CodeGenHint CreatePropertyTypeHint(JObject arguments)
-        {
-            string dotNetPropertyType = GetArgument<string>(arguments, nameof(PropertyTypeHint.TypeName));
-
-            return new PropertyTypeHint(dotNetPropertyType);
+            return new PropertyHint(modifiers, dotNetPropertyType, dotNetPropertyName);
         }
 
         private static T GetArgument<T>(JObject arguments, string dotNetPropertyName)

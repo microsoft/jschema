@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class PropertyTypeHintTests : HintTestBase
+    public class PropertyHintTypeNameTests : HintTestBase
     {
         public static readonly TheoryData<HintTestCase> TestCases = new TheoryData<HintTestCase>
         {
@@ -59,7 +59,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""C.TheNullableBigIntegerProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""BigInteger""
       }
@@ -67,7 +67,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.TheLongProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""Long""
       }
@@ -75,7 +75,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.TheStringProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""String""
       }
@@ -83,7 +83,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.TheNullableGuidProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""Guid""
       }
@@ -91,7 +91,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.TheUriProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""Uri""
       }
@@ -99,7 +99,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.TheBoolStringProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""String""
       }
@@ -107,7 +107,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.TheStringBoolProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""Bool""
       }
@@ -115,7 +115,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
   ],
   ""C.TheDecimalProperty"": [
     {
-      ""kind"": ""PropertyTypeHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""typeName"": ""Decimal""
       }
@@ -175,9 +175,9 @@ namespace N
             )
         };
 
-        [Theory(DisplayName = nameof(PropertyNameHint))]
+        [Theory(DisplayName = nameof(PropertyHintTypeNameTest))]
         [MemberData(nameof(TestCases))]
-        public void PropertyNameHint(HintTestCase testCase)
+        public void PropertyHintTypeNameTest(HintTestCase testCase)
         {
             RunHintTestCase(testCase);
         }

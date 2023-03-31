@@ -425,7 +425,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         /// </returns>
         protected override SyntaxToken[] GenerateSchemaPropertyModifiers(string propertyName)
         {
-            PropertyModifiersHint propertyModifiersHint = HintDictionary?.GetPropertyHint<PropertyModifiersHint>(TypeName, propertyName);
+            PropertyHint propertyModifiersHint = HintDictionary?.GetPropertyHint<PropertyHint>(TypeName, propertyName);
 
             IList<SyntaxToken> modifierTokens;
             if (propertyModifiersHint?.Modifiers != null)

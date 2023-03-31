@@ -12,20 +12,27 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
 {
     /// <summary>
     /// Represents a code generation hint that tells the code generator to declare a
-    /// property with the specified modifiers instead of the default <code>public</code>
-    /// modifier.
+    /// property with the specified modifiers, typeName, propertyName
     /// </summary>
-    public class PropertyModifiersHint : CodeGenHint
+    public class PropertyHint : CodeGenHint
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyModifiersHint"/> class.
+        /// Initializes a new instance of the <see cref="PropertyHint"/> class.
         /// </summary>
         /// <param name="modifiers">
         /// The property modifiers.
         /// </param>
-        public PropertyModifiersHint(IEnumerable<string> modifiers)
+        /// <param name="typeName">
+        /// The type of the .NET property to generate.
+        /// </param>
+        /// <param name="name">
+        /// The name of the .NET property to generate.
+        /// </param>
+        public PropertyHint(IEnumerable<string> modifiers, string typeName, string name)
         {
-            Modifiers = modifiers.Select(TokenFromModifierName).ToList();
+            Modifiers = modifiers?.Select(TokenFromModifierName).ToList();
+            TypeName = typeName;
+            Name = name;
         }
 
         private SyntaxToken TokenFromModifierName(string modifierName)
@@ -69,5 +76,15 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         /// Gets the property modifiers.
         /// </summary>
         public IList<SyntaxToken> Modifiers { get; }
+
+        /// <summary>
+        /// Gets the type of the .NET property to generate.
+        /// </summary>
+        public string TypeName { get; }
+
+        /// <summary>
+        /// Gets the name of the .NET property to generate.
+        /// </summary>
+        public string Name { get; }
     }
 }

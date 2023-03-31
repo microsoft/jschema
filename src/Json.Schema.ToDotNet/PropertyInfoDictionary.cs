@@ -241,37 +241,37 @@ namespace Microsoft.Json.Schema.ToDotNet
             HashKind scalarValueTypeHashKind =
                 scalarValueTypeNullable ? HashKind.ScalarReferenceType : HashKind.ScalarValueType;
 
-            var propertyTypeHint = _hintDictionary?.GetHint<PropertyTypeHint>(_typeName + "." + schemaPropertyName);
+            var propertyHint = _hintDictionary?.GetHint<PropertyHint>(_typeName + "." + schemaPropertyName);
 
-            SupportedPropertyTypeHint hintTypeName = SupportedPropertyTypeHint.Auto;
+            PropertyHintTypeName hintTypeName = PropertyHintTypeName.Auto;
 
-            if (propertyTypeHint?.TypeName != null)
+            if (propertyHint?.TypeName != null)
             {
-                Enum.TryParse(propertyTypeHint.TypeName, true, out hintTypeName);
+                Enum.TryParse(propertyHint.TypeName, true, out hintTypeName);
             }
 
-            if (hintTypeName == SupportedPropertyTypeHint.DateTime || (hintTypeName == SupportedPropertyTypeHint.Auto && propertySchema.IsDateTime()))
+            if (hintTypeName == PropertyHintTypeName.DateTime || (hintTypeName == PropertyHintTypeName.Auto && propertySchema.IsDateTime()))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType("System.DateTime", out namespaceName);
             }
-            else if (hintTypeName == SupportedPropertyTypeHint.Uri || (hintTypeName == SupportedPropertyTypeHint.Auto && propertySchema.IsUri()))
+            else if (hintTypeName == PropertyHintTypeName.Uri || (hintTypeName == PropertyHintTypeName.Auto && propertySchema.IsUri()))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarReferenceType;
                 initializationKind = InitializationKind.Uri;
                 type = MakeNamedType("System.Uri", out namespaceName);
             }
-            else if (hintTypeName == SupportedPropertyTypeHint.Guid || (hintTypeName == SupportedPropertyTypeHint.Auto && propertySchema.IsUuid()))
+            else if (hintTypeName == PropertyHintTypeName.Guid || (hintTypeName == PropertyHintTypeName.Auto && propertySchema.IsUuid()))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = scalarValueTypeHashKind;
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(GuidType, out namespaceName, scalarValueTypeNullable);
             }
-            else if (hintTypeName == SupportedPropertyTypeHint.Auto && propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
+            else if (hintTypeName == PropertyHintTypeName.Auto && propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
             {
                 comparisonKind = ComparisonKind.Dictionary;
                 hashKind = HashKind.Dictionary;
@@ -289,14 +289,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                 type = MakeDictionaryType(entries, schemaPropertyName, dictionaryHint, dictionaryElementSchema);
                 namespaceName = "System.Collections.Generic";   // For IDictionary.
             }
-            else if (hintTypeName == SupportedPropertyTypeHint.Auto && (referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
+            else if (hintTypeName == PropertyHintTypeName.Auto && (referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(referencedEnumTypeName, out namespaceName);
             }
-            else if (hintTypeName == SupportedPropertyTypeHint.Auto && propertySchema.ShouldBeEnum(_typeName, schemaPropertyName, _hintDictionary, out EnumHint enumHint))
+            else if (hintTypeName == PropertyHintTypeName.Auto && propertySchema.ShouldBeEnum(_typeName, schemaPropertyName, _hintDictionary, out EnumHint enumHint))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
@@ -312,7 +312,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 SchemaType propertyType = propertySchema.SafeGetType();
 
-                if (hintTypeName == SupportedPropertyTypeHint.Bool || (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Boolean))
+                if (hintTypeName == PropertyHintTypeName.Bool || (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Boolean))
                 {
                     comparisonKind = ComparisonKind.OperatorEquals;
                     hashKind = HashKind.ScalarValueType;
@@ -320,10 +320,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                     type = MakePrimitiveType(SchemaType.Boolean);
                 }
                 else if (
-                    hintTypeName == SupportedPropertyTypeHint.Float ||
-                    hintTypeName == SupportedPropertyTypeHint.Decimal ||
-                    hintTypeName == SupportedPropertyTypeHint.Double ||
-                    (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Number))
+                    hintTypeName == PropertyHintTypeName.Float ||
+                    hintTypeName == PropertyHintTypeName.Decimal ||
+                    hintTypeName == PropertyHintTypeName.Double ||
+                    (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Number))
                 {
                     comparisonKind = ComparisonKind.OperatorEquals;
                     hashKind = HashKind.ScalarValueType;
@@ -331,10 +331,10 @@ namespace Microsoft.Json.Schema.ToDotNet
                     type = MakeProperNumberType(_generateJsonNumberAs, hintTypeName);
                 }
                 else if (
-                    hintTypeName == SupportedPropertyTypeHint.Int ||
-                    hintTypeName == SupportedPropertyTypeHint.Long ||
-                    hintTypeName == SupportedPropertyTypeHint.BigInteger ||
-                    (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Integer))
+                    hintTypeName == PropertyHintTypeName.Int ||
+                    hintTypeName == PropertyHintTypeName.Long ||
+                    hintTypeName == PropertyHintTypeName.BigInteger ||
+                    (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Integer))
                 {
                     comparisonKind = ComparisonKind.OperatorEquals;
                     hashKind = scalarValueTypeHashKind;
@@ -348,14 +348,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                         scalarValueTypeNullable,
                         out namespaceName);
                 }
-                else if (hintTypeName == SupportedPropertyTypeHint.String || (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.String))
+                else if (hintTypeName == PropertyHintTypeName.String || (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.String))
                 {
                     comparisonKind = ComparisonKind.OperatorEquals;
                     hashKind = HashKind.ScalarReferenceType;
                     initializationKind = InitializationKind.SimpleAssign;
                     type = MakePrimitiveType(SchemaType.String);
                 }
-                else if (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Object)
+                else if (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Object)
                 {
                     // If the schema for this property references a named type,
                     // the generated Init method will initialize it by cloning an object
@@ -377,7 +377,7 @@ namespace Microsoft.Json.Schema.ToDotNet
 
                     type = MakeObjectType(propertySchema, out namespaceName);
                 }
-                else if (hintTypeName == SupportedPropertyTypeHint.Auto && propertyType == SchemaType.Array)
+                else if (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Array)
                 {
                     comparisonKind = ComparisonKind.Collection;
                     hashKind = HashKind.Collection;
@@ -416,9 +416,9 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
-            var propertyNameHint = _hintDictionary?.GetHint<PropertyNameHint>(_typeName + "." + schemaPropertyName);
-            string dotNetPropertyName = propertyNameHint != null
-                ? propertyNameHint.DotNetPropertyName
+            var propertyNameHint = _hintDictionary?.GetHint<PropertyHint>(_typeName + "." + schemaPropertyName);
+            string dotNetPropertyName = propertyNameHint?.Name != null
+                ? propertyNameHint.Name
                 : schemaPropertyName.ToPascalCase();
 
             entries.Add(new KeyValuePair<string, PropertyInfo>(
@@ -719,7 +719,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         internal TypeSyntax MakeProperIntegerType(
             string schemaPropertyName,
             GenerateJsonIntegerOption generateJsonIntegerAs,
-            SupportedPropertyTypeHint hintTypeName,
+            PropertyHintTypeName hintTypeName,
             double? minimum, bool? exclusiveMinimum,
             double? maximum, bool? exclusiveMaximum,
             bool nullable,
@@ -727,7 +727,7 @@ namespace Microsoft.Json.Schema.ToDotNet
         {
             GenerateJsonIntegerOption hintGenerateJsonIntegerAs;
 
-            if (hintTypeName != SupportedPropertyTypeHint.Auto)
+            if (hintTypeName != PropertyHintTypeName.Auto)
             {
                 if (Enum.TryParse(hintTypeName.ToString(), true, out hintGenerateJsonIntegerAs))
                 {
@@ -775,11 +775,11 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
         }
 
-        internal TypeSyntax MakeProperNumberType(GenerateJsonNumberOption generateJsonNumberAs, SupportedPropertyTypeHint hintTypeName)
+        internal TypeSyntax MakeProperNumberType(GenerateJsonNumberOption generateJsonNumberAs, PropertyHintTypeName hintTypeName)
         {
             GenerateJsonNumberOption hintGenerateJsonNumberAs;
 
-            if (hintTypeName != SupportedPropertyTypeHint.Auto)
+            if (hintTypeName != PropertyHintTypeName.Auto)
             {
                 if (Enum.TryParse(hintTypeName.ToString(), true, out hintGenerateJsonNumberAs))
                 {
