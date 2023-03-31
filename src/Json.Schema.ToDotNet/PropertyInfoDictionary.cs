@@ -416,13 +416,12 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
-            var propertyNameHint = _hintDictionary?.GetHint<PropertyHint>(_typeName + "." + schemaPropertyName);
-            string dotNetPropertyName = propertyNameHint?.Name != null
-                ? propertyNameHint.Name
+            string name = propertyHint?.Name != null
+                ? propertyHint.Name
                 : schemaPropertyName.ToPascalCase();
 
             entries.Add(new KeyValuePair<string, PropertyInfo>(
-                dotNetPropertyName,
+                name,
                 new PropertyInfo(
                     propertySchema.Description,
                     schemaPropertyName,

@@ -1,7 +1,7 @@
 # Microsoft Json Schema Packages
 
 ## **2.4.0** UNRELEASED
-* BREAKING: Merge `HintKind`: `PropertyNameHint` and `PropertyModifiersHint` into one `PropertyHint` and change the setting from `dotNetPropertyName` to `name`. [#171](https://github.com/microsoft/jschema/pull/171)
+* BREAKING: Merge `HintKind`: `PropertyNameHint` and `PropertyModifiersHint` into one `PropertyHint` and change the setting `dotNetPropertyName` to `name`. [#171](https://github.com/microsoft/jschema/pull/171)
 * FEATURE: Add a new setting `typeName` in `PropertyHint` to generate the specified .NET type, instead of deriving from the JSON schema. Supported values: `int`, `long`, `BigInteger`, `double`, `float`, `decimal`, `DateTime`, `Uri`, `Guid`, `bool`, `string`. [#171](https://github.com/microsoft/jschema/pull/171)
 
 ## **2.3.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.3.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.3.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.3.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.3.0)

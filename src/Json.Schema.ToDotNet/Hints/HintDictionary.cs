@@ -195,27 +195,27 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
         private static CodeGenHint CreatePropertyHint(JObject arguments)
         {
             string[] modifiers = GetArrayArgument<string>(arguments, nameof(PropertyHint.Modifiers));
-            string dotNetPropertyName = GetArgument<string>(arguments, nameof(PropertyHint.Name));
-            string dotNetPropertyType = GetArgument<string>(arguments, nameof(PropertyHint.TypeName));
+            string name = GetArgument<string>(arguments, nameof(PropertyHint.Name));
+            string typeName = GetArgument<string>(arguments, nameof(PropertyHint.TypeName));
 
-            return new PropertyHint(modifiers, dotNetPropertyType, dotNetPropertyName);
+            return new PropertyHint(modifiers, typeName, name);
         }
 
-        private static T GetArgument<T>(JObject arguments, string dotNetPropertyName)
+        private static T GetArgument<T>(JObject arguments, string name)
         {
             return arguments == null
                 ? default(T)
-                : arguments.Value<T>(dotNetPropertyName.ToCamelCase());
+                : arguments.Value<T>(name.ToCamelCase());
         }
 
-        private static T[] GetArrayArgument<T>(JObject arguments, string dotNetPropertyName)
+        private static T[] GetArrayArgument<T>(JObject arguments, string name)
         {
             if (arguments == null)
             {
                 return default(T[]);
             }
 
-            JArray arrayValue = arguments.Value<JArray>(dotNetPropertyName.ToCamelCase());
+            JArray arrayValue = arguments.Value<JArray>(name.ToCamelCase());
             if (arrayValue == null)
             {
                 return default(T[]);
@@ -224,9 +224,9 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints
             return arrayValue.Values<T>().ToArray();
         }
 
-        private static IDictionary<string, string> GetObjectArgument(JObject arguments, string dotNetPropertyName)
+        private static IDictionary<string, string> GetObjectArgument(JObject arguments, string name)
         {
-            JObject jObject = arguments?.Value<JObject>(dotNetPropertyName.ToCamelCase());
+            JObject jObject = arguments?.Value<JObject>(name.ToCamelCase());
             if (jObject == null)
             {
                 return null;
