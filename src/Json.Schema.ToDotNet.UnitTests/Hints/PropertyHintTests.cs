@@ -48,7 +48,7 @@ namespace N
     public partial class C
     {
         [DataMember(Name = ""TheNullableBigIntegerProperty"", IsRequired = false, EmitDefaultValue = false)]
-        public BigInteger? OverrideTheNullableBigIntegerProperty { get; set; }
+        internal override BigInteger? OverrideTheNullableBigIntegerProperty { get; set; }
     }
 }"
             )

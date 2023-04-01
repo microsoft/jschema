@@ -109,7 +109,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             PropertyDeclarationSyntax propDecl = SyntaxFactory.PropertyDeclaration(
                 info.Type,
                 propertyName.ToPascalCase())
-                .AddModifiers(GenerateSchemaPropertyModifiers(propertyName))
+                .AddModifiers(GenerateSchemaPropertyModifiers(info.SerializedName))
                 .AddAccessorListAccessors(GeneratePropertyAccessors());
 
             AttributeSyntax[] attributes = GeneratePropertyAttributes(propertyName, info.SerializedName, info.IsRequired, info.DefaultValue, info.Type);
