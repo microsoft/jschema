@@ -1,5 +1,8 @@
 # Microsoft Json Schema Packages
 
+## **2.3.1** UNRELEASED
+* BUG: Hint file should be consistent and use Pascal case. Fix `PropertyNameHint` not effective when Pascal case is used. [#172](https://github.com/microsoft/jschema/pull/172)
+
 ## **2.3.0** [Pointer](https://www.nuget.org/packages/Microsoft.Json.Pointer/2.3.0) | [Schema](https://www.nuget.org/packages/Microsoft.Json.Schema/2.3.0)| [Schema.ToDotNet](https://www.nuget.org/packages/Microsoft.Json.Schema.ToDotNet/2.3.0)| [Schema.Validation](https://www.nuget.org/packages/Microsoft.Json.Schema.Validation/2.3.0)
 * FEATURE: Added support to validate JSON against string format attribute from JSON Schema. [#169](https://github.com/microsoft/jschema/pull/169)
 
