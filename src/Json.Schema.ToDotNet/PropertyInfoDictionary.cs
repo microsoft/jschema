@@ -241,7 +241,7 @@ namespace Microsoft.Json.Schema.ToDotNet
             HashKind scalarValueTypeHashKind =
                 scalarValueTypeNullable ? HashKind.ScalarReferenceType : HashKind.ScalarValueType;
 
-            var propertyHint = _hintDictionary?.GetHint<PropertyHint>(_typeName + "." + schemaPropertyName);
+            var propertyHint = _hintDictionary?.GetHint<PropertyHint>(_typeName + "." + schemaPropertyName.ToPascalCase());
 
             PropertyHintTypeName hintTypeName = PropertyHintTypeName.Auto;
 
