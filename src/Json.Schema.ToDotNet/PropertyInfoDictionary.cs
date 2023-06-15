@@ -399,7 +399,7 @@ namespace Microsoft.Json.Schema.ToDotNet
                 }
             }
 
-            var propertyNameHint = _hintDictionary?.GetHint<PropertyNameHint>(_typeName + "." + schemaPropertyName);
+            var propertyNameHint = _hintDictionary?.GetHint<PropertyNameHint>(_typeName + "." + schemaPropertyName.ToPascalCase());
             string dotNetPropertyName = propertyNameHint != null
                 ? propertyNameHint.DotNetPropertyName
                 : schemaPropertyName.ToPascalCase();

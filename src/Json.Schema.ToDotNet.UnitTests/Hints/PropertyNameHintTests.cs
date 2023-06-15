@@ -46,6 +46,44 @@ namespace N
         public Uri SchemaUri { get; set; }
     }
 }"
+            ),
+
+            new HintTestCase(
+                "Specifies integer property name",
+@"{
+  ""type"": ""object"",
+  ""properties"": {
+    ""itemCount"": {
+      ""type"": ""integer""
+    }
+  }
+}",
+
+@"{
+  ""C.ItemCount"": [
+    {
+      ""kind"": ""PropertyNameHint"",
+      ""arguments"": {
+        ""dotNetPropertyName"": ""RenamedItemCount""
+      }
+    }
+  ]
+}",
+
+@"using System;
+using System.CodeDom.Compiler;
+using System.Runtime.Serialization;
+
+namespace N
+{
+    [DataContract]
+    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
+    public partial class C
+    {
+        [DataMember(Name = ""itemCount"", IsRequired = false, EmitDefaultValue = false)]
+        public int? RenamedItemCount { get; set; }
+    }
+}"
             )
         };
 
