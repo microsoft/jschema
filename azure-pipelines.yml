@@ -6,7 +6,7 @@ pool:
 
 steps:
 - task: UseDotNet@2
-  displayName: .NET Core 3.1 sdk 9
+  displayName: .NET Core 3.1 sdk
   inputs:
     version: "3.1.x"
 
