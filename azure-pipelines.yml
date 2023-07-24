@@ -6,7 +6,7 @@ pool:
 
 steps:
 - task: BatchScript@1
-  displayName: 'Run VsDevCmd.bat 7'
+  displayName: 'Run VsDevCmd.bat'
   inputs:
     filename: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat'
     modifyEnvironment: true
