@@ -2,7 +2,7 @@ pr:
 - '*'
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2022'
 
 steps:
 - task: UseDotNet@2
