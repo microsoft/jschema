@@ -6,9 +6,9 @@ pool:
 
 steps:
 - task: UseDotNet@2
-  displayName: .NET 4.x sdk
+  displayName: .NET 4.6.1 sdk
   inputs:
-    version: "4.x"
+    version: "4.6.1"
     packageType: sdk
 
 - task: BatchScript@1
