@@ -5,11 +5,6 @@ pool:
   vmImage: 'windows-2022'
 
 steps:
-- task: UseDotNet@2
-  displayName: .NET 4.x
-  inputs:
-    version: "4.x"
-
 - task: BatchScript@1
   displayName: 'Run VsDevCmd.bat'
   inputs:
