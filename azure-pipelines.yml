@@ -9,7 +9,7 @@ steps:
   displayName: .NET 4.6.1 sdk
   inputs:
     version: "4.6.1"
-    packageType: sdk
+    packageType: runtime
 
 - task: BatchScript@1
   displayName: 'Run VsDevCmd.bat'
