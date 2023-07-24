@@ -6,10 +6,9 @@ pool:
 
 steps:
 - task: UseDotNet@2
-  displayName: .NET 4.6.1 sdk
+  displayName: .NET 4.x
   inputs:
-    version: "4.6.1"
-    packageType: runtime
+    version: "4.x"
 
 - task: BatchScript@1
   displayName: 'Run VsDevCmd.bat'
