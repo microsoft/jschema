@@ -5,6 +5,12 @@ pool:
   vmImage: 'windows-2022'
 
 steps:
+- task: UseDotNet@2
+  displayName: .NET Core 3.1 sdk
+  inputs:
+    version: "3.1.x"
+    packageType: sdk
+
 - task: BatchScript@1
   displayName: 'Run VsDevCmd.bat'
   inputs:
