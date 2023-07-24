@@ -4,13 +4,13 @@ pr:
 pool:
   vmImage: 'windows-latest'
 
+steps:
 - task: UseDotNet@2
   displayName: .NET 4.6.x sdk
   inputs:
     version: "4.6.x"
     packageType: sdk
 
-steps:
 - task: BatchScript@1
   displayName: 'Run VsDevCmd.bat'
   inputs:
