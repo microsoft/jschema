@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class PropertyNameHintTests : HintTestBase
+    public class PropertyHintNameTests : HintTestBase
     {
         public static readonly TheoryData<HintTestCase> TestCases = new TheoryData<HintTestCase>
         {
@@ -24,9 +24,9 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""C.$schema"": [
     {
-      ""kind"": ""PropertyNameHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
-        ""dotNetPropertyName"": ""SchemaUri""
+        ""name"": ""SchemaUri""
       }
     }
   ]
@@ -46,50 +46,12 @@ namespace N
         public Uri SchemaUri { get; set; }
     }
 }"
-            ),
-
-            new HintTestCase(
-                "Specifies integer property name",
-@"{
-  ""type"": ""object"",
-  ""properties"": {
-    ""itemCount"": {
-      ""type"": ""integer""
-    }
-  }
-}",
-
-@"{
-  ""C.ItemCount"": [
-    {
-      ""kind"": ""PropertyNameHint"",
-      ""arguments"": {
-        ""dotNetPropertyName"": ""RenamedItemCount""
-      }
-    }
-  ]
-}",
-
-@"using System;
-using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
-
-namespace N
-{
-    [DataContract]
-    [GeneratedCode(""Microsoft.Json.Schema.ToDotNet"", """ + VersionConstants.FileVersion + @""")]
-    public partial class C
-    {
-        [DataMember(Name = ""itemCount"", IsRequired = false, EmitDefaultValue = false)]
-        public int? RenamedItemCount { get; set; }
-    }
-}"
             )
         };
 
-        [Theory(DisplayName = nameof(PropertyNameHint))]
+        [Theory(DisplayName = nameof(PropertyHintNameTest))]
         [MemberData(nameof(TestCases))]
-        public void PropertyNameHint(HintTestCase testCase)
+        public void PropertyHintNameTest(HintTestCase testCase)
         {
             RunHintTestCase(testCase);
         }

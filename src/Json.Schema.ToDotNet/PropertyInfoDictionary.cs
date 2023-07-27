@@ -241,28 +241,37 @@ namespace Microsoft.Json.Schema.ToDotNet
             HashKind scalarValueTypeHashKind =
                 scalarValueTypeNullable ? HashKind.ScalarReferenceType : HashKind.ScalarValueType;
 
-            if (propertySchema.IsDateTime())
+            var propertyHint = _hintDictionary?.GetHint<PropertyHint>(_typeName + "." + schemaPropertyName.ToPascalCase());
+
+            PropertyHintTypeName hintTypeName = PropertyHintTypeName.Auto;
+
+            if (propertyHint?.TypeName != null)
+            {
+                Enum.TryParse(propertyHint.TypeName, true, out hintTypeName);
+            }
+
+            if (hintTypeName == PropertyHintTypeName.DateTime || (hintTypeName == PropertyHintTypeName.Auto && propertySchema.IsDateTime()))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType("System.DateTime", out namespaceName);
             }
-            else if (propertySchema.IsUri())
+            else if (hintTypeName == PropertyHintTypeName.Uri || (hintTypeName == PropertyHintTypeName.Auto && propertySchema.IsUri()))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarReferenceType;
                 initializationKind = InitializationKind.Uri;
                 type = MakeNamedType("System.Uri", out namespaceName);
             }
-            else if (propertySchema.IsUuid())
+            else if (hintTypeName == PropertyHintTypeName.Guid || (hintTypeName == PropertyHintTypeName.Auto && propertySchema.IsUuid()))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = scalarValueTypeHashKind;
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(GuidType, out namespaceName, scalarValueTypeNullable);
             }
-            else if (propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
+            else if (hintTypeName == PropertyHintTypeName.Auto && propertySchema.ShouldBeDictionary(_typeName, schemaPropertyName, _hintDictionary, out DictionaryHint dictionaryHint))
             {
                 comparisonKind = ComparisonKind.Dictionary;
                 hashKind = HashKind.Dictionary;
@@ -280,14 +289,14 @@ namespace Microsoft.Json.Schema.ToDotNet
                 type = MakeDictionaryType(entries, schemaPropertyName, dictionaryHint, dictionaryElementSchema);
                 namespaceName = "System.Collections.Generic";   // For IDictionary.
             }
-            else if ((referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
+            else if (hintTypeName == PropertyHintTypeName.Auto && (referencedEnumTypeName = GetReferencedEnumTypeName(propertySchema)) != null)
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
                 initializationKind = InitializationKind.SimpleAssign;
                 type = MakeNamedType(referencedEnumTypeName, out namespaceName);
             }
-            else if (propertySchema.ShouldBeEnum(_typeName, schemaPropertyName, _hintDictionary, out EnumHint enumHint))
+            else if (hintTypeName == PropertyHintTypeName.Auto && propertySchema.ShouldBeEnum(_typeName, schemaPropertyName, _hintDictionary, out EnumHint enumHint))
             {
                 comparisonKind = ComparisonKind.OperatorEquals;
                 hashKind = HashKind.ScalarValueType;
@@ -303,109 +312,116 @@ namespace Microsoft.Json.Schema.ToDotNet
             {
                 SchemaType propertyType = propertySchema.SafeGetType();
 
-                switch (propertyType)
+                if (hintTypeName == PropertyHintTypeName.Bool || (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Boolean))
                 {
-                    case SchemaType.Boolean:
-                        comparisonKind = ComparisonKind.OperatorEquals;
-                        hashKind = HashKind.ScalarValueType;
+                    comparisonKind = ComparisonKind.OperatorEquals;
+                    hashKind = HashKind.ScalarValueType;
+                    initializationKind = InitializationKind.SimpleAssign;
+                    type = MakePrimitiveType(SchemaType.Boolean);
+                }
+                else if (
+                    hintTypeName == PropertyHintTypeName.Float ||
+                    hintTypeName == PropertyHintTypeName.Decimal ||
+                    hintTypeName == PropertyHintTypeName.Double ||
+                    (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Number))
+                {
+                    comparisonKind = ComparisonKind.OperatorEquals;
+                    hashKind = HashKind.ScalarValueType;
+                    initializationKind = InitializationKind.SimpleAssign;
+                    type = MakeProperNumberType(_generateJsonNumberAs, hintTypeName);
+                }
+                else if (
+                    hintTypeName == PropertyHintTypeName.Int ||
+                    hintTypeName == PropertyHintTypeName.Long ||
+                    hintTypeName == PropertyHintTypeName.BigInteger ||
+                    (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Integer))
+                {
+                    comparisonKind = ComparisonKind.OperatorEquals;
+                    hashKind = scalarValueTypeHashKind;
+                    initializationKind = InitializationKind.SimpleAssign;
+                    type = MakeProperIntegerType(
+                        schemaPropertyName,
+                        _generateJsonIntegerAs,
+                        hintTypeName,
+                        propertySchema.Minimum, propertySchema.ExclusiveMinimum,
+                        propertySchema.Maximum, propertySchema.ExclusiveMaximum,
+                        scalarValueTypeNullable,
+                        out namespaceName);
+                }
+                else if (hintTypeName == PropertyHintTypeName.String || (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.String))
+                {
+                    comparisonKind = ComparisonKind.OperatorEquals;
+                    hashKind = HashKind.ScalarReferenceType;
+                    initializationKind = InitializationKind.SimpleAssign;
+                    type = MakePrimitiveType(SchemaType.String);
+                }
+                else if (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Object)
+                {
+                    // If the schema for this property references a named type,
+                    // the generated Init method will initialize it by cloning an object
+                    // of that type. Otherwise, we treat this property as a System.Object
+                    // and just initialize it by assignment.
+                    if (propertySchema.Reference != null)
+                    {
+                        comparisonKind = ComparisonKind.EqualityComparerEquals;
+                        initializationKind = InitializationKind.Clone;
+                        hashKind = HashKind.ObjectModelType;
+                        isOfSchemaDefinedType = true;
+                    }
+                    else
+                    {
+                        comparisonKind = ComparisonKind.ObjectEquals;
                         initializationKind = InitializationKind.SimpleAssign;
-                        type = MakePrimitiveType(propertyType);
-                        break;
-                    case SchemaType.Number:
-                        comparisonKind = ComparisonKind.OperatorEquals;
-                        hashKind = HashKind.ScalarValueType;
-                        initializationKind = InitializationKind.SimpleAssign;
-                        type = MakeProperNumberType(_generateJsonNumberAs);
-                        break;
+                        hashKind = HashKind.ScalarReferenceType;
+                    }
 
-                    case SchemaType.Integer:
-                        comparisonKind = ComparisonKind.OperatorEquals;
-                        hashKind = scalarValueTypeHashKind;
-                        initializationKind = InitializationKind.SimpleAssign;
-                        type = MakeProperIntegerType(_generateJsonIntegerAs,
-                            propertySchema.Minimum, propertySchema.ExclusiveMinimum,
-                            propertySchema.Maximum, propertySchema.ExclusiveMaximum,
-                            scalarValueTypeNullable,
-                            out namespaceName);
-                        break;
-
-                    case SchemaType.String:
+                    type = MakeObjectType(propertySchema, out namespaceName);
+                }
+                else if (hintTypeName == PropertyHintTypeName.Auto && propertyType == SchemaType.Array)
+                {
+                    comparisonKind = ComparisonKind.Collection;
+                    hashKind = HashKind.Collection;
+                    initializationKind = InitializationKind.Collection;
+                    namespaceName = "System.Collections.Generic";   // For IList.
+                    type = MakeArrayType(entries, schemaPropertyName, propertySchema);
+                }
+                else if (propertyType == SchemaType.None)
+                {
+                    SchemaType inferredType = InferSchemaTypeFromEnumValues(propertySchema.Enum);
+                    if (inferredType == SchemaType.None)
+                    {
+                        comparisonKind = ComparisonKind.ObjectEquals;
+                        hashKind = HashKind.ScalarReferenceType;
+                        initializationKind = InitializationKind.None;
+                        type = MakePrimitiveType(SchemaType.Object);
+                    }
+                    else if (inferredType == SchemaType.String)
+                    {
                         comparisonKind = ComparisonKind.OperatorEquals;
                         hashKind = HashKind.ScalarReferenceType;
                         initializationKind = InitializationKind.SimpleAssign;
-                        type = MakePrimitiveType(propertyType);
-                        break;
-
-                    case SchemaType.Object:
-                        // If the schema for this property references a named type,
-                        // the generated Init method will initialize it by cloning an object
-                        // of that type. Otherwise, we treat this property as a System.Object
-                        // and just initialize it by assignment.
-                        if (propertySchema.Reference != null)
-                        {
-                            comparisonKind = ComparisonKind.EqualityComparerEquals;
-                            initializationKind = InitializationKind.Clone;
-                            hashKind = HashKind.ObjectModelType;
-                            isOfSchemaDefinedType = true;
-                        }
-                        else
-                        {
-                            comparisonKind = ComparisonKind.ObjectEquals;
-                            initializationKind = InitializationKind.SimpleAssign;
-                            hashKind = HashKind.ScalarReferenceType;
-                        }
-
-                        type = MakeObjectType(propertySchema, out namespaceName);
-                        break;
-
-                    case SchemaType.Array:
-                        comparisonKind = ComparisonKind.Collection;
-                        hashKind = HashKind.Collection;
-                        initializationKind = InitializationKind.Collection;
-                        namespaceName = "System.Collections.Generic";   // For IList.
-                        type = MakeArrayType(entries, schemaPropertyName, propertySchema);
-                        break;
-
-                    case SchemaType.None:
-                        SchemaType inferredType = InferSchemaTypeFromEnumValues(propertySchema.Enum);
-                        if (inferredType == SchemaType.None)
-                        {
-                            comparisonKind = ComparisonKind.ObjectEquals;
-                            hashKind = HashKind.ScalarReferenceType;
-                            initializationKind = InitializationKind.None;
-                            type = MakePrimitiveType(SchemaType.Object);
-                            break;
-
-                        }
-                        else if (inferredType == SchemaType.String)
-                        {
-                            comparisonKind = ComparisonKind.OperatorEquals;
-                            hashKind = HashKind.ScalarReferenceType;
-                            initializationKind = InitializationKind.SimpleAssign;
-                            type = MakePrimitiveType(SchemaType.String);
-                            break;
-                        }
-                        else
-                        {
-                            comparisonKind = ComparisonKind.OperatorEquals;
-                            hashKind = HashKind.ScalarValueType;
-                            initializationKind = InitializationKind.SimpleAssign;
-                            type = MakePrimitiveType(inferredType);
-                            break;
-                        }
-
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(propertySchema.Type));
+                        type = MakePrimitiveType(SchemaType.String);
+                    }
+                    else
+                    {
+                        comparisonKind = ComparisonKind.OperatorEquals;
+                        hashKind = HashKind.ScalarValueType;
+                        initializationKind = InitializationKind.SimpleAssign;
+                        type = MakePrimitiveType(inferredType);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(propertySchema.Type));
                 }
             }
 
-            var propertyNameHint = _hintDictionary?.GetHint<PropertyNameHint>(_typeName + "." + schemaPropertyName.ToPascalCase());
-            string dotNetPropertyName = propertyNameHint != null
-                ? propertyNameHint.DotNetPropertyName
+            string name = propertyHint?.Name != null
+                ? propertyHint.Name
                 : schemaPropertyName.ToPascalCase();
 
             entries.Add(new KeyValuePair<string, PropertyInfo>(
-                dotNetPropertyName,
+                name,
                 new PropertyInfo(
                     propertySchema.Description,
                     schemaPropertyName,
@@ -699,12 +715,25 @@ namespace Microsoft.Json.Schema.ToDotNet
             return type;
         }
 
-        internal TypeSyntax MakeProperIntegerType(GenerateJsonIntegerOption generateJsonIntegerAs,
+        internal TypeSyntax MakeProperIntegerType(
+            string schemaPropertyName,
+            GenerateJsonIntegerOption generateJsonIntegerAs,
+            PropertyHintTypeName hintTypeName,
             double? minimum, bool? exclusiveMinimum,
             double? maximum, bool? exclusiveMaximum,
             bool nullable,
             out string namespaceName)
         {
+            GenerateJsonIntegerOption hintGenerateJsonIntegerAs;
+
+            if (hintTypeName != PropertyHintTypeName.Auto)
+            {
+                if (Enum.TryParse(hintTypeName.ToString(), true, out hintGenerateJsonIntegerAs))
+                {
+                    generateJsonIntegerAs = hintGenerateJsonIntegerAs;
+                }
+            }
+
             namespaceName = null;
 
             switch (generateJsonIntegerAs)
@@ -745,8 +774,18 @@ namespace Microsoft.Json.Schema.ToDotNet
             }
         }
 
-        internal TypeSyntax MakeProperNumberType(GenerateJsonNumberOption generateJsonNumberAs)
+        internal TypeSyntax MakeProperNumberType(GenerateJsonNumberOption generateJsonNumberAs, PropertyHintTypeName hintTypeName)
         {
+            GenerateJsonNumberOption hintGenerateJsonNumberAs;
+
+            if (hintTypeName != PropertyHintTypeName.Auto)
+            {
+                if (Enum.TryParse(hintTypeName.ToString(), true, out hintGenerateJsonNumberAs))
+                {
+                    generateJsonNumberAs = hintGenerateJsonNumberAs;
+                }
+            }
+
             switch (generateJsonNumberAs)
             {
                 case GenerateJsonNumberOption.Float:

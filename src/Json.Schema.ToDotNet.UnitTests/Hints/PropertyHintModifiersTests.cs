@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 {
-    public class PropertyModifiersHintTests : HintTestBase
+    public class PropertyHintModifiersTests : HintTestBase
     {
         public static readonly TheoryData<HintTestCase> TestCases = new TheoryData<HintTestCase>
         {
@@ -23,7 +23,7 @@ namespace Microsoft.Json.Schema.ToDotNet.Hints.UnitTests
 @"{
   ""C.TheProperty"": [
     {
-      ""kind"": ""PropertyModifiersHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""modifiers"": [
         ]
@@ -62,7 +62,7 @@ namespace N
 @"{
   ""C.TheProperty"": [
     {
-      ""kind"": ""PropertyModifiersHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""modifiers"": [
           ""internal""
@@ -102,7 +102,7 @@ namespace N
 @"{
   ""C.TheProperty"": [
     {
-      ""kind"": ""PropertyModifiersHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""modifiers"": [
           ""internal"",
@@ -143,7 +143,7 @@ namespace N
 @"{
   ""C.TheProperty"": [
     {
-      ""kind"": ""PropertyModifiersHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""modifiers"": [
           ""invalid_modifier""
@@ -172,7 +172,7 @@ namespace N
 @"{
   ""*.TheProperty"": [
     {
-      ""kind"": ""PropertyModifiersHint"",
+      ""kind"": ""PropertyHint"",
       ""arguments"": {
         ""modifiers"": [
           ""internal"",
@@ -200,9 +200,9 @@ namespace N
             ),
         };
 
-        [Theory(DisplayName = nameof(PropertyModifiersHint))]
+        [Theory(DisplayName = nameof(PropertyHintModifiersTest))]
         [MemberData(nameof(TestCases))]
-        public void PropertyModifiersHint(HintTestCase testCase)
+        public void PropertyHintModifiersTest(HintTestCase testCase)
         {
             RunHintTestCase(testCase);
         }
